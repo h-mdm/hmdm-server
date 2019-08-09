@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.persistence.mapper.DeviceMapper">
+
+    <sql id="deviceWithGroupsSelect">
+        SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
+               devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
+               groups.id AS groupId, groups.name AS groupName,
+               configurations.name as configName
+        FROM devices
+                 LEFT JOIN configurations ON devices.configurationId = configurations.id
+                 LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
+                 LEFT JOIN groups ON deviceGroups.groupId = groups.id
+    </sql>
+    
+    <resultMap id="deviceResult" type="Device">
+        <result property="id" column="deviceId"/>
+        <result property="number" column="number"/>
+        <result property="description" column="description"/>
+        <result property="lastUpdate" column="lastUpdate"/>
+        <result property="configurationId" column="configurationId"/>
+        <result property="info" column="info"/>
+        <result property="imei" column="imei"/>
+        <result property="phone" column="phone"/>
+        <result property="customerId" column="customerId"/>
+        <result property="configName" column="configName"/>
+        <result property="launcherPkg" column="launcherPkg"/>
+        <result property="launcherVersion" column="launcherVersion"/>
+
+        <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
+            <result property="id" column="groupId"/>
+            <result property="name" column="groupName"/>
+        </collection>
+    </resultMap>
+
+
+    <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO devices(number, description, lastUpdate, configurationId, imei, phone, customerId)
+        VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId}, #{imei}, #{phone}, #{customerId});
+    </insert>
+
+    <update id="updateDevice" parameterType="Device">
+        UPDATE devices SET number=#{number}, description=#{description}, lastUpdate=#{lastUpdate},
+            configurationId=#{configurationId}, imei=#{imei}, phone=#{phone}, customerId=#{customerId} WHERE id=#{id}
+    </update>
+
+    <sql id="allowedDevicesSelect">
+        SELECT DISTINCT deviceId AS deviceId, LOWER(deviceNumber) AS deviceNumber
+        FROM
+        (
+        SELECT devices.id AS deviceId, devices.number AS deviceNumber
+        FROM devices
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN configurations ON devices.configurationId = configurations.id
+        LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
+        LEFT JOIN groups ON deviceGroups.groupId = groups.id
+        LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
+        WHERE devices.customerId = #{customerId}
+        AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
+        <if test="value != null">
+            AND (
+            devices.number ILIKE #{value}
+            OR devices.description ILIKE #{value}
+            OR devices.imei ILIKE #{value}
+            OR devices.phone ILIKE #{value}
+            OR devices.info ILIKE #{value}
+            OR configurations.name ILIKE #{value}
+            OR groups.name ILIKE #{value}
+            )
+        </if>
+        <if test="groupId != null &amp;&amp; groupId > 0">
+            AND (
+            groups.id = #{groupId}
+            )
+        </if>
+        ) allowedDevicesInner
+        ORDER BY LOWER(deviceNumber)
+        OFFSET (#{pageNum} - 1) * #{pageSize}
+        LIMIT #{pageSize}
+    </sql>
+
+    <select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
+        SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
+               devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
+               groups.id AS groupId, groups.name AS groupName,
+               configurations.name as configName,
+               applications.pkg AS launcherPkg,
+               applicationVersions.version AS launcherVersion
+        FROM devices
+        INNER JOIN (<include refid="allowedDevicesSelect"/>) allowedDevices ON allowedDevices.deviceId = devices.id
+        LEFT JOIN configurations ON devices.configurationId = configurations.id
+        LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
+        LEFT JOIN groups ON deviceGroups.groupId = groups.id
+        LEFT JOIN applicationVersions ON configurations.mainAppId = applicationVersions.id
+        LEFT JOIN applications ON applications.id = applicationVersions.applicationid
+        ORDER BY LOWER(devices.number), LOWER(groups.name);
+    </select>
+
+    <select id="countAllDevices" parameterType="DeviceSearchRequest" resultType="long">
+        SELECT COUNT(DISTINCT devices.id) AS counter
+        FROM devices
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN configurations ON devices.configurationId = configurations.id
+        LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
+        LEFT JOIN groups ON deviceGroups.groupId = groups.id
+        LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
+        WHERE devices.customerId = #{customerId}
+        AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
+        <if test="value != null">
+            AND (
+            devices.number ILIKE #{value}
+            OR devices.description ILIKE #{value}
+            OR devices.imei ILIKE #{value}
+            OR devices.phone ILIKE #{value}
+            OR devices.info ILIKE #{value}
+            OR configurations.name ILIKE #{value}
+            OR groups.name ILIKE #{value}
+            )
+        </if>
+        <if test="groupId != null &amp;&amp; groupId > 0">
+            AND (
+            groups.id = #{groupId}
+            )
+        </if>
+    </select>
+
+    <select id="getDeviceByNumber" resultMap="deviceResult">
+        <include refid="deviceWithGroupsSelect"/>
+        WHERE devices.number = #{number}
+    </select>
+
+    <select id="getDeviceById" resultMap="deviceResult">
+        <include refid="deviceWithGroupsSelect"/>
+        WHERE devices.id = #{id}
+    </select>
+
+    <select id="lookupDevices" resultType="com.hmdm.rest.json.DeviceLookupItem">
+        SELECT devices.id AS id, devices.number AS name, devices.imei AS imei, devices.info AS info
+        FROM devices
+        INNER JOIN users ON users.id = #{userId}
+        WHERE devices.customerId = #{customerId}
+          AND (users.allDevicesAvailable = TRUE
+                   OR
+               EXISTS(SELECT 1
+                      FROM deviceGroups
+                      INNER JOIN userDeviceGroupsAccess access ON deviceGroups.groupId = access.groupId AND access.userId = users.id
+                      WHERE devices.id = deviceGroups.deviceId
+                   )
+              )
+          AND (
+                devices.number ILIKE #{filter}
+                OR devices.imei ILIKE #{filter}
+                OR devices.info ILIKE '%imei' || #{filter} || 'phone%'
+            )
+        ORDER BY devices.number
+        LIMIT #{limit};
+    </select>
+
+    <insert id="insertDeviceGroups">
+        INSERT INTO deviceGroups (deviceId, groupId) VALUES
+        <foreach item="groupId" index="index" collection="groups"
+                 open="" separator="," close="">
+            (#{id}, #{groupId})
+        </foreach>
+    </insert>
+
+    <select id="getAllGroups" resultType="Group">
+        SELECT groups.*
+        FROM groups
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
+        WHERE groups.customerId=#{customerId}
+        AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
+        ORDER BY name
+    </select>
+
+    <select id="getAllGroupsByValue" resultType="Group">
+        SELECT groups.*
+        FROM groups
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
+        WHERE groups.customerId=#{customerId}
+        AND groups.name ILIKE #{value}
+        AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
+        ORDER BY name
+    </select>
+
+    <insert id="insertDeviceApplicationSettings">
+        INSERT INTO deviceApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate)
+        VALUES
+        <foreach item="item" index="index" collection="appSettings"
+                 open="" separator="," close="">
+            (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})
+        </foreach>
+    </insert>
+
+
+</mapper>

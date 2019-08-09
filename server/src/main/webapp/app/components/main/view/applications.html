@@ -1,0 +1,118 @@
+<!-- Localization completed -->
+<div ng-controller="ApplicationsTabController">
+    <form class="form-horizontal">
+    <div class='form-group'>
+        <div class="col-sm-10">
+            <input type='text'
+                   ng-model='search.searchValue'
+                   ng-change="search()"
+                   ng-model-options="{ debounce: 500 }"
+                   ng-enter='search()'
+                   localized-placeholder='search.placeholder.application'
+                   class='form-control'>
+        </div>
+
+        <div class='device-search-buttons col-sm-2'>
+            <button type='button' class='btn btn-default' ng-click='editApplication( {} )' localized>button.add</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for='cc12222' class="control-label col-sm-4" localized>form.configuration.apps.show.systeam.apps</label>
+
+        <div class="col-sm-1">
+            <input id="cc12222" ng-model='showMyAppsOnly.system' name="n42" type='checkbox' class='form-control'
+                   ng-checked="showMyAppsOnly.system"
+                   ng-change="showSystemAppsOnlyToggled()"/>
+        </div>
+
+        <label for="cc1" class="control-label col-sm-4" ng-if="myAppsButtonVisible"
+               localized>box.show.my.apps.only</label>
+
+        <div class='col-sm-1' ng-if="myAppsButtonVisible">
+            <input id="cc1" ng-model='showMyAppsOnly.on' name="n4" type='checkbox' class='form-control'
+                   ng-change="showMyAppsOnlyToggled()"/>
+        </div>
+    </div>
+    </form>
+    
+    <div class="text-center" ng-if="applications.length > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.currentPage'
+                total-items='applications.length'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+    <table ng-if='applications && applications.length > 0' class='table'>
+        <thead>
+        <tr>
+            <th localized>table.heading.application.pkg</th>
+            <th localized>table.heading.application.name</th>
+            <th localized>table.heading.application.version</th>
+            <th localized>table.heading.application.url</th>
+            <th localized>table.heading.application.label</th>
+            <th class='actions-column-150' localized>table.heading.application.actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat='application in applications.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
+            <td>{{application.pkg}}</td>
+            <td>{{application.name}}</td>
+            <td>{{application.version}}</td>
+            <td>{{application.url}}</td>
+            <td>{{application.showIcon ? '+' : ''}}</td>
+
+            <td>
+                <div>
+                    <button localized-title="button.edit.versions"
+                            type='button' class='btn btn-default' ng-click='editVersions( application )'>
+                        <span class='glyphicon glyphicon-sound-5-1'></span>
+                    </button>
+                    <button localized-title="button.set.configurations"
+                            type='button' class='btn btn-default' ng-click='editConfiguration( application )'>
+                        <span class='glyphicon glyphicon-list'></span>
+                    </button>
+                    <button ng-if="!application.commonApplication || authService.isSuperAdmin()"
+                            localized-title="button.edit"
+                            type='button' class='btn btn-default' ng-click='editApplication( application )'>
+                        <span class='glyphicon glyphicon-pencil'></span>
+                    </button>
+                    <button ng-if="!application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                            localized-title="button.delete"
+                            type='button' class='btn btn-default' ng-click='removeApplication( application )'>
+                        <span class='glyphicon glyphicon-trash'></span>
+                    </button>
+                    <button ng-if="application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                            localized-title="error.application.config.reference.exists" disabled="disabled"
+                            type='button' class='btn btn-default' ng-click='removeApplication( application )'>
+                        <span class='glyphicon glyphicon-trash'></span>
+                    </button>
+                    <button ng-if="application.commonApplication && !authService.isSuperAdmin()"
+                            ng-click="clarifyOnCommon()"
+                            localized-title="button.common" type='button' class='btn btn-default'>
+                        <span class='glyphicon glyphicon-cloud'></span>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div ng-if='applications && applications.length === 0' class='center' localized>notfound.apps.for.display</div>
+
+    <div class="text-center" ng-if="applications.length > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.currentPage'
+                total-items='applications.length'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+</div>

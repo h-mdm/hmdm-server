@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- database settings -->
+    <Parameter name="JDBC.driver"   value="${jdbc.driver}"/>
+    <Parameter name="JDBC.url"      value="${jdbc.url}"/>
+    <Parameter name="JDBC.username" value="${jdbc.username}"/>
+    <Parameter name="JDBC.password" value="${jdbc.password}"/>
+
+    <!-- files directory -->
+    <Parameter name="files.directory" value="${files.directory}"/>
+    <Parameter name="plugins.files.directory" value="${plugins.files.directory}"/>
+
+    <!-- base url -->
+    <Parameter name="base.url" value="${base.url}"/>
+
+    <Parameter name="usage.scenario" value="${usage.scenario}"/>
+    <Parameter name="hash.secret" value="${hash.secret}"/>
+    <Parameter name="role.orgadmin.id" value="${role.orgadmin.id}"/>
+    <Parameter name="plugins" value="${plugins}"/>
+
+    <!-- Swagger -->
+    <Parameter name="swagger.host" value="${swagger.host}"/>
+    <Parameter name="swagger.base.path" value="${swagger.base.path}"/>
+
+    <!-- A path to a file to be created by the application initializer to signal on initialization completion -->
+    <Parameter name="initialization.completion.signal.file" value="${initialization.completion.signal.file}"/>
+
+    <Parameter name="plugin.devicelog.persistence.config.class" value="${plugin.devicelog.persistence.config.class}"/>
+
+    <Parameter name="aapt.command" value="${aapt.command}"/>
+</Context>

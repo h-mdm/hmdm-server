@@ -1,0 +1,103 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div ng-show='successMessage' class='modal-header'>
+    <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class='form-group' ng-if="!fileSelected">
+            <label class='col-sm-4 control-label' for="lasdkjd" localized>form.application.pkg</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.pkg' type='text' class='form-control' id="lasdkjd"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="fileSelected">
+            <label class='col-sm-4 control-label' for="djhsfksfhj" localized>form.application.pkg</label>
+            <div class='col-sm-8'>
+                <input disabled localized-placeholder="form.application.from.file" type='text' class='form-control'
+                       id="djhsfksfhj"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-4 control-label' for="griurkfsbfkj" localized>form.application.name</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.name' type='text' class='form-control' id="griurkfsbfkj"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="!fileSelected">
+            <label class='col-sm-4 control-label' for="kjsdkfskfjhskfjh" localized>form.application.version</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.version' type='text' class='form-control'
+                       ng-disabled="application.id" id="kjsdkfskfjhskfjh"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="fileSelected">
+            <label class='col-sm-4 control-label' for="kjrfkfhwk" localized>form.application.version</label>
+            <div class='col-sm-8'>
+                <input disabled type='text' class='form-control' id="kjrfkfhwk"
+                       localized-placeholder="form.application.from.file"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-4 control-label' for="sfjshfsjkf" localized>form.application.system</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.system' type='checkbox' class='form-control' id="sfjshfsjkf"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-4 control-label' for="kjdfjejbwerfjwefij"
+                   localized>form.application.run.after.install</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.runAfterInstall' ng-disabled="application.system"
+                       type='checkbox' class='form-control' id="kjdfjejbwerfjwefij"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-4 control-label' for="kajdfhakjdkj" localized>form.application.url</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.url' type='text' class='form-control' id="kajdfhakjdkj"
+                       ng-disabled="application.system || application.id">
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="isNewApp">
+            <label class='col-sm-4 control-label' localized>form.application.file</label>
+            <div class='col-sm-8'>
+                <div class="btn btn-default full-width btn-upload" ng-if="!file.path"
+                     file-input-disabler input-disabled="{{application.system}}"
+                     upload-button
+                     url="rest/private/web-ui-files"
+                     on-upload="onStartedUpload(files)"
+                     on-success="fileUploaded( response )"></div>
+                <span ng-if="file.path && !invalidFile">{{fileName}}</span>
+                <button class="btn btn-default" ng-if="file.path" ng-click="clearFile()" localized>button.cleanup</button>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-4 control-label' for="showLabelBox" localized>form.application.showLabel</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.showIcon' type='checkbox' class='form-control' id="showLabelBox"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-4 col-sm-8'>
+                <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="loading" localized>button.save</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' ng-disabled="loading" localized >button.cancel</button>
+                <button type='button' class='btn btn-default' ng-click='manageConfigurations()' ng-disabled="loading"
+                        ng-if="!isNewApp" localized>button.configurations</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.persistence.mapper.ApplicationMapper">
+
+<!--
+    <select id="getApplicationConfigurations" resultType="Configuration">
+        SELECT configurations.id, configurations.name,
+               (configurationApplications.applicationId IS NOT NULL) as selected
+        FROM configurations
+          LEFT JOIN configurationApplications ON configurations.id = configurationApplications.configurationId
+                                                   AND configurationApplications.applicationId = #{id}
+        ORDER BY LOWER(configurations.name)
+    </select>
+-->
+
+    <insert id="insertApplicationConfigurations">
+        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action)
+        VALUES
+        <foreach item="item" index="index" collection="confs"
+                 open="" separator="," close="">
+            (#{item.configurationId}, #{applicationId}, #{versionId}, #{item.remove}, #{item.showIcon}, #{item.action})
+        </foreach>
+    </insert>
+
+    <insert id="insertApplicationVersionConfigurations">
+        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action)
+        VALUES
+        <foreach item="item" index="index" collection="confs"
+                 open="" separator="," close="">
+            (#{item.configurationId}, #{applicationId}, #{versionId}, #{item.remove}, #{item.showIcon}, #{item.action})
+        </foreach>
+    </insert>
+
+    <select id="resolveAppsByPackageId" resultType="com.hmdm.rest.json.LookupItem">
+        SELECT applications.id AS id,
+               applications.pkg AS name
+        FROM applications
+        INNER JOIN customers ON customers.id = applications.customerid
+        WHERE (applications.customerId = #{customerId} OR customers.master IS TRUE)
+        AND applications.pkg IN (
+        <foreach item="item" index="index" collection="apps"
+                 open="" separator="," close="">
+            #{item}
+        </foreach>
+        )
+    </select>
+</mapper>

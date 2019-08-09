@@ -1,0 +1,91 @@
+<!-- Localization completed -->
+<div class='content-wrapper'>
+
+    <div ncy-breadcrumb></div>
+
+    <div class='form-group'>
+        <div class='center'>
+            <h3>&quot;{{application.name}}&quot;</h3>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <div class='col-sm-offset-10 text-right'>
+            <button type='button' class='btn btn-default'
+                    ng-disabled="application.commonApplication && !authService.isSuperAdmin()"
+                    ng-click='editApplicationVersion( {system: application.system, applicationId: application.id} )'
+                    localized>button.add</button>
+        </div>
+    </div>
+
+    <div class="text-center" ng-if="applications.length > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.currentPage'
+                total-items='applications.length'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+    <table ng-if='applications && applications.length > 0' class='table'>
+        <thead>
+        <tr>
+            <th localized>table.heading.application.version</th>
+            <th localized>table.heading.application.url</th>
+            <th class='actions-column-150' localized>table.heading.application.actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat='application in applications.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
+            <td>{{application.version}}</td>
+            <td>{{application.url}}</td>
+
+            <td>
+                <div>
+                    <button localized-title="button.set.configurations"
+                            type='button' class='btn btn-default' ng-click='manageConfigurations( application )'>
+                        <span class='glyphicon glyphicon-list'></span>
+                    </button>
+                    <button ng-if="!application.commonApplication || authService.isSuperAdmin()"
+                            localized-title="button.edit"
+                            type='button' class='btn btn-default' ng-click='editApplicationVersion( application )'>
+                        <span class='glyphicon glyphicon-pencil'></span>
+                    </button>
+                    <button ng-if="!application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                            localized-title="button.delete"
+                            type='button' class='btn btn-default' ng-click='removeApplicationVersion( application )'>
+                        <span class='glyphicon glyphicon-trash'></span>
+                    </button>
+                    <button ng-if="application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                            localized-title="error.application.version.deletion.prohibited" disabled="disabled"
+                            type='button' class='btn btn-default'>
+                        <span class='glyphicon glyphicon-trash'></span>
+                    </button>
+                    <button ng-if="application.commonApplication && !authService.isSuperAdmin()"
+                            ng-click="clarifyOnCommon()"
+                            localized-title="button.common" type='button' class='btn btn-default'>
+                        <span class='glyphicon glyphicon-cloud'></span>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <div ng-if='applications && applications.length === 0' class='center' localized>notfound.app.versions.for.display</div>
+
+    <div class="text-center" ng-if="applications.length > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.currentPage'
+                total-items='applications.length'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+</div>

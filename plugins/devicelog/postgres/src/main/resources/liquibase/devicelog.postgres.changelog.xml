@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="db.changelog.xml">
+
+    <!--
+    The change set IDs MUST start with "plugin-<plugin identifier>" followed by dash symbol ALWAYS.
+    The database object names declared by plugin MUST always start with "plugin_<plugin identifier>" followed by underscore
+    symbol.
+    -->
+
+    <changeSet id="plugin-devicelog-10.07.2019-17:34" author="isv" context="common">
+        <comment>Create plugin_devicelog_log</comment>
+        <sql>
+            CREATE TABLE plugin_devicelog_log (
+            id serial NOT NULL CONSTRAINT plugin_devicelog_log_pr_key PRIMARY KEY,
+            createTime BIGINT,
+            customerId INT NOT NULL REFERENCES customers( id ) ON DELETE CASCADE,
+            deviceId INT NOT NULL REFERENCES devices( id ) ON DELETE CASCADE,
+            applicationId INT NOT NULL REFERENCES applications( id ) ON DELETE CASCADE,
+            ipAddress VARCHAR(512),
+            severity TEXT,
+            severityOrder INT,
+            message TEXT
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_devicelog_log;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-devicelog-12.07.2019-12:52" author="isv" context="common">
+        <comment>Create plugin_devicelog_settings</comment>
+        <sql>
+            CREATE TABLE plugin_devicelog_settings (
+                id serial NOT NULL CONSTRAINT plugin_devicelog_settings_pr_key PRIMARY KEY,
+                customerId INT NOT NULL REFERENCES customers( id ) ON DELETE CASCADE,
+                logsPreservePeriod INT NOT NULL DEFAULT 30
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_devicelog_settings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-devicelog-12.07.2019-12:55" author="isv" context="common">
+        <comment>Insert plugin_devicelog_settings</comment>
+        <sql>
+            INSERT INTO plugin_devicelog_settings (customerId) SELECT id FROM customers;
+        </sql>
+        <rollback>
+            DELETE FROM plugin_devicelog_settings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-devicelog-12.07.2019-13:32" author="isv" context="common">
+        <comment>Create plugin_devicelog_setting_rules</comment>
+        <sql>
+            CREATE TABLE plugin_devicelog_settings_rules (
+                id serial NOT NULL CONSTRAINT plugin_devicelog_settings_rules_pr_key PRIMARY KEY,
+                settingId INT NOT NULL REFERENCES plugin_devicelog_settings( id ) ON DELETE CASCADE,
+                name VARCHAR(120) NOT NULL,
+                active BOOLEAN NOT NULL DEFAULT TRUE,
+                applicationId INT NOT NULL REFERENCES applications( id ) ON DELETE CASCADE,
+                severity TEXT NOT NULL,
+                filter TEXT,
+                groupId INT REFERENCES groups( id ) ON DELETE CASCADE,
+                configurationId INT REFERENCES configurations( id ) ON DELETE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_devicelog_settings_rules;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-devicelog-12.07.2019-13:50" author="isv" context="common">
+        <comment>Create plugin_devicelog_setting_rule_devices</comment>
+        <sql>
+            CREATE TABLE plugin_devicelog_setting_rule_devices (
+                ruleId INT NOT NULL REFERENCES plugin_devicelog_settings_rules( id ) ON DELETE CASCADE,
+                deviceId INT NOT NULL REFERENCES devices( id ) ON DELETE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_devicelog_setting_rule_devices;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,113 @@
+<!-- Localization completed -->
+<div ng-controller="SettingsTabController">
+    <div class="text-center">
+        <h4 localized>form.settings.common.title</h4>
+    </div>
+
+    <div class="text-center">
+        <h5 localized>form.settings.common.visible.columns</h5>
+    </div>
+
+    <div>
+        <form class='form-horizontal'>
+            <div class='form-group'>
+                <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c1" localized>form.settings.common.status</label>
+                <div class='col-sm-1'>
+                    <input id="c1" ng-model='settings.columnDisplayedDeviceStatus' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c2" localized>form.settings.common.date</label>
+                <div class='col-sm-1'>
+                    <input id="c2" ng-model='settings.columnDisplayedDeviceDate' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c3" localized>form.settings.common.device.number</label>
+                <div class='col-sm-1'>
+                    <input id="c3" ng-model='settings.columnDisplayedDeviceNumber' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c8" localized>form.settings.common.imei</label>
+                <div class='col-sm-1'>
+                    <input id="c8" ng-model='settings.columnDisplayedDeviceImei' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c9" localized>form.settings.common.phone.number</label>
+                <div class='col-sm-1'>
+                    <input id="c9" ng-model='settings.columnDisplayedDevicePhone' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c4" localized>form.settings.common.phone.model</label>
+                <div class='col-sm-1'>
+                    <input id="c4" ng-model='settings.columnDisplayedDeviceModel' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c5" localized>form.settings.common.status.permissions</label>
+                <div class='col-sm-1'>
+                    <input id="c5" ng-model='settings.columnDisplayedDevicePermissionsStatus' type='checkbox'
+                           class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c6" localized>form.settings.common.status.installation</label>
+                <div class='col-sm-1'>
+                    <input id="c6" ng-model='settings.columnDisplayedDeviceAppInstallStatus' type='checkbox'
+                           class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c7" localized>form.settings.common.config</label>
+                <div class='col-sm-1'>
+                    <input id="c7" ng-model='settings.columnDisplayedDeviceConfiguration' type='checkbox'
+                           class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c10" localized>form.settings.common.desc</label>
+                <div class='col-sm-1'>
+                    <input id="c10" ng-model='settings.columnDisplayedDeviceDesc' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c11" localized>form.settings.common.group</label>
+                <div class='col-sm-1'>
+                    <input id="c11" ng-model='settings.columnDisplayedDeviceGroup' type='checkbox'
+                           class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c112" localized>form.settings.common.launcher.version</label>
+                <div class='col-sm-1'>
+                    <input id="c112" ng-model='settings.columnDisplayedLauncherVersion' type='checkbox'
+                           class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <div class='col-sm-offset-6 col-sm-9 padding-left'>
+                    <button type='submit' class='btn btn-default' ng-click='saveCommonSettings()' localized>button.save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

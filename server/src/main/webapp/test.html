@@ -1,0 +1,90 @@
+<example module="includeExample" deps="angular-animate.js" animations="true">
+    <file name="index.html">
+        <div ng-controller="ExampleController">
+            <select ng-model="template" ng-options="t.name for t in templates">
+                <option value="">(blank)</option>
+            </select>
+            url of the template: <code>{{template.url}}</code>
+            <hr/>
+            <div class="slide-animate-container">
+                <div class="slide-animate" ng-include="template.url"></div>
+            </div>
+        </div>
+    </file>
+    <file name="script.js">
+        angular.module('includeExample', ['ngAnimate'])
+        .controller('ExampleController', ['$scope', function($scope) {
+        $scope.templates =
+        [ { name: 'template1.html', url: 'template1.html'},
+        { name: 'template2.html', url: 'template2.html'} ];
+        $scope.template = $scope.templates[0];
+        }]);
+    </file>
+    <file name="template1.html">
+        Content of template1.html
+    </file>
+    <file name="template2.html">
+        Content of template2.html
+    </file>
+    <file name="animations.css">
+        .slide-animate-container {
+        position:relative;
+        background:white;
+        border:1px solid black;
+        height:40px;
+        overflow:hidden;
+        }
+        .slide-animate {
+        padding:10px;
+        }
+        .slide-animate.ng-enter, .slide-animate.ng-leave {
+        -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        display:block;
+        padding:10px;
+        }
+        .slide-animate.ng-enter {
+        top:-50px;
+        }
+        .slide-animate.ng-enter.ng-enter-active {
+        top:0;
+        }
+        .slide-animate.ng-leave {
+        top:0;
+        }
+        .slide-animate.ng-leave.ng-leave-active {
+        top:50px;
+        }
+    </file>
+    <file name="protractor.js" type="protractor">
+        var templateSelect = element(by.model('template'));
+        var includeElem = element(by.css('[ng-include]'));
+        it('should load template1.html', function() {
+        expect(includeElem.getText()).toMatch(/Content of template1.html/);
+        });
+        it('should load template2.html', function() {
+        if (browser.params.browser == 'firefox') {
+        // Firefox can't handle using selects
+        // See https://github.com/angular/protractor/issues/480
+        return;
+        }
+        templateSelect.click();
+        templateSelect.all(by.css('option')).get(2).click();
+        expect(includeElem.getText()).toMatch(/Content of template2.html/);
+        });
+        it('should change to blank', function() {
+        if (browser.params.browser == 'firefox') {
+        // Firefox can't handle using selects
+        return;
+        }
+        templateSelect.click();
+        templateSelect.all(by.css('option')).get(0).click();
+        expect(includeElem.isPresent()).toBe(false);
+        });
+    </file>
+</example>

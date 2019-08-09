@@ -1,0 +1,400 @@
+/*
+ *
+ * Headwind MDM: Open Source Android MDM Software
+ * https://h-mdm.com
+ *
+ * Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hmdm.persistence.domain;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import static com.hmdm.persistence.domain.DesktopHeader.NO_HEADER;
+import static com.hmdm.persistence.domain.IconSize.SMALL;
+
+@ApiModel(description = "An MDM configuration used on mobile device")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Configuration implements CustomerData {
+
+    // This group of settings corresponds to common settings
+    @ApiModelProperty("A configuration ID")
+    private Integer id;
+    @ApiModelProperty("A unique name of configuration")
+    private String name;
+    @ApiModelProperty("A description of configuration")
+    private String description;
+    @ApiModelProperty("A password for administrator of configuration (MD5 hash)")
+    private String password;
+    @ApiModelProperty(hidden = true)
+    private int type;
+    @ApiModelProperty("A list of applications set for configuration")
+    private List<Application> applications = new LinkedList<>();
+    @ApiModelProperty(hidden = true)
+    private int customerId;
+    @ApiModelProperty("A flag indicating if application versions update is enabled")
+    private boolean autoUpdate;
+    @ApiModelProperty("A flag indicating if status bar is locked")
+    private boolean blockStatusBar;
+    @ApiModelProperty(value = "A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed", allowableValues = "0,1,2,3")
+    private int systemUpdateType;
+    @ApiModelProperty(value = "A start time for system update period formatted as HH:MM. (If system update time is 2)")
+    private String systemUpdateFrom;
+    @ApiModelProperty(value = "A finish time for system update period formatted as HH:MM. (If system update time is 2)")
+    private String systemUpdateTo;
+
+    @ApiModelProperty("A flag indicating if GPS is enabled on device")
+    private Boolean gps;
+    @ApiModelProperty("A flag indicating if Bluetooth is enabled on device")
+    private Boolean bluetooth;
+    @ApiModelProperty("A flag indicating if Wi-Fi is enabled on device")
+    private Boolean wifi;
+    @ApiModelProperty("A flag indicating if Mobile Data is enabled on device")
+    private Boolean mobileData;
+
+    // This group of settings corresponds to MDM settings
+    @ApiModelProperty("A package ID for main application")
+    private Integer mainAppId;
+    @ApiModelProperty("A package ID for event receiving component")
+    private String eventReceivingComponent;
+    @ApiModelProperty("A flag indicating if MDM is operating in kiosk mode")
+    private boolean kioskMode;
+    @ApiModelProperty("A package ID for content application")
+    private Integer contentAppId;
+
+    // This group of settings corresponds to Design settings
+    private boolean useDefaultDesignSettings;
+    @ApiModelProperty("A background color to use when running MDM application")
+    private String backgroundColor;
+    @ApiModelProperty("A text color to use when running MDM application")
+    private String textColor;
+    @ApiModelProperty("An URL for background image to use when running MDM application")
+    private String backgroundImageUrl;
+    @ApiModelProperty("A size of the icons to use when running MDM application")
+    private IconSize iconSize = SMALL;
+    @ApiModelProperty("A type of desktop header to use when running MDM application")
+    private DesktopHeader desktopHeader = NO_HEADER;
+
+    // An unique key used for retrieving the QR code for configuration
+    @ApiModelProperty(hidden = true)
+    private String qrCodeKey;
+
+    @ApiModelProperty("A list of settings for applications set for configuration")
+    private List<ApplicationSetting> applicationSettings;
+
+    @ApiModelProperty("The parameters for using applications set for configuration")
+    private List<ConfigurationApplicationParameters> applicationUsageParameters;
+
+    @ApiModelProperty(hidden = true)
+    private boolean selected;
+    @ApiModelProperty(hidden = true)
+    private String baseUrl;
+
+    public Configuration() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Application> getApplications() {
+        return this.applications;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
+    }
+
+    public int getType() {
+        return this.type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
+    }
+
+    public String getBackgroundImageUrl() {
+        return backgroundImageUrl;
+    }
+
+    public void setBackgroundImageUrl(String backgroundImageUrl) {
+        this.backgroundImageUrl = backgroundImageUrl;
+    }
+
+    public IconSize getIconSize() {
+        return iconSize;
+    }
+
+    public void setIconSize(IconSize iconSize) {
+        this.iconSize = iconSize;
+    }
+
+    public DesktopHeader getDesktopHeader() {
+        return desktopHeader;
+    }
+
+    public void setDesktopHeader(DesktopHeader desktopHeader) {
+        this.desktopHeader = desktopHeader;
+    }
+
+    public boolean isUseDefaultDesignSettings() {
+        return useDefaultDesignSettings;
+    }
+
+    @Override
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public Boolean getGps() {
+        return gps;
+    }
+
+    public void setGps(Boolean gps) {
+        this.gps = gps;
+    }
+
+    public Boolean getBluetooth() {
+        return bluetooth;
+    }
+
+    public void setBluetooth(Boolean bluetooth) {
+        this.bluetooth = bluetooth;
+    }
+
+    public Boolean getWifi() {
+        return wifi;
+    }
+
+    public void setWifi(Boolean wifi) {
+        this.wifi = wifi;
+    }
+
+    public Boolean getMobileData() {
+        return mobileData;
+    }
+
+    public void setMobileData(Boolean mobileData) {
+        this.mobileData = mobileData;
+    }
+
+    public void setUseDefaultDesignSettings(boolean useDefaultDesignSettings) {
+        this.useDefaultDesignSettings = useDefaultDesignSettings;
+    }
+
+    public Integer getMainAppId() {
+        return mainAppId;
+    }
+
+    public void setMainAppId(Integer mainAppId) {
+        this.mainAppId = mainAppId;
+    }
+
+    public Integer getContentAppId() {
+        return contentAppId;
+    }
+
+    public void setContentAppId(Integer contentAppId) {
+        this.contentAppId = contentAppId;
+    }
+
+    public String getEventReceivingComponent() {
+        return eventReceivingComponent;
+    }
+
+    public void setEventReceivingComponent(String eventReceivingComponent) {
+        this.eventReceivingComponent = eventReceivingComponent;
+    }
+
+    public boolean isKioskMode() {
+        return kioskMode;
+    }
+
+    public void setKioskMode(boolean kioskMode) {
+        this.kioskMode = kioskMode;
+    }
+
+    public String getQrCodeKey() {
+        return qrCodeKey;
+    }
+
+    public void setQrCodeKey(String qrCodeKey) {
+        this.qrCodeKey = qrCodeKey;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public boolean isAutoUpdate() {
+        return autoUpdate;
+    }
+
+    public void setAutoUpdate(boolean autoUpdate) {
+        this.autoUpdate = autoUpdate;
+    }
+
+    public boolean isBlockStatusBar() {
+        return blockStatusBar;
+    }
+
+    public void setBlockStatusBar(boolean blockStatusBar) {
+        this.blockStatusBar = blockStatusBar;
+    }
+
+    public int getSystemUpdateType() {
+        return systemUpdateType;
+    }
+
+    public void setSystemUpdateType(int systemUpdateType) {
+        this.systemUpdateType = systemUpdateType;
+    }
+
+    public String getSystemUpdateFrom() {
+        return systemUpdateFrom;
+    }
+
+    public void setSystemUpdateFrom(String systemUpdateFrom) {
+        this.systemUpdateFrom = systemUpdateFrom;
+    }
+
+    public String getSystemUpdateTo() {
+        return systemUpdateTo;
+    }
+
+    public void setSystemUpdateTo(String systemUpdateTo) {
+        this.systemUpdateTo = systemUpdateTo;
+    }
+
+    public List<ApplicationSetting> getApplicationSettings() {
+        return applicationSettings;
+    }
+
+    public void setApplicationSettings(List<ApplicationSetting> applicationSettings) {
+        this.applicationSettings = applicationSettings;
+    }
+
+    public List<ConfigurationApplicationParameters> getApplicationUsageParameters() {
+        return applicationUsageParameters;
+    }
+
+    public void setApplicationUsageParameters(List<ConfigurationApplicationParameters> applicationUsageParameters) {
+        this.applicationUsageParameters = applicationUsageParameters;
+    }
+
+    public Configuration newCopy() {
+        Configuration copy = new Configuration();
+
+        copy.setDescription(getDescription());
+        copy.setName(getName());
+        copy.setApplications(getApplications());
+        copy.setApplicationSettings(getApplicationSettings());
+        copy.setApplicationUsageParameters(getApplicationUsageParameters());
+        copy.setPassword(getPassword());
+        copy.setType(getType());
+        copy.setCustomerId(getCustomerId());
+        copy.setAutoUpdate(isAutoUpdate());
+        copy.setBlockStatusBar(isBlockStatusBar());
+        copy.setSystemUpdateType(getSystemUpdateType());
+        copy.setSystemUpdateFrom(getSystemUpdateFrom());
+        copy.setSystemUpdateTo(getSystemUpdateTo());
+
+        copy.setMainAppId(getMainAppId());
+        copy.setContentAppId(getContentAppId());
+        copy.setEventReceivingComponent(getEventReceivingComponent());
+        copy.setKioskMode(isKioskMode());
+
+        copy.setGps(getGps());
+        copy.setBluetooth(getBluetooth());
+        copy.setWifi(getWifi());
+        copy.setMobileData(getMobileData());
+
+        copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
+        copy.setBackgroundColor(getBackgroundColor());
+        copy.setTextColor(getTextColor());
+        copy.setBackgroundImageUrl(getBackgroundImageUrl());
+        copy.setIconSize(getIconSize());
+        copy.setDesktopHeader(getDesktopHeader());
+
+        return copy;
+    }
+}

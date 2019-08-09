@@ -1,0 +1,42 @@
+<div ng-controller="SettingsTabController">
+    <div class="text-center">
+        <h4 localized-change-tracking>form.settings.lang.title</h4>
+    </div>
+
+    <div>
+        <form class='form-horizontal'>
+            <div class='form-group'>
+                <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c1" localized-change-tracking>form.settings.lang.use.default</label>
+                <div class='col-sm-1'>
+                    <input id="c1" ng-model='settings.useDefaultLanguage' type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group' ng-if="!settings.useDefaultLanguage">
+                <label class='col-sm-6 control-label' for="c2_en" localized-change-tracking>form.settings.lang.en</label>
+                <div class='col-sm-1'>
+                    <input id="c2_en" ng-model='settings.language' type='radio' name="c_lang"
+                           class='form-control' ng-value="'en_US'"/>
+                </div>
+            </div>
+
+            <div class='form-group' ng-if="!settings.useDefaultLanguage">
+                <label class='col-sm-6 control-label' for="c2_ru" localized-change-tracking>form.settings.lang.ru</label>
+                <div class='col-sm-1'>
+                    <input id="c2_ru" ng-model='settings.language' type='radio' name="c_lang"
+                           class='form-control' ng-value="'ru_RU'"/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <div class='col-sm-offset-6 col-sm-9 padding-left'>
+                    <button type='submit' class='btn btn-default' ng-click='saveLanguageSettings()' localized-change-tracking>button.save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

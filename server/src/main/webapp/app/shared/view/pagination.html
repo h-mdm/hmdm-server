@@ -1,0 +1,14 @@
+<!-- Localization completed -->
+<div class='custom-pagination'>
+    <div class='pagination-label'>
+        <span>{{firstRecord}}</span>-<span>{{lastRecord}}</span>/<span>{{totalRecord}}</span>
+    </div>
+
+    <pagination boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-change='currentPageChanged()'
+                ng-model='paginationConfig.currentPage'
+                total-items='paginationConfig.totalItems'
+                items-per-page='paginationConfig.itemsOnPage'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;' last-text='&raquo;'></pagination>
+</div>

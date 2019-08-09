@@ -1,0 +1,44 @@
+<!-- Localization completed -->
+<div style="text-align: center" ng-if="showQR">
+    <img src="rest/public/qr/{{qrCodeKey}}?size={{size}}&deviceId={{deviceId}}" width="{{size}}" height="{{size}}"
+         localized-alt="form.qr.code.image.alt"/>
+</div>
+
+<div class="text-center">
+    <div class='form-group'>
+        <input type="text" maxlength="100" name="qrdevice" style="width: auto;display: inline-block"
+               ng-enter='renew()'
+               ng-model="deviceIdNew"
+               localized-placeholder="form.qr.device.number.placeholder"
+               class="form-control"
+        />
+        <div style="display: inline-block">
+            <button type="button" class="btn btn-default" ng-click="renew()" localized>button.renew.code</button>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="button" localized-title="button.help" ng-click="helpClicked()"
+                class="btn btn-default dropdown-toggle">
+            <span localized>button.help</span>
+        </button>
+    </div>
+
+</div>
+
+<br/>
+
+<div class="qr-help-wrapper" ng-if="showHelp" ng-style="{width: helpSize}">
+    <div class="qr-help">
+        <div class="qr-help-line" localized>qrcode.help.line1</div>
+        <div class="qr-help-line">
+            <ol>
+                <li localized>qrcode.help.line2</li>
+                <li localized>qrcode.help.line3</li>
+                <li localized>qrcode.help.line4</li>
+            </ol>
+        </div>
+        <div class="qr-help-line" localized>qrcode.help.line5</div>
+    </div>
+
+</div>

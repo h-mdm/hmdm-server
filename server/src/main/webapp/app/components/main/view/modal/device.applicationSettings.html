@@ -1,0 +1,98 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div ng-show='successMessage' class='modal-header'>
+    <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body" >
+                        <div class="row">
+                            <div class="col-sm-1" localized>form.configuration.apps.search.label</div>
+                            <div class="col-sm-4">
+
+                                <input type="text" maxlength="512" name="mdm1"
+                                       ng-model="settingsPaging.appSettingsFilterApp"
+                                       ng-change="appSettingsFilterChanged()"
+                                       autocomplete="off"
+                                       localized-placeholder="search.placeholder.application"
+                                       class="form-control"
+                                       typeahead="app as (app.pkg) for app in getAppSettingsApps($viewValue)"
+                                       typeahead-loading="loadingApps"
+                                       typeahead-wait-ms="300"
+                                       typeahead-input-formatter="appSettingsAppLookupFormatter($model)"
+                                       typeahead-focus-first="false"
+                                       typeahead-on-select="onAppSettingsFilterAppSelected($item)"
+                                       typeahead-no-results="noResults">
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"
+                                       ng-change="appSettingsFilterChanged()"
+                                       localized-placeholder="search.placeholder.application.setting"
+                                       ng-model="settingsPaging.appSettingsFilterText"/>
+                            </div>
+                            <div class="col-sm-2 text-right">
+                                <button type="button" class="btn btn-default"
+                                        ng-click="addApplicationSetting()"
+                                        localized>button.add</button>
+                            </div>
+                        </div>
+
+                        <div class="row device-app-settings-wrapper">
+                            <table class='table'>
+                                <thead>
+                                <tr>
+                                    <th localized>table.heading.application.setting.app.pkg</th>
+                                    <th localized>table.heading.application.setting.app.name</th>
+                                    <th localized>table.heading.application.setting.name</th>
+                                    <th localized>table.heading.application.setting.value</th>
+                                    <th localized>table.heading.application.setting.comment</th>
+                                    <th localized>table.heading.application.setting.lastUpdate</th>
+                                    <th localized class="actions-column-110"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody >
+                                <tr ng-repeat="setting in applicationSettings | orderBy:'applicationPkg'">
+                                    <td>{{setting.applicationPkg}}</td>
+                                    <td>{{setting.applicationName}}</td>
+                                    <td>{{setting.name}}</td>
+                                    <td>{{setting.value}}</td>
+                                    <td>{{setting.comment}}</td>
+                                    <td>{{setting.lastUpdate | date: 'dd/MM/yyyy'}}</td>
+                                    <td>
+                                        <div>
+                                            <button class="btn btn-default" ng-click="editApplicationSetting(setting)">
+                                                <span class="glyphicon glyphicon-pencil"></span>
+                                            </button>
+                                            <button class="btn btn-default" ng-click="removeApplicationSetting(setting)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class='form-group'>
+            <div class='col-sm-offset-3 col-sm-8'>
+                <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="saving"
+                        localized>button.save</button>
+                <button type='submit' class='btn btn-default' ng-click='notifyDevice()' ng-disabled="saving"
+                        localized>button.notify.update</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

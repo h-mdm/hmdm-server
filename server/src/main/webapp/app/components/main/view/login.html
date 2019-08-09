@@ -1,0 +1,25 @@
+<!-- Localization completed -->
+<div>
+    <div class='panel panel-default login' ng-class='{"panel-danger": errorMessage, "panel-success": successMessage}'>
+        <div class='panel-heading' ng-if='errorMessage'>{{errorMessage}}</div>
+        <div class='panel-heading' ng-if='successMessage'>{{successMessage}}</div>
+        <div class='panel-body'>
+            <form name='loginForm' ng-submit='onLogin()'>
+                <div class='form-group'>
+                    <label for='username' localized>login.username</label>
+                    <input type='text' class='form-control' id='username'
+                           ng-model='login.username' localized-placeholder="login.username.placeholder"
+                           required/>
+                </div>
+                <div class='form-group'>
+                    <label for='password' localized>login.password</label>
+                    <input type='password' class='form-control' id='password'
+                           ng-model='login.password' localized-placeholder='login.password.placeholder'
+                           required/>
+                </div>
+                <button type='submit' class='btn btn-default right'
+                        ng-disabled='loginForm.$invalid' localized>login.submit</button>
+            </form>
+        </div>
+    </div>
+</div>

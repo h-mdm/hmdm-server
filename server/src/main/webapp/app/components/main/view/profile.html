@@ -1,0 +1,42 @@
+<!-- Localization completed -->
+<div class='profile'>
+    <form class='form-horizontal'>
+        <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+        <div ng-show='completeMessage' class='success'><span>{{completeMessage}}</span></div>
+
+        <div class='form-group change-title'>
+            <label class='col-sm-2 control-label' localized>&nbsp;</label>
+            <div class='col-sm-10' localized>form.profile.title</div>
+        </div>
+
+        <div class='form-group'>
+            <label for='oldPassword' class='col-sm-2 control-label' localized>form.profile.password.old</label>
+            <div class='col-sm-10'>
+                <input ng-model='user.oldPassword' type='password' class='form-control' id='oldPassword'
+                       localized-placeholder='form.profile.password.old.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label for='newPassword' class='col-sm-2 control-label' localized>form.profile.password.new</label>
+            <div class='col-sm-10'>
+                <input ng-model='user.newPassword' type='password' class='form-control' id='newPassword'
+                       localized-placeholder='form.profile.password.new.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label for='confirm' class='col-sm-2 control-label' localized>form.profile.password.confirm</label>
+            <div class='col-sm-10'>
+                <input ng-model='user.confirm' type='password' class='form-control' id='confirm'
+                       localized-placeholder='form.profile.password.confirm.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-2 col-sm-10'>
+                <button type='submit' class='btn btn-default' ng-click='saveProfile()' localized>button.save</button>
+            </div>
+        </div>
+    </form>
+</div>

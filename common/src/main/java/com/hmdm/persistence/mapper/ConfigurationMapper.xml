@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.persistence.mapper.ConfigurationMapper">
+
+    <insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
+                                    iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth, wifi, mobileData,
+                                    mainAppId, eventReceivingComponent, kioskMode, contentAppId, autoUpdate,
+                                    blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
+        VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
+                #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth}, #{wifi}, #{mobileData},
+                #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId}, #{autoUpdate},
+                #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})
+    </insert>
+
+    <insert id="insertConfigurationApplications">
+        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action)
+        VALUES
+        <foreach item="item" index="index" collection="apps"
+                 open="" separator="," close="">
+            (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon}, #{item.action})
+        </foreach>
+    </insert>
+
+    <insert id="insertConfigurationApplicationSettings">
+        INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate)
+        VALUES
+        <foreach item="item" index="index" collection="appSettings"
+                 open="" separator="," close="">
+            (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})
+        </foreach>
+    </insert>
+
+    <insert id="saveConfigurationApplicationUsageParameters">
+        INSERT INTO configurationApplicationParameters (configurationId, applicationId, skipVersionCheck)
+        VALUES
+        <foreach item="item" index="index" collection="appUsageParameters" open="" separator="," close="">
+            (${id}, #{item.applicationId}, #{item.skipVersionCheck})
+        </foreach>
+        ON CONFLICT ON CONSTRAINT cap_config_application_unique DO
+            UPDATE SET skipVersionCheck = EXCLUDED.skipVersionCheck
+    </insert>
+
+    <select id="getConfigurationApplications" resultType="Application">
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall,
+               applicationVersions.version, applicationVersions.url,
+               configurationApplications.applicationVersionId AS usedVersionId,
+               applications.system, applications.customerId,
+               applications.latestVersion,
+               latestAppVersion.version AS latestVersionText,
+               (configurationApplications.configurationId IS NOT NULL) as selected,
+               (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
+               customers.master AS commonApplication,
+               COALESCE(configurationApplications.remove, FALSE) AS remove,
+               CASE
+                   WHEN configurationApplications.configurationId IS NOT NULL THEN configurationApplications.showIcon
+                   ELSE applications.showIcon
+               END AS showIcon,
+               configurationApplications.action AS action
+        FROM applications
+        INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
+        INNER JOIN customers ON customers.id = applications.customerId
+        INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
+        LEFT JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
+        WHERE (applications.customerId=#{customerId}
+           OR customers.master
+            AND NOT EXISTS
+                (
+                    SELECT 1
+                    FROM applications apps2
+                    INNER JOIN applicationVersions ver2 ON ver2.applicationId=apps2.id
+                    WHERE apps2.customerid = #{customerId}
+                      AND apps2.pkg = applications.pkg
+                      AND ver2.version = applicationVersions.version
+                ))
+          AND (configurationApplications.id IS NULL AND applicationversions.id=applications.latestversion OR NOT configurationApplications.id IS NULL)
+    </select>
+
+    <select id="getPlainConfigurationApplications" resultType="Application">
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall,
+               applicationVersions.version, applicationVersions.url,
+               configurationApplications.applicationVersionId AS usedVersionId,
+               applications.system, applications.customerId,
+               applications.latestVersion,
+               latestAppVersion.version AS latestVersionText,
+               customers.master AS commonApplication,
+               (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
+               COALESCE(configurationApplications.remove, FALSE) AS remove,
+               COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
+               configurationApplications.action AS action,
+               CASE
+                   WHEN cap.skipVersionCheck IS TRUE THEN TRUE
+                   ELSE NULL
+               END AS skipVersion
+        FROM applications
+        INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
+        INNER JOIN customers ON customers.id = applications.customerId
+        INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
+        JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
+        LEFT JOIN configurationapplicationparameters cap ON cap.applicationId = applications.id AND cap.configurationId = #{id}
+        WHERE applications.customerId=#{customerId}
+           OR customers.master
+            AND NOT EXISTS
+                (
+                    SELECT 1
+                    FROM applications apps2
+                    INNER JOIN applicationVersions ver2 ON ver2.applicationId=apps2.id
+                    WHERE apps2.customerid = #{customerId}
+                      AND apps2.pkg = applications.pkg
+                      AND ver2.version = applicationVersions.version
+                )
+    </select>
+
+</mapper>

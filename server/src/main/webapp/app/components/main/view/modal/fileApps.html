@@ -1,0 +1,31 @@
+<!-- Localization completed -->
+<div ng-show='apps.length === 0' class='modal-header'>
+    <div class='error'><span localized>notfound.applications</span></div>
+    <br/>
+    <div class="center">
+        <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.close</button>
+    </div>
+</div>
+<div class='modal-body' ng-if="apps.length > 0">
+
+    <table class='table'>
+        <thead>
+        <tr>
+            <th localized>form.file.apps.name</th>
+            <th localized>form.file.apps.pkg</th>
+            <th localized>form.file.apps.version</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat='app in apps'>
+            <td>{{app.name}}</td>
+            <td>{{app.pkg}}</td>
+            <td>{{app.version}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="center">
+        <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.close</button>
+    </div>
+</div>

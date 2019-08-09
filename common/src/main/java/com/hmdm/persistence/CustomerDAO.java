@@ -1,0 +1,307 @@
+/*
+ *
+ * Headwind MDM: Open Source Android MDM Software
+ * https://h-mdm.com
+ *
+ * Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hmdm.persistence;
+
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.hmdm.persistence.mapper.ApplicationMapper;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.persistence.domain.UserRole;
+import com.hmdm.persistence.mapper.ConfigurationMapper;
+import com.hmdm.persistence.mapper.CustomerMapper;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
+import com.hmdm.util.CryptoUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * <p>$END$</p>
+ *
+ * @author isv
+ */
+public class CustomerDAO {
+
+    private final Logger log = LoggerFactory.getLogger(CustomerDAO.class);
+
+    private final Random random = new Random();
+
+    private final CustomerMapper mapper;
+    private final ConfigurationMapper configurationMapper;
+    private final ApplicationMapper applicationMapper;
+    private final File filesDirectory;
+    private final UserDAO userDAO;
+    private final CommonDAO settingDAO;
+    private final int orgAdminRoleId;
+
+    @Inject
+    public CustomerDAO(CustomerMapper mapper,
+                       ConfigurationMapper configurationMapper,
+                       ApplicationMapper applicationMapper, UserDAO userDAO,
+                       CommonDAO settingDAO,
+                       @Named("files.directory") String filesDirectory,
+                       @Named("role.orgadmin.id") int orgAdminRoleId) {
+        this.mapper = mapper;
+        this.configurationMapper = configurationMapper;
+        this.applicationMapper = applicationMapper;
+        this.filesDirectory = new File(filesDirectory);
+        this.userDAO = userDAO;
+        this.settingDAO = settingDAO;
+        this.orgAdminRoleId = orgAdminRoleId;
+    }
+
+    public void removeCustomerById(Integer id) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("delete customer by ID " + id);
+        }
+
+        Customer customer = this.mapper.findCustomerById(id);
+        if (customer != null && !customer.isMaster()) {
+            if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
+                File customerFilesDir = new File(this.filesDirectory, customer.getFilesDir());
+                if (customerFilesDir.exists()) {
+                    Path rootPath = Paths.get(customerFilesDir.getAbsolutePath());
+                    try (Stream<Path> walk = Files.walk(rootPath)) {
+                        walk
+                                .sorted(Comparator.reverseOrder())
+                                .map(Path::toFile)
+                                .peek(System.out::println)
+                                .forEach(File::delete);
+                    } catch (IOException e) {
+                        log.error("Failed to delete the customer's files directory {} due to unexpected error",
+                                customer.getFilesDir(), e);
+                    }
+                }
+            } else {
+                log.warn("Skipping to delete the customer's files due to invalid files directory name: {}", customer.getFilesDir());
+            }
+            this.mapper.delete(id);
+            log.info("Deleted customer account {}", customer);
+        }
+    }
+
+    public List<Customer> getAllCustomers() {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("get the list of customers");
+        }
+        return this.mapper.findAll();
+    }
+
+    public List<Customer> getAllCustomersByValue(String value) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("get the list of customers");
+        }
+        if (value == null) {
+            value = "";
+        }
+        value = "%" + value + "%";
+
+        return this.mapper.findAllByValue(value.toLowerCase());
+    }
+
+    public Customer getCustomerByName(String name) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("get the customer by name " + name);
+        }
+        return this.mapper.findCustomerByName(name);
+    }
+
+    @Transactional
+    public String insertCustomer(Customer customer) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("create new customer account");
+        }
+
+        File customerFilesDir;
+        do {
+            customerFilesDir = new File(this.filesDirectory, UUID.randomUUID().toString());
+        } while (customerFilesDir.exists());
+        if (customerFilesDir.mkdirs()) {
+            customer.setFilesDir(customerFilesDir.getName());
+            this.mapper.insert(customer);
+
+            // Create a customer admin record
+            String password = generatePassword();
+
+            UserRole orgAdminRole = new UserRole();
+            orgAdminRole.setId(this.orgAdminRoleId);
+
+            User user = new User();
+            user.setCustomerId(customer.getId());
+            user.setPassword(CryptoUtil.getMD5String(password));
+            user.setLogin(transliterate(customer.getName()));
+            user.setName(customer.getName());
+            user.setUserRole(orgAdminRole);
+
+            userDAO.insert(user);
+            log.info("Created customer account: {}", customer);
+            log.info("Created customer admin account: {}/{}", user.getLogin(), password);
+
+            // Copy design settings if required
+            if (customer.isCopyDesign()) {
+                final Settings masterSettings = this.settingDAO.getSettings();
+
+                Settings customerSettings = new Settings();
+                customerSettings.setBackgroundColor(masterSettings.getBackgroundColor());
+                customerSettings.setBackgroundImageUrl(masterSettings.getBackgroundImageUrl());
+                customerSettings.setDesktopHeader(masterSettings.getDesktopHeader());
+                customerSettings.setIconSize(masterSettings.getIconSize());
+                customerSettings.setTextColor(masterSettings.getTextColor());
+                customerSettings.setCustomerId(customer.getId());
+
+                this.settingDAO.insertDefaultDesignSettingsBySuperAdmin(customerSettings);
+            }
+
+            // Copy configurations if required
+            if (customer.getConfigurationIds() != null && customer.getConfigurationIds().length > 0) {
+                for (Integer configurationId: customer.getConfigurationIds()) {
+                    copyConfigurationForCustomer(customer, configurationId);
+                }
+            }
+
+            return user.getLogin() + "/" + password;
+        } else {
+            log.error("Could not create files directory when creating customer {}", customer);
+            throw new IllegalArgumentException("Could not create directory for customer's file.");
+        }
+    }
+
+    /**
+     * <p>Creates the copy of specified master-customer configuration for specified customer account.</p>
+     *
+     * @param customer a customer account to create configuration for.
+     * @param configurationId an ID of a configuration to copy.
+     */
+    private void copyConfigurationForCustomer(Customer customer, Integer configurationId) {
+        Configuration configurationTemplate = this.configurationMapper.getConfigurationById(configurationId);
+        List<Application> configApplications = this.configurationMapper.getPlainConfigurationApplications(
+                SecurityContext.get().getCurrentUser().get().getCustomerId(), configurationId
+        );
+        configApplications = configApplications
+                .stream()
+                .filter(Application::isCommon)
+                .collect(Collectors.toList());
+
+        Configuration newConfiguration = configurationTemplate.newCopy();
+        newConfiguration.setCustomerId(customer.getId());
+
+        configurationMapper.insertConfiguration(newConfiguration);
+        if (!configApplications.isEmpty()) {
+            configurationMapper.insertConfigurationApplications(newConfiguration.getId(), configApplications);
+            applicationMapper.getPrecedingVersion(newConfiguration.getId());
+        }
+    }
+
+    public void updateCustomer(Customer customer) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("update customer account with ID " + customer.getId());
+        }
+        this.mapper.update(customer);
+        log.info("Updated customer account: {}", customer);
+    }
+
+    private static String transliterate(String s) {
+        s = s.toLowerCase();
+        int n = s.length();
+
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+
+            switch (c) {
+                case('а'): b.append('a');break;
+                case('б'): b.append('b');break;
+                case('в'): b.append('v');break;
+                case('г'): b.append('g');break;
+                case('д'): b.append('d');break;
+                case('е'): b.append('e');break;
+                case('ё'): b.append('e');break;
+                case('ж'): b.append("zh");break;
+                case('з'): b.append('z');break;
+                case('и'): b.append('i');break;
+                case('й'): b.append('i');break;
+                case('к'): b.append('k');break;
+                case('л'): b.append('l');break;
+                case('м'): b.append('m');break;
+                case('н'): b.append('n');break;
+                case('о'): b.append('o');break;
+                case('п'): b.append('p');break;
+                case('р'): b.append('r');break;
+                case('с'): b.append('s');break;
+                case('т'): b.append('t');break;
+                case('у'): b.append('u');break;
+                case('ф'): b.append('f');break;
+                case('х'): b.append("kh");break;
+                case('ц'): b.append("ts");break;
+                case('ч'): b.append("ch");break;
+                case('ш'): b.append("sh");break;
+                case('щ'): b.append("shch");break;
+                case('ъ'): b.append("ie");break;
+                case('ы'): b.append('y');break;
+                case('ь'): b.append('-');break;
+                case('э'): b.append('e');break;
+                case('ю'): b.append("yu");break;
+                case('я'): b.append("ya");break;
+                case(' '): b.append("_");break;
+                default: b.append(c);
+            }
+        }
+
+        return b.toString();
+    }
+
+    private String generatePassword() {
+        int n;
+        do {
+            n = this.random.nextInt(10);
+        } while (n < 5);
+
+        StringBuilder b = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            b.append(this.random.nextInt(10));
+        }
+
+        return b.toString();
+    }
+
+    public Customer findById(int customerId) {
+        return mapper.findCustomerById(customerId);
+    }
+}

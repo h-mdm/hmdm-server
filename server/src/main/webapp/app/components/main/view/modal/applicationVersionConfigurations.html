@@ -1,0 +1,56 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.application.configurations.app</label>
+            <div class='col-sm-9'>
+                <input type="text" disabled="disabled" class="form-control"
+                       value="{{application.name}} ({{applicationVersion.version}})"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.application.configurations.configs</label>
+            <div class='col-sm-9'>
+                <div class='configurations-videos panel panel-default'>
+                    <div class='panel-body'>
+                        <div ng-repeat='configuration in configurations | orderBy: "name"' class="form-group">
+                            <div class="col-sm-6">
+                                <select id='action{{configuration.configurationId}}'
+                                        ng-change="actionChanged(configuration)"
+                                        ng-model="configuration.action" name="action{{configuration.configurationId}}"
+                                        class="form-control col-sm-4">
+                                    <option ng-value="1" ng-selected="configuration.action == 1"
+                                            ng-if="isPermitOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.permit</option>
+                                    <option ng-value="1" ng-selected="configuration.action == 1"
+                                            ng-if="isInstallOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.install</option>
+                                    <option ng-value="0" ng-selected="configuration.action == 0"
+                                            ng-if="isProhibitOptionAvailable(application)"
+                                            localized>form.configuration.app.versions.action.prohibit</option>
+                                    <option ng-value="2" ng-selected="configuration.action == 2"
+                                            ng-if="isRemoveOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.delete</option>
+                                </select>
+                            </div>
+                            <label class='col-sm-6' for='action{{configuration.configurationId}}'>{{configuration.configurationName}}</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-3 col-sm-8'>
+                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

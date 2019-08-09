@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.persistence.mapper.UserMapper">
+
+    <resultMap id="permissionLite" type="UserRolePermission">
+        <id property="id" column="permission_id" />
+        <result property="name" column="permission_name"/>
+        <result property="superAdmin" column="permission_super_admin"/>
+    </resultMap>
+
+    <resultMap id="permissionFull" type="UserRolePermission" extends="permissionLite">
+        <result property="description" column="permission_description"/>
+    </resultMap>
+
+    <resultMap id="userRoleLite" type="UserRole">
+        <id property="id" column="user_role_id" />
+        <result property="name" column="user_role_name"/>
+        <result property="superAdmin" column="user_role_super_admin"/>
+        <collection property="permissions" resultMap="permissionLite"/>
+    </resultMap>
+
+    <resultMap id="userRoleFull" type="UserRole" extends="userRoleLite">
+        <result property="description" column="user_role_description"/>
+    </resultMap>
+
+    <resultMap id="userLite" type="User">
+        <id property="id" column="id" />
+        <id property="name" column="name" />
+        <id property="login" column="login" />
+        <id property="customerId" column="customerId" />
+        <id property="masterCustomer" column="masterCustomer" />
+        <id property="allDevicesAvailable" column="allDevicesAvailable" />
+        <association property="userRole" resultMap="userRoleLite"/>
+        <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
+            <result property="id" column="groupId"/>
+            <result property="name" column="groupName"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="userFull" type="User" extends="userLite">
+        <id property="password" column="password" />
+    </resultMap>
+
+    <update id="update" parameterType="User">
+        UPDATE users SET password = #{password} WHERE id=#{id}
+    </update>
+
+    <select id="getPermissionsList" resultMap="permissionFull">
+        SELECT *
+        FROM permissions
+        WHERE superAdmin = FALSE
+    </select>
+
+    <select id="findAllUserRoles" resultMap="userRoleFull">
+        SELECT userRoles.id     AS user_role_id,
+               userRoles.name   AS user_role_name,
+               userRoles.superadmin   AS user_role_super_admin,
+               permissions.id AS permission_id,
+               permissions.name AS permission_name,
+               permissions.superadmin AS permission_super_admin
+        FROM userRoles
+        LEFT JOIN userRolePermissions urp ON urp.roleId = userRoles.id
+        LEFT JOIN permissions ON permissions.id = urp.permissionId
+        WHERE userRoles.superAdmin = FALSE
+    </select>
+
+    <sql id="userDataSelect">
+        SELECT users.*,
+               customers.master AS masterCustomer,
+               userRoles.id     AS user_role_id,
+               userRoles.name   AS user_role_name,
+               userRoles.superadmin   AS user_role_super_admin,
+               permissions.id AS permission_id,
+               permissions.name AS permission_name,
+               permissions.superadmin AS permission_super_admin,
+               groups.id AS groupId, groups.name AS groupName
+        FROM users
+                 INNER JOIN customers ON customers.id = users.customerId
+                 INNER JOIN userRoles ON userRoles.id = users.userRoleId
+                 LEFT JOIN userRolePermissions urp ON urp.roleid = userRoles.id
+                 LEFT JOIN permissions ON urp.permissionid = permissions.id
+                 LEFT JOIN userDeviceGroupsAccess ON users.id = userDeviceGroupsAccess.userId
+                 LEFT JOIN groups ON userDeviceGroupsAccess.groupId = groups.id
+    </sql>
+
+    <select id="findByLogin" resultMap="userFull">
+        <include refid="userDataSelect"/>
+        WHERE lower(users.login) = lower(#{login})
+    </select>
+
+    <select id="findById" resultMap="userLite">
+        <include refid="userDataSelect"/>
+        WHERE users.id=#{userId}
+    </select>
+
+    <select id="findAll" resultMap="userLite">
+        <include refid="userDataSelect"/>
+        WHERE users.customerId = #{customerId}
+    </select>
+
+    <select id="findAllByFilter" resultMap="userLite">
+        <include refid="userDataSelect"/>
+        WHERE users.customerId = #{customerId}
+        AND (LOWER(users.name) LIKE #{value} OR LOWER(users.login) LIKE #{value} OR LOWER(users.email) LIKE #{value})
+    </select>
+
+    <insert id="insertUserDeviceGroupsAccess">
+        INSERT INTO userDeviceGroupsAccess (userId, groupId) VALUES
+        <foreach item="groupId" index="index" collection="groups"
+                 open="" separator="," close="">
+            (#{id}, #{groupId})
+        </foreach>
+    </insert>
+
+</mapper>

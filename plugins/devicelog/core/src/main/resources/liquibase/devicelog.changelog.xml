@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="db.changelog.xml">
+
+    <!--
+    The change set IDs MUST start with "plugin-<plugin identifier>" followed by dash symbol ALWAYS.
+    The database object names declared by plugin MUST always start with "plugin_<plugin identifier>" followed by underscore
+    symbol.
+    -->
+
+    <changeSet id="plugin-devicelog-10.07.2019-14:45" author="isv" context="common">
+        <comment>Register devicelog plugin</comment>
+        <sql>
+            INSERT INTO plugins (identifier, name, description, javascriptModuleFile, functionsViewTemplate,
+                                 settingsViewTemplate, namelocalizationkey,
+                                 settingsPermission, functionsPermission, deviceFunctionsPermission)
+            VALUES ('devicelog', 'Журналы', 'Журналы отладочных записей, присланных устройствами',
+            'app/components/plugins/devicelog/devicelog.module.js',
+            'app/components/plugins/devicelog/views/logs.html',
+            'app/components/plugins/devicelog/views/settings.html',
+            'plugin.devicelog.localization.key.name',
+            'plugin_devicelog_access',
+            'plugin_devicelog_access',
+            'plugin_devicelog_access');
+        </sql>
+        <rollback>
+            DELETE FROM plugins WHERE identifier = 'devicelog';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-devicelog-10.07.2019-15:01" author="isv" context="common">
+        <comment>Permissions for devicelog plugin access</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('plugin_devicelog_access', 'Имеет доступ к журналам устройств');
+            INSERT INTO userRolePermissions (roleId, permissionId)
+            SELECT id, currval('permissions_id_seq') FROM userroles WHERE name IN ('Администратор', 'Супер-Администратор');
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'plugin_devicelog_access';
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>

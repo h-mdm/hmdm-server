@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="notification.changelog.xml">
+
+    <changeSet id="notification-07.06.2019-11:13" author="isv" context="common">
+        <comment>Create pushMessages table</comment>
+        <sql>
+            CREATE TABLE pushMessages (
+                id serial NOT NULL CONSTRAINT push_message_pr_key PRIMARY KEY,
+                messageType VARCHAR(50) NOT NULL,
+                deviceId INT NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
+                payload TEXT
+            );
+        </sql>
+        <rollback>
+            DROP TABLE pushMessages;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="notification-07.06.2019-11:45" author="isv" context="common">
+        <comment>Create pendingPushes table</comment>
+        <sql>
+            CREATE TABLE pendingPushes (
+                id serial NOT NULL CONSTRAINT pending_push_pr_key PRIMARY KEY,
+                messageId INT NOT NULL UNIQUE REFERENCES pushMessages( id ) ON DELETE CASCADE,
+                status INT NOT NULL DEFAULT 0,
+                createTime BIGINT NOT NULL,
+                sendTime BIGINT
+            );
+        </sql>
+        <rollback>
+            DROP TABLE pendingPushes;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

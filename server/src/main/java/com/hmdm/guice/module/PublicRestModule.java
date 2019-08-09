@@ -1,0 +1,55 @@
+/*
+ *
+ * Headwind MDM: Open Source Android MDM Software
+ * https://h-mdm.com
+ *
+ * Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hmdm.guice.module;
+
+import com.google.inject.Scopes;
+import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import com.hmdm.rest.filter.ApiOriginFilter;
+import com.hmdm.rest.resource.AuthResource;
+import com.hmdm.rest.resource.DownloadFilesServlet;
+import com.hmdm.rest.resource.PublicFilesResource;
+import com.hmdm.rest.resource.PublicResource;
+import com.hmdm.rest.resource.QRCodeResource;
+import com.hmdm.rest.resource.SyncResource;
+import com.hmdm.security.jwt.rest.JWTAuthResource;
+
+public class PublicRestModule extends ServletModule {
+    public PublicRestModule() {
+    }
+
+    protected void configureServlets() {
+        this.bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
+        this.serve("/files/*").with(DownloadFilesServlet.class);
+//        this.serve("/rest/public/*").with(GuiceContainer.class);
+        this.serve("/rest/*").with(GuiceContainer.class);
+        this.filter("/rest/*").through(ApiOriginFilter.class);
+        this.filter("/api/*").through(ApiOriginFilter.class);
+        this.bind(AuthResource.class);
+        this.bind(JWTAuthResource.class);
+        this.bind(PublicResource.class);
+        this.bind(SyncResource.class);
+        this.bind(PublicFilesResource.class);
+        this.bind(QRCodeResource.class);
+    }
+}

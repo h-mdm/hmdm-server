@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.plugins.devicelog.persistence.postgres.dao.mapper.PostgresDeviceLogMapper">
+
+    <resultMap id="settingsResult" type="PostgresDeviceLogPluginSettings">
+        <result property="id" column="settingsId"/>
+        <result property="customerId" column="customerId"/>
+        <result property="logsPreservePeriod" column="logsPreservePeriod"/>
+
+        <collection property="rules" ofType="com.hmdm.plugins.devicelog.persistence.postgres.dao.domain.PostgresDeviceLogRule">
+            <result property="id" column="ruleId"/>
+            <result property="name" column="ruleName"/>
+            <result property="active" column="ruleActive"/>
+            <result property="applicationId" column="ruleApplicationId"/>
+            <result property="severity" column="ruleSeverity"/>
+            <result property="filter" column="ruleFilter"/>
+            <result property="groupId" column="ruleGroupId"/>
+            <result property="configurationId" column="ruleConfigurationId"/>
+            <result property="applicationPkg" column="ruleApplicationPkg"/>
+            <result property="groupName" column="ruleGroupName"/>
+            <result property="configurationName" column="ruleConfigurationName"/>
+            <result property="settingId" column="settingsId"/>
+
+            <collection property="devices" ofType="com.hmdm.rest.json.LookupItem">
+                <result property="id" column="ruleDeviceId"/>
+                <result property="name" column="ruleDeviceNumber"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findPluginSettingsByCustomerId" resultMap="settingsResult" >
+        SELECT settings.id AS settingsId,
+               settings.customerId AS customerId,
+               settings.logspreserveperiod AS logsPreservePeriod,
+               rules.id AS ruleId,
+               rules.name AS ruleName,
+               rules.active AS ruleActive,
+               rules.applicationid AS ruleApplicationId,
+               rules.severity AS ruleSeverity,
+               rules.filter AS ruleFilter,
+               rules.groupid AS ruleGroupId,
+               rules.configurationId AS ruleConfigurationId,
+               a.pkg AS ruleApplicationPkg,
+               g.name AS ruleGroupName,
+               c.name AS ruleConfigurationName,
+               d.id AS ruleDeviceId,
+               d.number AS ruleDeviceNumber
+        FROM plugin_devicelog_settings settings
+        LEFT JOIN plugin_devicelog_settings_rules rules ON rules.settingid = settings.id
+        LEFT JOIN applications a on rules.applicationid = a.id
+        LEFT JOIN configurations c on rules.configurationid = c.id
+        LEFT JOIN groups g on rules.groupid = g.id
+        LEFT JOIN plugin_devicelog_setting_rule_devices ruleDevices ON ruleDevices.ruleid = rules.id
+        LEFT JOIN devices d on ruleDevices.deviceid = d.id
+        WHERE settings.customerid = #{customerId}
+        ORDER BY rules.name
+    </select>
+
+
+    <select id="findAllLogRecordsByCustomerId"
+            parameterType="com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter"
+            resultType="PostgresDeviceLogRecord">
+        SELECT data.*, devices.number AS deviceNumber, applications.pkg AS applicationPkg
+        FROM plugin_devicelog_log data
+        INNER JOIN devices ON devices.id = data.deviceid
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN applications ON applications.id = data.applicationId
+        WHERE devices.customerId = #{customerId}
+        AND (users.allDevicesAvailable = TRUE
+        OR
+        EXISTS(SELECT 1
+        FROM deviceGroups
+        INNER JOIN userDeviceGroupsAccess access ON deviceGroups.groupId = access.groupId AND access.userId = users.id
+        WHERE devices.id = deviceGroups.deviceId
+        )
+        )
+        <if test="deviceFilter != null">
+            AND (
+            devices.number ILIKE #{deviceFilter}
+            )
+        </if>
+        <if test="applicationFilter != null">
+            AND (
+            applications.pkg ILIKE #{applicationFilter}
+            )
+        </if>
+        <if test="severity != null">
+            <if test="severity != -1">
+                AND (
+                data.severityOrder &lt;= #{severity}
+                )
+            </if>
+        </if>
+        <if test="messageFilter != null">
+            AND (
+            data.message ILIKE #{messageFilter}
+            )
+        </if>
+        <if test="dateFrom != null">
+            AND ( data.createTime &gt;= #{dateFromMillis} )
+        </if>
+        <if test="dateTo != null">
+            AND ( data.createTime &lt;= #{dateToMillis} )
+        </if>
+
+        <if test="sortValue.equals('createTime')">
+            <if test="export == true">
+                ORDER BY data.createTime ASC
+            </if>
+            <if test="export == false">
+                ORDER BY data.createTime DESC
+            </if>
+        </if>
+        <if test="sortValue.equals('deviceNumber')">
+            <if test="export == true">
+                ORDER BY devices.number ASC, data.createTime ASC
+            </if>
+            <if test="export == false">
+                ORDER BY devices.number ASC, data.createTime DESC
+            </if>
+        </if>
+        OFFSET (#{pageNum} - 1) * #{pageSize}
+        LIMIT #{pageSize}
+    </select>
+
+    <select id="countAll"
+            parameterType="com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter"
+            resultType="long">
+        SELECT COUNT(data.*) AS counter
+        FROM plugin_devicelog_log data
+        INNER JOIN devices ON devices.id = data.deviceid
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN applications ON applications.id = data.applicationId
+        WHERE devices.customerId = #{customerId}
+        AND (users.allDevicesAvailable = TRUE
+        OR
+        EXISTS(SELECT 1
+        FROM deviceGroups
+        INNER JOIN userDeviceGroupsAccess access ON deviceGroups.groupId = access.groupId AND access.userId = users.id
+        WHERE devices.id = deviceGroups.deviceId
+        )
+        )
+        <if test="deviceFilter != null">
+            AND (
+            devices.number ILIKE #{deviceFilter}
+            )
+        </if>
+        <if test="applicationFilter != null">
+            AND (
+            applications.pkg ILIKE #{applicationFilter}
+            )
+        </if>
+        <if test="severity != null">
+            <if test="severity != -1">
+                AND (
+                data.severityOrder &lt;= #{severity}
+                )
+            </if>
+        </if>
+        <if test="messageFilter != null">
+            AND (
+            data.message ILIKE #{messageFilter}
+            )
+        </if>
+        <if test="dateFrom != null">
+            AND ( data.createTime &gt;= #{dateFromMillis} )
+        </if>
+        <if test="dateTo != null">
+            AND ( data.createTime &lt;= #{dateToMillis} )
+        </if>
+    </select>
+
+    <insert id="insertDeviceLogRecords">
+        INSERT INTO plugin_devicelog_log (createTime, customerId, deviceId, applicationId, ipAddress, severity, severityOrder, message)
+        VALUES
+        <foreach item="item" index="index" collection="logs"
+                 open="" separator="," close="">
+            (#{item.createTime}, #{item.customerId}, #{item.deviceId}, #{item.applicationId}, #{item.ipAddress}, #{item.severity}, #{item.severity.id}, #{item.message})
+        </foreach>
+    </insert>
+
+    <insert id="insertPluginSettingsRuleDevices">
+        INSERT INTO plugin_devicelog_setting_rule_devices (ruleId, deviceId)
+        VALUES
+        <foreach item="item" index="index" collection="deviceIds"
+                 open="" separator="," close="">
+            (#{ruleId}, #{item})
+        </foreach>
+    </insert>
+
+</mapper>

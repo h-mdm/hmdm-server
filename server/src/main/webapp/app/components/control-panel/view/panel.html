@@ -1,0 +1,175 @@
+<!-- Localization completed -->
+<div class='content-wrapper'>
+    <tabset class='tabset'>
+        <tab ng-controller='CustomersTabController'
+             active="isActive"
+             select='init()'>
+
+            <tab-heading localized>tab.customers</tab-heading>
+
+            <div>
+                <div class='form-group'>
+                    <input type='text'
+                           ng-enter='search()'
+                           ng-model='search.searchValue'
+                           localized-placeholder='search.placeholder.customer'
+                           class='form-control configurations-search-input'>
+
+                    <div class='configurations-search-buttons'>
+                        <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+                        <button type='button' class='btn btn-default' ng-click='editCustomer( {} )' localized>button.add</button>
+                    </div>
+                </div>
+
+                <div class="text-center" ng-if="customers.length > paging.pageSize">
+                    <pagination
+                            boundary-links='true' class='pagination-sm'
+                            max-size='3'
+                            ng-model='paging.currentPage'
+                            total-items='customers.length'
+                            items-per-page='paging.pageSize'
+                            previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                            last-text='&raquo;'></pagination>
+                </div>
+
+                <table ng-if='customers && customers.length > 0' class='table'>
+                    <thead>
+                    <tr>
+                        <th localized>table.heading.customer.name</th>
+                        <th localized>table.heading.customer.desc</th>
+                        <th class='actions-column' localized>table.heading.customer.actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='customer in customers.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
+                        <td>{{customer.name}}</td>
+                        <td>{{customer.description}}</td>
+                        <td>
+                            <div>
+                                <button type='button' class='btn btn-default' localized-title="button.change"
+                                        ng-click='editCustomer( customer )'>
+                                    <span class='glyphicon glyphicon-pencil'></span>
+                                </button>
+                                <button type='button' class='btn btn-default' localized-title="button.change.password"
+                                        ng-click='changePassword( customer )'>
+                                    <span class='glyphicon glyphicon-ice-lolly'></span>
+                                </button>
+                                <button type='button' localized-title="button.delete"
+                                        class='btn btn-default' ng-click='removeCustomer( customer )'>
+                                    <span class='glyphicon glyphicon-trash'></span>
+                                </button>
+                                <button type='button' class='btn btn-default' localized-title="button.login"
+                                        ng-click='loginAs( customer )'>
+                                    <span class='glyphicon glyphicon-copy'></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div ng-if='customers && customers.length == 0' class='center' localized>notfound.customers</div>
+
+                <div class="text-center" ng-if="customers.length > paging.pageSize">
+                    <pagination
+                            boundary-links='true' class='pagination-sm'
+                            max-size='3'
+                            ng-model='paging.currentPage'
+                            total-items='customers.length'
+                            items-per-page='paging.pageSize'
+                            previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                            last-text='&raquo;'></pagination>
+                </div>
+
+            </div>
+        </tab>
+
+        <tab ng-controller='ControlPanelApplicationsTabController'
+             active="isActive"
+             select='init()'>
+
+            <tab-heading localized>tab.common.applications</tab-heading>
+
+            <div>
+                <div class='form-group'>
+                    <input type='text'
+                           ng-model='search.searchValue'
+                           ng-enter='search()'
+                           localized-placeholder='search.placeholder.application'
+                           class='form-control application-search-input'>
+
+                    <div class='device-search-buttons'>
+                        <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+                        <button type='button' class='btn btn-default' ng-click='editApplication( {} )' localized>button.add</button>
+                    </div>
+                </div>
+
+                <div class="text-center" ng-if="applications.length > paging.pageSize">
+                    <pagination
+                            boundary-links='true' class='pagination-sm'
+                            max-size='3'
+                            ng-model='paging.currentPage'
+                            total-items='applications.length'
+                            items-per-page='paging.pageSize'
+                            previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                            last-text='&raquo;'></pagination>
+                </div>
+
+                <table ng-if='applications && applications.length > 0' class='table'>
+                    <thead>
+                    <tr>
+                        <th localized>table.heading.common.apps.customer</th>
+                        <th localized>table.heading.common.apps.pkg</th>
+                        <th localized>table.heading.common.apps.name</th>
+                        <th localized>table.heading.common.apps.version</th>
+                        <th localized>table.heading.common.apps.url</th>
+                        <th localized>table.heading.common.apps.label</th>
+                        <th class='actions-column' localized>table.heading.common.apps.actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='application in applications.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
+                        <td ng-if="application.commonApplication">&nbsp;</td>
+                        <td ng-if="!application.commonApplication">{{application.customerName}}</td>
+                        <td>{{application.pkg}}</td>
+                        <td>{{application.name}}</td>
+                        <td>{{application.version}}</td>
+                        <td>{{application.url}}</td>
+                        <td>{{application.showIcon ? '+' : ''}}</td>
+
+                        <td>
+                            <div>
+                                <button ng-if="application.commonApplication" localized-title="button.change.common.app"
+                                        type='button' class='btn btn-default' ng-click='editApplication( application )'>
+                                    <span class='glyphicon glyphicon-pencil'></span>
+                                </button>
+                                <button ng-if="application.commonApplication" localized-title="button.delete.common.app"
+                                        type='button' class='btn btn-default' ng-click='removeApplication( application )'>
+                                    <span class='glyphicon glyphicon-trash'></span>
+                                </button>
+                                <button ng-if="!application.commonApplication" localized-title="button.turn.common.app"
+                                        type='button' class='btn btn-default' ng-click='turnIntoCommonApplication( application )'>
+                                    <span class='glyphicon glyphicon-share'></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div ng-if='applications && applications.length === 0' class='center' localized>notfound.common.apps</div>
+
+                <div class="text-center" ng-if="applications.length > paging.pageSize">
+                    <pagination
+                            boundary-links='true' class='pagination-sm'
+                            max-size='3'
+                            ng-model='paging.currentPage'
+                            total-items='applications.length'
+                            items-per-page='paging.pageSize'
+                            previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                            last-text='&raquo;'></pagination>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+</div>

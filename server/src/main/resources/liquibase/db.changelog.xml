@@ -1,0 +1,1179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="db.changelog.xml">
+
+    <property name="file.resource.url" value="http://77.222.63.49/launcher/files" context="common"/>
+
+    <changeSet id="18.02.18-20:15" author="serfeo" context="common">
+        <comment>Create user table</comment>
+        <sql>
+            CREATE TABLE users (
+                id serial NOT NULL CONSTRAINT users_pr_key PRIMARY KEY,
+                login varchar(30) NOT NULL CONSTRAINT login_key UNIQUE,
+                email varchar(50),
+                name varchar(50),
+                password varchar(32) NOT NULL
+            );
+        </sql>
+        <rollback>
+            DROP TABLE users;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="18.02.18-20:20" author="serfeo">
+        <comment>Insert default admin user</comment>
+        <sql>
+            INSERT INTO users(login, email, name, password)
+            VALUES ('admin', 'fast.daemon@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3');
+        </sql>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:00" author="serfeo" context="common">
+        <comment>Create configurations table</comment>
+        <sql>
+            CREATE TABLE configurations (
+                id serial NOT NULL CONSTRAINT configurations_pr_key PRIMARY KEY,
+                name varchar(100) NOT NULL,
+                description text,
+                type int NOT NULL DEFAULT 0
+            );
+        </sql>
+        <rollback>
+            DROP TABLE configurations;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:05" author="serfeo" context="common">
+        <comment>Create applications table</comment>
+        <sql>
+            CREATE TABLE applications (
+                id serial NOT NULL CONSTRAINT applications_pr_key PRIMARY KEY,
+                pkg varchar(100) NOT NULL,
+                name varchar(100) NOT NULL,
+                version varchar(10) NOT NULL,
+                url varchar(500)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE applications;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:10" author="serfeo" context="common">
+        <comment>Create configurations table</comment>
+        <sql>
+            CREATE TABLE configurationApplications (
+                id serial NOT NULL CONSTRAINT configuration_applications_pr_key PRIMARY KEY,
+                configurationId int NOT NULL REFERENCES configurations( id ) ON DELETE CASCADE,
+                applicationId int NOT NULL REFERENCES applications( id ) ON DELETE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE configurationApplications;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:15" author="serfeo">
+        <comment>Insert default configuration record to configurations table</comment>
+        <sql>
+            INSERT INTO configurations(name, description)
+            VALUES ('По умолчанию', 'Базовая конфигурация для всех устройств');
+        </sql>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:20" author="serfeo" context="common">
+        <comment>Create groups table</comment>
+        <sql>
+            CREATE TABLE groups (
+                id serial NOT NULL CONSTRAINT groups_pr_key PRIMARY KEY,
+                name varchar(100) NOT NULL
+            );
+        </sql>
+        <rollback>
+            DROP TABLE groups;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:25" author="serfeo" context="common">
+        <comment>Insert default group</comment>
+        <sql>
+            INSERT INTO groups( name ) VALUES ( 'Общая' );
+        </sql>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:30" author="serfeo" context="common">
+        <comment>Create devices table</comment>
+        <sql>
+            CREATE TABLE devices (
+                id serial NOT NULL CONSTRAINT devices_pr_key PRIMARY KEY,
+                number varchar(100) NOT NULL,
+                description text,
+                lastUpdate bigint NOT NULL DEFAULT 0,
+                configurationId int NOT NULL DEFAULT 1,
+                oldConfigurationId int,
+                groupId int NOT NULL DEFAULT 1
+            );
+        </sql>
+        <rollback>
+            DROP TABLE devices;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.02.18-20:35" author="serfeo" context="common">
+        <comment>Create settings table</comment>
+        <sql>
+            CREATE TABLE settings (
+                id serial NOT NULL CONSTRAINT settings_pr_key PRIMARY KEY,
+                backgroundColor varchar(20),
+                textColor varchar(20),
+                backgroundImageUrl varchar(500)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE settings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="26.02.18-18:40" author="serfeo" context="common">
+        <comment>Add password column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN password varchar(100)
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN password;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.03.18-18:40" author="serfeo" context="common">
+        <comment>Add info column to devices table</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN info text;
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP COLUMN info;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.11.18-09:30" author="serfeo" context="common">
+        <comment>Update column lengths, add icon visibility flag to applications</comment>
+        <sql>
+            ALTER TABLE applications ALTER COLUMN name TYPE VARCHAR(500);
+            ALTER TABLE applications ALTER COLUMN version TYPE VARCHAR(100);
+            ALTER TABLE applications ADD COLUMN showIcon INT NOT NULL DEFAULT 0;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN showIcon;
+            ALTER TABLE applications ALTER COLUMN name TYPE VARCHAR(100);
+            ALTER TABLE applications ALTER COLUMN version TYPE VARCHAR(10);
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.11.18-10:10" author="serfeo" context="common">
+        <comment>Update icon visibility flag type</comment>
+        <sql>
+            ALTER TABLE applications DROP COLUMN showIcon;
+            ALTER TABLE applications ADD COLUMN showIcon BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN showIcon;
+            ALTER TABLE applications ADD COLUMN showIcon INT NOT NULL DEFAULT 0;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.12.18-13:52" author="isv" context="common">
+        <comment>Add settings for device columns displayed</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceStatus BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceDate BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceNumber BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceModel BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDevicePermissionsStatus BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceAppInstallStatus BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceConfiguration BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceConfiguration;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceAppInstallStatus;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDevicePermissionsStatus;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceModel;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceNumber;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceDate;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceStatus;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.12.18-16:07" author="isv" context="common">
+        <comment>Add settings for icon size and desktop header</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN iconSize TEXT NOT NULL DEFAULT 'SMALL';
+            ALTER TABLE settings ADD COLUMN desktopHeader TEXT NOT NULL DEFAULT 'NO_HEADER';
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN desktopHeader;
+            ALTER TABLE settings DROP COLUMN iconSize;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.12.18-19:00" author="isv" context="common">
+        <comment>Add IMEI, phone number attributes to device</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN imei VARCHAR(50);
+            ALTER TABLE devices ADD COLUMN phone VARCHAR(20);
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP COLUMN phone;
+            ALTER TABLE devices DROP COLUMN imei;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.12.18-19:18" author="isv" context="common">
+        <comment>Add settings for device IMEI, Phone Number columns displayed</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceImei BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDevicePhone BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN columnDisplayedDevicePhone;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceImei;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="26.12.18-10:30" author="isv" context="common">
+        <comment>Add design settings to configurations</comment>
+
+        <sql>
+            ALTER TABLE configurations ADD COLUMN backgroundcolor VARCHAR(20);
+            ALTER TABLE configurations ADD COLUMN textcolor VARCHAR(20);
+            ALTER TABLE configurations ADD COLUMN backgroundimageurl VARCHAR(500);
+            ALTER TABLE configurations ADD COLUMN iconsize TEXT DEFAULT 'SMALL'::TEXT NOT NULL;
+            ALTER TABLE configurations ADD COLUMN desktopheader TEXT DEFAULT 'NO_HEADER'::TEXT NOT NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN desktopheader;
+            ALTER TABLE configurations DROP COLUMN iconsize;
+            ALTER TABLE configurations DROP COLUMN backgroundimageurl;
+            ALTER TABLE configurations DROP COLUMN textcolor;
+            ALTER TABLE configurations DROP COLUMN backgroundcolor;
+        </rollback>
+    </changeSet>
+
+<!--
+    <changeSet id="26.12.18-10:40" author="isv" context="common">
+        <comment>Copy default design settings to configurations</comment>
+
+        <sql>
+            UPDATE configurations SET backgroundcolor = (SELECT backgroundcolor FROM settings LIMIT 1);
+            UPDATE configurations SET textcolor = (SELECT textcolor FROM settings LIMIT 1);
+            UPDATE configurations SET backgroundimageurl = (SELECT backgroundimageurl FROM settings LIMIT 1);
+            UPDATE configurations SET iconsize = (SELECT iconsize FROM settings LIMIT 1);
+            UPDATE configurations SET desktopheader = (SELECT desktopheader FROM settings LIMIT 1);
+        </sql>
+        <rollback>
+            UPDATE configurations SET desktopheader = 'NO_HEADER'::TEXT;
+            UPDATE configurations SET iconsize = 'SMALL'::TEXT;
+            UPDATE configurations SET backgroundimageurl = null;
+            UPDATE configurations SET textcolor = null;
+            UPDATE configurations SET backgroundcolor = null;
+        </rollback>
+    </changeSet>
+-->
+
+    <changeSet id="26.12.18-16:00" author="isv" context="common">
+        <comment>Add useDefaultDesignSettings to configurations</comment>
+
+        <sql>
+            ALTER TABLE configurations ADD COLUMN useDefaultDesignSettings BOOLEAN NOT NULL DEFAULT TRUE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN useDefaultDesignSettings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="27.12.18-14:20" author="isv" context="common">
+        <comment>Add settings for Description, Group columns displayed</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceDesc BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceGroup BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceGroup;
+            ALTER TABLE applications DROP COLUMN columnDisplayedDeviceDesc;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.01.19-14:20" author="isv" context="common">
+        <comment>Create customers table</comment>
+        <sql>
+            CREATE TABLE customers (
+              id serial NOT NULL CONSTRAINT customers_pr_key PRIMARY KEY,
+              name varchar(50) NOT NULL,
+              description TEXT,
+              filesDir TEXT NOT NULL,
+              master BOOLEAN NOT NULL DEFAULT false
+            );
+            
+            ALTER TABLE customers ADD CONSTRAINT customer_name_key UNIQUE (name);
+            ALTER TABLE customers ADD CONSTRAINT customer_filesdir_key UNIQUE (filesDir);
+        </sql>
+        <rollback>
+            DROP TABLE customers;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.01.19-15:20" author="isv" context="common">
+        <comment>Link all tables to customers</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN customerId BIGINT;
+            ALTER TABLE configurations ADD COLUMN customerId BIGINT;
+            ALTER TABLE devices ADD COLUMN customerId BIGINT;
+            ALTER TABLE groups ADD COLUMN customerId BIGINT;
+            ALTER TABLE settings ADD COLUMN customerId BIGINT;
+            ALTER TABLE users ADD COLUMN customerId BIGINT;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN customerId;
+            ALTER TABLE configurations DROP COLUMN customerId;
+            ALTER TABLE devices DROP COLUMN customerId;
+            ALTER TABLE groups DROP COLUMN customerId;
+            ALTER TABLE settings DROP COLUMN customerId;
+            ALTER TABLE users DROP COLUMN customerId;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.01.19-16:10" author="isv" context="shared">
+        <comment>Create master-customer and default customer accounts for SHARED usage scenario and link existing
+            admin user to master-customer account</comment>
+        <sql>
+            INSERT INTO customers (name, description, master, filesDir) VALUES ('DEFAULT', 'Default customer account used for managing the already existing application data in SHARED usage scenario', FALSE, 'DEFAULT');
+            UPDATE users SET customerId = currval('customers_id_seq');
+
+            INSERT INTO customers (name, description, master, filesDir) VALUES ('ADMIN', 'Global customer account used for managing the application data for all customers in SHARED usage scenario', TRUE, 'ADMIN');
+            INSERT INTO users (login, name, password, customerId)
+               SELECT 'superadmin', 'Super Admin', password, currval('customers_id_seq')
+               FROM users WHERE login='admin';
+        </sql>
+        <rollback>
+            DELETE FROM users WHERE login='superadmin';
+            UPDATE users SET customerId = NULL;
+            DELETE FROM customers;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.01.19-16:11" author="isv" context="private">
+        <comment>Create default customer account for PRIVATE usage scenario and link existing admin account to default
+        customer account</comment>
+        <sql>
+            INSERT INTO customers (name, description, master, filesDir) VALUES ('DEFAULT', 'Default customer account used for managing the application data in PRIVATE usage scenario', FALSE, '');
+            UPDATE users SET customerId = currval('customers_id_seq');
+        </sql>
+        <rollback>
+            UPDATE users SET customerId = NULL;
+            DELETE FROM customers;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.01.19-17:11" author="isv" context="common">
+        <comment>Link existing data to default customer account</comment>
+        <sql>
+            UPDATE applications SET customerId = (SELECT id FROM customers WHERE name = 'DEFAULT');
+            UPDATE configurations SET customerId = (SELECT id FROM customers WHERE name = 'DEFAULT');
+            UPDATE devices SET customerId = (SELECT id FROM customers WHERE name = 'DEFAULT');
+            UPDATE groups SET customerId = (SELECT id FROM customers WHERE name = 'DEFAULT');
+            UPDATE settings SET customerId = (SELECT id FROM customers WHERE name = 'DEFAULT');
+        </sql>
+        <rollback>
+            UPDATE settings SET customerId = NULL;
+            UPDATE groups SET customerId = NULL;
+            UPDATE devices SET customerId = NULL;
+            UPDATE configurations SET customerId = NULL;
+            UPDATE applications SET customerId = NULL;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="16.01.19-17:41" author="isv" context="common">
+        <comment>Add FK constraint to link data tables to customers table with cascade deletion</comment>
+        <sql>
+            ALTER TABLE applications ADD CONSTRAINT fk_customer_1 FOREIGN KEY (customerId) REFERENCES customers (id) ON DELETE CASCADE;
+            ALTER TABLE configurations ADD CONSTRAINT fk_customer_2 FOREIGN KEY (customerId) REFERENCES customers (id) ON DELETE CASCADE;
+            ALTER TABLE devices ADD CONSTRAINT fk_customer_3 FOREIGN KEY (customerId) REFERENCES customers (id) ON DELETE CASCADE;
+            ALTER TABLE groups ADD CONSTRAINT fk_customer_4 FOREIGN KEY (customerId) REFERENCES customers (id) ON DELETE CASCADE;
+            ALTER TABLE settings ADD CONSTRAINT fk_customer_5 FOREIGN KEY (customerId) REFERENCES customers (id) ON DELETE CASCADE;
+            ALTER TABLE users ADD CONSTRAINT fk_customer_6 FOREIGN KEY (customerId) REFERENCES customers (id) ON DELETE CASCADE;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP CONSTRAINT fk_customer_1;
+            ALTER TABLE configurations DROP CONSTRAINT fk_customer_2;
+            ALTER TABLE devices DROP CONSTRAINT fk_customer_3;
+            ALTER TABLE groups DROP CONSTRAINT fk_customer_4;
+            ALTER TABLE settings DROP CONSTRAINT fk_customer_5;
+            ALTER TABLE users DROP CONSTRAINT fk_customer_6;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20.01.19-15:20" author="isv" context="common">
+        <comment>Add userrole to users</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN userrole VARCHAR(50) NOT NULL DEFAULT 'USER';
+            ALTER TABLE users ADD CONSTRAINT users_login_unique UNIQUE (login);
+
+            UPDATE users SET userrole = 'SUPER_ADMIN' WHERE customerId IN (SELECT id FROM customers WHERE name = 'ADMIN');
+            UPDATE users SET userrole = 'ORG_ADMIN' WHERE customerId IN (SELECT id FROM customers WHERE name = 'DEFAULT');
+        </sql>
+        <rollback>
+            ALTER TABLE users DROP CONSTRAINT users_login_unique;
+            ALTER TABLE users DROP COLUMN userrole;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="22.01.19-12:47" author="isv" context="common">
+        <comment>Making device.number unique</comment>
+        <sql>
+            ALTER TABLE devices ADD CONSTRAINT devices_number_unique UNIQUE (number);
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP CONSTRAINT devices_number_unique;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="01.02.19-08:00" author="isv" context="common">
+        <comment>Removing default values for devices columns</comment>
+        <sql>
+            ALTER TABLE devices ALTER COLUMN configurationId DROP DEFAULT;
+            ALTER TABLE devices ALTER COLUMN groupId DROP DEFAULT;
+        </sql>
+        <rollback>
+            ALTER TABLE devices ALTER COLUMN configurationId SET DEFAULT 1;
+            ALTER TABLE devices ALTER COLUMN groupId SET DEFAULT 1;
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="01.02.19-11:34" author="isv" context="common">
+        <comment>User role and permissions tables</comment>
+        <sql>
+            CREATE TABLE permissions (
+            id serial NOT NULL CONSTRAINT permissions_pr_key PRIMARY KEY,
+            name varchar(50) NOT NULL,
+            description TEXT,
+            superadmin BOOLEAN NOT NULL DEFAULT false
+            );
+
+            CREATE TABLE userRoles (
+            id serial NOT NULL CONSTRAINT roles_pr_key PRIMARY KEY,
+            name varchar(50) NOT NULL,
+            description TEXT,
+            superadmin BOOLEAN NOT NULL DEFAULT false
+            );
+
+            CREATE TABLE userRolePermissions (
+            roleId INT NOT NULL REFERENCES userRoles( id ) ON DELETE CASCADE,
+            permissionId INT NOT NULL REFERENCES permissions( id ) ON DELETE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE userRolePermissions;
+            DROP TABLE userRoles;
+            DROP TABLE permissions;
+        </rollback>
+    </changeSet>
+                                                                                            
+    <changeSet id="01.02.19-14:25" author="isv" context="common">
+        <comment>Initial set of roles and permissions</comment>
+        <sql>
+            INSERT INTO permissions (id, name, description, superadmin) VALUES (1, 'superadmin', 'Функции супер-администратора всего приложения', TRUE);
+            INSERT INTO permissions (id, name, description) VALUES (2, 'settings', 'Имеет доступ к настройкам и видит их в меню');
+            INSERT INTO permissions (id, name, description) VALUES (3, 'configurations', 'Имеет доступ к конфигурациям, приложениям и файлам и видит их в меню');
+            INSERT INTO permissions (id, name, description) VALUES (4, 'edit_devices', 'Имеет доступ к редактированию и добавлению устройств');
+
+            INSERT INTO userRoles (id, name, description, superadmin) VALUES (1, 'Супер-Администратор', 'Всевидящее око Саурона', TRUE);
+            INSERT INTO userRoles (id, name, description) VALUES (2, 'Администратор', 'Выполняет функции администратора для одной клиентской записи');
+            INSERT INTO userRoles (id, name, description) VALUES (3, 'Пользователь', 'Пользователь для одной клиентской записи');
+
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, 1);
+
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, 2);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, 3);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, 4);
+
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, 3);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, 4);
+
+            ALTER SEQUENCE permissions_id_seq RESTART WITH 100;
+            ALTER SEQUENCE userroles_id_seq RESTART WITH 100;
+        </sql>
+        <rollback>
+            ALTER SEQUENCE userroles_id_seq RESTART WITH 1;
+            ALTER SEQUENCE permissions_id_seq RESTART WITH 1;
+
+            DELETE FROM userRolePermissions;
+            DELETE FROM userRoles;
+            DELETE FROM permissions;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.02.19-10:25" author="isv" context="common">
+        <comment>Add userRoleId to users</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN userRoleId INT REFERENCES userRoles( id ) ON DELETE RESTRICT;
+
+            UPDATE users SET userRoleId = 1 WHERE userRole = 'SUPER_ADMIN';
+            UPDATE users SET userRoleId = 2 WHERE userRole = 'ORG_ADMIN';
+            UPDATE users SET userRoleId = 3 WHERE userRole = 'USER';
+        </sql>
+        <rollback>
+            ALTER TABLE users DROP COLUMN userRoleId;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.02.19-10:42" author="isv" context="common">
+        <comment>Drop userRole from users</comment>
+        <sql>
+            ALTER TABLE users DROP COLUMN userRole;
+        </sql>
+        <rollback>
+            ALTER TABLE users ADD COLUMN userrole VARCHAR(50) NOT NULL DEFAULT 'USER';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="13.02.19-12:51" author="isv" context="common">
+        <comment>New switch-like properties for configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN gps BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN bluetooth BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN wifi BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN mobileData BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN gps;
+            ALTER TABLE configurations DROP COLUMN bluetooth;
+            ALTER TABLE configurations DROP COLUMN wifi;
+            ALTER TABLE configurations DROP COLUMN mobileData;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="01.03.19-17:42" author="isv" context="common">
+        <comment>Add remove to configurationapplications</comment>
+        <sql>
+            ALTER TABLE configurationapplications ADD COLUMN remove BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications DROP COLUMN remove;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.03.19-13:42" author="isv" context="common">
+        <comment>Add MDM settings columns to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN mainAppId INT REFERENCES applications (id) ON DELETE CASCADE;
+            ALTER TABLE configurations ADD COLUMN eventReceivingComponent VARCHAR(512);
+            ALTER TABLE configurations ADD COLUMN kioskMode BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN kioskMode;
+            ALTER TABLE configurations DROP COLUMN eventReceivingComponent;
+            ALTER TABLE configurations DROP COLUMN mainAppId;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.03.19-15:57" author="isv" context="common">
+        <comment>Add qrCodeKey columns to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN qrCodeKey TEXT NOT NULL DEFAULT MD5(RANDOM()::TEXT) CONSTRAINT qrCodeKey_uniq UNIQUE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN qrCodeKey;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.03.19-20:32" author="isv" context="common">
+        <comment>Observer role</comment>
+        <sql>
+            INSERT INTO userRoles (name, description) VALUES ('Наблюдатель', 'Наблюдатель зорко наблюдает');
+        </sql>
+        <rollback>
+            DELETE FROM userRoles WHERE name = 'Наблюдатель';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.03.19-15:15" author="isv" context="common">
+        <comment>Add new MDM settings and fix ref constraint for mainappid columns to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN contentAppId INT REFERENCES applications (id) ON DELETE RESTRICT;
+            ALTER TABLE configurations DROP CONSTRAINT configurations_mainappid_fkey;
+            ALTER TABLE configurations ADD CONSTRAINT configurations_mainappid_fkey FOREIGN KEY (mainappid) REFERENCES applications (id) ON DELETE RESTRICT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN contentAppId;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20.03.19-13:49" author="isv" context="common">
+        <comment>Dropping not-null constraint for applications.groupId</comment>
+        <sql>
+            ALTER TABLE devices ALTER COLUMN groupId DROP NOT NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE devices ALTER COLUMN groupId SET NOT NULL;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="12.04.19-13:23" author="isv" context="common">
+        <comment>Create devcieGroups table</comment>
+        <sql>
+            CREATE TABLE deviceGroups (
+                id serial NOT NULL CONSTRAINT deviceGroups_pr_key PRIMARY KEY,
+                deviceId INT NOT NULL REFERENCES devices( id ) ON DELETE CASCADE,
+                groupId INT NOT NULL REFERENCES groups( id ) ON DELETE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE deviceGroups;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="12.04.19-13:37" author="isv" context="common">
+        <comment>Move current device group relations from devices to deviceGroups table</comment>
+        <sql>
+            INSERT INTO deviceGroups (deviceId, groupId) SELECT id, groupId FROM devices WHERE NOT groupId IS NULL;
+        </sql>
+        <rollback>
+            DELETE FROM deviceGroups;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="12.04.19-13:41" author="isv" context="common">
+        <comment>Drop groupId column from device</comment>
+        <sql>
+            ALTER TABLE devices DROP COLUMN groupId;
+        </sql>
+        <rollback>
+            ALTER TABLE devices ADD COLUMN groupId INT;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.04.19-15:52" author="isv" context="common">
+        <comment>Create userDeviceGroupsAccess table</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN allDevicesAvailable BOOLEAN NOT NULL DEFAULT TRUE;
+
+            CREATE TABLE userDeviceGroupsAccess (
+            id serial NOT NULL CONSTRAINT userDeviceGroupsAccess_pr_key PRIMARY KEY,
+            userId INT NOT NULL REFERENCES users( id ) ON DELETE CASCADE,
+            groupId INT NOT NULL REFERENCES groups( id ) ON DELETE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE userDeviceGroupsAccess;
+            ALTER TABLE users DROP COLUMN allDevicesAvailable;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="30.05.19-14:24" author="isv" context="common">
+        <comment>Adding language, useDefaultLanguage column to settings table</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN useDefaultLanguage BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE settings ADD COLUMN language VARCHAR(20);
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN language;
+            ALTER TABLE settings DROP COLUMN useDefaultLanguage;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="05.06.19-10:21" author="isv" context="common">
+        <comment>Adding system column to applications table</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN system BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN system;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="05.06.19-13:25" author="isv" context="common">
+        <comment>Add showIcon to configurationapplications</comment>
+        <sql>
+            ALTER TABLE configurationapplications ADD COLUMN showIcon BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications DROP COLUMN showIcon;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10.06.19-09:14" author="isv" context="common">
+        <comment>Adding autoUpdate column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN autoUpdate BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN autoUpdate;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10.06.19-09:23" author="isv" context="common">
+        <comment>Create applicationVersions table</comment>
+        <sql>
+            CREATE TABLE applicationVersions (
+                id serial NOT NULL CONSTRAINT applicationVersions_pr_key PRIMARY KEY,
+                applicationId INT NOT NULL REFERENCES applications( id ) ON DELETE CASCADE,
+                version varchar(50) NOT NULL,
+                url varchar(500)
+            );
+            ALTER TABLE applicationVersions ADD CONSTRAINT applicationVersions_app_version_key UNIQUE (applicationId, version);
+        </sql>
+        <rollback>
+            ALTER TABLE applicationVersions DROP CONSTRAINT applicationVersions_app_version_key;
+            DROP TABLE applicationVersions;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10.06.19-09:33" author="isv" context="common">
+        <comment>Create mdm_app_version_comparison_index function</comment>
+        <createProcedure>
+        DROP FUNCTION IF EXISTS mdm_app_version_comparison_index(TEXT);
+
+            CREATE OR REPLACE FUNCTION mdm_app_version_comparison_index(
+            version_text TEXT
+            )
+            RETURNS TEXT AS $$
+
+            DECLARE parts TEXT[];
+            DECLARE i INT;
+            DECLARE result TEXT;
+            DECLARE part TEXT;
+            BEGIN
+            IF version_text IS NULL THEN
+            return -1000000;
+            END IF;
+
+            IF LENGTH(TRIM(version_text)) = 0 THEN
+            return -1000000;
+            END IF;
+
+            result = '';
+
+            parts = STRING_TO_ARRAY(version_text, '.');
+
+            FOR i IN 1 .. ARRAY_UPPER(parts, 1) LOOP
+            part = REGEXP_REPLACE(parts[i], '[^0-9]+', '', 'g');
+
+            IF LENGTH(TRIM(part)) = 0 THEN
+            part = '0';
+            END IF;
+
+            result = result || LPAD(part, 10, '0');
+            END LOOP;
+
+            RETURN result;
+            END;
+            $$
+            LANGUAGE 'plpgsql';
+
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION IF EXISTS mdm_app_version_comparison_index(TEXT);
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10.06.19-15:33" author="isv" context="common">
+        <comment>Link applications to most recent application version</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN latestVersion INT REFERENCES applicationVersions(id) ON DELETE SET NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN latestVersion;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10.06.19-16:33" author="isv" context="common">
+        <comment>Add applicationVersionId to configurationapplications</comment>
+        <sql>
+            ALTER TABLE configurationapplications ADD COLUMN applicationVersionId INT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications DROP COLUMN applicationVersionId;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="11.06.19-10:05" author="isv" context="common">
+        <comment>Migrate application versions data</comment>
+        <sql>
+            -- 1. Copy all applications data to new applicationVersions data and evaluate if respective master data exists
+            DROP TABLE IF EXISTS applicationVersionsTemp;
+            DROP TABLE IF EXISTS applicationFilesToCopyTemp;
+
+            SELECT FALSE AS to_be_deleted,
+            FALSE AS to_be_replaced,
+            applications.id AS id,
+            COALESCE(
+            (SELECT apps2.id
+            FROM applications apps2
+            INNER JOIN customers cust2 ON cust2.id = apps2.customerId
+            WHERE apps2.pkg = applications.pkg
+            AND cust2.master IS TRUE),
+            COALESCE((SELECT id
+            FROM applications ou2
+            WHERE pkg = applications.pkg
+            AND ou2.customerid=applications.customerid
+            AND (SELECT count(*)
+            FROM applications inr2
+            WHERE inr2.pkg = ou2.pkg
+            AND ou2.customerid=inr2.customerid
+            AND mdm_app_version_comparison_index(inr2.version) > mdm_app_version_comparison_index(ou2.version)) = 0
+            ), applications.id))  AS newApplicationId,
+            COALESCE((SELECT apps2.id
+            FROM applications apps2
+            INNER JOIN customers cust2 ON cust2.id = apps2.customerId
+            WHERE apps2.pkg = applications.pkg
+            AND apps2.version = applications.version
+            AND cust2.master IS TRUE), applications.id)  AS newApplicationVersionId,
+            COALESCE((SELECT apps2.url
+            FROM applications apps2
+            INNER JOIN customers cust2 ON cust2.id = apps2.customerId
+            WHERE apps2.pkg = applications.pkg
+            AND apps2.version = applications.version
+            AND cust2.master IS TRUE), applications.url) AS newUrl,
+            applications.name,
+            applications.pkg,
+            applications.version,
+            applications.url,
+            applications.customerId,
+            customers.master                                         AS isMasterCustomer,
+            COALESCE((SELECT TRUE
+            FROM applications apps2
+            INNER JOIN customers cust2 ON cust2.id = apps2.customerId
+            WHERE apps2.pkg = applications.pkg
+            AND cust2.master IS TRUE), FALSE)            AS masterAppExists,
+            COALESCE((SELECT TRUE
+            FROM applications apps2
+            INNER JOIN customers cust2 ON cust2.id = apps2.customerId
+            WHERE apps2.pkg = applications.pkg
+            AND apps2.version = applications.version
+            AND cust2.master IS TRUE), FALSE)            AS masterVersionExists
+            INTO TABLE applicationVersionsTemp
+            FROM applications
+            INNER JOIN customers ON customers.id = applications.customerId
+            ORDER BY pkg, version, customerid;
+
+            -- 2. Mark the application versions which must be deleted since there is exact version found in common applications
+            UPDATE applicationVersionsTemp SET to_be_deleted = TRUE WHERE id &lt;&gt; newApplicationVersionId;
+
+            -- 2.0 For multiple same versions of common app
+            UPDATE applicationVersionsTemp ou SET to_be_replaced = TRUE, to_be_deleted = TRUE,
+            newApplicationVersionId =        (
+            SELECT id
+            FROM applicationVersionsTemp ou2
+            WHERE masterAppExists
+            AND NOT masterVersionExists
+            AND newApplicationId = ou.newApplicationId
+            AND pkg = ou.pkg
+            AND version = ou.version
+            AND (SELECT count(*)
+            FROM applicationVersionsTemp inr2
+            WHERE inr2.newApplicationId = ou2.newApplicationId
+            AND inr2.pkg = ou2.pkg
+            AND inr2.version = ou2.version
+            AND inr2.id > ou2.id) = 0
+            )
+            WHERE masterAppExists
+            AND NOT masterVersionExists
+            AND (SELECT count(*)
+            FROM applicationVersionsTemp inr
+            WHERE inr.newApplicationId = ou.newApplicationId
+            AND inr.pkg = ou.pkg
+            AND inr.version = ou.version
+            AND inr.id > ou.id) > 0;
+
+
+            -- 2.1 Update the newUrls for application versions related to common applications
+            UPDATE applicationVersionsTemp
+            SET newUrl = '${file.resource.url}' || '/ADMIN/' || SUBSTRING(url, LENGTH('${file.resource.url}' || '/') + 1)
+            WHERE masterappexists
+            AND NOT masterversionexists
+            AND NOT url IS NULL
+            AND LEFT(url, LENGTH('${file.resource.url}')) = '${file.resource.url}';
+
+            -- 3. Drop referential constraints for tables referencing the applications table
+            ALTER TABLE configurations DROP CONSTRAINT IF EXISTS configurations_mainappid_fkey;
+            ALTER TABLE configurations DROP CONSTRAINT IF EXISTS configurations_contentappid_fkey;
+            -- ALTER TABLE configurationapplications DROP CONSTRAINT IF EXISTS configurationapplications_applicationid_fkey;
+
+            -- 3. Update configurations#mainAppId, contentAppId table records to refer to records in applicationVersions according to
+            --    evaluated state
+            UPDATE configurations SET mainAppId = (SELECT app.newApplicationVersionId FROM applicationVersionsTemp app WHERE app.id = configurations.mainappid) WHERE NOT mainAppId IS NULL;
+            UPDATE configurations SET contentAppId = (SELECT app.newApplicationVersionId FROM applicationVersionsTemp app WHERE app.id = configurations.contentAppId) WHERE NOT contentAppId IS NULL;
+
+            -- 6. Update configurationApplications#applicationVersionId table records to refer to records in applicationVersions according to
+            --    evaluated state
+            UPDATE configurationApplications SET applicationVersionId = (SELECT app.newApplicationVersionId FROM applicationVersionsTemp app WHERE app.id = configurationApplications.applicationId);
+            UPDATE configurationApplications SET applicationId = (SELECT app.newApplicationId FROM applicationVersionsTemp app WHERE app.id = configurationApplications.applicationId);
+
+            -- 7. Delete redundant records from applicationVersions table
+            DELETE FROM applicationVersionsTemp WHERE to_be_deleted IS TRUE;
+
+            -- 8. Build the table with list of files which must be copied/moved to Master customer directory
+            SELECT url, ' -> ', newUrl
+            INTO TABLE applicationFilesToCopyTemp
+            FROM applicationVersionsTemp
+            WHERE newUrl &lt;&gt; url;
+
+            -- 9. Delete records from applications table which are no longer referenced from the applicationVersions table
+            DELETE FROM applications WHERE NOT EXISTS (SELECT 1 FROM applicationVersionsTemp temp WHERE temp.newApplicationId = applications.id);
+
+            -- 10. Copy valid records to applicationVersions table
+            INSERT INTO applicationVersions (id, applicationid, version, url) (SELECT newApplicationVersionId, newApplicationId, version, newUrl FROM applicationVersionsTemp);
+
+            -- 11. Update the ID generation sequence
+            ALTER SEQUENCE applicationVersions_id_seq RESTART WITH 10000;
+
+            -- 12. Add referential constraints for tables referencing the new applicationVersions table
+            ALTER TABLE configurations ADD CONSTRAINT configurations_mainappid_fkey FOREIGN KEY (mainappid) REFERENCES applicationversions (id) ON DELETE RESTRICT;
+            ALTER TABLE configurations ADD CONSTRAINT configurations_contentappid_fkey FOREIGN KEY (contentappid) REFERENCES applicationversions (id) ON DELETE RESTRICT;
+
+            ALTER TABLE configurationApplications ADD CONSTRAINT configurationapplications_applicationversionid_fkey FOREIGN KEY (applicationVersionId) REFERENCES applicationversions (id) ON DELETE RESTRICT;
+
+            -- 13. Delete version, url columns from applications table
+            ALTER TABLE applications DROP COLUMN version;
+            ALTER TABLE applications DROP COLUMN url;
+
+            -- 14. Set the reference to most recent version for applications records
+            UPDATE applications SET latestVersion = (
+            SELECT id
+            FROM applicationVersions apv1
+            WHERE apv1.applicationId = applications.id
+            AND mdm_app_version_comparison_index(apv1.version)
+            = (SELECT MAX(mdm_app_version_comparison_index(apv2.version))
+            FROM applicationVersions apv2
+            WHERE apv2.applicationId = applications.id)
+            LIMIT 1
+            ) WHERE 1=1;
+
+            -- 15. Set he name of the application based on the name of the most recent version
+            UPDATE applications SET name = (SELECT name FROM applicationVersionsTemp WHERE applicationVersionsTemp.id = applications.latestVersion);
+            
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="18.06.19-11:30" author="isv" context="common">
+        <comment>Adding blockStatusBar column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN blockStatusBar BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN blockStatusBar;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="18.06.19-12:17" author="isv" context="common">
+        <comment>Adding systemUpdateType column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN systemUpdateType INT NOT NULL DEFAULT 0;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN systemUpdateType;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="18.06.19-13:11" author="isv" context="common">
+        <comment>Adding systemUpdateFrom, systemUpdateTo columns to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN systemUpdateFrom VARCHAR(10);
+            ALTER TABLE configurations ADD COLUMN systemUpdateTo VARCHAR(10);
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN systemUpdateTo;
+            ALTER TABLE configurations DROP COLUMN systemUpdateFrom;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.07.19-18:50" author="isv" context="common">
+        <comment>Update showIcon in configurationapplications to NOT NULL</comment>
+        <sql>
+            UPDATE configurationapplications SET showIcon = (SELECT showIcon FROM applications WHERE applications.id = configurationapplications.applicationId);
+            ALTER TABLE configurationapplications ALTER COLUMN showIcon SET DEFAULT FALSE;
+            ALTER TABLE configurationapplications ALTER COLUMN showIcon SET NOT NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications ALTER COLUMN showIcon DROP NOT NULL;
+            ALTER TABLE configurationapplications ALTER COLUMN showIcon DROP SET DEFAULT;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="09.07.19-09:50" author="isv" context="common">
+        <comment>Adding action column to configurationApplications</comment>
+        <sql>
+            ALTER TABLE configurationapplications ADD COLUMN action INT NOT NULL DEFAULT 1;
+            UPDATE configurationapplications SET action = 2 WHERE remove IS TRUE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications DROP COLUMN action;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.07.19-11:57" author="isv" context="common">
+        <comment>Adding runAfterInstall column to configurationApplications</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN runAfterInstall BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN runAfterInstall;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.07.19-11:59" author="isv" context="common">
+        <comment>Cleanup configurationApplications for action = 3</comment>
+        <sql>
+            UPDATE configurationApplications SET action = 1 WHERE action = 3;
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="17.07.19-10:30" author="isv" context="common">
+        <comment>Create tables for application settings</comment>
+        <sql>
+            CREATE TABLE deviceApplicationSettings (
+                id serial NOT NULL CONSTRAINT deviceApplicationSettings_pr_key PRIMARY KEY,
+                applicationID INT NOT NULL REFERENCES applications( id ) ON DELETE CASCADE,
+                name VARCHAR(200) NOT NULL,
+                type VARCHAR(20) NOT NULL,
+                value TEXT,
+                comment TEXT,
+                readonly BOOLEAN NOT NULL DEFAULT FALSE,
+                extRefId INT NOT NULL REFERENCES devices( id ) ON DELETE CASCADE,
+                lastUpdate BIGINT NOT NULL
+            );
+
+            CREATE TABLE configurationApplicationSettings (
+                id serial NOT NULL CONSTRAINT configurationApplicationSettings_pr_key PRIMARY KEY,
+                applicationID INT NOT NULL REFERENCES applications( id ) ON DELETE CASCADE,
+                name VARCHAR(200) NOT NULL,
+                type VARCHAR(20) NOT NULL,
+                value TEXT,
+                comment TEXT,
+                readonly BOOLEAN NOT NULL DEFAULT FALSE,
+                extRefId INT NOT NULL REFERENCES configurations( id ) ON DELETE CASCADE,
+                lastUpdate BIGINT NOT NULL
+            );
+        </sql>
+        <rollback>
+            DROP TABLE configurationApplicationSettings;
+            DROP TABLE deviceApplicationSettings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="29.07.19-10:12" author="isv" context="common">
+        <comment>Add settings for Launcher Version columns displayed</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN columnDisplayedLauncherVersion BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN columnDisplayedLauncherVersion;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="05.08.19-11:26" author="isv" context="common">
+        <comment>Create configurationApplicationParameters table</comment>
+        <sql>
+            CREATE TABLE configurationApplicationParameters (
+            id serial NOT NULL CONSTRAINT configuration_application_parameters_pr_key PRIMARY KEY,
+            configurationId int NOT NULL REFERENCES configurations( id ) ON DELETE CASCADE,
+            applicationId int NOT NULL REFERENCES applications( id ) ON DELETE CASCADE,
+            skipVersionCheck BOOLEAN NOT NULL DEFAULT FALSE
+            );
+
+            ALTER TABLE configurationApplicationParameters ADD CONSTRAINT cap_config_application_unique UNIQUE (configurationId, applicationId);
+        </sql>
+        <rollback>
+            DROP TABLE configurationApplicationParameters;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="05.08.19-13:18" author="isv" context="common">
+        <comment>Create mdm_config_app_upgrade function</comment>
+        <createProcedure>
+            DROP FUNCTION IF EXISTS mdm_config_app_upgrade(BIGINT, BIGINT);
+
+            CREATE OR REPLACE FUNCTION mdm_config_app_upgrade(configId BIGINT, appId BIGINT)
+            RETURNS INT
+            AS
+            $$
+
+            BEGIN
+            -- Deleting existing record for latest version of app for configuration
+            DELETE
+            FROM configurationApplications
+            WHERE configurationId = configId
+            AND applicationId = appId
+            AND applicationVersionId = (SELECT latestVersion FROM applications WHERE applications.id = appId);
+
+            -- Change the current record for installed version of application to refer to latest version
+            UPDATE configurationApplications
+            SET applicationVersionId = (SELECT latestVersion FROM applications WHERE applications.id = appId)
+            WHERE configurationId = configId
+            AND applicationId = appId
+            AND action = 1;
+
+
+            -- Upgrade reference to main application if necessary
+            UPDATE configurations
+            SET mainAppId = (SELECT latestVersion FROM applications WHERE applications.id = appId)
+            WHERE configurations.id = configId
+            AND NOT configurations.mainAppId IS NULL
+            AND EXISTS(SELECT 1
+            FROM applicationVersions
+            WHERE applicationVersions.id = configurations.mainAppId
+            AND applicationVersions.applicationId = appId);
+
+            -- Upgrade reference to content application if necessary
+            UPDATE configurations
+            SET contentAppId = (SELECT latestVersion FROM applications WHERE applications.id = appId)
+            WHERE configurations.id = configId
+            AND NOT configurations.contentAppId IS NULL
+            AND EXISTS(SELECT 1
+            FROM applicationVersions
+            WHERE applicationVersions.id = configurations.contentAppId
+            AND applicationVersions.applicationId = appId);
+
+            RETURN 0;
+            END;
+            $$
+            LANGUAGE 'plpgsql';
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION IF EXISTS mdm_config_app_upgrade(BIGINT, BIGINT);
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,67 @@
+<!-- Localization completed -->
+<div ng-controller="SettingsTabController">
+    <div class="text-center">
+        <h4 localized>form.settings.design.title</h4>
+    </div>
+
+    <div>
+        <form class='form-horizontal'>
+            <div class='form-group'>
+                <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-3 control-label' localized>form.settings.design.color.font</label>
+                <div class='col-sm-9'>
+                    <input ng-model='settings.backgroundColor' colorpicker type='text' class='form-control'
+                           localized-placeholder='form.settings.design.color.font.placeholder'/>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class='col-sm-3 control-label' localized>form.settings.design.color.app.names</label>
+                <div class='col-sm-9'>
+                    <input ng-model='settings.textColor' colorpicker type='text' class='form-control'
+                           localized-placeholder='form.settings.design.color.app.names.placeholder'/>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class='col-sm-3 control-label' localized>form.settings.design.url.background.image</label>
+                <div class='col-sm-9'>
+                    <input ng-model='settings.backgroundImageUrl'
+                           type='text' class='form-control'
+                           localized-placeholder='form.settings.design.url.background.image.placeholder'>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class='col-sm-3 control-label' for="iconSize" localized>form.settings.design.size.icon</label>
+                <div class='col-sm-9'>
+                    <select class='form-control' id="iconSize" ng-model='settings.iconSize'>
+                        <option ng-value="'SMALL'" ng-selected="settings.iconSize === 'SMALL'"
+                                localized>form.settings.design.size.icon.small</option>
+                        <option ng-value="'MEDIUM'" ng-selected="settings.iconSize === 'MEDIUM'"
+                                localized>form.settings.design.size.icon.medium</option>
+                        <option ng-value="'LARGE'" ng-selected="settings.iconSize === 'LARGE'"
+                                localized>form.settings.design.size.icon.large</option>
+                    </select>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class='col-sm-3 control-label' for="desktopHeader" localized>form.settings.design.desktop.header</label>
+                <div class='col-sm-9'>
+                    <select class='form-control' id="desktopHeader" ng-model='settings.desktopHeader'>
+                        <option ng-value="'NO_HEADER'" ng-selected="settings.desktopHeader === 'NO_HEADER'"
+                                localized>form.settings.design.desktop.header.no</option>
+                        <option ng-value="'DEVICE_ID'" ng-selected="settings.desktopHeader === 'DEVICE_ID'"
+                                localized>form.settings.design.desktop.header.device.id</option>
+                    </select>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-offset-3 col-sm-9 padding-left'>
+                    <button type='submit' class='btn btn-default' ng-click='saveDefaultDesignSettings()'
+                            localized>button.save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div ng-show='successMessage' class='modal-header'>
+    <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div ng-if='!file.path' class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.file.file</label>
+            <div class='col-sm-9'>
+                <div class="btn btn-default full-width btn-upload"
+                     upload-button
+                     url="rest/private/web-ui-files"
+                     on-upload="onStartedUpload()"
+                     on-success="fileUploaded( response )"></div>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.file.path</label>
+            <div class='col-sm-9'>
+                <input type='text'
+                       ng-model='file.localPath'
+                       class='form-control'
+                       localized-placeholder='form.file.path.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <div ng-if='loading'>
+                    <img class='loading-spinner' src='images/loading.gif'/>
+                </div>
+            </div>
+            <div class='col-sm-9'>
+                <button type='submit' class='btn btn-default' ng-disabled='loading' ng-click='save()' localized>button.save</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

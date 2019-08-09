@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- database configurations -->
+    <Parameter name="JDBC.driver"   value="org.postgresql.Driver"/>
+    <Parameter name="JDBC.url"      value="jdbc:postgresql://_SQL_HOST_:_SQL_PORT_/_SQL_BASE_"/>
+    <Parameter name="JDBC.username" value="_SQL_USER_"/>
+    <Parameter name="JDBC.password" value="_SQL_PASS_"/>
+
+    <!-- This directory is used to store uploaded app files, must be accessible for tomcat user -->
+    <Parameter name="files.directory" value="_BASE_DIRECTORY_/files"/>
+
+    <!-- URL used to open Headwind MDM control panel -->
+    <Parameter name="base.url" value="_PROTOCOL_://_BASE_HOST__BASE_PATH_"/>
+
+    <!-- private / shared; shared can be used only in Enterprise solution -->
+    <Parameter name="usage.scenario" value="private" />
+
+    <!-- A shared secret between mobile app and control panel. 
+         Don't change this unless you know what you're doing -->
+    <Parameter name="hash.secret" value="12345"/>
+
+    <!-- Do not change this -->
+    <Parameter name="plugins" value="com.hmdm.plugins.photo.PluginConfigurationImpl,com.hmdm.plugins.devicelog.DeviceLogPluginConfigurationImpl"/>
+
+    <!-- This directory is used to store files by plugins, must be accessible for tomcat user -->
+    <Parameter name="plugins.files.directory" value="_BASE_DIRECTORY_/plugins"/>
+
+    <!-- Configuration for logging plugin, do not change this -->
+    <Parameter name="plugin.devicelog.persistence.config.class" value="com.hmdm.plugins.devicelog.persistence.postgres.DeviceLogPostgresPersistenceConfiguration"/>
+
+    <!-- Don't change this -->
+    <Parameter name="role.orgadmin.id" value="2"/>
+
+    <!-- Swagger Docs UI location -->
+    <Parameter name="swagger.host" value="_BASE_HOST_"/>
+    <Parameter name="swagger.base.path" value="_BASE_PATH_/rest"/>
+
+    <Parameter name="initialization.completion.signal.file" value="_INSTALL_FLAG_"/>
+
+    <Parameter name="aapt.command" value="aapt"/>
+</Context>

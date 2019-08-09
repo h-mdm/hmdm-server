@@ -1,0 +1,23 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.configuration.copy.new.name</label>
+            <div class='col-sm-9'>
+                <input ng-model='configuration.name' required type='text' class='form-control'
+                       localized-placeholder='form.configuration.copy.new.name.placeholder'/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-3 col-sm-8'>
+                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,161 @@
+<!-- Localization completed -->
+<div ng-controller="DevicesTabController" style="position:relative">
+
+    <sarsha-spinner name="spinner2">
+        <div class="spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+    </sarsha-spinner>
+
+    <div class='form-group'>
+        <select class='form-control device-search-group'
+                ng-model='selection.groupId'
+                ng-change='initSearch()'
+                ng-options="group.id as group.name for group in groups">
+        </select>
+
+        <input type='text'
+               ng-model='searchParams.searchValue'
+               ng-enter='initSearch()'
+               localized-placeholder='search.placeholder.device'
+               class='form-control device-search-input'>
+
+        <div class='device-search-buttons'>
+            <button type='button' class='btn btn-default' ng-click='initSearch()' localized>button.search</button>
+            <button type='button' ng-if="hasPermission('edit_devices')"
+                    ng-disabled='isNotSelected()'
+                    class='btn btn-default' ng-click='openBulkUpdateModal()' localized>button.set.configuration</button>
+            <button type='button' ng-if="hasPermission('edit_devices')"
+                    class='btn btn-default' ng-click='editDevice( {} )' localized>button.add</button>
+        </div>
+    </div>
+
+    <div class="text-center" ng-if="paging.totalItems > paging.pageSize" style="margin-top: 50px">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.pageNum'
+                total-items='paging.totalItems'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+    <table ng-if='devices && devices.length > 0' class='table'>
+        <thead>
+        <tr>
+            <th ng-if="hasPermission('edit_devices')">
+                <input ng-model='selection.all'
+                       ng-change='selectAll()'
+                       type='checkbox'
+                       class='pointer'/>
+            </th>
+            <th ng-if="settings.columnDisplayedDeviceStatus" localized>table.heading.device.status</th>
+            <th ng-if="settings.columnDisplayedDeviceDate" localized>table.heading.device.date</th>
+            <th ng-if="settings.columnDisplayedDeviceNumber" localized>table.heading.device.device.number</th>
+            <th ng-if="settings.columnDisplayedDeviceImei" localized>table.heading.device.imei</th>
+            <th ng-if="settings.columnDisplayedDevicePhone" localized>table.heading.device.phone.number</th>
+            <th ng-if="settings.columnDisplayedDeviceModel" localized>table.heading.device.phone.model</th>
+            <th ng-if="settings.columnDisplayedDevicePermissionsStatus" localized>table.heading.device.status.permissions</th>
+            <th ng-if="settings.columnDisplayedDeviceAppInstallStatus" localized>table.heading.device.status.installation</th>
+            <th ng-if="settings.columnDisplayedDeviceConfiguration" localized>table.heading.device.configuration</th>
+            <th ng-if="settings.columnDisplayedDeviceDesc" localized>table.heading.device.desc</th>
+            <th ng-if="settings.columnDisplayedDeviceGroup" localized>table.heading.device.group</th>
+            <th ng-if="settings.columnDisplayedLauncherVersion" localized>table.heading.device.launcher.version</th>
+            <th ng-if="hasPermission('edit_devices')" class='actions-column' localized>table.heading.device.actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--<tr ng-repeat='device in devices | limitTo:paging.pageSize:paging.pageSize * (paging.currentPage - 1)'>-->
+        <tr ng-repeat='device in devices'>
+            <td ng-if="hasPermission('edit_devices')">
+                <input ng-model='device.selected'
+                       type='checkbox'
+                       class='pointer'>
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceStatus">
+                <img class='device-indicator'
+                     ng-src='{{getDeviceIndicatorImage(device)}}'
+                     title='{{device.lastUpdateDate|date:dateFormat}}'>
+            </td>
+            <td ng-if='(device.lastUpdateDate > 0) && settings.columnDisplayedDeviceDate'>{{device.lastUpdateDate|date:dateFormat}}</td>
+            <td ng-if='(device.lastUpdateDate <= 0 || !device.lastUpdateDate) && settings.columnDisplayedDeviceDate' localized>devices.date.unknown</td>
+            <td ng-if="settings.columnDisplayedDeviceNumber"><span>{{device.number}}</span></td>
+            <td ng-if="settings.columnDisplayedDeviceImei">
+                <span title="{{device.imeiTooltip}}" class="{{device.imeiTooltipClass}}">{{device.displayedIMEI}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedDevicePhone">
+                <span title="{{device.phoneTooltip}}" class="{{device.phoneTooltipClass}}">{{device.displayedPhone}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceModel"><span>{{getDeviceModel(device)}}</span></td>
+            <td ng-if="settings.columnDisplayedDevicePermissionsStatus">
+                <img class='device-indicator'
+                     ng-src='{{getDevicePermissionIndicatorImage(device)}}'
+                     title='{{getDevicePermissionTitle(device)}}'>
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceAppInstallStatus">
+                <img class='device-indicator'
+                     ng-src='{{getDeviceApplicationsIndicatorImage(device)}}'
+                     title='{{getDeviceApplicationsTitle(device)}}'>
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceConfiguration">
+                {{device.configName}}
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceDesc"><span>{{device.description}}</span></td>
+            <td ng-if="settings.columnDisplayedDeviceGroup">
+                <span ng-repeat="group in device.groups">{{group.name}}<br/></span>
+            </td>
+            <td ng-if="settings.columnDisplayedLauncherVersion">
+                <span ng-style="{color: getDeviceLauncherVersionColor(device)}">{{getDeviceLauncherVersion(device)}}</span>
+            </td>
+
+            <td class="deviceActions">
+                <button type='button' class='btn btn-default' ng-click='editDevice( device )'
+                        localized-title="button.change" ng-if="hasPermission('edit_devices')">
+                    <span class='glyphicon glyphicon-pencil'></span>
+                </button>
+                <button type='button' class='btn btn-default' ng-click='removeDevice( device )'
+                        localized-title="button.delete" ng-if="hasPermission('edit_devices')">
+                    <span class='glyphicon glyphicon-trash'></span>
+                </button>
+
+                <span class="btn-group dropdown">
+                    <button id="single-button-{{device.id}}" type="button" localized-title="button.more"
+                            class="btn btn-default dropdown-toggle">
+                        <span class='glyphicon glyphicon-list'></span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="single-button-{{device.id}}">
+                        <li role="menuitem">
+                            <a ng-click="manageApplicationSettings(device)" localized>button.app.settings</a>
+                        </li>
+                        <li role="menuitem" ng-repeat="plugin in plugins" ng-if="plugins && plugins.length > 0">
+                            <a ng-click="notifyPluginOnDevice(plugin, device)"
+                               ng-if="!plugin.deviceFunctionsPermission || hasPermission(plugin.deviceFunctionsPermission)">{{localization.localize(plugin.nameLocalizationKey)}}</a>
+                        </li>
+                    </ul>
+                    </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div ng-if='!devices' class='center' localized>success.loading.devices</div>
+
+    <div ng-if='devices && devices.length === 0' class='center' localized>notfound.devices</div>
+
+    <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.pageNum'
+                total-items='paging.totalItems'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+</div>

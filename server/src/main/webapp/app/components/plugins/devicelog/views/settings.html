@@ -1,0 +1,81 @@
+<!-- Localization completed -->
+<div ng-controller="PluginDeviceLogSettingsController">
+    <div class="text-center">
+        <h4 localized>plugin.devicelog.settings.title</h4>
+    </div>
+
+    <div>
+        <form class='form-horizontal'>
+            <div class='form-group'>
+                <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+            </div>
+            <div class='form-group'>
+                <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-4 control-label' for="c0" localized>plugin.devicelog.settings.log.preserve.period</label>
+                <div class='col-sm-1'>
+                    <input id="c0" ng-model='settings.logsPreservePeriod' type='number' min="1" class='form-control'/>
+                </div>
+                <div class='col-sm-7 padding-left'>
+                    <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
+                </div>
+            </div>
+
+
+            <div ng-if="settings.identifier">
+
+                <div class="form-group text-center">
+                    <h4 localized>plugin.devicelog.setting.rules.title</h4>
+                </div>
+
+                <div class='form-group text-right'>
+                    <button type='button' class='btn btn-default' ng-click='editRule({})' localized>button.add</button>
+                </div>
+
+                <table ng-if='settings.rules && settings.rules.length > 0' class='table'>
+                    <thead>
+                    <tr>
+                        <th localized>plugin.devicelog.settings.rules.heading.name</th>
+                        <th localized>plugin.devicelog.settings.rules.heading.active</th>
+                        <th localized>plugin.devicelog.settings.rules.heading.severity</th>
+                        <th localized>plugin.devicelog.settings.rules.heading.filter</th>
+                        <th localized>plugin.devicelog.settings.rules.heading.application</th>
+                        <th localized>plugin.devicelog.settings.rules.heading.configuration</th>
+                        <th localized>plugin.devicelog.settings.rules.heading.group</th>
+                        <th class='actions-column' localized>table.heading.users.actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='rule in settings.rules'>
+                        <td>{{rule.name}}</td>
+                        <td ng-if="rule.active">
+                            <span class="glyphicon glyphicon-check"></span>
+                        </td>
+                        <td ng-if="!rule.active">&nbsp;</td>
+                        <td>{{rule.severity}}</td>
+                        <td>{{rule.filter}}</td>
+                        <td>{{rule.applicationPkg}}</td>
+                        <td>{{rule.configurationName}}</td>
+                        <td>{{rule.groupName}}</td>
+                        <td>
+                            <div>
+                                <button type='button' class='btn btn-default' ng-click='editRule( rule )'>
+                                    <span class='glyphicon glyphicon-pencil'></span>
+                                </button>
+                                <button type='button' class='btn btn-default' ng-click='removeRule( rule )'>
+                                    <span class='glyphicon glyphicon-trash'></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+
+        </form>
+    </div>
+</div>
+

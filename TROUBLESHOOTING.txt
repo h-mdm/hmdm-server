@@ -1,0 +1,7 @@
+Problem: QR code isn't opening
+Reason: The project URL is not accessible from the local machine.
+Solution: 
+Make the project URL accessible from the local machine.
+If you're using iptables to redirect port 80 to 8080, redirect also for loopback interface:
+
+# iptables -A OUTPUT -o lo -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080

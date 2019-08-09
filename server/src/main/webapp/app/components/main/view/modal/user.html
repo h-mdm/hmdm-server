@@ -1,0 +1,77 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.user.login</label>
+            <div class='col-sm-9'>
+                <input ng-model='user.login' required type='text' class='form-control'
+                       localized-placeholder='form.user.login.placeholder'/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.user.name</label>
+            <div class='col-sm-9'>
+                <input ng-model='user.name' required type='text' class='form-control'
+                       localized-placeholder='form.user.name.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.user.role</label>
+            <div class='col-sm-9'>
+                <select class='form-control' id="iconSize-c" ng-model='user.userRole.id'>
+                    <option ng-repeat="userRole in userRoles"
+                            ng-value="userRole.id" ng-selected="user.userRole.id === userRole.id">{{userRole.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.user.all.devices.available</label>
+            <div class='col-sm-9'>
+                <input id='sort-by-name' type="checkbox" name="allDevices" class='form-control'
+                       ng-model="user.allDevicesAvailable"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="!user.allDevicesAvailable">
+            <label class='col-sm-3 control-label' localized>form.user.available.groups</label>
+            <div class='col-sm-9'>
+                <div ng-dropdown-multiselect
+                     options='groupsList'
+                     translation-texts='tableFilteringTexts'
+                     selected-model='groupsSelection'
+                     class='left margin-right-half custom-multi-select'></div>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label for='newPassword' class='col-sm-3 control-label' ng-if="user.id > 0" localized>form.user.password.new</label>
+            <label for='newPassword' class='col-sm-3 control-label' ng-if="!user.id" localized>form.user.password</label>
+            <div class='col-sm-9'>
+                <input ng-model='user.newPassword' type='password' class='form-control' id='newPassword'
+                       localized-placeholder='form.user.password.new.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label for='confirm' class='col-sm-3 control-label' localized>form.user.password.confirm</label>
+            <div class='col-sm-9'>
+                <input ng-model='user.confirm' type='password' class='form-control' id='confirm'
+                       localized-placeholder='form.user.password.confirm.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-2 col-sm-9'>
+                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

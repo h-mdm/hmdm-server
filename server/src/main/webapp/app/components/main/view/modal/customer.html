@@ -1,0 +1,49 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.name</label>
+            <div class='col-sm-9'>
+                <input ng-model='customer.name' required type='text' class='form-control'
+                       localized-placeholder='form.customer.name.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.desc</label>
+            <div class='col-sm-9'>
+                <textarea ng-model='customer.description' class='form-control no-resize'
+                          localized-placeholder='form.customer.desc.placeholder'></textarea>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="!customer.id">
+            <label class='col-sm-3 control-label' localized>form.customer.copy.configuration</label>
+            <div class='col-sm-9'>
+                <div ng-dropdown-multiselect
+                     options='configurationsList'
+                     translation-texts='tableFilteringTexts'
+                     selected-model='configurationsSelection'
+                     class='left margin-right-half custom-multi-select'></div>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="!customer.id">
+            <label class='col-sm-3 control-label' for="copydes"localized>form.customer.copy.design</label>
+            <div class='col-sm-2'>
+                <input type="checkbox" class="form-control" id="copydes" name="copydes" ng-model="customer.copyDesign"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-3 col-sm-8'>
+                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

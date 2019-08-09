@@ -1,0 +1,151 @@
+<!-- Localization completed -->
+<div ng-controller="PluginDeviceLogTabController">
+    <div class="text-center">
+        <h4 localized>plugin.devicelog.tab.title</h4>
+    </div>
+
+    <div>
+        <div class='form-group'>
+            <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+        </div>
+
+        <div class='form-group'>
+            <div class="col-sm-3">
+                <input type="text"
+                       ng-model="paging.deviceFilter"
+                       ng-enter='search()'
+                       localized-placeholder="search.placeholder.device"
+                       autocomplete="off"
+                       class="form-control"
+                       typeahead="device for device in getDevices($viewValue)"
+                       typeahead-loading="loadingDevices"
+                       typeahead-wait-ms="300"
+                       typeahead-focus-first="false"
+                       typeahead-input-formatter="deviceLookupFormatter($model)"
+                       typeahead-no-results="noResults">
+            </div>
+            <div class="col-sm-3">
+                <input type="text"
+                       ng-model="paging.applicationFilter"
+                       ng-enter='search()'
+                       localized-placeholder="search.placeholder.application"
+                       autocomplete="off"
+                       class="form-control"
+                       typeahead="app for app in getApplications($viewValue)"
+                       typeahead-loading="loadingApps"
+                       typeahead-wait-ms="300"
+                       typeahead-focus-first="false"
+                       typeahead-no-results="noResults">
+            </div>
+            <div class="col-sm-6">
+                <input type="text"
+                       ng-model="paging.messageFilter"
+                       ng-enter='search()'
+                       localized-placeholder="search.placeholder.message"
+                       class="form-control">
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div class="form-group">
+            <div class='col-sm-3'>
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.from"
+                           ng-model='paging.dateFrom' is-open='openDatePickers.dateFrom' show-button-bar='false'
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar( $event, true )'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+            <div class='col-sm-3'>
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.to"
+                           ng-model='paging.dateTo' is-open='openDatePickers.dateTo' show-button-bar='false'
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar( $event, false )'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <select name="kdkdk" ng-model="paging.severity" class="form-control">
+                    <option ng-value="-1" ng-selected="paging.severity === -1" localized>plugin.devicelog.option.severyty.default</option>
+                    <option ng-value="0" ng-selected="paging.severity === 0">NONE</option>
+                    <option ng-value="1" ng-selected="paging.severity === 1">ERROR</option>
+                    <option ng-value="2" ng-selected="paging.severity === 2">WARNING</option>
+                    <option ng-value="3" ng-selected="paging.severity === 3">INFO</option>
+                    <option ng-value="4" ng-selected="paging.severity === 4">DEBUG</option>
+                    <option ng-value="5" ng-selected="paging.severity === 5">VERBOSE</option>
+                </select>
+            </div>
+
+            <div class='col-sm-3 text-right'>
+                <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+                <button type='button' class='btn btn-default' ng-click='exportFile()' localized>button.export</button>
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+        <br/>
+
+        <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+            <pagination
+                    boundary-links='true' class='pagination-sm'
+                    max-size='3'
+                    ng-model='paging.pageNum'
+                    total-items='paging.totalItems'
+                    items-per-page='paging.pageSize'
+                    previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                    last-text='&raquo;'></pagination>
+        </div>
+
+        <table ng-if='logs && logs.length > 0' class='table'>
+            <thead>
+            <tr>
+                <th ng-click='sortByCreateTime()'>
+                    <span localized>table.heading.plugin.devicelog.dateTime</span>
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                </th>
+                <th ng-click='sortByDeviceNumber()'>
+                    <span localized>table.heading.plugin.devicelog.deviceNumber</span>
+                    <span ng-if='paging.sortValue === "deviceNumber"' class="glyphicon glyphicon-sort-by-attributes"></span>
+                </th>
+                <th localized>table.heading.plugin.devicelog.app</th>
+                <th localized>table.heading.plugin.devicelog.severity</th>
+                <th localized>table.heading.plugin.devicelog.message</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat='log in logs'>
+                <td>{{log.createTime | date:createTimeFormat}}.{{("00000" + (log.createTime % 1000)).slice(-3) }}</td>
+                <td>{{log.deviceNumber}}</td>
+                <td>{{log.applicationPkg}}</td>
+                <td>{{log.severity}}</td>
+                <td>{{log.message}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div ng-if='logs && logs.length === 0' class='center' localized>notfound.common.plugin.devicelog.logs</div>
+
+        <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+            <pagination
+                    boundary-links='true' class='pagination-sm'
+                    max-size='3'
+                    ng-model='paging.pageNum'
+                    total-items='paging.totalItems'
+                    items-per-page='paging.pageSize'
+                    previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                    last-text='&raquo;'></pagination>
+        </div>
+
+    </div>
+</div>

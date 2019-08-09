@@ -1,0 +1,67 @@
+<html ng-app='headwind-kiosk'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Headwind MDM server</title>
+
+    <link href="images/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel='stylesheet' type='text/css' href='lib/ng-tags-input/ng-tags-input.css'>
+    <link rel='stylesheet' type='text/css' href='lib/angular-bootstrap-colorpicker/colorpicker.css'>
+
+    <script src='localization/en_US.js'></script>
+    <script src='localization/ru_RU.js'></script>
+
+    <script src='lib/angular/angular.js'></script>
+    <script src='lib/angular-resource/angular-resource.js'></script>
+    <script src='lib/angular-cookies/angular-cookies.js'></script>
+    <script src='lib/angular-bootstrap/ui-bootstrap-tpls.js'></script>
+    <script src='lib/angular-ui-router/angular-ui-router.js'></script>
+    <script src='lib/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.js'></script>
+    <script src='lib/angular-ui-mask/mask.js'></script>
+    <script src='lib/angular-breadcrumb/angular-breadcrumb.js'></script>
+    <script src='lib/angular-animate/angular-animate.js'></script>
+
+    <script src='lib/blueimp-md5/md5.js'></script>
+    <script src='lib/ng-tags-input/ng-tags-input.js'></script>
+    <script src='lib/angular-upload/angular-upload.js'></script>
+    <script src='lib/oclazyload/ocLazyLoad.js'></script>
+    <script src='lib/myforce-angularjs-dropdown-multiselect/angularjs-dropdown-multiselect.js'></script>
+
+    <script src='app/app.js?timestamp=3'></script>
+    <script src='app/spinner.js?timestamp=3'></script>
+
+    <script src='app/components/header/header.controller.js?timestamp=3'></script>
+    <script src='app/components/about/about.controller.js?timestamp=3'></script>
+
+    <script src='app/components/main/controller/devices.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/applications.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/configurations.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/files.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/groups.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/settings.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/login.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/qr.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/profile.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/users.controller.js?timestamp=3'></script>
+    <script src='app/components/main/controller/tabs.controller.js?timestamp=3'></script>
+    <script src='app/components/control-panel/controller/panel.controller.js?timestamp=3'></script>
+
+    <script src='app/components/main/service/main.service.js?timestamp=3'></script>
+
+    <script src='app/shared/service/auth.service.js?timestamp=3'></script>
+    <script src='app/shared/service/user.service.js?timestamp=3'></script>
+    <script src='app/shared/service/confirm.service.js?timestamp=3'></script>
+    <script src='app/shared/service/alert.service.js?timestamp=3'></script>
+    <script src='app/shared/service/progress.service.js?timestamp=3'></script>
+    <script src='app/shared/service/pagination.service.js?timestamp=3'></script>
+    <script src='app/shared/service/locale.service.js?timestamp=3'></script>
+
+    <script src='app/shared/filters.js'></script>
+    <script src='app/shared/directives.js'></script>
+
+    <link rel='stylesheet' type='text/css' href='lib/bootstrap-css-only/css/bootstrap.css'>
+    <link rel='stylesheet' type='text/css' href='css/main.css'>
+</head>
+<body>
+    <div ng-include='"app/components/main/view/main.html"'></div>
+</body>
+</html>

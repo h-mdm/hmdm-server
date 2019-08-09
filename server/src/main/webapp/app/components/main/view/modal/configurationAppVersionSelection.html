@@ -1,0 +1,41 @@
+<!-- Localization completed -->
+<div ng-show='errorMessage' class='modal-header'>
+    <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+</div>
+<div class='modal-body'>
+    <form class='form-horizontal'>
+
+        <div class='form-group text-center'>
+            <label class='control-label'>{{application.name}}</label>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-6">
+                <label for="dkwekdsk" localized>form.configuration.app.version.select.select.title</label>
+            </div>
+            <div class="col-sm-6">
+                <select class='form-control' id="dkwekdsk"
+                        ng-model='usedVersion.applicationVersionId'
+                        ng-options="version.id as version.version for version in versions">
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-6">
+                <label for="sdjssdjjh" localized>form.configuration.app.version.select.version.check.off</label>
+            </div>
+            <div class="col-sm-1">
+                <input type="checkbox" class="form-control" id="sdjssdjjh"
+                       ng-model="applicationParameters.skipVersionCheck"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-12 text-center'>
+                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.apply</button>
+                <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

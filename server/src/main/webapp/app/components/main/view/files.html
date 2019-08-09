@@ -1,0 +1,70 @@
+<!-- Localization completed -->
+<div ng-controller="FilesTabController">
+    <div class='form-group'>
+        <input type='text'
+               ng-enter='search()'
+               ng-model='search.searchValue'
+               localized-placeholder='search.placeholder.file'
+               class='form-control configurations-search-input'>
+
+        <div class='configurations-search-buttons'>
+            <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+            <button type='button' class='btn btn-default' ng-click='addFile()' localized>button.add</button>
+        </div>
+    </div>
+
+    <div class="text-center" ng-if="files.length > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.currentPage'
+                total-items='files.length'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+    <table ng-if='files && files.length > 0' class='table'>
+        <thead>
+        <tr>
+            <th localized>table.heading.file.name</th>
+            <th localized>table.heading.file.path</th>
+            <th localized>table.heading.file.address</th>
+            <th class='actions-column' localized>table.heading.file.actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat='file in files.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
+            <td>{{file.name}}</td>
+            <td>{{file.path}}</td>
+            <td>{{file.url}}</td>
+
+            <td>
+                <div>
+                    <button type='button' localized-title="button.application"
+                            class='btn btn-default' ng-click='showApps( file )'>
+                        <span class='glyphicon glyphicon-list'></span>
+                    </button>
+                    <button type='button' localized-title="button.delete"
+                            class='btn btn-default' ng-click='removeFile( file )'>
+                        <span class='glyphicon glyphicon-trash'></span>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div ng-if='files && files.length == 0' class='center' localized>notfound.files</div>
+
+    <div class="text-center" ng-if="files.length > paging.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='paging.currentPage'
+                total-items='files.length'
+                items-per-page='paging.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+</div>
