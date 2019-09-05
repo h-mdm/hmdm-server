@@ -370,6 +370,20 @@ public interface ApplicationMapper {
     int recheckConfigurationMainApplications(@Param("customerId") Integer customerId);
 
     @Update("UPDATE configurations " +
+            "SET mainAppId = (" +
+            "                 SELECT ca.applicationVersionId " +
+            "                 FROM configurationApplications ca " +
+            "                 WHERE ca.configurationId = configurations.id " +
+            "                 AND ca.action = 1 " +
+            "                 AND ca.applicationId = (SELECT av.applicationId " +
+            "                                         FROM applicationVersions av" +
+            "                                         WHERE av.id = configurations.mainAppId)" +
+            ") " +
+            "WHERE configurations.id = #{configurationId} " +
+            "AND NOT configurations.mainAppId IS NULL")
+    int recheckConfigurationMainApplication(@Param("configurationId") Integer configurationId);
+
+    @Update("UPDATE configurations " +
             "SET contentAppId = (" +
             "                 SELECT ca.applicationVersionId " +
             "                 FROM configurationApplications ca " +
@@ -382,6 +396,20 @@ public interface ApplicationMapper {
             "WHERE configurations.customerId = #{customerId} " +
             "AND NOT configurations.contentAppId IS NULL")
     int recheckConfigurationContentApplications(@Param("customerId") Integer customerId);
+
+    @Update("UPDATE configurations " +
+            "SET contentAppId = (" +
+            "                 SELECT ca.applicationVersionId " +
+            "                 FROM configurationApplications ca " +
+            "                 WHERE ca.configurationId = configurations.id " +
+            "                 AND ca.action = 1 " +
+            "                 AND ca.applicationId = (SELECT av.applicationId " +
+            "                                         FROM applicationVersions av" +
+            "                                         WHERE av.id = configurations.contentAppId)" +
+            ") " +
+            "WHERE configurations.id = #{configurationId} " +
+            "AND NOT configurations.contentAppId IS NULL")
+    int recheckConfigurationContentApplication(@Param("configurationId") Integer configurationId);
 
     @Update("UPDATE configurations " +
             "SET kioskMode = NOT configurations.contentAppId IS NULL " +

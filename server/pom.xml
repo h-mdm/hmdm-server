@@ -177,6 +177,35 @@
                             <arguments>resolve</arguments>
                         </configuration>
                     </execution>
+
+<!--
+                    <execution>
+                        <id>remove node modules</id>
+                        <goals><goal>grunt</goal></goals>
+
+                        <configuration>
+                            <arguments>remove-node-modules</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>npx npm-force-resolutions</id>
+                        <goals><goal>npm</goal></goals>
+
+                        <configuration>
+                            <arguments>run npm-force-resolutions</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>npm install non-vulnerable libraries</id>
+                        <goals><goal>npm</goal></goals>
+
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+-->
                 </executions>
             </plugin>
         </plugins>

@@ -1,0 +1,169 @@
+/*
+ *
+ * Headwind MDM: Open Source Android MDM Software
+ * https://h-mdm.com
+ *
+ * Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hmdm.util;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.rest.json.APKFileDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+
+/**
+ * <p>An analyzer for uploaded APK-files.</p>
+ *
+ * @author isv
+ */
+@Singleton
+public class APKFileAnalyzer {
+
+    /**
+     * <p>A logger for the encountered events.</p>
+     */
+    private static final Logger log = LoggerFactory.getLogger(ApplicationDAO.class);
+
+    /**
+     * <p>A command line string to call the <code>aapt</code> command.</p>
+     */
+    private final String aaptCommand;
+
+    /**
+     * <p>Constructs new <code>APKFileAnalyzer</code> instance. This implementation does nothing.</p>
+     */
+    @Inject
+    public APKFileAnalyzer(@Named("aapt.command") String aaptCommand) {
+        this.aaptCommand = aaptCommand;
+    }
+
+    /**
+     * <p>Analyzes the specified APK file.</p>
+     *
+     * @param filePath an absolute path to an APK-file to be analyzed.
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
+     *         error.
+     */
+    public APKFileDetails analyzeFile(String filePath) {
+        try {
+            final String[] commands = {this.aaptCommand, "dump", "badging", filePath};
+            log.debug("Executing shell-commands: {}", Arrays.toString(commands));
+            final Process exec = Runtime.getRuntime().exec(commands);
+
+            final AtomicReference<String> appPkg = new AtomicReference<>();
+            final AtomicReference<String> appVersion = new AtomicReference<>();
+            final List<String> errorLines = new ArrayList<>();
+
+            // Process the error stream by collecting all the error lines for further logging
+            StreamGobbler errorGobbler = new StreamGobbler(exec.getErrorStream(), "ERROR", errorLines::add);
+
+            // Process the output by analyzing the line starting with "package:"
+            StreamGobbler outputGobbler = new StreamGobbler(exec.getInputStream(), "APK-file DUMP", line -> {
+                if (line.startsWith("package:")) {
+                    Scanner scanner = new Scanner(line).useDelimiter(" ");
+                    while (scanner.hasNext()) {
+                        final String token = scanner.next();
+                        if (token.startsWith("name=")) {
+                            String appPkgLocal = token.substring("name=".length());
+                            if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
+                                appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
+                            }
+                            appPkg.set(appPkgLocal);
+                        } else if (token.startsWith("versionName=")) {
+                            String appVersionLocal = token.substring("versionName=".length());
+                            if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
+                                appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
+                            }
+                            appVersion.set(appVersionLocal);
+                        }
+                    }
+                }
+            });
+
+            // Get ready to consume input and error streams from the process
+            errorGobbler.start();
+            outputGobbler.start();
+
+            final int exitCode = exec.waitFor();
+
+            outputGobbler.join();
+            errorGobbler.join();
+
+            if (exitCode == 0) {
+                log.debug("Parsed application name and version from APK-file {}: {} {}", filePath, appPkg, appVersion);
+                APKFileDetails result = new APKFileDetails();
+
+                result.setPkg(appPkg.get());
+                result.setVersion(appVersion.get());
+
+                return result;
+            } else {
+                log.error("Could not analyze the .apk-file {}. The system process returned: {}. " +
+                        "The error message follows:", filePath, exitCode);
+                errorLines.forEach(log::error);
+                throw new APKFileAnalyzerException("Could not analyze the .apk-file");
+            }
+        } catch (IOException | InterruptedException e) {
+            log.error("Unexpected error while analyzing APK-file: {}", filePath, e);
+            throw new APKFileAnalyzerException("Unexpected error while analyzing APK-file", e);
+        }
+    }
+
+
+    /**
+     * <p>A consumer for the stream contents. Outputs the line read from the stream and passes it to provided line
+     * consumer.</p>
+     */
+    private class StreamGobbler extends Thread {
+        private final InputStream is;
+        private final String type;
+        private final Consumer<String> lineConsumer;
+
+        private StreamGobbler(InputStream is, String type, Consumer<String> lineConsumer) {
+            this.is = is;
+            this.type = type;
+            this.lineConsumer = lineConsumer;
+        }
+
+        public void run() {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    log.debug(type + "> " + line);
+                    this.lineConsumer.accept(line);
+                }
+            } catch (Exception e) {
+                log.error("An error in {} stream handler for external process {}", this.type, aaptCommand, e);
+            }
+        }
+    }
+}

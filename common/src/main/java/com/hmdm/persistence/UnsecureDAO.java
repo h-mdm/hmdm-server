@@ -36,7 +36,10 @@ import com.hmdm.persistence.mapper.ConfigurationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.persistence.mapper.UserMapper;
 import com.hmdm.rest.json.LookupItem;
+import com.hmdm.security.SecurityContext;
 import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,11 +58,14 @@ import java.util.stream.Collectors;
 @Singleton
 public class UnsecureDAO {
 
+    private static final Logger logger = LoggerFactory.getLogger(UnsecureDAO.class);
+
     private final DeviceMapper deviceMapper;
     private final UserMapper userMapper;
     private final ConfigurationMapper configurationMapper;
     private final CommonMapper settingsMapper;
     private final ApplicationMapper applicationMapper;
+    private final ApplicationDAO applicationDAO;
     private final ApplicationSettingDAO applicationSettingDAO;
 
     /**
@@ -68,12 +74,13 @@ public class UnsecureDAO {
     @Inject
     public UnsecureDAO(DeviceMapper deviceMapper, UserMapper userMapper, ConfigurationMapper configurationMapper,
                        CommonMapper settingsMapper, ApplicationMapper applicationMapper,
-                       ApplicationSettingDAO applicationSettingDAO) {
+                       ApplicationDAO applicationDAO, ApplicationSettingDAO applicationSettingDAO) {
         this.deviceMapper = deviceMapper;
         this.userMapper = userMapper;
         this.configurationMapper = configurationMapper;
         this.settingsMapper = settingsMapper;
         this.applicationMapper = applicationMapper;
+        this.applicationDAO = applicationDAO;
         this.applicationSettingDAO = applicationSettingDAO;
     }
 
@@ -136,7 +143,22 @@ public class UnsecureDAO {
     }
 
     public void insertApplication(Application application) {
-        this.applicationMapper.insertApplication(application);
+        final List<User> users = this.userMapper.findAll(application.getCustomerId());
+        if (!users.isEmpty()) {
+            final User user = users.stream().filter(u -> !u.getUserRole().isSuperAdmin()).findAny().orElse(users.get(0));
+            logger.info("Using user account '{}' for setting up the security context when uploading application {} " +
+                    "from mobile device", user.getLogin(), application);
+
+            SecurityContext.init(user);
+            try {
+                this.applicationDAO.insertApplication(application);
+            } finally {
+                SecurityContext.release();
+            }
+        } else {
+            throw new DAOException("No user accounts have been found mapped to requested customer account: #"
+                    + application.getCustomerId());
+        }
     }
 
     public Application findApplicationById(Integer appId) {

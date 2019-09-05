@@ -21,13 +21,17 @@
 
 package com.hmdm.rest.json;
 
+import java.io.Serializable;
+
 /**
  * <p>A DTO representing a request for uploading new application to server.</p>
  *
  * @author isv
  */
-public class UploadAppRequest {
+public class UploadAppRequest implements Serializable {
 
+    private static final long serialVersionUID = 514589555301053784L;
+    
     // Application data
     private String localPath;
     private String name;
@@ -35,6 +39,8 @@ public class UploadAppRequest {
     private String version;
     private String pkg;
     private boolean showIcon;
+    private boolean runAfterInstall;
+    private boolean system;
 
     // Request related data
     private String deviceId;
@@ -108,5 +114,37 @@ public class UploadAppRequest {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public boolean isRunAfterInstall() {
+        return runAfterInstall;
+    }
+
+    public void setRunAfterInstall(boolean runAfterInstall) {
+        this.runAfterInstall = runAfterInstall;
+    }
+
+    public boolean isSystem() {
+        return system;
+    }
+
+    public void setSystem(boolean system) {
+        this.system = system;
+    }
+
+    @Override
+    public String toString() {
+        return "UploadAppRequest{" +
+                "localPath='" + localPath + '\'' +
+                ", name='" + name + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", version='" + version + '\'' +
+                ", pkg='" + pkg + '\'' +
+                ", showIcon=" + showIcon +
+                ", runAfterInstall=" + runAfterInstall +
+                ", system=" + system +
+                ", deviceId='" + deviceId + '\'' +
+                ", hash='" + hash + '\'' +
+                '}';
     }
 }

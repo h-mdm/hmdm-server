@@ -11,7 +11,7 @@ angular.module('headwind-kiosk',
         'ru': "ru_RU",
         'ru_RU': "ru_RU",
     })
-    .constant("APP_VERSION", "3.05.0006") // Update this value on each commit
+    .constant("APP_VERSION", "3.06.0003") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {

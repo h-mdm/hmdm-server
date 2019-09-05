@@ -23,31 +23,27 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.ApplicationConfigurationLink;
 import com.hmdm.rest.json.ApplicationVersionConfigurationLink;
 import com.hmdm.rest.json.LinkConfigurationsToAppRequest;
 import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
 import com.hmdm.rest.json.LookupItem;
+import com.hmdm.util.APKFileAnalyzer;
 import com.hmdm.util.ApplicationUtil;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -70,18 +66,18 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     private final CustomerDAO customerDAO;
     private final String filesDirectory;
     private final String baseUrl;
-    private final String aaptCommand;
+    private APKFileAnalyzer apkFileAnalyzer;
 
     @Inject
     public ApplicationDAO(ApplicationMapper mapper, CustomerDAO customerDAO,
                           @Named("files.directory") String filesDirectory,
                           @Named("base.url") String baseUrl,
-                          @Named("aapt.command") String aaptCommand) {
+                          APKFileAnalyzer apkFileAnalyzer) {
         this.mapper = mapper;
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
-        this.aaptCommand = aaptCommand;
+        this.apkFileAnalyzer = apkFileAnalyzer;
     }
 
     public List<Application> getAllApplications() {
@@ -104,7 +100,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      *         exists either for current or master customer account.
      */
     @Transactional
-    public int insertApplication(Application application) throws IOException, InterruptedException {
+    public int insertApplication(Application application) {
         log.debug("Entering #insertApplication: application = {}", application);
 
         // If an APK-file was set for new app then make the file available in Files area and parse the app parameters
@@ -117,67 +113,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             File movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
             if (movedFile != null) {
                 final String fileName = movedFile.getAbsolutePath();
-                final String[] commands = {this.aaptCommand, "dump", "badging", fileName};
-                log.debug("Executing shell-commands: {}", Arrays.toString(commands));
-                final Process exec = Runtime.getRuntime().exec(commands);
+                final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(fileName);
 
-                final AtomicReference<String> appPkg = new AtomicReference<>();
-                final AtomicReference<String> appVersion = new AtomicReference<>();
-                final List<String> errorLines = new ArrayList<>();
-
-                // Process the error stream by collecting all the error lines for further logging
-                StreamGobbler errorGobbler = new StreamGobbler(exec.getErrorStream(), "ERROR", errorLines::add);
-
-                // Process the output by analzying the line starting with "package:"
-                StreamGobbler outputGobbler = new StreamGobbler(exec.getInputStream(), "APK-file DUMP", line -> {
-                    if (line.startsWith("package:")) {
-                        Scanner scanner = new Scanner(line).useDelimiter(" ");
-                        while (scanner.hasNext()) {
-                            final String token = scanner.next();
-                            if (token.startsWith("name=")) {
-                                String appPkgLocal = token.substring("name=".length());
-                                if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
-                                    appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
-                                }
-                                appPkg.set(appPkgLocal);
-                            } else if (token.startsWith("versionName=")) {
-                                String appVersionLocal = token.substring("versionName=".length());
-                                if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
-                                    appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
-                                }
-                                appVersion.set(appVersionLocal);
-                            }
-                        }
-                    }
-                });
-
-                // Get ready to consume input and error streams from the process
-                errorGobbler.start();
-                outputGobbler.start();
-
-                final int exitCode = exec.waitFor();
-
-                outputGobbler.join();
-                errorGobbler.join();
-
-                if (exitCode == 0) {
-                    // If URL is not specified explicitly for new app then set the application URL to reference to that
-                    // file
-                    if ((application.getUrl() == null || application.getUrl().trim().isEmpty())) {
-                        application.setUrl(this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName());
-                    }
-
-                    log.debug("Parsed application name and version from APK-file {}: {} {}",
-                            movedFile.getName(), appPkg, appVersion);
-
-                    application.setPkg(appPkg.get());
-                    application.setVersion(appVersion.get());
-
-                } else {
-                    log.error("Could not analyze the .apk-file {}. The system process returned: {}. The error message follows:", fileName, exitCode);
-                    errorLines.forEach(log::error);
-                    throw new DAOException("Could not analyze the .apk-file");
+                // If URL is not specified explicitly for new app then set the application URL to reference to that
+                // file
+                if ((application.getUrl() == null || application.getUrl().trim().isEmpty())) {
+                    application.setUrl(this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName());
                 }
+
+                application.setPkg(apkFileDetails.getPkg());
+                application.setVersion(apkFileDetails.getVersion());
             } else {
                 log.error("Could not move the uploaded .apk-file {}", filePath);
                 throw new DAOException("Could not move the uploaded .apk-file");
@@ -804,7 +749,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      *         exists either for current or master customer account.
      */
     @Transactional
-    public int insertApplicationVersion(ApplicationVersion applicationVersion) throws IOException, InterruptedException {
+    public int insertApplicationVersion(ApplicationVersion applicationVersion) {
         log.debug("Entering #insertApplicationVersion: application = {}", applicationVersion);
 
         // If an APK-file was set for new app then make the file available in Files area and parse the app parameters
@@ -819,64 +764,15 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             File movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
             if (movedFile != null) {
                 final String fileName = movedFile.getAbsolutePath();
-                final String[] commands = {this.aaptCommand, "dump", "badging", fileName};
-                log.debug("Executing shell-commands: {}", Arrays.toString(commands));
-                final Process exec = Runtime.getRuntime().exec(commands);
+                final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(fileName);
 
-                final AtomicReference<String> appVersion = new AtomicReference<>();
-                final List<String> errorLines = new ArrayList<>();
-
-                // Process the error stream by collecting all the error lines for further logging
-                StreamGobbler errorGobbler = new StreamGobbler(exec.getErrorStream(), "ERROR", errorLines::add);
-
-                // Process the output by analzying the line starting with "package:"
-                StreamGobbler outputGobbler = new StreamGobbler(exec.getInputStream(), "APK-file DUMP", line -> {
-                    if (line.startsWith("package:")) {
-                        Scanner scanner = new Scanner(line).useDelimiter(" ");
-                        while (scanner.hasNext()) {
-                            final String token = scanner.next();
-                            if (token.startsWith("name=")) {
-                                String appPkgLocal = token.substring("name=".length());
-                                if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
-                                    appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
-                                }
-                                appPkg.set(appPkgLocal);
-                            } else if (token.startsWith("versionName=")) {
-                                String appVersionLocal = token.substring("versionName=".length());
-                                if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
-                                    appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
-                                }
-                                appVersion.set(appVersionLocal);
-                            }
-                        }
-                    }
-                });
-
-                // Get ready to consume input and error streams from the process
-                errorGobbler.start();
-                outputGobbler.start();
-
-                final int exitCode = exec.waitFor();
-
-                outputGobbler.join();
-                errorGobbler.join();
-                
-                if (exitCode == 0) {
-                    // If URL is not specified explicitly for new app then set the application URL to reference to that
-                    // file
-                    if ((applicationVersion.getUrl() == null || applicationVersion.getUrl().trim().isEmpty())) {
-                        applicationVersion.setUrl(this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName());
-                    }
-
-                    log.debug("Parsed application name and version from APK-file {}: {} {}", movedFile.getName(), appPkg, appVersion);
-
-                    applicationVersion.setVersion(appVersion.get());
-
-                } else {
-                    log.error("Could not analyze the .apk-file {}. The system process returned: {}. The error message follows:", fileName, exitCode);
-                    errorLines.forEach(log::error);
-                    throw new DAOException("Could not analyze the .apk-file");
+                // If URL is not specified explicitly for new app then set the application URL to reference to that
+                // file
+                if ((applicationVersion.getUrl() == null || applicationVersion.getUrl().trim().isEmpty())) {
+                    applicationVersion.setUrl(this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName());
                 }
+
+                applicationVersion.setVersion(apkFileDetails.getVersion());
             } else {
                 log.error("Could not move the uploaded .apk-file {}", filePath);
                 throw new DAOException("Could not move the uploaded .apk-file");
@@ -976,33 +872,5 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         return SecurityContext.get().getCurrentUser()
                 .map(u -> this.mapper.findMatchingApplicationPackages(u.getCustomerId(), searchFilter, resultsCount))
                 .orElse(new ArrayList<>());
-    }
-
-    /**
-     * <p>A consumer for the stream contents. Outputs the line read from the stream and passes it to provided line
-     * consumer.</p>
-     */
-    private class StreamGobbler extends Thread {
-        private final InputStream is;
-        private final String type;
-        private final Consumer<String> lineConsumer;
-
-        private StreamGobbler(InputStream is, String type, Consumer<String> lineConsumer) {
-            this.is = is;
-            this.type = type;
-            this.lineConsumer = lineConsumer;
-        }
-
-        public void run() {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    log.debug(type + "> " + line);
-                    this.lineConsumer.accept(line);
-                }
-            } catch (Exception e) {
-                log.error("An error in {} stream handler for external process {}", this.type, aaptCommand, e);
-            }
-        }
     }
 }

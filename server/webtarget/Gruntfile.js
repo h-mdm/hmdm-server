@@ -5,7 +5,11 @@ module.exports = function( grunt ) {
         // install bower dependencies
         // options: https://github.com/yatskevich/grunt-bower-task
         bower: {
-            install: {}
+            install: {
+                options: {
+                    copy: true
+                }
+            }
         },
 
         // grunt clean task
@@ -14,13 +18,14 @@ module.exports = function( grunt ) {
             dist: {
                 options: { force: true },
                 build: [ 'bower_components', 'lib', '../src/main/webapp/lib' ]
-            }
+            },
+            nodeModules: ['./node_modules']
         },
 
         // grunt copy task
         // options: https://github.com/gruntjs/grunt-contrib-copy
         copy : {
-            index : {
+            main : {
                 files: [ { expand: true, cwd: 'lib/', src: [ '**/*',  '!**/bootstrap-css-only/**' ], dest: '../src/main/webapp/lib' },
                          { expand: true, cwd: 'lib/bootstrap-css-only/', src: [ '*.css' ], dest: '../src/main/webapp/lib/bootstrap-css-only/css/' },
                          { expand: true, cwd: 'lib/bootstrap-css-only/', src: [ 'glyphicons*' ], dest: '../src/main/webapp/lib/bootstrap-css-only/fonts/' } ]
@@ -32,5 +37,6 @@ module.exports = function( grunt ) {
     grunt.loadNpmTasks( 'grunt-contrib-clean' );
     grunt.loadNpmTasks( 'grunt-contrib-copy' );
 
-    grunt.registerTask( 'resolve', [ 'clean', 'bower:install', 'copy' ] );
-}
+    grunt.registerTask( 'resolve', [ 'clean:dist', 'bower:install', 'copy' ] );
+    grunt.registerTask( 'remove-node-modules', [ 'clean:nodeModules'] );
+};

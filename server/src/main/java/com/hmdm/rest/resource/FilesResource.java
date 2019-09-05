@@ -24,6 +24,9 @@ package com.hmdm.rest.resource;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.hmdm.rest.json.APKFileDetails;
+import com.hmdm.rest.json.FileUploadResult;
+import com.hmdm.util.APKFileAnalyzer;
 import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -79,6 +82,7 @@ public class FilesResource {
     private static final String DELIMITER = "1111111";
     private CustomerDAO customerDAO;
     private ApplicationDAO applicationDAO;
+    private APKFileAnalyzer apkFileAnalyzer;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -90,7 +94,8 @@ public class FilesResource {
     public FilesResource(@Named("files.directory") String filesDirectory,
                          @Named("base.url") String baseUrl,
                          CustomerDAO customerDAO,
-                         ApplicationDAO applicationDAO) {
+                         ApplicationDAO applicationDAO,
+                         APKFileAnalyzer apkFileAnalyzer) {
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
         this.customerDAO = customerDAO;
@@ -98,6 +103,7 @@ public class FilesResource {
         if (!this.baseDirectory.exists()) {
             this.baseDirectory.mkdirs();
         }
+        this.apkFileAnalyzer = apkFileAnalyzer;
 
         this.baseUrl = baseUrl;
     }
@@ -205,16 +211,42 @@ public class FilesResource {
     @ApiOperation(
             value = "Upload file",
             notes = "Uploads the file to server. Returns a path to uploaded file",
-            response = String.class
+            response = FileUploadResult.class
     )
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
                                 @FormDataParam("file") @ApiParam("A file to upload") FormDataContentDisposition fileDetail) throws Exception {
-        File uploadFile = File.createTempFile(fileDetail.getFileName() + DELIMITER, "temp");
-        writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
-        return Response.OK(uploadFile.getAbsolutePath());
+        try {
+            File uploadFile = File.createTempFile(fileDetail.getFileName() + DELIMITER, "temp");
+            writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
+
+            FileUploadResult result = new FileUploadResult();
+            result.setServerPath(uploadFile.getAbsolutePath());
+
+            final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
+            result.setFileDetails(apkFileDetails);
+
+            final List<Application> dbAppsByPkg = this.applicationDAO.findByPackageId(apkFileDetails.getPkg());
+            if (!dbAppsByPkg.isEmpty()) {
+                final Application dbApp = dbAppsByPkg.get(0);
+                final Application dbAppCopy = new Application();
+                dbAppCopy.setId(dbApp.getId());
+                dbAppCopy.setShowIcon(dbApp.getShowIcon());
+                dbAppCopy.setRunAfterInstall(dbApp.isRunAfterInstall());
+                dbAppCopy.setSystem(dbApp.isSystem());
+                dbAppCopy.setName(dbApp.getName());
+
+                result.setApplication(dbAppCopy);
+            }
+
+
+            return Response.OK(result);
+        } catch (Exception e) {
+            logger.error("Unexpected error when handling file upload", e);
+            return Response.ERROR();
+        }
     }
 
     // =================================================================================================================

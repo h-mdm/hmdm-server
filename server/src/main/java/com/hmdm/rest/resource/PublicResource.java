@@ -48,6 +48,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -110,111 +111,118 @@ public class PublicResource {
 
         logger.info("Received Upload App request. App: {}", app);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        UploadAppRequest request = objectMapper.readValue(app, UploadAppRequest.class);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            UploadAppRequest request = objectMapper.readValue(app, UploadAppRequest.class);
 
-        String deviceId = StringUtil.stripOffTrailingCharacter(request.getDeviceId(), "\"");
-        String hash = StringUtil.stripOffTrailingCharacter(request.getHash(), "\"");
+            String deviceId = StringUtil.stripOffTrailingCharacter(request.getDeviceId(), "\"");
+            String hash = StringUtil.stripOffTrailingCharacter(request.getHash(), "\"");
 
-        List<String> errors = new ArrayList<>();
-        if (request.getName() == null || request.getName().isEmpty()) {
-            errors.add("name");
-        }
-        if (request.getName() == null || request.getName().isEmpty()) {
-            errors.add("name");
-        }
-        if (request.getPkg() == null || request.getPkg().isEmpty()) {
-            errors.add("pkg");
-        }
-        if (request.getVersion() == null || request.getVersion().isEmpty()) {
-            errors.add("version");
-        }
-        if (fileDetail != null && !fileDetail.getFileName().isEmpty() && uploadedInputStream != null) {
-            if (request.getLocalPath() == null || request.getLocalPath().isEmpty()) {
-                errors.add("localPath");
+            List<String> errors = new ArrayList<>();
+            if (request.getName() == null || request.getName().isEmpty()) {
+                errors.add("name");
             }
-            if (request.getFileName() == null || request.getFileName().isEmpty()) {
-                errors.add("fileName");
+            if (request.getName() == null || request.getName().isEmpty()) {
+                errors.add("name");
             }
-        }
-        if (deviceId == null || deviceId.isEmpty()) {
-            errors.add("deviceId");
-        }
-        if (hash == null || hash.isEmpty()) {
-            errors.add("hash");
-        }
+            if (request.getPkg() == null || request.getPkg().isEmpty()) {
+                errors.add("pkg");
+            }
+            if (request.getVersion() == null || request.getVersion().isEmpty()) {
+                errors.add("version");
+            }
+            if (fileDetail != null && !fileDetail.getFileName().isEmpty() && uploadedInputStream != null) {
+                if (request.getLocalPath() == null || request.getLocalPath().isEmpty()) {
+                    errors.add("localPath");
+                }
+                if (request.getFileName() == null || request.getFileName().isEmpty()) {
+                    errors.add("fileName");
+                }
+            }
+            if (deviceId == null || deviceId.isEmpty()) {
+                errors.add("deviceId");
+            }
+            if (hash == null || hash.isEmpty()) {
+                errors.add("hash");
+            }
 
-        if (!errors.isEmpty()) {
-            logger.error("Не указаны требуемые данные: {}", errors);
-            return Response.ERROR("error.params.missing", errors);
-        }
+            if (!errors.isEmpty()) {
+                logger.error("Не указаны требуемые данные: {}", errors);
+                return Response.ERROR("error.params.missing", errors);
+            }
 
-        String expectedHash = CryptoUtil.getMD5String(deviceId + this.hashSecret);
-        if (!expectedHash.equalsIgnoreCase(hash)) {
-            logger.error("Hash invalid for upload app request from device {}. Expected: {} but got {}",
-                    deviceId, expectedHash, hash.toUpperCase());
-//            System.out.println("Hash invalid: " + expectedHash + " vs " + hash);
-//            return Response.ERROR("Invalid hash"); // TODO : ISV : Commented for now #5854
-        }
+            String expectedHash = CryptoUtil.getMD5String(deviceId + this.hashSecret);
+            if (!expectedHash.equalsIgnoreCase(hash)) {
+                logger.error("Hash invalid for upload app request from device {}. Expected: {} but got {}",
+                        deviceId, expectedHash, hash.toUpperCase());
+    //            System.out.println("Hash invalid: " + expectedHash + " vs " + hash);
+    //            return Response.ERROR("Invalid hash"); // TODO : ISV : Commented for now #5854
+            }
 
-        // Find device and get the customer
-        Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceId);
-        if (dbDevice == null) {
-            logger.error("Device not found: {}", deviceId);
-            return Response.DEVICE_NOT_FOUND_ERROR();
-        }
+            // Find device and get the customer
+            Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceId);
+            if (dbDevice == null) {
+                logger.error("Device not found: {}", deviceId);
+                return Response.DEVICE_NOT_FOUND_ERROR();
+            }
 
-        // Check for duplicate package ID
-        List<Application> dbApps = this.unsecureDAO.findByPackageIdAndVersion(
-                dbDevice.getCustomerId(), request.getPkg(), request.getVersion()
-        );
-        if (!dbApps.isEmpty()) {
-            logger.error("Application with same package ID and version already exists: {} v{}", request.getPkg(), request.getVersion());
-            return Response.DUPLICATE_APPLICATION();
-        }
-
-        Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
-
-        boolean fileUploaded = false;
-        if (fileDetail != null && !fileDetail.getFileName().isEmpty() && uploadedInputStream != null) {
-            File uploadFile = new File(
-                    new File(new File(this.filesDirectory, customer.getFilesDir()), request.getLocalPath()), request.getFileName()
+            // Check for duplicate package ID
+            List<Application> dbApps = this.unsecureDAO.findByPackageIdAndVersion(
+                    dbDevice.getCustomerId(), request.getPkg(), request.getVersion()
             );
-
-            File parentFile = uploadFile.getParentFile();
-            if (!parentFile.exists()) {
-                parentFile.mkdirs();
+            if (!dbApps.isEmpty()) {
+                logger.error("Application with same package ID and version already exists: {} v{}", request.getPkg(), request.getVersion());
+                return Response.DUPLICATE_APPLICATION();
             }
 
-            if (parentFile.exists() && parentFile.isDirectory()) {
-                writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
-                fileUploaded = true;
-            } else {
-                logger.error("Can not save the file on server in directory: {}", parentFile);
-                return Response.INTERNAL_ERROR();
+            Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
+
+            boolean fileUploaded = false;
+            if (fileDetail != null && !fileDetail.getFileName().isEmpty() && uploadedInputStream != null) {
+                File uploadFile = new File(
+                        new File(new File(this.filesDirectory, customer.getFilesDir()), request.getLocalPath()), request.getFileName()
+                );
+
+                File parentFile = uploadFile.getParentFile();
+                if (!parentFile.exists()) {
+                    parentFile.mkdirs();
+                }
+
+                if (parentFile.exists() && parentFile.isDirectory()) {
+                    writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
+                    fileUploaded = true;
+                } else {
+                    logger.error("Can not save the file on server in directory: {}", parentFile);
+                    return Response.INTERNAL_ERROR();
+                }
             }
+
+            Application application = new Application();
+            application.setName(request.getName());
+            application.setPkg(request.getPkg());
+            application.setShowIcon(request.isShowIcon());
+            application.setRunAfterInstall(request.isRunAfterInstall());
+            application.setSystem(request.isSystem());
+            application.setVersion(request.getVersion());
+            application.setCustomerId(dbDevice.getCustomerId());
+
+            if (fileUploaded) {
+                String url = String.format("%s/files/%s/%s/%s", this.baseUrl,
+                        URLEncoder.encode(customer.getFilesDir(), "UTF8"),
+                        URLEncoder.encode(request.getLocalPath(), "UTF8"),
+                        URLEncoder.encode(request.getFileName(), "UTF8"));
+                application.setUrl(url);
+            }
+
+            this.unsecureDAO.insertApplication(application);
+
+            logger.info("Application {} has been uploaded to server from device {} successfully", application, deviceId);
+
+            return Response.OK();
+        } catch (Exception e) {
+            logger.error("Unexpected error while uploading application from mobile device", e);
+            return Response.INTERNAL_ERROR();
         }
-
-        Application application = new Application();
-        application.setName(request.getName());
-        application.setPkg(request.getPkg());
-        application.setShowIcon(request.isShowIcon());
-        application.setVersion(request.getVersion());
-        application.setCustomerId(dbDevice.getCustomerId());
-
-        if (fileUploaded) {
-            String url = String.format("%s/files/%s/%s/%s", this.baseUrl,
-                    URLEncoder.encode(customer.getFilesDir(), "UTF8"),
-                    URLEncoder.encode(request.getLocalPath(), "UTF8"),
-                    URLEncoder.encode(request.getFileName(), "UTF8"));
-            application.setUrl(url);
-        }
-
-        this.unsecureDAO.insertApplication(application);
-
-        logger.info("Application {} has been uploaded to server from device {} successfully", application, deviceId);
-
-        return Response.OK();
     }
 
 }

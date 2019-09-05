@@ -92,9 +92,12 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                         this.mapper.insertConfigurationApplications(configuration.getId(), configuration.getApplications());
                     }
 
-                    this.applicationMapper.recheckConfigurationMainApplications(configuration.getCustomerId());
-                    this.applicationMapper.recheckConfigurationContentApplications(configuration.getCustomerId());
-                    this.applicationMapper.recheckConfigurationKioskModes(configuration.getCustomerId());
+                    this.applicationMapper.recheckConfigurationMainApplication(configuration.getId());
+                    this.applicationMapper.recheckConfigurationContentApplication(configuration.getId());
+                    // #6159: When updating the configuration via configuration editor page the state of Kiosk Mode flag
+                    // is specified explicitly by the submitted form value, so there is no need to re-check the state of
+                    // that flag based on presence of content app in configuration
+//                    this.applicationMapper.recheckConfigurationKioskModes(configuration.getCustomerId());
 
                     this.mapper.removeConfigurationApplicationSettingsById(configuration.getId());
                     if (configuration.getApplicationSettings() != null && !configuration.getApplicationSettings().isEmpty()) {

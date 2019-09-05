@@ -118,7 +118,7 @@ angular.module('headwind-kiosk')
             $scope.loading = false;
 
             if (response.data.status === 'OK') {
-                $scope.file.path = response.data.message;
+                $scope.file.path = response.data.data.serverPath;
                 $scope.successMessage = localization.localize('success.file.uploaded.need.save');
             }
         };

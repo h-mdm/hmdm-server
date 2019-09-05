@@ -113,6 +113,7 @@ angular.module('headwind-kiosk')
             });
 
             modalInstance.result.then(function () {
+                $scope.search();
             });
 
         };
@@ -171,7 +172,14 @@ angular.module('headwind-kiosk')
 
             if (!$scope.invalidFile) {
                 if (response.data.status === 'OK') {
-                    $scope.file.path = response.data.message;
+                    $scope.file.path = response.data.data.serverPath;
+                    if (response.data.data.application) {
+                        var app = response.data.data.application;
+                        $scope.application.name = app.name;
+                        $scope.application.showIcon = app.showIcon;
+                        $scope.application.runAfterInstall = app.runAfterInstall;
+                        $scope.application.system = app.system;
+                    }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
                 }
@@ -497,7 +505,14 @@ angular.module('headwind-kiosk')
 
             if (!$scope.invalidFile) {
                 if (response.data.status === 'OK') {
-                    $scope.file.path = response.data.message;
+                    $scope.file.path = response.data.data.serverPath;
+                    if (response.data.data.application) {
+                        var app = response.data.data.application;
+                        $scope.application.name = app.name;
+                        $scope.application.showIcon = app.showIcon;
+                        $scope.application.runAfterInstall = app.runAfterInstall;
+                        $scope.application.system = app.system;
+                    }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
                 }

@@ -299,6 +299,12 @@ angular.module('headwind-kiosk')
                 return localizedText;
             };
 
+            $scope.filterApps = function (item) {
+                var filter = ($scope.paging.filterText || '').toLowerCase();
+                return (item.name && item.name.toLowerCase().indexOf(filter) >= 0) ||
+                    (item.pkg && item.pkg.toLowerCase().indexOf(filter) >= 0)
+            };
+
             $scope.addApp = function () {
                 var modalInstance = $modal.open({
                     templateUrl: 'app/components/main/view/modal/addConfigurationApplication.html',
@@ -1020,13 +1026,12 @@ angular.module('headwind-kiosk')
                 $scope.configuration.systemUpdateType = 0;
             }
 
-            $scope.filterText = '';
-
             $scope.selected = {id: ''};
 
             $scope.paging = {
                 currentPage: 1,
-                pageSize: 50
+                pageSize: 50,
+                filterText: ''
             };
 
             $scope.settingsPaging = {

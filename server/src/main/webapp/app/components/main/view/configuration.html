@@ -246,12 +246,12 @@
                             <div class='panel panel-default'>
 
                                 <div class="text-center"
-                                     ng-if="(applications | filter : {name: filterText}).length > paging.pageSize">
+                                     ng-if="(applications | filter : filterApps).length > paging.pageSize">
                                     <pagination ng-if="sort.by === 'name'"
                                                 boundary-links='true' class='pagination-sm'
                                                 max-size='3'
                                                 ng-model='paging.currentPage'
-                                                total-items='(applications | filter : {name: filterText}).length'
+                                                total-items='(applications | filter : filterApps).length'
                                                 items-per-page='paging.pageSize'
                                                 previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                                                 last-text='&raquo;'></pagination>
@@ -259,7 +259,7 @@
                                                 boundary-links='true' class='pagination-sm'
                                                 max-size='3'
                                                 ng-model='paging.currentPage'
-                                                total-items='(applications | filter : {pkg: filterText}).length'
+                                                total-items='(applications | filter : filterApps).length'
                                                 items-per-page='paging.pageSize'
                                                 previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                                                 last-text='&raquo;'></pagination>
@@ -292,7 +292,7 @@
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control"
                                                    localized-placeholder="search.placeholder.application"
-                                                   ng-model="filterText"/>
+                                                   ng-model="paging.filterText"/>
                                         </div>
                                     </div>
 
@@ -308,7 +308,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : {name: filterText}).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
+                                            <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
                                                 <td>{{application.name}}</td>
                                                 <td>
                                                     <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
@@ -363,9 +363,14 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : {pkg: filterText}).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
+                                            <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
                                                 <td>{{application.pkg}}</td>
-                                                <td>{{application.version}}</td>
+                                                <td>
+                                                    <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
+                                                        {{application.version}}
+                                                    </a>
+                                                    <span ng-if="application.action != 1">{{application.version}}</span>
+                                                </td>
                                                 <td>
                                                     <select ng-model="application.action" name="action{{application.id}}"
                                                             ng-change="actionChanged(application)"
@@ -391,7 +396,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button ng-if="application.outdated && application.action != 2" class="btn btn-default"
+                                                    <button ng-if="application.outdated && application.action == 1" class="btn btn-default"
                                                             ng-click="upgradeApp(application)"
                                                             title="{{localizeRenewVersionTitle(application)}}"
                                                             localized>button.upgrade</button>
@@ -404,12 +409,12 @@
 
 
                                 <div class="text-center"
-                                     ng-if="(applications | filter : {name: filterText}).length > paging.pageSize">
+                                     ng-if="(applications | filter : filterApps).length > paging.pageSize">
                                     <pagination ng-if="sort.by === 'name'"
                                                 boundary-links='true' class='pagination-sm'
                                                 max-size='3'
                                                 ng-model='paging.currentPage'
-                                                total-items='(applications | filter : {name: filterText}).length'
+                                                total-items='(applications | filter : filterApps).length'
                                                 items-per-page='paging.pageSize'
                                                 previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                                                 last-text='&raquo;'></pagination>
@@ -417,7 +422,7 @@
                                                 boundary-links='true' class='pagination-sm'
                                                 max-size='3'
                                                 ng-model='paging.currentPage'
-                                                total-items='(applications | filter : {pkg: filterText}).length'
+                                                total-items='(applications | filter : filterApps).length'
                                                 items-per-page='paging.pageSize'
                                                 previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                                                 last-text='&raquo;'></pagination>
