@@ -31,7 +31,9 @@ import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserDAO extends AbstractDAO<User> {
@@ -113,7 +115,9 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public List<UserRole> findAllUserRoles() {
-        return mapper.findAllUserRoles();
+        return SecurityContext.get().getCurrentUser()
+                .map(u -> mapper.findAllUserRoles(u.getUserRole().isSuperAdmin()))
+                .orElse(new ArrayList<>());
     }
 
     public List<User> findAllCustomerUsers(int customerId) {
@@ -122,5 +126,50 @@ public class UserDAO extends AbstractDAO<User> {
         } else {
             throw new IllegalArgumentException("Super-admin is allowed only");
         }
+    }
+
+    /**
+     * <p>Gets the list of identifiers for hints already show to current user.</p>
+     *
+     * @return a list of shown hint identifiers.
+     */
+    public List<String> getShownHints() {
+        return SecurityContext.get().getCurrentUser()
+                .map(user -> this.mapper.getShownHints(user.getId()))
+                .orElseThrow(SecurityException::onAnonymousAccess);
+    }
+
+    /**
+     * <p>Marks specified hint as shown to current user.</p>
+     *
+     * @param hintKey an identifier of the hint.
+     */
+    public void onHintShown(String hintKey) {
+        SecurityContext.get().getCurrentUser()
+                .map(user -> this.mapper.insertShownHint(user.getId(), hintKey))
+                .orElseThrow(SecurityException::onAnonymousAccess);
+    }
+
+    /**
+     * <p>Clears the list of identifiers for hints already show to current user.</p>
+     */
+    public void enableHints() {
+        SecurityContext.get().getCurrentUser()
+                .map(user -> this.mapper.clearHintsHistory(user.getId()))
+                .orElseThrow(SecurityException::onAnonymousAccess);
+    }
+
+    /**
+     * <p>Clears the list of identifiers for hints already show to current user.</p>
+     */
+    @Transactional
+    public void disableHints() {
+        SecurityContext.get().getCurrentUser()
+                .map(user -> {
+                    this.mapper.clearHintsHistory(user.getId());
+                    this.mapper.insertHintsHistoryAll(user.getId());
+                    return Optional.empty();
+                })
+                .orElseThrow(SecurityException::onAnonymousAccess);
     }
 }

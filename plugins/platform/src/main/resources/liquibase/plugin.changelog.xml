@@ -83,4 +83,14 @@
             ALTER TABLE plugins DROP COLUMN settingsPermission;
         </rollback>
     </changeSet>
+
+    <changeSet id="plugin-platform-11.09.2019-18:36" author="isv" context="common">
+        <comment>Column,new: plugins.enabledForDevice</comment>
+        <sql>
+            ALTER TABLE plugins ADD COLUMN enabledForDevice BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE plugins DROP COLUMN enabledForDevice;
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

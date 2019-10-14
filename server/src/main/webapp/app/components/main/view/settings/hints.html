@@ -1,0 +1,45 @@
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!-- Localization completed -->
+<div ng-controller="SettingsTabController">
+    <div class="text-center">
+        <h4 localized>form.settings.hints.title</h4>
+    </div>
+
+    <div>
+        <div class='form-group'>
+            <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+            <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+        </div>
+    </div>
+    <div>
+        <div class="col-sm-6 text-center">
+            <button class="btn btm-default" ng-click="enableHints()"
+                    localized>button.hints.enable</button>
+        </div>
+        <div class="col-sm-6 text-center">
+            <button class="btn btm-default" ng-click="disableHints()"
+                    localized>button.hints.disable</button>
+        </div>
+    </div>
+
+</div>

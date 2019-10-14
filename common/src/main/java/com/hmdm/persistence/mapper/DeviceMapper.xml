@@ -54,7 +54,6 @@
         </collection>
     </resultMap>
 
-
     <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO devices(number, description, lastUpdate, configurationId, imei, phone, customerId)
         VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId}, #{imei}, #{phone}, #{customerId});
@@ -66,10 +65,17 @@
     </update>
 
     <sql id="allowedDevicesSelect">
-        SELECT DISTINCT deviceId AS deviceId, LOWER(deviceNumber) AS deviceNumber
+        SELECT DISTINCT deviceId AS deviceId, LOWER(deviceNumber) AS deviceNumber, searchPriority
         FROM
         (
-        SELECT devices.id AS deviceId, devices.number AS deviceNumber
+        SELECT devices.id AS deviceId, devices.number AS deviceNumber,
+        (
+            COALESCE(CASE WHEN devices.number ILIKE #{value} THEN 16 END, 0) +
+            COALESCE(CASE WHEN devices.imei ILIKE #{value} THEN 8 END, 0) +
+            COALESCE(CASE WHEN devices.phone ILIKE #{value} THEN 4 END, 0) +
+            COALESCE(CASE WHEN devices.description ILIKE #{value} THEN 2 END, 0) +
+            COALESCE(CASE WHEN devices.info ILIKE #{value} THEN 1 END, 0)
+        )          AS searchPriority
         FROM devices
         INNER JOIN users ON users.id = #{userId}
         LEFT JOIN configurations ON devices.configurationId = configurations.id
@@ -94,8 +100,13 @@
             groups.id = #{groupId}
             )
         </if>
+        <if test="configurationId != null &amp;&amp; configurationId > 0">
+            AND (
+            configurations.id = #{configurationId}
+            )
+        </if>
         ) allowedDevicesInner
-        ORDER BY LOWER(deviceNumber)
+        ORDER BY searchPriority, LOWER(deviceNumber)
         OFFSET (#{pageNum} - 1) * #{pageSize}
         LIMIT #{pageSize}
     </sql>
@@ -114,7 +125,7 @@
         LEFT JOIN groups ON deviceGroups.groupId = groups.id
         LEFT JOIN applicationVersions ON configurations.mainAppId = applicationVersions.id
         LEFT JOIN applications ON applications.id = applicationVersions.applicationid
-        ORDER BY LOWER(devices.number), LOWER(groups.name);
+        ORDER BY allowedDevices.searchPriority DESC, LOWER(devices.number), LOWER(groups.name);
     </select>
 
     <select id="countAllDevices" parameterType="DeviceSearchRequest" resultType="long">
@@ -143,11 +154,21 @@
             groups.id = #{groupId}
             )
         </if>
+        <if test="configurationId != null &amp;&amp; configurationId > 0">
+            AND (
+            configurations.id = #{configurationId}
+            )
+        </if>
     </select>
 
     <select id="getDeviceByNumber" resultMap="deviceResult">
         <include refid="deviceWithGroupsSelect"/>
         WHERE devices.number = #{number}
+    </select>
+
+    <select id="getDeviceByNumberIgnoreCase" resultMap="deviceResult">
+        <include refid="deviceWithGroupsSelect"/>
+        WHERE LOWER(devices.number) = LOWER(#{number})
     </select>
 
     <select id="getDeviceById" resultMap="deviceResult">
@@ -156,24 +177,39 @@
     </select>
 
     <select id="lookupDevices" resultType="com.hmdm.rest.json.DeviceLookupItem">
-        SELECT devices.id AS id, devices.number AS name, devices.imei AS imei, devices.info AS info
-        FROM devices
-        INNER JOIN users ON users.id = #{userId}
-        WHERE devices.customerId = #{customerId}
-          AND (users.allDevicesAvailable = TRUE
-                   OR
-               EXISTS(SELECT 1
-                      FROM deviceGroups
-                      INNER JOIN userDeviceGroupsAccess access ON deviceGroups.groupId = access.groupId AND access.userId = users.id
-                      WHERE devices.id = deviceGroups.deviceId
-                   )
-              )
-          AND (
-                devices.number ILIKE #{filter}
-                OR devices.imei ILIKE #{filter}
-                OR devices.info ILIKE '%imei' || #{filter} || 'phone%'
-            )
-        ORDER BY devices.number
+        SELECT searchRsults.*
+        FROM (
+                 SELECT devices.id     AS id,
+                        devices.number AS name,
+                        devices.imei   AS imei,
+                        devices.info   AS info,
+                        (
+                                COALESCE(CASE WHEN devices.number ILIKE #{filter} THEN 4 END, 0) +
+                                COALESCE(CASE WHEN devices.imei ILIKE #{filter} THEN 2 END, 0) +
+                                COALESCE(
+                                        CASE WHEN devices.info::json -&gt;&gt; 'imei' ILIKE #{filter} THEN 1 END,
+                                        0)
+                            )          AS searchPriority
+                 FROM devices
+                          INNER JOIN users ON users.id = #{userId}
+                 WHERE devices.customerId = #{customerId}
+                   AND (users.allDevicesAvailable = TRUE
+                     OR
+                        EXISTS(SELECT 1
+                               FROM deviceGroups
+                                        INNER JOIN userDeviceGroupsAccess access
+                                                   ON deviceGroups.groupId = access.groupId AND access.userId = users.id
+                               WHERE devices.id = deviceGroups.deviceId
+                            )
+                     )
+                   AND (
+                         devices.number ILIKE #{filter}
+                         OR devices.imei ILIKE #{filter}
+                         OR devices.info::json -&gt;&gt; 'imei' ILIKE #{filter}
+                     )
+                 ORDER BY searchPriority DESC
+             ) searchRsults
+        ORDER BY searchRsults.searchPriority DESC, searchRsults.name
         LIMIT #{limit};
     </select>
 

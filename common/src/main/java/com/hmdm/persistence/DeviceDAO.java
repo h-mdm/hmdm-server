@@ -97,6 +97,10 @@ public class DeviceDAO extends AbstractDAO<Device> {
         return getSingleRecord(() -> this.mapper.getDeviceByNumber(number), SecurityException::onDeviceAccessViolation);
     }
 
+    public Device getDeviceByNumberIgnoreCase(String number) {
+        return getSingleRecord(() -> this.mapper.getDeviceByNumberIgnoreCase(number), SecurityException::onDeviceAccessViolation);
+    }
+
     @Transactional
     public void insertDevice(Device device) {
         insertRecord(device, d -> {
@@ -109,6 +113,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
         });
     }
 
+    @Transactional
     public void updateDevice(Device device) {
         updateRecord(device, d -> {
             Integer currentUserId = SecurityContext.get().getCurrentUser().get().getId();

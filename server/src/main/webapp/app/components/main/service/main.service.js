@@ -25,17 +25,20 @@ angular.module('headwind-kiosk')
     })
     .factory('customerService', function ($resource) {
         return $resource('', {}, {
-            getAllCustomers: {url: 'rest/private/customers/search/:value', method: 'GET'},
+            getAllCustomers: {url: 'rest/private/customers/search', method: 'POST'},
+            getForUpdate: {url: 'rest/private/customers/:id/edit', method: 'GET'},
             updateCustomer: {url: 'rest/private/customers', method: 'PUT'},
             removeCustomer: {url: 'rest/private/customers/:id', method: 'DELETE'},
             loginAs: {url: 'rest/private/customers/impersonate/:id', method: 'GET'},
+            isUsedPrefix: {url: 'rest/private/customers/prefix/:prefix/used', method: 'GET'},
         });
     })
     .factory('settingsService', function ($resource) {
         return $resource('', {}, {
             getSettings: {url: 'rest/private/settings', method: 'GET'},
+            getUserRoleSettings: {url: 'rest/private/settings/userRole/:roleId', method: 'GET'},
             updateDefaultDesignSettings: {url: 'rest/private/settings/design', method: 'POST'},
-            updateCommonSettings: {url: 'rest/private/settings/common', method: 'POST'},
+            updateUserRolesCommonSettings: {url: 'rest/private/settings/userRoles/common', method: 'POST'},
             updateLanguageSettings: {url: 'rest/private/settings/lang', method: 'POST'},
         })
     })
@@ -61,6 +64,7 @@ angular.module('headwind-kiosk')
             getAllAdminApplications: {url: 'rest/private/applications/admin/search/:value', method: 'GET'},
             getApplication: {url: 'rest/private/applications/:id', method: 'GET'},
             updateApplication: {url: 'rest/private/applications', method: 'PUT'},
+            validateApplicationPackage: {url: 'rest/private/applications/validatePkg', method: 'PUT'},
             updateApplicationVersion: {url: 'rest/private/applications/versions', method: 'PUT'},
             removeApplication: {url: 'rest/private/applications/:id', method: 'DELETE'},
             removeApplicationVersion: {url: 'rest/private/applications/versions/:id', method: 'DELETE'},

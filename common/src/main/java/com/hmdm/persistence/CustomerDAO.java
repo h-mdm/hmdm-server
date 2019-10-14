@@ -23,7 +23,10 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.mapper.ApplicationMapper;
+import com.hmdm.persistence.mapper.DeviceMapper;
+import com.hmdm.rest.json.CustomerSearchRequest;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +48,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -65,6 +70,7 @@ public class CustomerDAO {
     private final CustomerMapper mapper;
     private final ConfigurationMapper configurationMapper;
     private final ApplicationMapper applicationMapper;
+    private final DeviceMapper deviceMapper;
     private final File filesDirectory;
     private final UserDAO userDAO;
     private final CommonDAO settingDAO;
@@ -73,13 +79,16 @@ public class CustomerDAO {
     @Inject
     public CustomerDAO(CustomerMapper mapper,
                        ConfigurationMapper configurationMapper,
-                       ApplicationMapper applicationMapper, UserDAO userDAO,
+                       ApplicationMapper applicationMapper,
+                       DeviceMapper deviceMapper,
+                       UserDAO userDAO,
                        CommonDAO settingDAO,
                        @Named("files.directory") String filesDirectory,
                        @Named("role.orgadmin.id") int orgAdminRoleId) {
         this.mapper = mapper;
         this.configurationMapper = configurationMapper;
         this.applicationMapper = applicationMapper;
+        this.deviceMapper = deviceMapper;
         this.filesDirectory = new File(filesDirectory);
         this.userDAO = userDAO;
         this.settingDAO = settingDAO;
@@ -142,17 +151,22 @@ public class CustomerDAO {
         return this.mapper.findCustomerByName(name);
     }
 
+    private static final String[] DEFAULT_DEVICE_SUFFIXES = {"001", "002", "003"};
+
     @Transactional
     public String insertCustomer(Customer customer) {
         if (!SecurityContext.get().isSuperAdmin()) {
             throw SecurityException.onAdminDataAccessViolation("create new customer account");
         }
+        
+        log.debug("Creating customer account: {}", customer);
 
         File customerFilesDir;
         do {
             customerFilesDir = new File(this.filesDirectory, UUID.randomUUID().toString());
         } while (customerFilesDir.exists());
         if (customerFilesDir.mkdirs()) {
+            customer.setRegistrationTime(System.currentTimeMillis());
             customer.setFilesDir(customerFilesDir.getName());
             this.mapper.insert(customer);
 
@@ -174,10 +188,11 @@ public class CustomerDAO {
             log.info("Created customer admin account: {}/{}", user.getLogin(), password);
 
             // Copy design settings if required
+            Settings customerSettings = new Settings();
+
             if (customer.isCopyDesign()) {
                 final Settings masterSettings = this.settingDAO.getSettings();
 
-                Settings customerSettings = new Settings();
                 customerSettings.setBackgroundColor(masterSettings.getBackgroundColor());
                 customerSettings.setBackgroundImageUrl(masterSettings.getBackgroundImageUrl());
                 customerSettings.setDesktopHeader(masterSettings.getDesktopHeader());
@@ -185,14 +200,34 @@ public class CustomerDAO {
                 customerSettings.setTextColor(masterSettings.getTextColor());
                 customerSettings.setCustomerId(customer.getId());
 
-                this.settingDAO.insertDefaultDesignSettingsBySuperAdmin(customerSettings);
+                this.settingDAO.saveDefaultDesignSettingsBySuperAdmin(customerSettings);
             }
 
+            // Save API key
+            this.mapper.saveApiKey(customer);
+
             // Copy configurations if required
+            Map<Integer, Integer> configIdsMapping = new HashMap<>();
             if (customer.getConfigurationIds() != null && customer.getConfigurationIds().length > 0) {
                 for (Integer configurationId: customer.getConfigurationIds()) {
-                    copyConfigurationForCustomer(customer, configurationId);
+                    final Integer copyId = copyConfigurationForCustomer(customer, configurationId);
+                    configIdsMapping.put(configurationId, copyId);
                 }
+            }
+            log.debug("Mapping for original and copied configurations: {}", configIdsMapping);
+
+            // Generate three default devices
+            for (int i = 0; i < DEFAULT_DEVICE_SUFFIXES.length; i++) {
+                String deviceNumber = customer.getPrefix() + DEFAULT_DEVICE_SUFFIXES[i];
+                Device newDevice = new Device();
+                newDevice.setLastUpdate(0L);
+                newDevice.setNumber(deviceNumber);
+                newDevice.setConfigurationId(configIdsMapping.get(customer.getDeviceConfigurationId()));
+                newDevice.setCustomerId(customer.getId());
+
+                this.deviceMapper.insertDevice(newDevice);
+
+                log.info("Created default device '{}' for new customer account", deviceNumber);
             }
 
             return user.getLogin() + "/" + password;
@@ -207,8 +242,9 @@ public class CustomerDAO {
      *
      * @param customer a customer account to create configuration for.
      * @param configurationId an ID of a configuration to copy.
+     * @return an ID of configuration copy.
      */
-    private void copyConfigurationForCustomer(Customer customer, Integer configurationId) {
+    private Integer copyConfigurationForCustomer(Customer customer, Integer configurationId) {
         Configuration configurationTemplate = this.configurationMapper.getConfigurationById(configurationId);
         List<Application> configApplications = this.configurationMapper.getPlainConfigurationApplications(
                 SecurityContext.get().getCurrentUser().get().getCustomerId(), configurationId
@@ -226,13 +262,18 @@ public class CustomerDAO {
             configurationMapper.insertConfigurationApplications(newConfiguration.getId(), configApplications);
             applicationMapper.getPrecedingVersion(newConfiguration.getId());
         }
+
+        return newConfiguration.getId();
     }
 
+    @Transactional
     public void updateCustomer(Customer customer) {
         if (!SecurityContext.get().isSuperAdmin()) {
             throw SecurityException.onAdminDataAccessViolation("update customer account with ID " + customer.getId());
         }
         this.mapper.update(customer);
+        this.mapper.saveApiKey(customer);
+
         log.info("Updated customer account: {}", customer);
     }
 
@@ -303,5 +344,39 @@ public class CustomerDAO {
 
     public Customer findById(int customerId) {
         return mapper.findCustomerById(customerId);
+    }
+
+    public Customer findByIdForUpdate(int customerId) {
+        return mapper.findCustomerByIdForUpdate(customerId);
+    }
+
+    /**
+     * <p>Checks if specified prefix is already used for some customer account.</p>
+     *
+     * @return <code>true</code> if prefix is already used; <code>false</code> otherwise.
+     */
+    public boolean isPrefixUsed(String prefix) {
+        return mapper.isPrefixUsed(prefix);
+    }
+
+    /**
+     * <p>Records the specified time of login the user related to specified customer account.</p>
+     *
+     * @param customerId an ID of a customer account related to authenticated user.
+     * @param time a timestamp of successful authentication (in milliseconds since epoch).
+     */
+    public void recordLastLoginTime(int customerId, long time) {
+        this.mapper.recordLastLoginTime(customerId, time);
+    }
+
+    /**
+     * <p>Searches for the customer accounts matching the specified criteria.</p>
+     *
+     * @param request the parameters for customers search.
+     * @return a list of customer accounts matching the search parameters.
+     */
+    public List<Customer> searchCustomers(CustomerSearchRequest request) {
+        final List<Customer> customers = this.mapper.searchCustomers(request);
+        return customers;
     }
 }

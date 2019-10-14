@@ -53,6 +53,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.BufferedInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 
 /**
@@ -120,34 +121,43 @@ public class QRCodeResource {
                 if (mainAppId != null) {
                     ApplicationVersion appVersion = this.configurationDAO.findApplicationVersionById(mainAppId);
                     if (appVersion != null && appVersion.getUrl() != null && !appVersion.getUrl().trim().isEmpty()) {
-                        Application appMain = this.configurationDAO.findApplicationById(appVersion.getApplicationId());
+                        final String apkUrl = appVersion.getUrl().replace(" ", "%20");
+                        final String sha256;
+                        if (appVersion.getApkHash() == null) {
+                            logger.info("Digesting the application file: {}", apkUrl);
 
-                        logger.info("Digesting the application file: {}", appVersion.getUrl());
-
-                        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                        byte[] buffer= new byte[8192];
-                        int count;
-                        try (BufferedInputStream bis = new BufferedInputStream(new URL(appVersion.getUrl()).openStream())) {
-                            while ((count = bis.read(buffer)) > 0) {
-                                digest.update(buffer, 0, count);
+                            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                            byte[] buffer= new byte[8192];
+                            int count;
+                            try (BufferedInputStream bis = new BufferedInputStream(new URL(apkUrl).openStream())) {
+                                while ((count = bis.read(buffer)) > 0) {
+                                    digest.update(buffer, 0, count);
+                                }
                             }
+
+                            final byte[] hash = digest.digest();
+                            sha256 = CryptoUtil.getBase64String(hash);
+
+                            logger.info("Finished digesting the application file: {}. Hash: {}", apkUrl, sha256);
+
+                            this.configurationDAO.saveApkFileHash(appVersion.getId(), sha256);
+                        } else {
+                            sha256 = appVersion.getApkHash();
                         }
-                        final byte[] hash = digest.digest();
 
-                        logger.info("Finished digesting the application file: {}", appVersion.getUrl());
 
-                        final String sha256 = CryptoUtil.getBase64String(hash);
                         final String s;
                         String contextPath = req.getContextPath();
                         if (contextPath.startsWith("/")) {
                             contextPath = contextPath.substring(1);
                         }
-                        
+
+                        Application appMain = this.configurationDAO.findApplicationById(appVersion.getApplicationId());
                         if (deviceID != null && !deviceID.trim().isEmpty()) {
                             deviceID = deviceID.trim();
                             s = "{\n" +
                                     "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + appVersion.getUrl() + "\",\n" +
+                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
                                     "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
                                     "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
                                     "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +
@@ -161,7 +171,7 @@ public class QRCodeResource {
                         } else {
                             s = "{\n" +
                                     "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + appVersion.getUrl() + "\",\n" +
+                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
                                     "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
                                     "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
                                     "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +

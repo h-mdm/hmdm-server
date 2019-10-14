@@ -1,7 +1,7 @@
 // Localization completed
 angular.module( 'headwind-kiosk' )
 .controller( 'HeaderController', function( $scope, $rootScope, $state, $modal, $timeout, $interval, $filter, $window,
-                                           authService, localization ) {
+                                           authService, localization, hintService ) {
     $scope.isControlPanel = false;
     $scope.authService = authService;
     $scope.showExitReportMode = false;
@@ -49,6 +49,7 @@ angular.module( 'headwind-kiosk' )
 
     $scope.logout = function() {
         authService.logout();
+        hintService.onLogout();
         $state.transitionTo( 'login' );
     };
 

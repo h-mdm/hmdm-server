@@ -1,6 +1,6 @@
 <!-- Localization completed -->
 <div style="text-align: center" ng-if="showQR">
-    <img src="rest/public/qr/{{qrCodeKey}}?size={{size}}&deviceId={{deviceId}}" width="{{size}}" height="{{size}}"
+    <img ng-src="rest/public/qr/{{qrCodeKey}}?size={{size}}&deviceId={{deviceId}}" width="{{size}}" height="{{size}}"
          localized-alt="form.qr.code.image.alt"/>
 </div>
 
@@ -8,9 +8,10 @@
     <div class='form-group'>
         <input type="text" maxlength="100" name="qrdevice" style="width: auto;display: inline-block"
                ng-enter='renew()'
-               ng-model="deviceIdNew"
+               ng-model="formData.deviceIdNew"
                localized-placeholder="form.qr.device.number.placeholder"
                class="form-control"
+               data-hint-key="hint.step.4" data-hint-order="4"
         />
         <div style="display: inline-block">
             <button type="button" class="btn btn-default" ng-click="renew()" localized>button.renew.code</button>
@@ -18,8 +19,8 @@
     </div>
 
     <div class="text-center">
-        <button type="button" localized-title="button.help" ng-click="helpClicked()"
-                class="btn btn-default dropdown-toggle">
+        <button type="button" class="btn btn-default dropdown-toggle" data-hint-key="hint.step.3" data-hint-order="3"
+                localized-title="button.help" ng-click="helpClicked()">
             <span localized>button.help</span>
         </button>
     </div>

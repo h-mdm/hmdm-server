@@ -23,6 +23,8 @@ package com.hmdm.security.jwt.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.util.BackgroundTaskRunnerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -66,6 +68,10 @@ public class JWTAuthResource {
 
     private UnsecureDAO userDAO;
 
+    private CustomerDAO customerDAO;
+
+    private BackgroundTaskRunnerService taskRunner;
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -76,9 +82,14 @@ public class JWTAuthResource {
      * <p>Constructs new <code>JWTAuthResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public JWTAuthResource(TokenProvider tokenProvider, UnsecureDAO userDAO) {
+    public JWTAuthResource(TokenProvider tokenProvider,
+                           UnsecureDAO userDAO,
+                           CustomerDAO customerDAO,
+                           BackgroundTaskRunnerService taskRunner) {
         this.tokenProvider = tokenProvider;
         this.userDAO = userDAO;
+        this.customerDAO = customerDAO;
+        this.taskRunner = taskRunner;
     }
 
     // =================================================================================================================
@@ -110,6 +121,10 @@ public class JWTAuthResource {
             } else if ( !credentials.getPassword().equalsIgnoreCase( user.getPassword() ) ) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             } else {
+                this.taskRunner.submitTask(() -> {
+                    this.customerDAO.recordLastLoginTime(user.getCustomerId(), System.currentTimeMillis());
+                });
+
                 user.setPassword(null);
 
                 String token = tokenProvider.createToken(user, false);

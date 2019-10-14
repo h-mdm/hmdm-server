@@ -21,20 +21,42 @@
 
 package com.hmdm.persistence.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * <p>$END$</p>
- *
- * @author isv
+ * <p>A customer account managed by the application.</p>
  */
-public class Customer {
+public class Customer implements Serializable {
 
+    private static final long serialVersionUID = 5087620848737792920L;
+    
     private Integer id;
     private String name;
     private String description;
     private String filesDir;
+    private String apiKey;
     private boolean master = false;
+
+    /**
+     * <p>A prefix for numbers for default generated devices for customer.</p>
+     */
+    private String prefix;
+
+    /**
+     * <p>An ID of a configuration to be set for default generated devices when creating a new customer account.</p>
+     */
+    private Integer deviceConfigurationId;
+
+    /**
+     * <p>A time of most recent login by any customer's user. (In milliseconds since epoch time).</p>
+     */
+    private Long lastLoginTime;
+
+    /**
+     * <p>A time of registration of customer account. (In milliseconds since epoch time).</p>
+     */
+    private Long registrationTime;
 
     // A helper field for customer creation (not stored)
     private boolean copyDesign;
@@ -99,6 +121,46 @@ public class Customer {
         this.configurationIds = configurationIds;
     }
 
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public Integer getDeviceConfigurationId() {
+        return deviceConfigurationId;
+    }
+
+    public void setDeviceConfigurationId(Integer deviceConfigurationId) {
+        this.deviceConfigurationId = deviceConfigurationId;
+    }
+
+    public Long getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(Long lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public Long getRegistrationTime() {
+        return registrationTime;
+    }
+
+    public void setRegistrationTime(Long registrationTime) {
+        this.registrationTime = registrationTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -120,6 +182,8 @@ public class Customer {
                 ", description='" + description + '\'' +
                 ", filesDir='" + filesDir + '\'' +
                 ", master=" + master +
+                ", prefix=" + prefix +
+                ", deviceConfigurationId=" + deviceConfigurationId +
                 '}';
     }
 }

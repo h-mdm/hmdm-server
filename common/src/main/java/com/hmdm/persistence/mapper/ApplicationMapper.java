@@ -70,6 +70,7 @@ public interface ApplicationMapper {
                     "applicationVersions.applicationId, " +
                     "applicationVersions.version, " +
                     "applicationVersions.url, " +
+                    "applicationVersions.apkHash, " +
                     "(usageData.usageCount > 0 OR versionsData.appVersionsCount = 1) AS deletionProhibited, " +
                     "customers.master AS commonApplication," +
                     "applications.system " +
@@ -142,7 +143,7 @@ public interface ApplicationMapper {
             "WHERE id=#{id}"})
     void updateApplication(Application application);
 
-    @Update({"UPDATE applicationVersions SET version=#{version}, url=#{url} " +
+    @Update({"UPDATE applicationVersions SET version = #{version}, url = #{url}, apkHash = #{apkHash} " +
             "WHERE id=#{id}"})
     void updateApplicationVersion(ApplicationVersion applicationVersion);
 
@@ -355,15 +356,18 @@ public interface ApplicationMapper {
     int autoUpdateConfigurationsMainApplication(@Param("appId") Integer applicationId,
                                                 @Param("newId") Integer newAppVersionId);
 
+    // TODO : ISV : Re-check methods must be updated to find the application by package ID but not applicationId
     @Update("UPDATE configurations " +
             "SET mainAppId = (" +
             "                 SELECT ca.applicationVersionId " +
             "                 FROM configurationApplications ca " +
+            "                 INNER JOIN applications apps ON apps.id = ca.applicationId " +
             "                 WHERE ca.configurationId = configurations.id " +
             "                 AND ca.action = 1 " +
-            "                 AND ca.applicationId = (SELECT av.applicationId " +
-            "                                         FROM applicationVersions av" +
-            "                                         WHERE av.id = configurations.mainAppId)" +
+            "                 AND apps.pkg = (SELECT apps2.pkg " +
+            "                                 FROM applicationVersions av " +
+            "                                 INNER JOIN applications apps2 ON apps2.id = av.applicationId " +
+            "                                 WHERE av.id = configurations.mainAppId)" +
             ") " +
             "WHERE configurations.customerId = #{customerId} " +
             "AND NOT configurations.mainAppId IS NULL")
@@ -373,11 +377,13 @@ public interface ApplicationMapper {
             "SET mainAppId = (" +
             "                 SELECT ca.applicationVersionId " +
             "                 FROM configurationApplications ca " +
+            "                 INNER JOIN applications apps ON apps.id = ca.applicationId " +
             "                 WHERE ca.configurationId = configurations.id " +
             "                 AND ca.action = 1 " +
-            "                 AND ca.applicationId = (SELECT av.applicationId " +
-            "                                         FROM applicationVersions av" +
-            "                                         WHERE av.id = configurations.mainAppId)" +
+            "                 AND apps.pkg = (SELECT apps2.pkg " +
+            "                                 FROM applicationVersions av " +
+            "                                 INNER JOIN applications apps2 ON apps2.id = av.applicationId " +
+            "                                 WHERE av.id = configurations.mainAppId)" +
             ") " +
             "WHERE configurations.id = #{configurationId} " +
             "AND NOT configurations.mainAppId IS NULL")
@@ -387,11 +393,13 @@ public interface ApplicationMapper {
             "SET contentAppId = (" +
             "                 SELECT ca.applicationVersionId " +
             "                 FROM configurationApplications ca " +
+            "                 INNER JOIN applications apps ON apps.id = ca.applicationId " +
             "                 WHERE ca.configurationId = configurations.id " +
             "                 AND ca.action = 1 " +
-            "                 AND ca.applicationId = (SELECT av.applicationId " +
-            "                                         FROM applicationVersions av" +
-            "                                         WHERE av.id = configurations.contentAppId)" +
+            "                 AND apps.pkg = (SELECT apps2.pkg " +
+            "                                 FROM applicationVersions av " +
+            "                                 INNER JOIN applications apps2 ON apps2.id = av.applicationId " +
+            "                                 WHERE av.id = configurations.contentAppId)" +
             ") " +
             "WHERE configurations.customerId = #{customerId} " +
             "AND NOT configurations.contentAppId IS NULL")
@@ -401,11 +409,13 @@ public interface ApplicationMapper {
             "SET contentAppId = (" +
             "                 SELECT ca.applicationVersionId " +
             "                 FROM configurationApplications ca " +
+            "                 INNER JOIN applications apps ON apps.id = ca.applicationId " +
             "                 WHERE ca.configurationId = configurations.id " +
             "                 AND ca.action = 1 " +
-            "                 AND ca.applicationId = (SELECT av.applicationId " +
-            "                                         FROM applicationVersions av" +
-            "                                         WHERE av.id = configurations.contentAppId)" +
+            "                 AND apps.pkg = (SELECT apps2.pkg " +
+            "                                 FROM applicationVersions av " +
+            "                                 INNER JOIN applications apps2 ON apps2.id = av.applicationId " +
+            "                                 WHERE av.id = configurations.contentAppId)" +
             ") " +
             "WHERE configurations.id = #{configurationId} " +
             "AND NOT configurations.contentAppId IS NULL")
@@ -462,4 +472,30 @@ public interface ApplicationMapper {
     List<LookupItem> findMatchingApplicationPackages(@Param("customerId") Integer customerId,
                                                      @Param("filter") String filter,
                                                      @Param("pageSize") int pageSize);
+
+    @Update("UPDATE applicationVersions SET apkHash = #{hash} WHERE id = #{id}")
+    int saveApkFileHash(@Param("id") Integer appVersionId, @Param("hash") String hashValue);
+
+    @Select("SELECT EXISTS " +
+            "(SELECT 1 FROM applicationVersions " +
+            "WHERE applicationId = #{appId} " +
+            "AND version = #{versionNumber} AND id <> #{appVersionId})")
+    boolean checkForDuplicateVersionForApp(@Param("appId") Integer applicationId,
+                                           @Param("appVersionId") Integer appVersionId,
+                                           @Param("versionNumber") String version);
+
+    @Delete("DELETE FROM configurationApplications " +
+            "WHERE configurationId = #{configurationId} " +
+            "AND EXISTS (SELECT 1 " +
+            "            FROM applications " +
+            "            WHERE applications.id = configurationApplications.applicationId " +
+            "            AND EXISTS (" +
+            "                SELECT 1 " +
+            "                FROM applications apps2 " +
+            "                WHERE apps2.id = #{applicationId} " +
+            "                AND apps2.pkg = applications.pkg " +
+            "            )" +
+            ")")
+    int deleteApplicationConfigurationLinksForSamePkg(@Param("applicationId") int applicationId,
+                                                      @Param("configurationId") int configurationId);
 }

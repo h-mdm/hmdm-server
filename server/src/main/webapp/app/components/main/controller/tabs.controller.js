@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .controller('TabController', function ($scope, $rootScope, $timeout, userService, authService, openTab, $state,
-                                           pluginService, localization) {
+                                           pluginService, localization, hintService) {
 
         $scope.localization = localization;
 
@@ -53,8 +53,8 @@ angular.module('headwind-kiosk')
             COMMON: 'commonSettings',
             USERS: 'users',
             GROUPS: 'groups',
-            LANG: 'langSettings'
-
+            LANG: 'langSettings',
+            HINTS: 'hints'
         };
 
         $scope.openTab = function (tabName) {
@@ -71,4 +71,8 @@ angular.module('headwind-kiosk')
                 $scope.currentUser = response.data;
             }
         });
+
+        $timeout(function () {
+            hintService.onStateChangeSuccess();
+        }, 100);
     });

@@ -71,17 +71,28 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase(getChangeLogResourcePath(), getResourceAccessor(), database);
             String usageScenario = this.context.getInitParameter("usage.scenario");
-            if ("shared".equalsIgnoreCase(usageScenario)) {
-                liquibase.update("common,shared");
-            } else if ("private".equalsIgnoreCase(usageScenario)) {
-                liquibase.update("common,private");
-            } else {
-                log.error("Usage scenario is not valid: {}", usageScenario);
-                throw new RuntimeException("Invalid usage scenario specified: " + usageScenario);
-            }
+            String contexts = getContexts(usageScenario);
+            liquibase.update(contexts);
         } catch (LiquibaseException | SQLException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * <p>Gets the list of <code>Liquibaase</code> contexts to be applied based on specified usage scenario.</p>
+     *
+     * @param usageScenario  usage scenario.
+     * @return a comma-separated list of <code>Liquibase</code> contexts to be applied.
+     */
+    protected String getContexts(String usageScenario) {
+        if ("shared".equalsIgnoreCase(usageScenario)) {
+            return "common,shared";
+        } else if ("private".equalsIgnoreCase(usageScenario)) {
+            return "common,private";
+        } else {
+            log.error("Usage scenario is not valid: {}", usageScenario);
+            throw new RuntimeException("Invalid usage scenario specified: " + usageScenario);
         }
     }
 

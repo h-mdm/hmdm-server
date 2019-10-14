@@ -23,10 +23,12 @@ package com.hmdm.rest.resource;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
 import com.hmdm.persistence.domain.User;
+import com.hmdm.util.BackgroundTaskRunnerService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -46,6 +48,8 @@ public class AuthResource {
     private final String sessionCredentials = "credentials";
 
     private UnsecureDAO userDAO;
+    private CustomerDAO customerDAO;
+    private BackgroundTaskRunnerService taskRunner;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -57,8 +61,10 @@ public class AuthResource {
      * <p>Constructs new <code>AuthResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public AuthResource( UnsecureDAO userDAO ) {
+    public AuthResource(UnsecureDAO userDAO, CustomerDAO customerDAO, BackgroundTaskRunnerService taskRunner) {
         this.userDAO = userDAO;
+        this.customerDAO = customerDAO;
+        this.taskRunner = taskRunner;
     }
 
     /**
@@ -88,12 +94,21 @@ public class AuthResource {
             return Response.ERROR();
         }
 
-        HttpSession userSession = req.getSession();
-        userSession.setAttribute( sessionCredentials, user );
+        try {
+            this.taskRunner.submitTask(() -> {
+                this.customerDAO.recordLastLoginTime(user.getCustomerId(), System.currentTimeMillis());
+            });
 
-        user.setPassword(null);
+            HttpSession userSession = req.getSession();
+            userSession.setAttribute( sessionCredentials, user );
 
-        return Response.OK( user );
+            user.setPassword(null);
+
+            return Response.OK( user );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     /**

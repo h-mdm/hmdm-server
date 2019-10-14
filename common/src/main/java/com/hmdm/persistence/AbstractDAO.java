@@ -25,8 +25,12 @@ import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
+import org.apache.ibatis.cursor.Cursor;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -73,6 +77,34 @@ public abstract class AbstractDAO<T extends CustomerData> {
                 .getCurrentUser()
                 .map(listRetrievalLogic)
                 .orElse(new ArrayList<>());
+    }
+
+    /**
+     * <p>Gets the single record corresponding to current user account. Uses specified data retrieval logic for getting
+     * the record data.</p>
+     *
+     * @param retrievalLogic a logic to be used for record data retrieval.
+     * @return a list of records.
+     */
+    protected T getSingleRecordWithCurrentUser(Function<User, T> retrievalLogic) {
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(retrievalLogic)
+                .orElse(null);
+    }
+
+    /**
+     * <p>Gets the list of records corresponding to customer account set for current user. Uses specified list retrieval
+     * logic for getting the records data.</p>
+     *
+     * @param listRetrievalLogic a logic to be used for records data retrieval.
+     * @return a list of records.
+     */
+    protected Cursor<T> getIteratorWithCurrentUser(Function<User, Cursor<T>> listRetrievalLogic) {
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(listRetrievalLogic)
+                .orElse(null);
     }
 
     /**
@@ -141,7 +173,7 @@ public abstract class AbstractDAO<T extends CustomerData> {
                                 Consumer<T> recordUpdateLogic,
                                 Function<T, SecurityException> exceptionProvider) {
         SecurityContext.get().getCurrentUser()
-                .filter(u -> u.getCustomerId() == record.getCustomerId())
+                .filter(u -> u.isSuperAdmin() || u.getCustomerId() == record.getCustomerId())
                 .map(u -> {
                     recordUpdateLogic.accept(record);
                     return 1;

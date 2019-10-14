@@ -23,6 +23,7 @@ package com.hmdm.guice.module;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import com.hmdm.rest.resource.HintResource;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.resource.ApplicationResource;
@@ -51,5 +52,6 @@ public class PrivateRestModule extends ServletModule {
         this.bind(ApplicationResource.class);
         this.bind(UserResource.class);
         this.bind(FilesResource.class);
+        this.bind(HintResource.class);
     }
 }

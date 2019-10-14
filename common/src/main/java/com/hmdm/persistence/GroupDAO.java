@@ -71,7 +71,7 @@ public class GroupDAO extends AbstractDAO<Group> {
     public void removeGroupById(Integer id) {
         updateById(
                 id,
-                this::getGroupById,
+                this.mapper::getGroupById,
                 group -> this.mapper.removeGroupById(group.getId()),
                 SecurityException::onGroupAccessViolation
         );
@@ -82,7 +82,7 @@ public class GroupDAO extends AbstractDAO<Group> {
     }
 
     public Group getGroupById(Integer id) {
-        return this.mapper.getGroupById(id);
+        return getSingleRecord(() -> this.mapper.getGroupById(id), SecurityException::onGroupAccessViolation);
     }
 
 }

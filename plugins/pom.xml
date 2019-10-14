@@ -40,6 +40,7 @@
     <modules>
         <module>platform</module>
         <module>devicelog</module>
+        <module>audit</module>
     </modules>
 
     <dependencies>

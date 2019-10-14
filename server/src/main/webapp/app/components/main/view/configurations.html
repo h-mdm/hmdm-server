@@ -6,7 +6,7 @@
     <div class='form-group'>
         <input type='text'
                ng-enter='search()'
-               ng-model='search.searchValue'
+               ng-model='searchObj.searchValue'
                localized-placeholder='search.placeholder.configuration'
                class='form-control configurations-search-input'>
 
@@ -55,6 +55,7 @@
                         <span class='glyphicon glyphicon-duplicate'></span>
                     </button>
                     <button type='button' class='btn btn-default' localized-title="button.qrcode"
+                            data-hint-key="hint.step.2"
                             ng-if="qrCodeAvailable(configuration)"
                             ng-click='showQrCode(configuration)'>
                         <span class='glyphicon glyphicon-qrcode'></span>

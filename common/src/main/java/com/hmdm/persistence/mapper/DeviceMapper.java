@@ -21,6 +21,7 @@
 
 package com.hmdm.persistence.mapper;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.hmdm.persistence.domain.ApplicationSetting;
@@ -33,6 +34,7 @@ import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.persistence.domain.Group;
 import com.hmdm.rest.json.DeviceLookupItem;
+import org.apache.ibatis.cursor.Cursor;
 
 public interface DeviceMapper {
 
@@ -61,6 +63,8 @@ public interface DeviceMapper {
     void updateDevice(Device device);
 
     Device getDeviceByNumber(@Param("number") String number);
+
+    Device getDeviceByNumberIgnoreCase(@Param("number") String number);
 
     Device getDeviceById(@Param("id") Integer id);
 

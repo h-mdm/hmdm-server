@@ -24,6 +24,7 @@ package com.hmdm.persistence.mapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 import com.hmdm.persistence.domain.User;
@@ -59,7 +60,7 @@ public interface UserMapper {
     @Delete({"DELETE FROM users WHERE id=#{id} AND userRoleId <> 1"})
     void deleteUser(User user);
 
-    List<UserRole> findAllUserRoles();
+    List<UserRole> findAllUserRoles(@Param("includeSuperAdmin") boolean inludeSuperAdmin);
 
     @Delete({"DELETE FROM userDeviceGroupsAccess " +
             "WHERE userId=#{id} " +
@@ -67,4 +68,16 @@ public interface UserMapper {
     void removeDeviceGroupsAccessByUserId(@Param("customerId") int customerId, @Param("id") Integer userId);
 
     void insertUserDeviceGroupsAccess(@Param("id") Integer userId, @Param("groups") List<Integer> groups);
+
+    @Select("SELECT hintKey FROM userHints WHERE userId = #{id}")
+    List<String> getShownHints(@Param("id") Integer userId);
+
+    @Insert("INSERT INTO userHints (userId, hintKey) VALUES (#{userId}, #{hintKey})")
+    int insertShownHint(@Param("userId") Integer userId, @Param("hintKey") String hintKey);
+
+    @Delete("DELETE FROM userHints WHERE userId = #{id}")
+    int clearHintsHistory(@Param("id") Integer userId);
+
+    @Insert("INSERT INTO userHints (userId, hintKey) SELECT #{id}, hintKey FROM userHintTypes")
+    int insertHintsHistoryAll(@Param("id") Integer userId);
 }

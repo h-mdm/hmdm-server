@@ -67,4 +67,14 @@
     </changeSet>
 
 
+    <changeSet id="plugin-devicelog-11.09.19-18:38" author="isv" context="common">
+        <comment>Set: plugins.enabledForDevice</comment>
+        <sql>
+            UPDATE plugins SET enabledForDevice = TRUE WHERE identifier = 'devicelog';
+        </sql>
+        <rollback>
+            UPDATE plugins SET enabledForDevice = FALSE WHERE identifier = 'devicelog';
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

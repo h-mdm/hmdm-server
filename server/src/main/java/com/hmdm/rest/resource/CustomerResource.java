@@ -27,8 +27,11 @@ import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.User;
+import com.hmdm.rest.json.CustomerSearchRequest;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +39,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -44,6 +48,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +59,8 @@ import java.util.Map;
 @Singleton
 @Path("/private/customers")
 public class CustomerResource {
+
+    private static final Logger log = LoggerFactory.getLogger(CustomerResource.class);
 
     private static final String sessionCredentials = "credentials";
     private CustomerDAO customerDAO;
@@ -74,34 +81,66 @@ public class CustomerResource {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated
     public Response getAllCustomers() {
-        return Response.OK(this.customerDAO.getAllCustomers());
+        try {
+            return Response.OK(this.customerDAO.getAllCustomers());
+        } catch (Exception e) {
+            log.error("Unexpected error when searching for all customer accounts for", e);
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated
     public Response searchCustomers(@PathParam("value") String value) {
-        return Response.OK(this.customerDAO.getAllCustomersByValue(value));
+        try {
+            return Response.OK(this.customerDAO.getAllCustomersByValue(value));
+        } catch (Exception e) {
+            log.error("Unexpected error when searching customer accounts for: {}", value, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    @POST
+    @Path("/search")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated
+    public Response searchCustomers(CustomerSearchRequest request) {
+        try {
+            List<Customer> customers = this.customerDAO.searchCustomers(request);
+            return Response.OK(customers);
+        } catch (Exception e) {
+            log.error("Unexpected error when searching for customer accounts matching: {}", request, e);
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCustomer(Customer customer) {
-        Customer dbCustomer = this.customerDAO.getCustomerByName(customer.getName());
-        if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
-            return Response.ERROR();
-        } else {
-            if (customer.getId() == null) {
-                String adminCredentials = this.customerDAO.insertCustomer(customer);
-                Map<String, String> result = new HashMap<>();
-                result.put("adminCredentials", adminCredentials);
-                return Response.OK(result);
+        try {
+            Customer dbCustomer = this.customerDAO.getCustomerByName(customer.getName());
+            if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
+                return Response.DUPLICATE_ENTITY("error.duplicate.customer.name");
             } else {
-                this.customerDAO.updateCustomer(customer);
-                return Response.OK();
+                if (customer.getId() == null) {
+                    String adminCredentials = this.customerDAO.insertCustomer(customer);
+                    Map<String, String> result = new HashMap<>();
+                    result.put("adminCredentials", adminCredentials);
+                    return Response.OK(result);
+                } else {
+                    this.customerDAO.updateCustomer(customer);
+                    return Response.OK();
+                }
             }
+        } catch (Exception e) {
+            log.error("Unexpected error when saving customer account {}", customer, e);
+            return Response.INTERNAL_ERROR();
         }
     }
 
@@ -109,8 +148,39 @@ public class CustomerResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeCustomer(@PathParam("id") Integer id) {
-        this.customerDAO.removeCustomerById(id);
-        return Response.OK();
+        try {
+            this.customerDAO.removeCustomerById(id);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Unexpected error when deleting customer account #{}", id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    @GET
+    @Path("/{id}/edit")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustomerForUpdate(@PathParam("id") Integer id) {
+        try {
+            final Customer customer = this.customerDAO.findByIdForUpdate(id);
+            return Response.OK(customer);
+        } catch (Exception e) {
+            log.error("Unexpected error when loading customer details for update: #{}", id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    @GET
+    @Path("/prefix/{prefix}/used")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validatePrefix(@PathParam("prefix") String prefix) {
+        try {
+            final boolean prefixUsed = this.customerDAO.isPrefixUsed(prefix);
+            return Response.OK(prefixUsed);
+        } catch (Exception e) {
+            log.error("Unexpected error when checking customer prefix {} for usage", prefix, e);
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     @GET
@@ -119,26 +189,31 @@ public class CustomerResource {
     public Response impersonateCustomer(@PathParam("id") Integer id,
                                         @Context HttpServletRequest req,
                                         @Context HttpServletResponse res) throws IOException {
-        if (SecurityContext.get().isSuperAdmin()) {
-            Customer customer = this.customerDAO.findById(id);
-            User orgAdmin = this.userDAO.findOrgAdmin(customer.getId());
-            if (orgAdmin != null) {
-                HttpSession session = req.getSession( false );
-                if ( session != null ) {
-                    session.invalidate();
+        try {
+            if (SecurityContext.get().isSuperAdmin()) {
+                Customer customer = this.customerDAO.findById(id);
+                User orgAdmin = this.userDAO.findOrgAdmin(customer.getId());
+                if (orgAdmin != null) {
+                    HttpSession session = req.getSession( false );
+                    if ( session != null ) {
+                        session.invalidate();
+                    }
+
+                    orgAdmin.setPassword(null);
+
+                    HttpSession userSession = req.getSession(true);
+                    userSession.setAttribute( sessionCredentials, orgAdmin );
+
+                    return Response.OK( orgAdmin );
+                } else {
+                    return Response.ERROR("error.notfound.customer.admin");
                 }
-
-                orgAdmin.setPassword(null);
-
-                HttpSession userSession = req.getSession(true);
-                userSession.setAttribute( sessionCredentials, orgAdmin );
-
-                return Response.OK( orgAdmin );
             } else {
-                return Response.ERROR("error.notfound.customer.admin");
+                return Response.PERMISSION_DENIED();
             }
-        } else {
-            return Response.PERMISSION_DENIED();
+        } catch (Exception e) {
+            log.error("Unexpected error when impersonating administrator for customer account: #{}", id, e);
+            return Response.INTERNAL_ERROR();
         }
     }
 }

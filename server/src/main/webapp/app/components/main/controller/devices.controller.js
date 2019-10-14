@@ -2,9 +2,14 @@
 angular.module('headwind-kiosk')
     .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, confirmModal, deviceService,
                                                   groupService, settingsService, authService, pluginService, $window,
+                                                  configurationService,
                                                   spinnerService, localization) {
         $scope.searchParams = {};
-        $scope.selection = {all: false, groupId: -1};
+        $scope.selection = {
+            all: false,
+            groupId: -1,
+            configurationId: -1
+        };
         $scope.localization = localization;
         $scope.dateFormat = localization.localize('devices.date.format');
 
@@ -27,6 +32,14 @@ angular.module('headwind-kiosk')
             isopen: false
         };
 
+        $scope.formatMultiLine = function (text) {
+            if (!text) {
+                return text;
+            } else {
+                return text.replace(/\n/g, "<br/>");
+            }
+        };
+
         $scope.initSearch = function () {
             $scope.paging.pageNum = 1;
             $scope.search();
@@ -47,8 +60,13 @@ angular.module('headwind-kiosk')
             $scope.groups.unshift({id: -1, name: localization.localize('devices.group.options.all')});
         });
 
+        configurationService.getAllConfigurations(function (response) {
+            $scope.configurations = response.data;
+            $scope.configurations.unshift({id: -1, name: localization.localize('devices.configuration.options.all')});
+        });
+
         var loadSettings = function () {
-            settingsService.getSettings(function (response) {
+            settingsService.getUserRoleSettings({roleId: authService.getUser().userRole.id}, function (response) {
                 if (response.data) {
                     $scope.settings = response.data;
                 }
@@ -101,6 +119,7 @@ angular.module('headwind-kiosk')
             var request = {
                 value: $scope.searchParams.searchValue,
                 groupId: $scope.selection.groupId,
+                configurationId: $scope.selection.configurationId,
                 pageNum: $scope.paging.pageNum,
                 pageSize: $scope.paging.pageSize
             };
@@ -510,7 +529,9 @@ angular.module('headwind-kiosk')
         }
     })
     .controller('DeviceModalController',
-        function ($scope, $modalInstance, deviceService, configurationService, groupService, device, localization) {
+        function ($scope, $modalInstance, deviceService, configurationService, groupService, device, localization, authService) {
+
+            $scope.canEditDevice = authService.hasPermission('edit_devices');
 
             $scope.groupsList = [];
 

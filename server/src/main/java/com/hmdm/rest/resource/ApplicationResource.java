@@ -58,6 +58,7 @@ import com.hmdm.util.FileExistsException;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = {"Application"}, authorizations = {@Authorization("Bearer Token")})
@@ -167,6 +168,7 @@ public class ApplicationResource {
                 application = this.applicationDAO.findById(appId);
                 return Response.OK(application);
             } else {
+                // TODO : ISV : Handle the scenario for inserting new version for the same package here
                 this.applicationDAO.updateApplication(application);
                 return Response.OK();
             }
@@ -386,6 +388,27 @@ public class ApplicationResource {
             return Response.DUPLICATE_APPLICATION();
         } catch (Exception e) {
             logger.error("Failed to turn application with ID: {} into common", id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Validate application package",
+            notes = "Validate the application package ID for uniqueness",
+            response = Application.class,
+            responseContainer = "List"
+    )
+    @Path("/validatePkg")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateApplication(Application application) {
+        try {
+            final List<Application> otherApps = this.applicationDAO.getApplicationsForPackageID(application);
+            return Response.OK(otherApps);
+        } catch (Exception e) {
+            logger.error("Failed to validate application", e);
             return Response.INTERNAL_ERROR();
         }
     }

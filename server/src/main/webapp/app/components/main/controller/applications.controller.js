@@ -126,7 +126,6 @@ angular.module('headwind-kiosk')
     })
     .controller('ApplicationModalController', function ($scope, $modalInstance, applicationService, application,
                                                         $modal, isControlPanel, localization, closeOnSave) {
-        $scope.application = {};
         $scope.isControlPanel = isControlPanel;
 
         $scope.isNewApp = application.id === null || application.id === undefined;
@@ -139,6 +138,7 @@ angular.module('headwind-kiosk')
             $scope.fileSelected = false;
         }
 
+        $scope.application = {};
         for (var prop in application) {
             if (application.hasOwnProperty(prop)) {
                 $scope.application[prop] = application[prop];
@@ -180,6 +180,11 @@ angular.module('headwind-kiosk')
                         $scope.application.runAfterInstall = app.runAfterInstall;
                         $scope.application.system = app.system;
                     }
+                    if (response.data.data.fileDetails) {
+                        var fileDetails = response.data.data.fileDetails;
+                        $scope.application.pkg = fileDetails.pkg;
+                        $scope.application.version = fileDetails.version;
+                    }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
                 }
@@ -195,6 +200,58 @@ angular.module('headwind-kiosk')
             $scope.fileSelected = false;
             $scope.invalidFile = false;
             $scope.loading = false;
+        };
+
+        var doSaveApplication = function (request) {
+            applicationService.updateApplication(request, function (response) {
+                if (response.status === 'OK') {
+                    if (!closeOnSave) {
+                        if ($scope.isNewApp) {
+                            $scope.application = response.data;
+                            $scope.isNewApp = false;
+                            $scope.file = {};
+                            $scope.loading = false;
+                            $scope.fileName = null;
+                            $scope.invalidFile = false;
+                            $scope.fileSelected = false;
+                            $scope.manageConfigurations(true);
+                        } else {
+                            $modalInstance.close();
+                        }
+                    } else {
+                        $modalInstance.close(response.data);
+                    }
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            });
+        };
+
+        var doSaveApplicationVersion = function (request, app) {
+            applicationService.updateApplicationVersion(request, function (response) {
+                if (response.status === 'OK') {
+                    if (!closeOnSave) {
+                        if ($scope.isNewApp) {
+                            $scope.application = undefined;
+                            $scope.isNewApp = false;
+                            $scope.file = {};
+                            $scope.loading = false;
+                            $scope.fileName = null;
+                            $scope.invalidFile = false;
+                            $scope.fileSelected = false;
+                            $scope.manageAppVersionConfigurations(response.data, true);
+                        } else {
+                            $modalInstance.close();
+                        }
+                    } else {
+                        app.version = response.data.version;
+                        app.usedVersionId = response.data.id;
+                        $modalInstance.close(app);
+                    }
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            });
         };
 
         $scope.save = function () {
@@ -221,29 +278,47 @@ angular.module('headwind-kiosk')
                     }
                 }
 
-                applicationService.updateApplication(request, function (response) {
+                applicationService.validateApplicationPackage(request, function (response) {
                     if (response.status === 'OK') {
-                        if (!closeOnSave) {
-                            if ($scope.isNewApp) {
-                                $scope.application = response.data;
-                                $scope.isNewApp = false;
-                                $scope.file = {};
-                                $scope.loading = false;
-                                $scope.fileName = null;
-                                $scope.invalidFile = false;
-                                $scope.fileSelected = false;
-                                $scope.manageConfigurations(true);
-                            } else {
-                                $modalInstance.close();
+                        var existingAppsForPkg = response.data;
+                        if (existingAppsForPkg.length > 0) {
+                            if (!request.id || request.pkg !== application.pkg) {
+                                startDuplicatePkgResolutionDialog(request, existingAppsForPkg);
+                                return;
                             }
-                        } else {
-                            $modalInstance.close(response.data);
                         }
+                        doSaveApplication(request);
                     } else {
                         $scope.errorMessage = localization.localizeServerResponse(response);
                     }
                 });
             }
+        };
+
+        var startDuplicatePkgResolutionDialog = function (request, existingAppsForPkg) {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/main/view/modal/duplicatePkgResolution.html',
+                controller: 'DuplicatePkgResolutionController',
+                resolve: {
+                    application: function () {
+                        return request;
+                    },
+                    existingApps: function () {
+                        return existingAppsForPkg;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                if (result.changePkg) {
+                    doSaveApplication(request);
+                } else if (result.newApp) {
+                    doSaveApplication(request);
+                } else if (result.newAppVersion) {
+                    request.applicationId = result.targetAppId;
+                    doSaveApplicationVersion(request, result.targetApp);
+                }
+            });
         };
 
         $scope.manageConfigurations = function (closeOnExit) {
@@ -267,6 +342,29 @@ angular.module('headwind-kiosk')
                 }
             });
         };
+
+        $scope.manageAppVersionConfigurations = function (applicationVersion, closeOnExit) {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/main/view/modal/applicationVersionConfigurations.html',
+                controller: 'ApplicationVersionConfigurationsModalController',
+                resolve: {
+                    applicationVersion: function () {
+                        return applicationVersion;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                if (closeOnExit) {
+                    $scope.closeModal();
+                }
+            }, function () {
+                if (closeOnExit) {
+                    $scope.closeModal();
+                }
+            });
+        };
+
 
         $scope.closeModal = function () {
             $modalInstance.dismiss();
@@ -513,6 +611,11 @@ angular.module('headwind-kiosk')
                         $scope.application.runAfterInstall = app.runAfterInstall;
                         $scope.application.system = app.system;
                     }
+                    if (response.data.data.fileDetails) {
+                        var fileDetails = response.data.data.fileDetails;
+                        $scope.application.pkg = fileDetails.pkg;
+                        $scope.application.version = fileDetails.version;
+                    }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
                 }
@@ -681,5 +784,59 @@ angular.module('headwind-kiosk')
 
 
         })
+    .controller('DuplicatePkgResolutionController', function ($scope, $modalInstance, localization, application, existingApps) {
+
+        $scope.isNewApp = (application.id === null || application.id === undefined);
+        $scope.application = application;
+
+        if ($scope.isNewApp) {
+
+            $scope.duplicateApps = existingApps;
+
+            $scope.textLine1 = localization.localize('form.resolved.duplicate.pkg.text1')
+                .replace('${pkg}', application.pkg);
+
+            $scope.formData = {
+                targetAppId: existingApps[0].id
+            };
+
+            $scope.newApp = function () {
+                $modalInstance.close({
+                    newApp: true
+                });
+            };
+
+            $scope.newAppVersion = function () {
+                var selectedApp = existingApps.filter(function (app) {
+                    return app.id === $scope.formData.targetAppId;
+                })[0];
+
+                $modalInstance.close({
+                    newAppVersion: true,
+                    targetAppId: $scope.formData.targetAppId,
+                    targetApp: selectedApp
+                });
+            };
+        } else {
+
+            var appNames = existingApps.map(function (item, index) {
+                return item.name;
+            }).join(', ');
+
+            $scope.textLine4 = localization.localize('form.resolved.duplicate.pkg.text4')
+                .replace('${pkg}', application.pkg)
+                .replace('${apps}', appNames);
+
+            $scope.changePkg = function () {
+                $modalInstance.close({
+                    changePkg: true
+                });
+            };
+        }
+
+        $scope.closeModal = function () {
+            $modalInstance.dismiss();
+        };
+    })
 ;
 

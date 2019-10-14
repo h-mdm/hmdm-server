@@ -21,6 +21,7 @@
 
 package com.hmdm.persistence.mapper;
 
+import com.hmdm.rest.json.CustomerSearchRequest;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -32,16 +33,19 @@ import com.hmdm.persistence.domain.Customer;
 import java.util.List;
 
 /**
- * <p>$END$</p>
+ * <p>An ORM mapper for {@link Customer} domain object.</p>
  *
  * @author isv
  */
 public interface CustomerMapper {
 
-    @Select({"SELECT * FROM customers WHERE master = FALSE ORDER BY name"})
+    String SELECT_BASE = "SELECT customers.* FROM customers ";
+
+    @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
     List<Customer> findAll();
 
-    @Insert({"INSERT INTO customers (name, description, filesDir, master) VALUES (#{name}, #{description}, #{filesDir}, FALSE)"})
+    @Insert({"INSERT INTO customers (name, description, filesDir, master, prefix, registrationTime) " +
+            "VALUES (#{name}, #{description}, #{filesDir}, FALSE, #{prefix}, #{registrationTime})"})
     @SelectKey( statement = "SELECT currval('customers_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insert(Customer customer);
 
@@ -51,15 +55,38 @@ public interface CustomerMapper {
     @Delete({"DELETE FROM customers WHERE id=#{id} AND master = FALSE"})
     void delete(@Param("id") Integer id);
 
-    @Select({"SELECT * FROM customers " +
+    @Select({SELECT_BASE +
             "WHERE master = FALSE " +
             "AND (LOWER(name) LIKE #{filter} OR LOWER(description) LIKE #{filter}) " +
             "ORDER BY name"})
     List<Customer> findAllByValue(@Param("filter") String value);
 
-    @Select({"SELECT * FROM customers WHERE id=#{id}"})
+    @Select({SELECT_BASE + " WHERE id=#{id}"})
     Customer findCustomerById(@Param("id") Integer id);
 
-    @Select({"SELECT * FROM customers WHERE LOWER(name)=LOWER(#{name}) LIMIT 1"})
+    // TODO : This is a weak point. It is a direct link to table from Licensing plugin. Needs to be re-worked
+    @Select({"SELECT customers.*, settings.apiKey " +
+            "FROM customers " +
+            "LEFT JOIN plugin_licensing_settings settings ON settings.customerId = customers.id " +
+            "WHERE customers.id = #{id}"})
+    Customer findCustomerByIdForUpdate(@Param("id") Integer id);
+
+    @Select({SELECT_BASE + " WHERE LOWER(name) = LOWER(#{name}) LIMIT 1"})
     Customer findCustomerByName(@Param("name") String name);
+
+    // TODO : This is a weak point. It is a direct link to table from Licensing plugin. Needs to be re-worked
+    @Insert("INSERT INTO plugin_licensing_settings (apiKey, customerId) VALUES (#{apiKey}, #{id})" +
+            "ON CONFLICT ON CONSTRAINT plugin_licensing_settings_customer_unique DO " +
+            "UPDATE SET " +
+            "apiKey = EXCLUDED.apiKey"
+    )
+    void saveApiKey(Customer customer);
+
+    @Select("SELECT EXISTS (SELECT 1 FROM customers WHERE LOWER(prefix) = LOWER(#{prefix}))")
+    boolean isPrefixUsed(@Param("prefix") String prefix);
+
+    @Update("UPDATE customers SET lastLoginTime = #{time} WHERE id = #{id}")
+    int recordLastLoginTime(@Param("id") int customerId, @Param("time") long time);
+
+    List<Customer> searchCustomers(CustomerSearchRequest request);
 }

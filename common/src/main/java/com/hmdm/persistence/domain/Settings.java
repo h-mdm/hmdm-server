@@ -34,7 +34,7 @@ import static com.hmdm.persistence.domain.IconSize.SMALL;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Settings implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 6021629734180050883L;
+    private static final long serialVersionUID = -7584080480340396129L;
 
     @ApiModelProperty("An ID of a settings record")
     private Integer id;
@@ -52,32 +52,6 @@ public class Settings implements CustomerData, Serializable {
     private DesktopHeader desktopHeader = NO_HEADER;
     @ApiModelProperty(hidden = true)
     private int customerId;
-
-    // This group of settings corresponds to Displayed Device Columns from Common Settings
-    @ApiModelProperty("A flag indicating if Device Status column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Update Date column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceDate = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Nummber column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceNumber;
-    @ApiModelProperty("A flag indicating if Device Model column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceModel;
-    @ApiModelProperty("A flag indicating if Device Permissions column to be displayed in MDM web application")
-    private Boolean columnDisplayedDevicePermissionsStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Apps column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceAppInstallStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Configuration column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceConfiguration = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device IMEI column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceImei;
-    @ApiModelProperty("A flag indicating if Device Phone column to be displayed in MDM web application")
-    private Boolean columnDisplayedDevicePhone;
-    @ApiModelProperty("A flag indicating if Device Description column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceDesc;
-    @ApiModelProperty("A flag indicating if Device Group column to be displayed in MDM web application")
-    private Boolean columnDisplayedDeviceGroup;
-    @ApiModelProperty("A flag indicating if Launcher Version column to be displayed in MDM web application")
-    private Boolean columnDisplayedLauncherVersion;
 
     // A language used for localization
     @ApiModelProperty("A flag indicating if browser-dependent language is to be used for content localization")
@@ -120,62 +94,6 @@ public class Settings implements CustomerData, Serializable {
         this.id = id;
     }
 
-    public Boolean getColumnDisplayedDeviceStatus() {
-        return columnDisplayedDeviceStatus;
-    }
-
-    public void setColumnDisplayedDeviceStatus(Boolean columnDisplayedDeviceStatus) {
-        this.columnDisplayedDeviceStatus = columnDisplayedDeviceStatus;
-    }
-
-    public Boolean getColumnDisplayedDeviceDate() {
-        return columnDisplayedDeviceDate;
-    }
-
-    public void setColumnDisplayedDeviceDate(Boolean columnDisplayedDeviceDate) {
-        this.columnDisplayedDeviceDate = columnDisplayedDeviceDate;
-    }
-
-    public Boolean getColumnDisplayedDeviceNumber() {
-        return columnDisplayedDeviceNumber;
-    }
-
-    public void setColumnDisplayedDeviceNumber(Boolean columnDisplayedDeviceNumber) {
-        this.columnDisplayedDeviceNumber = columnDisplayedDeviceNumber;
-    }
-
-    public Boolean getColumnDisplayedDeviceModel() {
-        return columnDisplayedDeviceModel;
-    }
-
-    public void setColumnDisplayedDeviceModel(Boolean columnDisplayedDeviceModel) {
-        this.columnDisplayedDeviceModel = columnDisplayedDeviceModel;
-    }
-
-    public Boolean getColumnDisplayedDevicePermissionsStatus() {
-        return columnDisplayedDevicePermissionsStatus;
-    }
-
-    public void setColumnDisplayedDevicePermissionsStatus(Boolean columnDisplayedDevicePermissionsStatus) {
-        this.columnDisplayedDevicePermissionsStatus = columnDisplayedDevicePermissionsStatus;
-    }
-
-    public Boolean getColumnDisplayedDeviceAppInstallStatus() {
-        return columnDisplayedDeviceAppInstallStatus;
-    }
-
-    public void setColumnDisplayedDeviceAppInstallStatus(Boolean columnDisplayedDeviceAppInstallStatus) {
-        this.columnDisplayedDeviceAppInstallStatus = columnDisplayedDeviceAppInstallStatus;
-    }
-
-    public Boolean getColumnDisplayedDeviceConfiguration() {
-        return columnDisplayedDeviceConfiguration;
-    }
-
-    public void setColumnDisplayedDeviceConfiguration(Boolean columnDisplayedDeviceConfiguration) {
-        this.columnDisplayedDeviceConfiguration = columnDisplayedDeviceConfiguration;
-    }
-
     public IconSize getIconSize() {
         return iconSize;
     }
@@ -190,38 +108,6 @@ public class Settings implements CustomerData, Serializable {
 
     public void setDesktopHeader(DesktopHeader desktopHeader) {
         this.desktopHeader = desktopHeader;
-    }
-
-    public Boolean getColumnDisplayedDeviceImei() {
-        return columnDisplayedDeviceImei;
-    }
-
-    public void setColumnDisplayedDeviceImei(Boolean columnDisplayedDeviceImei) {
-        this.columnDisplayedDeviceImei = columnDisplayedDeviceImei;
-    }
-
-    public Boolean getColumnDisplayedDevicePhone() {
-        return columnDisplayedDevicePhone;
-    }
-
-    public void setColumnDisplayedDevicePhone(Boolean columnDisplayedDevicePhone) {
-        this.columnDisplayedDevicePhone = columnDisplayedDevicePhone;
-    }
-
-    public Boolean getColumnDisplayedDeviceDesc() {
-        return columnDisplayedDeviceDesc;
-    }
-
-    public void setColumnDisplayedDeviceDesc(Boolean columnDisplayedDeviceDesc) {
-        this.columnDisplayedDeviceDesc = columnDisplayedDeviceDesc;
-    }
-
-    public Boolean getColumnDisplayedDeviceGroup() {
-        return columnDisplayedDeviceGroup;
-    }
-
-    public void setColumnDisplayedDeviceGroup(Boolean columnDisplayedDeviceGroup) {
-        this.columnDisplayedDeviceGroup = columnDisplayedDeviceGroup;
     }
 
     public int getCustomerId() {
@@ -248,13 +134,6 @@ public class Settings implements CustomerData, Serializable {
         this.useDefaultLanguage = useDefaultLanguage;
     }
 
-    public Boolean getColumnDisplayedLauncherVersion() {
-        return columnDisplayedLauncherVersion;
-    }
-
-    public void setColumnDisplayedLauncherVersion(Boolean columnDisplayedLauncherVersion) {
-        this.columnDisplayedLauncherVersion = columnDisplayedLauncherVersion;
-    }
 
     @Override
     public String toString() {
@@ -266,18 +145,6 @@ public class Settings implements CustomerData, Serializable {
                 ", iconSize=" + iconSize +
                 ", desktopHeader=" + desktopHeader +
                 ", customerId=" + customerId +
-                ", columnDisplayedDeviceStatus=" + columnDisplayedDeviceStatus +
-                ", columnDisplayedDeviceDate=" + columnDisplayedDeviceDate +
-                ", columnDisplayedDeviceNumber=" + columnDisplayedDeviceNumber +
-                ", columnDisplayedDeviceModel=" + columnDisplayedDeviceModel +
-                ", columnDisplayedDevicePermissionsStatus=" + columnDisplayedDevicePermissionsStatus +
-                ", columnDisplayedDeviceAppInstallStatus=" + columnDisplayedDeviceAppInstallStatus +
-                ", columnDisplayedDeviceConfiguration=" + columnDisplayedDeviceConfiguration +
-                ", columnDisplayedDeviceImei=" + columnDisplayedDeviceImei +
-                ", columnDisplayedDevicePhone=" + columnDisplayedDevicePhone +
-                ", columnDisplayedDeviceDesc=" + columnDisplayedDeviceDesc +
-                ", columnDisplayedDeviceGroup=" + columnDisplayedDeviceGroup +
-                ", columnDisplayedLauncherVersion=" + columnDisplayedLauncherVersion +
                 ", useDefaultLanguage=" + useDefaultLanguage +
                 ", language='" + language + '\'' +
                 '}';

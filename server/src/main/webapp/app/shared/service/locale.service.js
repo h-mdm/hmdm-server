@@ -120,5 +120,11 @@ angular.module('headwind-kiosk')
                 element.attr('alt', localization.localize(element.attr('localized-alt')));
             }
         }
-    });
+    })
+    .filter('localize', function (localization) {
+        return function (key) {
+            return localization.localize(key);
+        };
+    })
+;
 

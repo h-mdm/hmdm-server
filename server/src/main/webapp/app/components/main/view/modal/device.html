@@ -8,18 +8,18 @@
         <div class='form-group'>
             <label class='col-sm-4 control-label' localized>form.device.number</label>
             <div class='col-sm-8'>
-                <input ng-model='device.number' type='text' class='form-control'>
+                <input ng-model='device.number' type='text' class='form-control' ng-disabled="!canEditDevice">
             </div>
         </div>
 
         <div class='form-group'>
             <label class='col-sm-4 control-label' localized>form.device.desc</label>
             <div class='col-sm-8'>
-                <textarea ng-model='device.description' class='form-control no-resize'></textarea>
+                <textarea ng-model='device.description' class='form-control no-resize' rows="5"></textarea>
             </div>
         </div>
 
-        <div class='form-group'>
+        <div class='form-group' ng-if="canEditDevice">
             <label class='col-sm-4 control-label' localized>form.device.groups</label>
             <div class='col-sm-8'>
                 <div ng-dropdown-multiselect
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class='form-group'>
+        <div class='form-group' ng-if="canEditDevice">
             <label class='col-sm-4 control-label' localized>form.device.config</label>
             <div class='col-sm-8'>
                 <select class='form-control'
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class='form-group'>
+        <div class='form-group' ng-if="canEditDevice">
             <label class='col-sm-4 control-label' for="imei" localized>form.device.imei</label>
             <div class='col-sm-8'>
                 <input ng-model='device.imei' id="imei" maxlength="15" type='text' class='form-control'
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <div class='form-group'>
+        <div class='form-group' ng-if="canEditDevice">
             <label class='col-sm-4 control-label' for="phone" localized>form.device.phone.number</label>
             <div class='col-sm-8'>
                 <input ng-model='device.phone' id="phone" type='text' class='form-control'

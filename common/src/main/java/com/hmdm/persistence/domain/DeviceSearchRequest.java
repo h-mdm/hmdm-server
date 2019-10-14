@@ -25,15 +25,21 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import java.io.Serializable;
+
 @ApiModel(description = "A request for searching the devices")
 @JsonIgnoreProperties(value = {"customerId", "userId"}, ignoreUnknown = true)
-public class DeviceSearchRequest {
+public class DeviceSearchRequest implements Serializable {
 
+    private static final long serialVersionUID = -131621879714920126L;
     @ApiModelProperty("A filter to search devices")
     private String value;
 
     @ApiModelProperty("An ID of a group to search devices for")
     private Integer groupId;
+
+    @ApiModelProperty("An ID of a configuration to search devices for")
+    private Integer configurationId;
 
     @ApiModelProperty(hidden = true)
     private int customerId;
@@ -57,7 +63,7 @@ public class DeviceSearchRequest {
     }
 
     public String getValue() {
-        return this.value != null ? "%" + this.value + "%" : null;
+        return this.value != null && !this.value.trim().isEmpty() ? "%" + this.value + "%" : null;
     }
 
     public void setValue(String value) {
@@ -102,5 +108,26 @@ public class DeviceSearchRequest {
 
     public void setPageNum(int pageNum) {
         this.pageNum = pageNum;
+    }
+
+    public Integer getConfigurationId() {
+        return configurationId;
+    }
+
+    public void setConfigurationId(Integer configurationId) {
+        this.configurationId = configurationId;
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceSearchRequest{" +
+                "value='" + value + '\'' +
+                ", groupId=" + groupId +
+                ", configurationId=" + configurationId +
+                ", customerId=" + customerId +
+                ", userId=" + userId +
+                ", pageSize=" + pageSize +
+                ", pageNum=" + pageNum +
+                '}';
     }
 }

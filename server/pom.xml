@@ -79,6 +79,11 @@
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
 
         <dependency>
             <groupId>com.hmdm.plugin</groupId>

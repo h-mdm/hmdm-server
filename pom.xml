@@ -54,7 +54,7 @@
 
         <servlet-api.version>2.5</servlet-api.version>
 
-        <mybatis.version>3.2.8</mybatis.version>
+        <mybatis.version>3.5.2</mybatis.version>
         <mybatis.guice.version>3.6</mybatis.guice.version>
 
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
@@ -63,7 +63,7 @@
         <junit.version>4.8.2</junit.version>
         <slf4j.version>1.7.2</slf4j.version>
 
-        <poi.version>3.14</poi.version>
+        <poi.version>4.1.0</poi.version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>D-HH-mm</maven.build.timestamp.format>
@@ -172,6 +172,13 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- MyBatis -->

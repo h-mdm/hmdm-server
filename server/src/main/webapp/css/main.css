@@ -12,7 +12,7 @@
 }
 
 .device-search-input {
-    width: calc( 100% - 500px ) !important;
+    width: calc( 100% - 700px ) !important;
     display: inline-block;
 }
 
@@ -2126,5 +2126,9 @@ div.row.device-app-settings-wrapper{
 }
 
 a.version-management-link {
+    cursor: pointer;
+}
+
+th.sortable {
     cursor: pointer;
 }

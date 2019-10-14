@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.persistence.mapper.CustomerMapper">
+
+    <select id="searchCustomers" parameterType="com.hmdm.rest.json.CustomerSearchRequest" resultType="Customer">
+        SELECT customers.*
+        FROM customers
+        WHERE customers.master = FALSE
+        <if test="searchValue != null">
+            AND (
+            customers.name ILIKE ('%' || #{searchValue} || '%') OR customers.description ILIKE ('%' || #{searchValue} || '%')
+            )
+        </if>
+        <if test="sortValue != null">
+            <if test="sortValue.equals('registrationTime')">
+                ORDER BY customers.registrationTime
+                <if test="sortDirection.equalsIgnoreCase(&quot;desc&quot;)">
+                    DESC
+                </if>
+            </if>
+            <if test="sortValue.equals('lastLoginTime')">
+                ORDER BY customers.lastLoginTime
+                <if test="sortDirection.equalsIgnoreCase(&quot;desc&quot;)">
+                    DESC
+                </if>
+            </if>
+        </if>
+        <if test="sortValue == null">
+            ORDER BY name
+        </if>
+        OFFSET (#{currentPage} - 1) * #{pageSize}
+        LIMIT #{pageSize}
+    </select>
+</mapper>

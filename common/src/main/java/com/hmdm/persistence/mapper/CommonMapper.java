@@ -24,7 +24,6 @@ package com.hmdm.persistence.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 import com.hmdm.persistence.domain.Settings;
 
 public interface CommonMapper {
@@ -34,74 +33,55 @@ public interface CommonMapper {
             "LIMIT 1"})
     Settings getSettings(@Param("customerId") int customerId);
 
-    @Insert({"INSERT INTO settings(backgroundColor, textColor, backgroundImageUrl, iconSize, desktopHeader, customerId) " +
-            "VALUES (#{backgroundColor}, #{textColor}, #{backgroundImageUrl}, #{iconSize}, #{desktopHeader}, #{customerId})"})
-    void insertDefaultDesignSettings(Settings settings);
+//    @Select({"SELECT * " +
+//            "FROM settings " +
+//            "WHERE EXISTS (SELECT 1 " +
+//            "              FROM devices " +
+//            "              WHERE devices.number = #{deviceId} " +
+//            "              AND devices.customerId = settings.customerId)"})
+//    Settings getSettingsByDeviceId(@Param("deviceId") String deviceId);
 
-    @Update({"UPDATE settings SET " +
-            "backgroundColor=#{backgroundColor}, " +
-            "textColor=#{textColor}, " +
-            "backgroundImageUrl=#{backgroundImageUrl}, " +
-            "iconSize=#{iconSize}, " +
-            "desktopHeader=#{desktopHeader} " +
-            "WHERE id = #{id}"})
-    void updateDefaultDesignSettings(Settings settings);
+    @Insert({
+            "INSERT INTO settings (" +
+                    "backgroundColor, " +
+                    "textColor, " +
+                    "backgroundImageUrl, " +
+                    "iconSize, " +
+                    "desktopHeader, " +
+                    "customerId" +
+                    ") VALUES (" +
+                    "#{backgroundColor}, " +
+                    "#{textColor}, " +
+                    "#{backgroundImageUrl}, " +
+                    "#{iconSize}, " +
+                    "#{desktopHeader}, " +
+                    "#{customerId}" +
+                    ") " +
+                    "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
+                    "UPDATE SET " +
+                    "backgroundColor = EXCLUDED.backgroundColor, " +
+                    "textColor = EXCLUDED.textColor, " +
+                    "backgroundImageUrl = EXCLUDED.backgroundImageUrl, " +
+                    "iconSize = EXCLUDED.iconSize, " +
+                    "desktopHeader = EXCLUDED.desktopHeader"
+    })
+    void saveDefaultDesignSettings(Settings settings);
 
-    @Insert({"INSERT INTO settings(" +
-            "columnDisplayedDeviceStatus, " +
-            "columnDisplayedDeviceDate, " +
-            "columnDisplayedDeviceNumber, " +
-            "columnDisplayedDeviceModel, " +
-            "columnDisplayedDevicePermissionsStatus, " +
-            "columnDisplayedDeviceAppInstallStatus, " +
-            "columnDisplayedDeviceConfiguration," +
-            "columnDisplayedDeviceImei," +
-            "columnDisplayedDevicePhone," +
-            "columnDisplayedDeviceDesc," +
-            "columnDisplayedDeviceGroup," +
-            "columnDisplayedLauncherVersion," +
-            "customerId" +
-            ") VALUES (" +
-            "#{columnDisplayedDeviceStatus}, " +
-            "#{columnDisplayedDeviceDate}, " +
-            "#{columnDisplayedDeviceNumber}, " +
-            "#{columnDisplayedDeviceModel}, " +
-            "#{columnDisplayedDevicePermissionsStatus}, " +
-            "#{columnDisplayedDeviceAppInstallStatus}, " +
-            "#{columnDisplayedDeviceConfiguration}, " +
-            "#{columnDisplayedDeviceImei}, " +
-            "#{columnDisplayedDevicePhone}," +
-            "#{columnDisplayedDeviceDesc}," +
-            "#{columnDisplayedDeviceGroup}," +
-            "#{columnDisplayedLauncherVersion}," +
-            "#{customerId}" +
-            ")"})
-    void insertCommonSettings(Settings settings);
-
-    @Update({"UPDATE settings SET " +
-            "columnDisplayedDeviceStatus=#{columnDisplayedDeviceStatus}, " +
-            "columnDisplayedDeviceDate=#{columnDisplayedDeviceDate}, " +
-            "columnDisplayedDeviceNumber=#{columnDisplayedDeviceNumber}, " +
-            "columnDisplayedDeviceModel=#{columnDisplayedDeviceModel}, " +
-            "columnDisplayedDevicePermissionsStatus=#{columnDisplayedDevicePermissionsStatus}, " +
-            "columnDisplayedDeviceAppInstallStatus=#{columnDisplayedDeviceAppInstallStatus}, " +
-            "columnDisplayedDeviceConfiguration=#{columnDisplayedDeviceConfiguration}, " +
-            "columnDisplayedDeviceImei=#{columnDisplayedDeviceImei}, " +
-            "columnDisplayedDevicePhone=#{columnDisplayedDevicePhone}, " +
-            "columnDisplayedDeviceDesc=#{columnDisplayedDeviceDesc}, " +
-            "columnDisplayedDeviceGroup=#{columnDisplayedDeviceGroup}, " +
-            "columnDisplayedLauncherVersion=#{columnDisplayedLauncherVersion} " +
-            "WHERE id = #{id}"})
-    void updateCommonSettings(Settings settings);
-
-    @Insert({"INSERT INTO settings(useDefaultLanguage, language, customerId) " +
-            "VALUES (#{useDefaultLanguage}, #{language}, #{customerId})"})
-    void insertLanguageSettings(Settings settings);
-
-    @Update({"UPDATE settings SET " +
-            "useDefaultLanguage=#{useDefaultLanguage}, " +
-            "language=#{language} " +
-            "WHERE id = #{id}"})
-    void updateLanguageSettings(Settings settings);
+    @Insert({
+            "INSERT INTO settings (" +
+                    "useDefaultLanguage, " +
+                    "language, " +
+                    "customerId" +
+                    ") VALUES (" +
+                    "#{useDefaultLanguage}, " +
+                    "#{language}, " +
+                    "#{customerId}" +
+                    ")" +
+                    "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
+                    "UPDATE SET " +
+                    "useDefaultLanguage = EXCLUDED.useDefaultLanguage, " +
+                    "language = EXCLUDED.language"
+    })
+    void saveLanguageSettings(Settings settings);
 
 }

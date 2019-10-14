@@ -2,13 +2,16 @@
 <div ng-show='errorMessage' class='modal-header'>
     <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
 </div>
+<div ng-show='loading' class='modal-header'>
+    <div class='success'><span localized>success.loading.customer</span></div>
+</div>
 <div class='modal-body'>
     <form class='form-horizontal'>
 
         <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.customer.name</label>
             <div class='col-sm-9'>
-                <input ng-model='customer.name' required type='text' class='form-control'
+                <input ng-model='customer.name' required type='text' class='form-control' ng-disabled="formDisabled"
                        localized-placeholder='form.customer.name.placeholder'>
             </div>
         </div>
@@ -16,7 +19,7 @@
         <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.customer.desc</label>
             <div class='col-sm-9'>
-                <textarea ng-model='customer.description' class='form-control no-resize'
+                <textarea ng-model='customer.description' class='form-control no-resize' ng-disabled="formDisabled"
                           localized-placeholder='form.customer.desc.placeholder'></textarea>
             </div>
         </div>
@@ -24,7 +27,7 @@
         <div class="form-group" ng-if="!customer.id">
             <label class='col-sm-3 control-label' localized>form.customer.copy.configuration</label>
             <div class='col-sm-9'>
-                <div ng-dropdown-multiselect
+                <div ng-dropdown-multiselect disabled="formDisabled"
                      options='configurationsList'
                      translation-texts='tableFilteringTexts'
                      selected-model='configurationsSelection'
@@ -35,13 +38,44 @@
         <div class='form-group' ng-if="!customer.id">
             <label class='col-sm-3 control-label' for="copydes"localized>form.customer.copy.design</label>
             <div class='col-sm-2'>
-                <input type="checkbox" class="form-control" id="copydes" name="copydes" ng-model="customer.copyDesign"/>
+                <input type="checkbox" class="form-control" id="copydes" name="copydes" ng-model="customer.copyDesign"
+                       ng-disabled="formDisabled"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.apiKey</label>
+            <div class='col-sm-9'>
+                <input ng-model='customer.apiKey' type='text' class='form-control' ng-disabled="formDisabled"
+                       maxlength="500"
+                       localized-placeholder='form.customer.apiKey.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.prefix</label>
+            <div class='col-sm-9'>
+                <input ng-model='customer.prefix' type='text' class='form-control' required
+                       ng-disabled="formDisabled || customer.id"
+                       maxlength="100"
+                       localized-placeholder='form.customer.prefix.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.device.configuration</label>
+            <div class='col-sm-9'>
+                <select class='form-control' ng-disabled="formDisabled || customer.id" required
+                        ng-model='customer.deviceConfigurationId'
+                        ng-options="configuration.id as configuration.label for configuration in deviceConfigurations">
+                </select>
             </div>
         </div>
 
         <div class='form-group'>
             <div class='col-sm-offset-3 col-sm-8'>
-                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
+                <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="formDisabled"
+                        localized>button.save</button>
                 <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>
             </div>
         </div>

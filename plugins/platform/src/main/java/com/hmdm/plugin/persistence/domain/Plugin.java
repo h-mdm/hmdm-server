@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 public class Plugin implements Serializable {
 
-    private static final long serialVersionUID = -3620123179179499668L;
+    private static final long serialVersionUID = -1608865046021511170L;
 
     // An unique ID of a plugin in DB
     private int id;
@@ -74,6 +74,9 @@ public class Plugin implements Serializable {
 
     // An optional permission require for granting access to plugin's Device Functions functionalities
     private String deviceFunctionsPermission;
+
+    // A flag indicating if plugin is enabled for individual device
+    private boolean enabledForDevice;
 
     /**
      * <p>Constructs new <code>Plugin</code> instance. This implementation does nothing.</p>
@@ -185,6 +188,14 @@ public class Plugin implements Serializable {
         this.deviceFunctionsPermission = deviceFunctionsPermission;
     }
 
+    public boolean isEnabledForDevice() {
+        return enabledForDevice;
+    }
+
+    public void setEnabledForDevice(boolean enabledForDevice) {
+        this.enabledForDevice = enabledForDevice;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -207,6 +218,7 @@ public class Plugin implements Serializable {
                 ", description='" + description + '\'' +
                 ", createTime='" + createTime + '\'' +
                 ", disabled=" + disabled +
+                ", enabledForDevice=" + enabledForDevice +
                 ", javascriptModuleFile='" + javascriptModuleFile + '\'' +
                 ", functionsViewTemplate='" + functionsViewTemplate + '\'' +
                 ", settingsViewTemplate='" + settingsViewTemplate + '\'' +

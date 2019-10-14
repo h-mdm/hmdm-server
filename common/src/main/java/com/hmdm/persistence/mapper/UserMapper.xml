@@ -82,7 +82,7 @@
         FROM userRoles
         LEFT JOIN userRolePermissions urp ON urp.roleId = userRoles.id
         LEFT JOIN permissions ON permissions.id = urp.permissionId
-        WHERE userRoles.superAdmin = FALSE
+        WHERE userRoles.superAdmin = #{includeSuperAdmin} OR NOT userRoles.superAdmin
     </select>
 
     <sql id="userDataSelect">

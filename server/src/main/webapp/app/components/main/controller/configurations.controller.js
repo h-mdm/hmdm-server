@@ -2,7 +2,7 @@
 angular.module('headwind-kiosk')
     .controller('ConfigurationsTabController', function ($scope, $rootScope, $state, $modal, confirmModal,
                                                          configurationService, authService, $window, localization,
-                                                         alertService) {
+                                                         alertService, hintService, $timeout) {
         $scope.isTypical = false;
         $scope.sort = {
             by: 'name'
@@ -11,6 +11,10 @@ angular.module('headwind-kiosk')
         $scope.paging = {
             currentPage: 1,
             pageSize: 50
+        };
+
+        $scope.searchObj = {
+            searchValue: null
         };
 
         $scope.$watch('paging.currentPage', function () {
@@ -34,21 +38,31 @@ angular.module('headwind-kiosk')
             $rootScope.pluginsTabActive = false;
             $scope.paging.currentPage = 1;
             $scope.isTypical = isTypical;
-            $scope.search();
+            $scope.search(function () {
+                $timeout(function () {
+                    hintService.onStateChangeSuccess();
+                }, 100);
+            });
         };
 
-        $scope.search = function () {
+        $scope.search = function (callback) {
             if ($scope.isTypical) {
                 configurationService.getAllTypicalConfigurations(
-                    {value: $scope.search.searchValue},
+                    {value: $scope.searchObj.searchValue},
                     function (response) {
                         $scope.configurations = response.data;
+                        if (callback) {
+                            callback();
+                        }
                     });
             } else {
                 configurationService.getAllConfigurations(
-                    {value: $scope.search.searchValue},
+                    {value: $scope.searchObj.searchValue},
                     function (response) {
                         $scope.configurations = response.data;
+                        if (callback) {
+                            callback();
+                        }
                     });
             }
         };
@@ -319,11 +333,12 @@ angular.module('headwind-kiosk')
                     }
                 });
 
+                // TODO : ISV : need to re-caclculate mainappid, contentappid if necessary
                 modalInstance.result.then(function (addedApp) {
                     if (addedApp) {
                         addedApp.actionChanged = true;
-
-                        if (addedApp.action == 1) {
+                        var addedAppIsToBeUsed = addedApp.action == 1;
+                        if (addedAppIsToBeUsed) {
                             $scope.applications.filter(function (app) {
                                 return app.pkg === addedApp.pkg && (app.action == 1);
                             }).forEach(function (app) {
@@ -334,6 +349,14 @@ angular.module('headwind-kiosk')
                             allApplications.push(addedApp);
                         }
                         $scope.applications.push(addedApp);
+                        if (!addedApp.usedVersionId) {
+                            addedApp.usedVersionId = addedApp.latestVersion;
+                        }
+
+                        if (addedAppIsToBeUsed) {
+                            syncMainApp();
+                            syncContentApp();
+                        }
                     }
                 });
             };
@@ -441,7 +464,6 @@ angular.module('headwind-kiosk')
             };
 
             $scope.appLookupFormatter = function (val) {
-                console.log('appLookupFormatter: val = ', val);
                 return val.name + (val.version && val.version !== '0' ? " " + val.version : "");
             };
 
@@ -847,7 +869,8 @@ angular.module('headwind-kiosk')
             var syncMainApp = function () {
                 if ($scope.configuration.mainAppId) {
                     let mainAppInstalledVersion = $scope.applications.find(function (app) {
-                        return app.id === $scope.mainApp.id && app.action == 1;
+                        // return app.id === $scope.mainApp.id && app.action == 1;
+                        return app.pkg === $scope.mainApp.pkg && app.action == 1;
                     });
 
                     if (mainAppInstalledVersion) {
@@ -866,7 +889,8 @@ angular.module('headwind-kiosk')
             var syncContentApp = function () {
                 if ($scope.configuration.contentAppId) {
                     let contentAppInstalledVersion = $scope.applications.find(function (app) {
-                        return app.id === $scope.contentApp.id && app.action == 1;
+                        // return app.id === $scope.contentApp.id && app.action == 1;
+                        return app.pkg === $scope.contentApp.pkg && app.action == 1;
                     });
 
                     if (contentAppInstalledVersion) {
@@ -1089,7 +1113,7 @@ angular.module('headwind-kiosk')
         $scope.applicationParameters = applicationParametersCopy;
 
         $scope.usedVersion = {
-            applicationVersionId: application.usedVersionId
+            applicationVersionId: application.usedVersionId || application.latestVersion
         };
 
         applicationService.getApplicationVersions({id: application.id}, function (response) {

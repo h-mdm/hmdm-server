@@ -12,19 +12,32 @@
     </sarsha-spinner>
 
     <div class='form-group'>
-        <select class='form-control device-search-group'
-                ng-model='selection.groupId'
-                ng-change='initSearch()'
-                ng-options="group.id as group.name for group in groups">
-        </select>
+        <div class="col-sm-6 margin-bottom">
+            <select class='form-control'
+                    ng-model='selection.groupId'
+                    ng-change='initSearch()'
+                    ng-options="group.id as group.name for group in groups">
+            </select>
+        </div>
+        <div class="col-sm-6 margin-bottom">
+            <select class='form-control'
+                    ng-model='selection.configurationId'
+                    ng-change='initSearch()'
+                    ng-options="config.id as config.name for config in configurations">
+            </select>
+        </div>
+    </div>
 
-        <input type='text'
-               ng-model='searchParams.searchValue'
-               ng-enter='initSearch()'
-               localized-placeholder='search.placeholder.device'
-               class='form-control device-search-input'>
+    <div class="form-group">
+        <div class='col-sm-6 margin-bottom'>
+            <input type='text'
+                   ng-model='searchParams.searchValue'
+                   ng-enter='initSearch()'
+                   localized-placeholder='search.placeholder.device'
+                   class='form-control'>
+        </div>
 
-        <div class='device-search-buttons'>
+        <div class='col-sm-6 text-right margin-bottom'>
             <button type='button' class='btn btn-default' ng-click='initSearch()' localized>button.search</button>
             <button type='button' ng-if="hasPermission('edit_devices')"
                     ng-disabled='isNotSelected()'
@@ -34,7 +47,7 @@
         </div>
     </div>
 
-    <div class="text-center" ng-if="paging.totalItems > paging.pageSize" style="margin-top: 50px">
+    <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
         <pagination
                 boundary-links='true' class='pagination-sm'
                 max-size='3'
@@ -105,7 +118,9 @@
             <td ng-if="settings.columnDisplayedDeviceConfiguration">
                 {{device.configName}}
             </td>
-            <td ng-if="settings.columnDisplayedDeviceDesc"><span>{{device.description}}</span></td>
+            <td ng-if="settings.columnDisplayedDeviceDesc">
+                <span ng-bind-html="formatMultiLine(device.description)"></span>
+            </td>
             <td ng-if="settings.columnDisplayedDeviceGroup">
                 <span ng-repeat="group in device.groups">{{group.name}}<br/></span>
             </td>
@@ -115,7 +130,7 @@
 
             <td class="deviceActions">
                 <button type='button' class='btn btn-default' ng-click='editDevice( device )'
-                        localized-title="button.change" ng-if="hasPermission('edit_devices')">
+                        localized-title="button.change" ng-if="hasPermission('edit_devices') || hasPermission('edit_device_desc')">
                     <span class='glyphicon glyphicon-pencil'></span>
                 </button>
                 <button type='button' class='btn btn-default' ng-click='removeDevice( device )'
@@ -134,7 +149,7 @@
                         </li>
                         <li role="menuitem" ng-repeat="plugin in plugins" ng-if="plugins && plugins.length > 0">
                             <a ng-click="notifyPluginOnDevice(plugin, device)"
-                               ng-if="!plugin.deviceFunctionsPermission || hasPermission(plugin.deviceFunctionsPermission)">{{localization.localize(plugin.nameLocalizationKey)}}</a>
+                               ng-if="plugin.enabledForDevice && plugin.functionsViewTemplate && (!plugin.deviceFunctionsPermission || hasPermission(plugin.deviceFunctionsPermission))">{{localization.localize(plugin.nameLocalizationKey)}}</a>
                         </li>
                     </ul>
                     </span>

@@ -40,35 +40,19 @@ public class CommonDAO extends AbstractDAO<Settings> {
         return getSingleRecord(this.mapper::getSettings);
     }
 
-    public void insertDefaultDesignSettings(Settings settings) {
-        insertRecord(settings, this.mapper::insertDefaultDesignSettings);
+    public void saveDefaultDesignSettings(Settings settings) {
+        insertRecord(settings, this.mapper::saveDefaultDesignSettings);
     }
 
-    public void updateDefaultDesignSettings(Settings settings) {
-        updateRecord(settings, this.mapper::updateDefaultDesignSettings, SecurityException::onSettingsAccessViolation);
+    public void saveLanguageSettings(Settings settings) {
+        insertRecord(settings, this.mapper::saveLanguageSettings);
     }
 
-    public void insertCommonSettings(Settings settings) {
-        insertRecord(settings, this.mapper::insertCommonSettings);
-    }
-
-    public void updateCommonSettings(Settings settings) {
-        updateRecord(settings, this.mapper::updateCommonSettings, SecurityException::onSettingsAccessViolation);
-    }
-
-    public void insertDefaultDesignSettingsBySuperAdmin(Settings settings) {
+    public void saveDefaultDesignSettingsBySuperAdmin(Settings settings) {
         if (SecurityContext.get().getCurrentUser().get().isSuperAdmin()) {
-            this.mapper.insertDefaultDesignSettings(settings);
+            this.mapper.saveDefaultDesignSettings(settings);
         } else {
-            throw SecurityException.onAdminDataAccessViolation("create customer settings");
+            throw SecurityException.onAdminDataAccessViolation("save customer settings");
         }
-    }
-
-    public void insertLanguageSettings(Settings settings) {
-        insertRecord(settings, this.mapper::insertLanguageSettings);
-    }
-
-    public void updateLanguageSettings(Settings settings) {
-        updateRecord(settings, this.mapper::updateLanguageSettings, SecurityException::onSettingsAccessViolation);
     }
 }

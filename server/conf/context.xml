@@ -28,4 +28,8 @@
     <Parameter name="plugin.devicelog.persistence.config.class" value="${plugin.devicelog.persistence.config.class}"/>
 
     <Parameter name="aapt.command" value="${aapt.command}"/>
+
+
+    <Parameter name="log4j.config" value="${log4j.config}"/>
+
 </Context>

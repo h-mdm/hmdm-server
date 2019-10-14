@@ -39,6 +39,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -117,16 +119,26 @@ public class DeviceResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateDevice(Device device) {
         try {
+            final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+            final boolean canEditDeviceDescription = SecurityContext.get().hasPermission("edit_device_desc");
+
+            if (!(canEditDevices || canEditDeviceDescription)) {
+                log.error("Unathorized attempt to create or edit device",
+                        SecurityException.onCustomerDataAccessViolation(device.getId(), "device"));
+                return Response.PERMISSION_DENIED();
+            }
+
             Device dbDevice = this.deviceDAO.getDeviceByNumber(device.getNumber());
             if (dbDevice != null && !dbDevice.getId().equals(device.getId())) {
+                log.error("A different device with same number exists: {}", dbDevice);
                 return Response.ERROR();
             } else {
                 dbDevice = this.deviceDAO.getDeviceById(device.getId());
                 if (device.getId() != null) {
                     if (dbDevice != null) {
-                        if (dbDevice.getOldConfigurationId() == null) {
-                            this.deviceDAO.updateDeviceOldConfiguration(device.getId(), dbDevice.getConfigurationId());
-                        }
+//                        if (dbDevice.getOldConfigurationId() == null) {
+//                            this.deviceDAO.updateDeviceOldConfiguration(device.getId(), dbDevice.getConfigurationId());
+//                        }
 
                         this.deviceDAO.updateDevice(device);
                     }
@@ -137,9 +149,9 @@ public class DeviceResource {
                         Integer id = (Integer)it.next();
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
-                            if (!dbDevice.getConfigurationId().equals(device.getConfigurationId())) {
-                                this.deviceDAO.updateDeviceOldConfiguration(id, dbDevice.getConfigurationId());
-                            }
+//                            if (!dbDevice.getConfigurationId().equals(device.getConfigurationId())) {
+//                                this.deviceDAO.updateDeviceOldConfiguration(id, dbDevice.getConfigurationId());
+//                            }
 
                             this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
                         }
@@ -152,7 +164,7 @@ public class DeviceResource {
                 return Response.OK();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unexpected error when saving/creating device", e);
             return Response.ERROR();
         }
     }
@@ -166,6 +178,14 @@ public class DeviceResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeDevice(@PathParam("id") @ApiParam("Device ID") Integer id) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!(canEditDevices)) {
+            log.error("Unathorized attempt to delete device",
+                    SecurityException.onCustomerDataAccessViolation(id, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
         this.deviceDAO.removeDeviceById(id);
         return Response.OK();
     }

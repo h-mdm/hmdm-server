@@ -11,7 +11,7 @@
                 <div class='form-group'>
                     <input type='text'
                            ng-enter='search()'
-                           ng-model='search.searchValue'
+                           ng-model='paging.searchValue'
                            localized-placeholder='search.placeholder.customer'
                            class='form-control configurations-search-input'>
 
@@ -36,14 +36,30 @@
                     <thead>
                     <tr>
                         <th localized>table.heading.customer.name</th>
-                        <th localized>table.heading.customer.desc</th>
+                        <th localized class="col-sm-4">table.heading.customer.desc</th>
+                        <th ng-click="sortByRegistrationTime()" class="sortable">
+                            <span localized>table.heading.customer.registration.time</span>
+                            <span ng-if='paging.sortValue === "registrationTime" && paging.sortDirection === "asc"'
+                                  class="glyphicon glyphicon-sort-by-order"></span>
+                            <span ng-if='paging.sortValue === "registrationTime" && paging.sortDirection === "desc"'
+                                  class="glyphicon glyphicon-sort-by-order-alt"></span>
+                        </th>
+                        <th ng-click="sortByLastLoginTime()" class="sortable">
+                            <span localized>table.heading.customer.last.login.time</span>
+                            <span ng-if='paging.sortValue === "lastLoginTime" && paging.sortDirection === "asc"'
+                                  class="glyphicon glyphicon-sort-by-order"></span>
+                            <span ng-if='paging.sortValue === "lastLoginTime" && paging.sortDirection === "desc"'
+                                  class="glyphicon glyphicon-sort-by-order-alt"></span>
+                        </th>
                         <th class='actions-column' localized>table.heading.customer.actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat='customer in customers.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
+                    <tr ng-repeat='customer in customers'>
                         <td>{{customer.name}}</td>
                         <td>{{customer.description}}</td>
+                        <td>{{customer.registrationTime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                        <td>{{customer.lastLoginTime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
                         <td>
                             <div>
                                 <button type='button' class='btn btn-default' localized-title="button.change"

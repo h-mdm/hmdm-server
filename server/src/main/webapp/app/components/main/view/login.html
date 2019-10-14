@@ -1,5 +1,5 @@
 <!-- Localization completed -->
-<div>
+<div ng-if="!isIE">
     <div class='panel panel-default login' ng-class='{"panel-danger": errorMessage, "panel-success": successMessage}'>
         <div class='panel-heading' ng-if='errorMessage'>{{errorMessage}}</div>
         <div class='panel-heading' ng-if='successMessage'>{{successMessage}}</div>
@@ -22,4 +22,9 @@
             </form>
         </div>
     </div>
+</div>
+
+<div class='content-wrapper' ng-if="isIE">
+    <div localized>ie.browser.notice.1</div>
+    <div ng-bind-html="'ie.browser.notice.2' | localize"></div>
 </div>

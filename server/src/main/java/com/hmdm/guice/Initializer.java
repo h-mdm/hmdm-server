@@ -80,6 +80,15 @@ public final class Initializer extends GuiceServletContextListener {
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         this.context = servletContextEvent.getServletContext();
+
+        String log4jConfig = context.getInitParameter("log4j.config");
+        if (log4jConfig != null && !log4jConfig.isEmpty()) {
+            System.out.println("[LOGGING] Using log4j configuration from: " + log4jConfig);
+            System.setProperty("log4j.configuration", log4jConfig);
+        } else {
+            System.out.println("[LOGGING] Using log4j configuration from build");
+        }
+
         super.contextInitialized(servletContextEvent);
 
         initTasks();

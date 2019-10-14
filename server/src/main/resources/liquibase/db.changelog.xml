@@ -1176,4 +1176,264 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="06.09.19-12:27" author="isv" context="common">
+        <comment>Constraint,new: settings_customer_unique</comment>
+        <sql>
+            ALTER TABLE settings ADD CONSTRAINT settings_customer_unique UNIQUE (customerId);
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP CONSTRAINT settings_customer_unique;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.09.19-12:48" author="isv" context="common">
+        <comment>Table,new: userHints</comment>
+        <sql>
+            CREATE TABLE userHints(
+                id serial NOT NULL CONSTRAINT userHints_pr_key PRIMARY KEY,
+                userId INT NOT NULL REFERENCES users( id ) ON DELETE CASCADE,
+                hintKey VARCHAR(100) NOT NULL,
+                created TIMESTAMP NOT NULL DEFAULT NOW()
+            );
+            ALTER TABLE userHints ADD CONSTRAINT userHints_userId_hintKey_unique UNIQUE (userId, hintKey);
+        </sql>
+        <rollback>
+            ALTER TABLE userHints DROP CONSTRAINT userHints_userId_hintKey_unique;
+            DROP TABLE userHints;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19.09.19-18:48" author="isv" context="common">
+        <comment>Table,new: userHintTypes</comment>
+        <sql>
+            CREATE TABLE userHintTypes (
+                hintKey VARCHAR(100) NOT NULL UNIQUE
+            );
+            INSERT INTO userHintTypes (hintKey) VALUES ('hint.step.1');
+            INSERT INTO userHintTypes (hintKey) VALUES ('hint.step.2');
+            INSERT INTO userHintTypes (hintKey) VALUES ('hint.step.3');
+            INSERT INTO userHintTypes (hintKey) VALUES ('hint.step.4');
+        </sql>
+        <rollback>
+            DROP TABLE userHintTypes;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20.09.19-12:24" author="isv" context="common">
+        <comment>Column,new: customers#prefix</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN prefix VARCHAR(100);
+            UPDATE customers SET prefix = 'e' || id || '-';
+            ALTER TABLE customers ALTER COLUMN prefix SET NOT NULL;
+            ALTER TABLE customers ADD CONSTRAINT customers_prefix_key UNIQUE (prefix);
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP CONSTRAINT customers_prefix_key;
+            ALTER TABLE customers DROP COLUMN prefix;
+        </rollback>
+    </changeSet>
+
+   <changeSet id="20.09.19-16:48" author="isv" context="common">
+        <comment>Column,new: customers#registrationTime</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN registrationTime BIGINT;
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP COLUMN registrationTime;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20.09.19-16:49" author="isv" context="common">
+        <comment>Column,new: customers#lastLoginTime</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN lastLoginTime BIGINT;
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP COLUMN lastLoginTime;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.09.19-14:14" author="isv" context="common">
+        <comment>Indexes,new: configurations#mainAppId, contentAppId, customerId</comment>
+        <sql>
+            CREATE INDEX configurations_mainAppId_idx ON configurations (mainAppId);
+            CREATE INDEX configurations_contentAppId_idx ON configurations (contentAppId);
+            CREATE INDEX configurations_customerId_idx ON configurations (customerId);
+        </sql>
+        <rollback>
+            DROP INDEX configurations_customerId_idx;
+            DROP INDEX configurations_contentAppId_idx;
+            DROP INDEX configurations_mainAppId_idx;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.09.19-14:15" author="isv" context="common">
+        <comment>Indexes,new: devices#configurationId, groupId, customerId</comment>
+        <sql>
+            CREATE INDEX devices_configurationId_idx ON devices (configurationId);
+            CREATE INDEX devices_customerId_idx ON devices (customerId);
+        </sql>
+        <rollback>
+            DROP INDEX devices_customerId_idx;
+            DROP INDEX devices_configurationId_idx;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.09.19-14:16" author="isv" context="common">
+        <comment>Indexes,new: applications#pkg, customerId</comment>
+        <sql>
+            CREATE INDEX applications_pkg_idx ON applications (pkg);
+            CREATE INDEX applications_customerId_idx ON applications (customerId);
+        </sql>
+        <rollback>
+            DROP INDEX applications_customerId_idx;
+            DROP INDEX applications_pkg_idx;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.09.19-14:17" author="isv" context="common">
+        <comment>Indexes,new: applicationVersions#applicationId</comment>
+        <sql>
+            CREATE INDEX applicationversionss_applicationId_idx ON applicationVersions (applicationId);
+        </sql>
+        <rollback>
+            DROP INDEX applicationversionss_applicationId_idx;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.09.19-14:18" author="isv" context="common">
+        <comment>Indexes,new: deviceGroups#deviceId, groupId</comment>
+        <sql>
+            CREATE INDEX devices_groupId_idx ON deviceGroups (groupId);
+            CREATE INDEX devices_deviceId_idx ON deviceGroups (deviceId);
+        </sql>
+        <rollback>
+            DROP INDEX devices_groupId_idx;
+            DROP INDEX devices_deviceId_idx;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="03.10.19-14:38" author="isv" context="common">
+        <comment>Column,new: applicationVersions#apkHash</comment>
+        <sql>
+            ALTER TABLE applicationVersions ADD COLUMN apkHash VARCHAR(100);
+        </sql>
+        <rollback>
+            ALTER TABLE applicationVersions DROP COLUMN apkHash;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.10.19-10:14" author="isv" context="common">
+        <comment>Permission,new: edit_device_desc</comment>
+        <sql>
+            INSERT INTO permissions (name, description, superadmin) VALUES ('edit_device_desc', 'Иммет доступ к редактированию описания устройства', FALSE);
+            INSERT INTO userRolePermissions (roleId, permissionId) SELECT id, CURRVAL('permissions_id_seq') FROM userRoles;
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'edit_device_desc';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.10.19-12:00" author="isv" context="common">
+        <comment>Table,new: userRoleSettings</comment>
+        <sql>
+            CREATE TABLE userRoleSettings (
+               id serial NOT NULL CONSTRAINT userRoleSettings_pr_key PRIMARY KEY,
+               roleId INT NOT NULL REFERENCES userRoles( id ) ON DELETE CASCADE,
+               customerId INT NOT NULL REFERENCES customers( id ) ON DELETE CASCADE,
+               columnDisplayedDeviceStatus BOOLEAN,
+               columnDisplayedDeviceDate BOOLEAN,
+               columnDisplayedDeviceNumber BOOLEAN,
+               columnDisplayedDeviceModel BOOLEAN,
+               columnDisplayedDevicePermissionsStatus BOOLEAN,
+               columnDisplayedDeviceAppInstallStatus BOOLEAN,
+               columnDisplayedDeviceConfiguration BOOLEAN,
+               columnDisplayedDeviceImei BOOLEAN,
+               columnDisplayedDevicePhone BOOLEAN,
+               columnDisplayedDeviceDesc BOOLEAN,
+               columnDisplayedDeviceGroup BOOLEAN,
+               columnDisplayedLauncherVersion BOOLEAN
+            );
+            ALTER TABLE userRoleSettings ADD CONSTRAINT userRoleSettings_role_customer_uniq UNIQUE (roleId, customerId);
+        </sql>
+        <rollback>
+            DROP TABLE userRoleSettings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.10.19-13:50" author="isv" context="common">
+        <comment>Data,initial: userRoleSettings</comment>
+        <sql>
+            INSERT INTO userRoleSettings (
+                roleId,
+                customerId,
+                columnDisplayedDeviceStatus,
+                columnDisplayedDeviceDate,
+                columnDisplayedDeviceNumber,
+                columnDisplayedDeviceModel,
+                columnDisplayedDevicePermissionsStatus,
+                columnDisplayedDeviceAppInstallStatus,
+                columnDisplayedDeviceConfiguration,
+                columnDisplayedDeviceImei,
+                columnDisplayedDevicePhone,
+                columnDisplayedDeviceDesc,
+                columnDisplayedDeviceGroup,
+                columnDisplayedLauncherVersion
+            )
+            SELECT
+                userRoles.id,
+                settings.customerId,
+                settings.columnDisplayedDeviceStatus,
+                settings.columnDisplayedDeviceDate,
+                settings.columnDisplayedDeviceNumber,
+                settings.columnDisplayedDeviceModel,
+                settings.columnDisplayedDevicePermissionsStatus,
+                settings.columnDisplayedDeviceAppInstallStatus,
+                settings.columnDisplayedDeviceConfiguration,
+                settings.columnDisplayedDeviceImei,
+                settings.columnDisplayedDevicePhone,
+                settings.columnDisplayedDeviceDesc,
+                settings.columnDisplayedDeviceGroup,
+                settings.columnDisplayedLauncherVersion
+            FROM userRoles
+            INNER JOIN settings ON 1=1
+            WHERE userRoles.superAdmin IS FALSE
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.10.19-14:30" author="isv" context="common">
+        <comment>Column,delete: settings#columnDisplayed*</comment>
+        <sql>
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceStatus;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceDate;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceNumber;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceModel;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDevicePermissionsStatus;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceAppInstallStatus;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceConfiguration;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceImei;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDevicePhone;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceDesc;
+            ALTER TABLE settings DROP COLUMN columnDisplayedDeviceGroup;
+            ALTER TABLE settings DROP COLUMN columnDisplayedLauncherVersion;
+        </sql>
+        <rollback>
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceStatus BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceDate BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceNumber BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceModel BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDevicePermissionsStatus BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceAppInstallStatus BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceConfiguration BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceImei BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDevicePhone BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceDesc BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedDeviceGroup BOOLEAN;
+            ALTER TABLE settings ADD COLUMN columnDisplayedLauncherVersion BOOLEAN;
+        </rollback>
+    </changeSet>
+    
+
 </databaseChangeLog>

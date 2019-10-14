@@ -1,5 +1,5 @@
 angular.module('headwind-kiosk',
-    ['ngResource', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ngTagsInput', 'ngAnimate',
+    ['ngResource', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ngTagsInput', 'ngAnimate', 'ngSanitize',
         'lr.upload', 'colorpicker.module',
         'ui.mask', 'ncy-angular-breadcrumb', 'oc.lazyLoad', 'angularjs-dropdown-multiselect'])
     .constant("SUPPORTED_LANGUAGES", {
@@ -11,7 +11,7 @@ angular.module('headwind-kiosk',
         'ru': "ru_RU",
         'ru_RU': "ru_RU",
     })
-    .constant("APP_VERSION", "3.06.0003") // Update this value on each commit
+    .constant("APP_VERSION", "3.07.0008") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -71,7 +71,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.devices') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.devices" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "DEVICES"}
@@ -83,7 +83,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.applications') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.applications" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "APPS"}
@@ -94,7 +94,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/applicationVersions.html',
                 controller: 'ApplicationVersionEditor',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.application.versions'), //label to show in breadcrumbs,
+                    label: '{{"breadcrumb.application.versions" | localize}}', //label to show in breadcrumbs
                     parent: 'applications',
 
                 }
@@ -104,7 +104,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.configurations') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.configurations" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "CONFS"}
@@ -115,7 +115,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.files') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.files" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "FILES"}
@@ -126,7 +126,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.default.design') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.default.design" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "DESIGN"}
@@ -137,7 +137,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.common.settings') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.common.settings" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "COMMON"}
@@ -148,7 +148,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.language.settings') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.language.settings" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "LANG"}
@@ -159,7 +159,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.users') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.users" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "USERS"}
@@ -170,10 +170,21 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.groups') //label to show in breadcrumbs
+                    label: '{{"breadcrumb.groups" | localize}}' //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {return "GROUPS"}
+                }
+            })
+            .state('hints', {
+                url: '/hints',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.hints" | localize}}' //label to show in breadcrumbs
+                },
+                resolve: {
+                    openTab: function () {return "HINTS"}
                 }
             })
             .state('configEditor', {
@@ -181,7 +192,7 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/configuration.html',
                 controller: 'ConfigurationEditorController',
                 ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.config.details'), //label to show in breadcrumbs,
+                    label: '{{"breadcrumb.config.details" | localize}}', //label to show in breadcrumbs
                     parent: 'configurations',
 
                 }
@@ -201,18 +212,6 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/control-panel/view/panel.html',
                 controller: 'ControlPanelController'
             })
-            // Plugins
-            .state('plugin-photo', {
-                url: '/plugin-photo',
-                templateUrl: 'app/components/main/view/content.html',
-                controller: 'TabController',
-                ncyBreadcrumb: {
-                    label: localizeText(browserLanguage, 'breadcrumb.plugin.photo.main') //label to show in breadcrumbs
-                },
-                resolve: {
-                    openTab: function () {return "plugin-photo"}
-                }
-            })
     })
 
     .config(function ($httpProvider) {
@@ -222,6 +221,7 @@ angular.module('headwind-kiosk',
                     if (rejection.status === 403) {
                         $injector.get('authService').logout();
                         $injector.get('$state').transitionTo('login');
+                        $injector.get('hintService').onLogout();
 
                         return new Promise(function () {
                         });
@@ -244,9 +244,14 @@ angular.module('headwind-kiosk',
         $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
     })
 
-    .run(function ($rootScope, $state, $stateParams, authService, pluginService, $ocLazyLoad, localization, $window) {
+    .run(function ($rootScope, $state, $stateParams, authService, pluginService, $ocLazyLoad, localization, hintService,
+                   $window) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
+
+        if (authService.isLoggedIn()) {
+            hintService.init();
+        }
 
         pluginService.getRegisteredPlugins(function (response) {
             if (response.status === 'OK') {
@@ -274,21 +279,29 @@ angular.module('headwind-kiosk',
 
         $rootScope.$on('aero_USER_AUTHENTICATED', function () {
             localization.onLogin($rootScope);
+            hintService.onLogin();
         });
 
-        $rootScope.$on('$stateChangeStart',
-            function (event, toState, toParams, fromState, fromParams) {
-                if (toState.name !== 'password_recovery' && toState.name !== 'qr') {
-                    if (!authService.isLoggedIn() && toState.name !== 'login') {
-                        event.preventDefault();
-                        $state.transitionTo('login');
-                    }
-                }
+        // $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+        //     hintService.onStateChangeSuccess();
+        // });
 
-                if (authService.isLoggedIn() &&
-                    (toState.name === 'login' || toState.name === 'password_recovery')) {
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+
+            hintService.onStateChangeStart();
+
+            if (toState.name !== 'password_recovery' && toState.name !== 'qr') {
+                if (!authService.isLoggedIn() && toState.name !== 'login') {
                     event.preventDefault();
-                    $state.transitionTo('main');
+                    hintService.onLogout();
+                    $state.transitionTo('login');
                 }
-            });
+            }
+
+            if (authService.isLoggedIn() &&
+                (toState.name === 'login' || toState.name === 'password_recovery')) {
+                event.preventDefault();
+                $state.transitionTo('main');
+            }
+        });
     });

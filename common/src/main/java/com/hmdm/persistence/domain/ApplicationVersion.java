@@ -53,6 +53,9 @@ public class ApplicationVersion implements Serializable {
     @ApiModelProperty(hidden = true)
     private boolean system;
 
+    @ApiModelProperty(hidden = true)
+    private String apkHash;
+
     /**
      * <p>A path to uploaded file to link this application to when adding an application.</p>
      */
@@ -140,6 +143,14 @@ public class ApplicationVersion implements Serializable {
         this.filePath = filePath;
     }
 
+    public String getApkHash() {
+        return apkHash;
+    }
+
+    public void setApkHash(String apkHash) {
+        this.apkHash = apkHash;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersion{" +
@@ -148,6 +159,7 @@ public class ApplicationVersion implements Serializable {
                 ", version='" + version + '\'' +
                 ", system='" + system + '\'' +
                 ", url='" + url + '\'' +
+                ", apkHash='" + apkHash + '\'' +
                 ", deletionProhibited='" + deletionProhibited + '\'' +
                 ", commonApplication='" + commonApplication + '\'' +
                 ", filePath='" + filePath + '\'' +

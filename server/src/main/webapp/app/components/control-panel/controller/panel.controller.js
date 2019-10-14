@@ -12,7 +12,36 @@ angular.module('headwind-kiosk')
 
         $scope.paging = {
             currentPage: 1,
-            pageSize: 50
+            pageSize: 50,
+            sortValue: undefined,
+            sortDirection: undefined
+        };
+
+        var regTimeSortDir = undefined;
+        var loginTimeSortDir = undefined;
+
+        $scope.sortByRegistrationTime = function() {
+            if (regTimeSortDir === 'asc') {
+                regTimeSortDir = 'desc';
+            } else {
+                regTimeSortDir = 'asc';
+            }
+
+            $scope.paging.sortValue = 'registrationTime';
+            $scope.paging.sortDirection = regTimeSortDir;
+            $scope.init();
+        };
+
+        $scope.sortByLastLoginTime = function() {
+            if (loginTimeSortDir === 'asc') {
+                loginTimeSortDir = 'desc';
+            } else {
+                loginTimeSortDir = 'asc';
+            }
+
+            $scope.paging.sortValue = 'lastLoginTime';
+            $scope.paging.sortDirection = loginTimeSortDir;
+            $scope.init();
         };
 
         $scope.$watch('paging.currentPage', function() {
@@ -25,11 +54,9 @@ angular.module('headwind-kiosk')
         };
 
         $scope.search = function () {
-            customerService.getAllCustomers(
-                {value: $scope.search.searchValue},
-                function (response) {
-                    $scope.customers = response.data;
-                });
+            customerService.getAllCustomers($scope.paging, function (response) {
+                $scope.customers = response.data;
+            });
         };
 
         $scope.loginAs = function (customer) {
@@ -40,6 +67,7 @@ angular.module('headwind-kiosk')
                         var user = response.data;
                         authService.update(user);
                         $state.transitionTo( 'main' );
+                        $rootScope.$emit('aero_USER_AUTHENTICATED');
                     } else {
                         alertService.showAlertMessage(localization.localize(response.message));
                     }
@@ -156,9 +184,34 @@ angular.module('headwind-kiosk')
     .controller('CustomerModalController',
         function ($scope, $modalInstance, customerService, customer, alertService, configurationService, localization) {
 
+            var copyCustomer = function (original) {
+                var copy = {};
+                for (var prop in original) {
+                    if (original.hasOwnProperty(prop)) {
+                        copy[prop] = original[prop];
+                    }
+                }
+
+                return copy;
+            };
+
             $scope.configurationsList = [];
 
             $scope.configurationsSelection = [];
+            $scope.deviceConfigurations = [];
+
+            $scope.$watchCollection('configurationsSelection', function (newCol) {
+                var lookup = {};
+                newCol.forEach(function (item) {
+                    lookup[item.id] = true;
+                });
+                $scope.deviceConfigurations = $scope.configurationsList.filter(function (item) {
+                    return lookup[item.id];
+                });
+                if (!lookup[$scope.customer.deviceConfigurationId]) {
+                    $scope.customer.deviceConfigurationId = undefined;
+                }
+            });
 
             $scope.tableFilteringTexts = {
                 'buttonDefaultText': localization.localize('table.filtering.no.selected.configuration'),
@@ -174,45 +227,89 @@ angular.module('headwind-kiosk')
                 });
             });
 
-            $scope.customer = {};
-            for (var prop in customer) {
-                if (customer.hasOwnProperty(prop)) {
-                    $scope.customer[prop] = customer[prop];
-                }
+            $scope.formDisabled = false;
+            $scope.loading = false;
+
+            // Read existing customer data from DB
+            if (customer.id) {
+                $scope.formDisabled = true;
+                $scope.loading = true;
+
+                customerService.getForUpdate({id: customer.id}, function (response) {
+                    if (response.status === 'OK') {
+                        $scope.customer = copyCustomer(response.data);
+                        $scope.formDisabled = false;
+                        $scope.loading = false;
+                    } else {
+                        $scope.errorMessage = localization.localizeServerResponse(response);
+                        $scope.loading = false;
+                    }
+                }, function (response) {
+                    $scope.loading = false;
+                    alertService.onRequestFailure(response);
+                });
+            } else {
+                $scope.customer = copyCustomer(customer);
             }
 
             $scope.save = function () {
                 $scope.saveInternal();
             };
 
+            var doSave = function () {
+                var request = {};
+                for (var prop in $scope.customer) {
+                    if ($scope.customer.hasOwnProperty(prop)) {
+                        request[prop] = $scope.customer[prop];
+                    }
+                }
+
+                request.configurationIds = $scope.configurationsSelection.map(function (selection) {
+                    return selection.id;
+                });
+
+                customerService.updateCustomer(request, function (response) {
+                    if (response.status === 'OK') {
+                        $modalInstance.close();
+                        if (response.data && response.data['adminCredentials']) {
+                            let localizedText = localization.localize('success.admin.created').replace('${adminCredentials}', response.data['adminCredentials']);
+                            alertService.showAlertMessage(localizedText);
+                        }
+                    } else {
+                        $scope.errorMessage = localization.localize(response.message);
+                    }
+                });
+            };
+
             $scope.saveInternal = function () {
                 $scope.errorMessage = '';
 
-                if (!$scope.customer.name) {
+                var isNew = !$scope.customer.id;
+
+                if (!$scope.customer.name || $scope.customer.name.trim().length === 0) {
                     $scope.errorMessage = localization.localize('error.empty.customer.name');
+                } else if (isNew && (!$scope.customer.prefix || $scope.customer.prefix.trim().length === 0)) {
+                    $scope.errorMessage = localization.localize('error.empty.customer.prefix');
+                } else if (isNew && !$scope.customer.deviceConfigurationId) {
+                    $scope.errorMessage = localization.localize('error.empty.customer.device.configuration');
                 } else {
-                    var request = {};
-                    for (var prop in $scope.customer) {
-                        if ($scope.customer.hasOwnProperty(prop)) {
-                            request[prop] = $scope.customer[prop];
-                        }
-                    }
-
-                    request.configurationIds = $scope.configurationsSelection.map(function (selection) {
-                        return selection.id;
-                    });
-
-                    customerService.updateCustomer(request, function (response) {
-                        if (response.status === 'OK') {
-                            $modalInstance.close();
-                            if (response.data['adminCredentials']) {
-                                let localizedText = localization.localize('success.admin.created').replace('${adminCredentials}', response.data['adminCredentials']);
-                                alertService.showAlertMessage(localizedText);
+                    if (isNew) {
+                        customerService.isUsedPrefix({prefix: $scope.customer.prefix}, function (response) {
+                            if (response.status === 'OK') {
+                                if (response.data === true) {
+                                    $scope.errorMessage = localization.localize('error.empty.customer.duplicate.prefix');
+                                } else {
+                                    doSave();
+                                }
+                            } else {
+                                $scope.errorMessage = localization.localizeServerResponse(response);
                             }
-                        } else {
-                            $scope.errorMessage = localization.localize('error.duplicate.customer.name');
-                        }
-                    });
+                        }, function () {
+                            $scope.errorMessage = localization.localize('error.request.failure');
+                        });
+                    } else {
+                        doSave();
+                    }
                 }
             };
 

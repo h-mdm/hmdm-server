@@ -234,4 +234,25 @@ public class UnsecureDAO {
         this.deviceMapper.deleteDeviceApplicationSettings(dbDevice.getId());
         this.deviceMapper.insertDeviceApplicationSettings(dbDevice.getId(), mergedApplicationSettings);
     }
+
+    /**
+     * <p>Saves the hash value for APK-file associated with the specified aplication version.</p>
+     *
+     * @param appVersionId an application version ID to save the hash value for APK file for.
+     * @param hashValue a hash-value to be saved.
+     */
+    public void saveApkFileHash(Integer appVersionId, String hashValue) {
+        this.applicationMapper.saveApkFileHash(appVersionId, hashValue);
+    }
+
+    /**
+     * <p>Gets the settings for the customer account mapped to specified device.</p>
+     *
+     * @param deviceId a device number identifying the device.
+     * @return the settings for related customer account.
+     */
+//    public Settings getSettingsByDeviceId(String deviceId) {
+//        return this.settingsMapper.getSettingsByDeviceId(deviceId);
+//    }
+
 }

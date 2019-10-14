@@ -27,16 +27,23 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.hmdm.persistence.UserRoleSettingsDAO;
+import com.hmdm.persistence.domain.UserRoleSettings;
+import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.domain.Settings;
 import com.hmdm.rest.json.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 @Api(tags = {"Settings"}, authorizations = {@Authorization("Bearer Token")})
@@ -44,7 +51,10 @@ import java.util.Optional;
 @Path("/private/settings")
 public class SettingsResource {
 
+    private static final Logger log = LoggerFactory.getLogger(SettingsResource.class);
+
     private CommonDAO commonDAO;
+    private UserRoleSettingsDAO userRoleSettingsDAO;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -53,8 +63,9 @@ public class SettingsResource {
     }
 
     @Inject
-    public SettingsResource(CommonDAO commonDAO) {
+    public SettingsResource(CommonDAO commonDAO, UserRoleSettingsDAO userRoleSettingsDAO) {
         this.commonDAO = commonDAO;
+        this.userRoleSettingsDAO = userRoleSettingsDAO;
     }
 
     // =================================================================================================================
@@ -66,8 +77,38 @@ public class SettingsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings() {
-        Settings settings = Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
-        return Response.OK(settings);
+        try {
+            Settings settings = Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
+            return Response.OK(settings);
+        } catch (Exception e) {
+            log.error("Unexpected error when getting the settings for customer", e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Get user role settings",
+            notes = "Gets the current settings for role of the current user",
+            response = UserRoleSettings.class
+    )
+    @GET
+    @Path("/userRole/{roleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserRoleSettings(@PathParam("roleId") int roleId) {
+        try {
+            UserRoleSettings settings = this.userRoleSettingsDAO.getUserRoleSettings(roleId);
+            if (settings == null) {
+                final UserRoleSettings defaultSettings = new UserRoleSettings();
+                defaultSettings.setRoleId(roleId);
+
+                settings = defaultSettings;
+            }
+            return Response.OK(settings);
+        } catch (Exception e) {
+            log.error("Unexpected error when getting the user role settings for current user", e);
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     // =================================================================================================================
@@ -81,32 +122,33 @@ public class SettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/design")
     public Response updateDefaultDesignSettings(Settings settings) {
-        if (settings.getId() == null) {
-            this.commonDAO.insertDefaultDesignSettings(settings);
-        } else {
-            this.commonDAO.updateDefaultDesignSettings(settings);
+        try {
+            this.commonDAO.saveDefaultDesignSettings(settings);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Unexpected error when saving default design settings", e);
+            return Response.INTERNAL_ERROR();
         }
-
-        return Response.OK();
     }
 
     // =================================================================================================================
     @ApiOperation(
-            value = "Save common settings",
-            notes = "Save the settings for MDM web application",
+            value = "Save user role common settings",
+            notes = "Save the settings for user roles",
             response = Settings.class
     )
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/common")
-    public Response updateCommonSettings(Settings settings) {
-        if (settings.getId() == null) {
-            this.commonDAO.insertCommonSettings(settings);
-        } else {
-            this.commonDAO.updateCommonSettings(settings);
+    @Path("/userRoles/common")
+    public Response updateUserRoleCommonSettings(List<UserRoleSettings> settings) {
+        try {
+            this.userRoleSettingsDAO.saveCommonSettings(settings);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Unexpected error when saving user roles common settings", e);
+            return Response.INTERNAL_ERROR();
         }
-        return Response.OK();
     }
 
     // =================================================================================================================
@@ -120,11 +162,12 @@ public class SettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/lang")
     public Response updateLanguageSettings(Settings settings) {
-        if (settings.getId() == null) {
-            this.commonDAO.insertLanguageSettings(settings);
-        } else {
-            this.commonDAO.updateLanguageSettings(settings);
+        try {
+            this.commonDAO.saveLanguageSettings(settings);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Unexpected error when saving language settings", e);
+            return Response.INTERNAL_ERROR();
         }
-        return Response.OK();
     }
 }

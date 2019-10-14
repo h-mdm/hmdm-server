@@ -129,30 +129,11 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             }
         }
 
-        guardDuplicateApp(application);
-//        guardDowngradeAppVersion(application);
-        final Application existingApplication = resolveApplication(application);
-
-        final ApplicationVersion applicationVersion;
-
-        if (existingApplication == null) {
-            insertRecord(application, this.mapper::insertApplication);
-            applicationVersion = new ApplicationVersion(application);
-        } else {
-            applicationVersion = new ApplicationVersion(application);
-            applicationVersion.setApplicationId(existingApplication.getId());
-            application = existingApplication;
-        }
+        insertRecord(application, this.mapper::insertApplication);
+        final ApplicationVersion applicationVersion = new ApplicationVersion(application);
 
         this.mapper.insertApplicationVersion(applicationVersion);
-        // Auto update the configurations
-        if (existingApplication != null) {
-            doAutoUpdateToApplicationVersion(applicationVersion);
-
-        }
-//        this.mapper.updateApplicationLatestVersion(application.getId(), applicationVersion.getId());
         this.mapper.recalculateLatestVersion(application.getId());
-
 
         return application.getId();
     }
@@ -173,17 +154,19 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     }
 
     /**
-     * <p>Checks if another application with same package ID and version already exists or not.</p>
+     * <p>Checks if another application version with same version number already exists for specified application or
+     * not.</p>
      *
      * @param application an application to check against duplicates.
+     * @param version an application version to check against duplicates.
      * @throws DuplicateApplicationException if a duplicated application is found.
      */
-    private void guardDuplicateApp(Application application, ApplicationVersion version) {
-        if (application.getPkg() != null && version.getVersion() != null) {
-            final List<Application> dbApps = findByPackageIdAndVersion(application.getPkg(), version.getVersion());
-            if (!dbApps.isEmpty()) {
-                throw new DuplicateApplicationException(application.getPkg(), version.getVersion(), dbApps.get(0).getCustomerId());
-            }
+    private void guardDuplicateAppVersion(Application application, ApplicationVersion version) {
+        final boolean exists = this.mapper.checkForDuplicateVersionForApp(
+                application.getId(), version.getId() == null ? -449939 : version.getId(), version.getVersion()
+        );
+        if (exists) {
+            throw new DuplicateApplicationException(application.getPkg(), version.getVersion(), application.getCustomerId());
         }
     }
 
@@ -263,6 +246,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      */
     @Transactional
     public void updateApplication(Application application) {
+        // TODO : ISV : Handle the scenario for inserting new version for the same package here
         final List<Application> dbApps = findByPackageIdAndVersion(application.getPkg(), application.getVersion());
         if (!dbApps.isEmpty()) {
             final boolean exists = dbApps.stream().anyMatch(app -> !app.getId().equals(application.getId()));
@@ -287,16 +271,39 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 () -> this.mapper.findById(applicationVersion.getApplicationId()),
                 SecurityException::onApplicationAccessViolation
         );
-        final List<Application> dbApps = findByPackageIdAndVersion(application.getPkg(), applicationVersion.getVersion());
-        if (!dbApps.isEmpty()) {
-            final boolean exists = dbApps.stream().anyMatch(app -> !app.getId().equals(application.getId()));
-            if (exists) {
-                throw new DuplicateApplicationException(application.getPkg(), applicationVersion.getVersion(), dbApps.get(0).getCustomerId());
-            }
+        
+        guardDuplicateAppVersion(application, applicationVersion);
+
+        final ApplicationVersion dbApplicationVersion = this.mapper.findVersionById(applicationVersion.getId());
+        String existingUrl = dbApplicationVersion.getUrl();
+        if (existingUrl != null && existingUrl.trim().isEmpty()) {
+            existingUrl = null;
         }
+
+        if (applicationVersion.getUrl() != null && applicationVersion.getUrl().trim().isEmpty()) {
+            applicationVersion.setUrl(null);
+        }
+        final String newUrl = applicationVersion.getUrl();
+        
+        boolean urlChanged = newUrl == null && existingUrl != null ||
+                newUrl != null && existingUrl == null ||
+                newUrl != null && !newUrl.equals(existingUrl);
+        if (urlChanged) {
+            applicationVersion.setApkHash(null);
+        } else {
+            applicationVersion.setApkHash(dbApplicationVersion.getApkHash());
+        }
+
+        final Integer currentLatestVersionId = application.getLatestVersion();
 
         this.mapper.updateApplicationVersion(applicationVersion);
         this.mapper.recalculateLatestVersion(application.getId());
+
+        final Integer newLatestVersionId = this.mapper.findById(applicationVersion.getApplicationId()).getLatestVersion();
+        if (!currentLatestVersionId.equals(newLatestVersionId)) {
+            final ApplicationVersion newLatestVersion = this.mapper.findVersionById(newLatestVersionId);
+            doAutoUpdateToApplicationVersion(newLatestVersion);
+        }
     }
 
     /**
@@ -351,25 +358,38 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
     @Transactional
     public void updateApplicationConfigurations(LinkConfigurationsToAppRequest request) {
-        final List<ApplicationConfigurationLink> deletedLinks = request.getConfigurations().stream().filter(c -> c.getId() != null && c.getAction() == 0).collect(Collectors.toList());
+        final List<ApplicationConfigurationLink> activeLinks = request.getConfigurations()
+                .stream()
+                .filter(c -> c.getAction() == 1)
+                .collect(Collectors.toList());
+        if (!activeLinks.isEmpty()) {
+            activeLinks.forEach(link -> {
+                final int deletedCount = this.mapper.deleteApplicationConfigurationLinksForSamePkg(
+                        link.getApplicationId(), link.getConfigurationId()
+                );
+                log.debug("Deleted {} links to applications with same package as for application #{} for configuration #{}",
+                        deletedCount, link.getApplicationId(), link.getConfigurationId());
+            });
+        }
+
+        final List<ApplicationConfigurationLink> deletedLinks = request.getConfigurations()
+                .stream()
+                .filter(c -> c.getId() != null && c.getAction() == 0)
+                .collect(Collectors.toList());
         deletedLinks.forEach(link -> {
             this.mapper.deleteApplicationConfigurationLink(link.getId());
-//            final int mainAppUpdateCount =
-//                    this.mapper.clearConfigurationMainApplication(link.getConfigurationId(), request.getApplicationId());
-//            log.debug("Cleared {} main application of application #{} ({}) for configuration #{} ({})",
-//                    mainAppUpdateCount, link.getApplicationId(), link.getApplicationName(),
-//                    link.getConfigurationId(), link.getConfigurationName());
-//            final int contentAppUpdateCount =
-//                    this.mapper.clearConfigurationContentApplication(link.getConfigurationId(), request.getApplicationId());
-//            log.debug("Cleared {} content application of application #{} ({}) for configuration #{} ({})",
-//                    contentAppUpdateCount, link.getApplicationId(), link.getApplicationName(),
-//                    link.getConfigurationId(), link.getConfigurationName());
         });
 
-        final List<ApplicationConfigurationLink> updatedLinks = request.getConfigurations().stream().filter(c -> c.getId() != null && c.getAction() > 0).collect(Collectors.toList());
+        final List<ApplicationConfigurationLink> updatedLinks = request.getConfigurations()
+                .stream()
+                .filter(c -> c.getId() != null && c.getAction() > 0)
+                .collect(Collectors.toList());
         updatedLinks.forEach(this.mapper::updateApplicationConfigurationLink);
 
-        final List<ApplicationConfigurationLink> newLinks = request.getConfigurations().stream().filter(c -> c.getId() == null && c.getAction() > 0).collect(Collectors.toList());
+        final List<ApplicationConfigurationLink> newLinks = request.getConfigurations()
+                .stream()
+                .filter(c -> c.getId() == null && c.getAction() > 0)
+                .collect(Collectors.toList());
         this.insertApplicationConfigurations(request.getApplicationId(), newLinks);
 
         SecurityContext.get().getCurrentUser().ifPresent(user -> {
@@ -693,23 +713,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 throw new ApplicationReferenceExistsException(id, "configurations");
             }
 
-//            final Integer toAppVersionId = this.mapper.getPrecedingVersion(dbApplication.getId());
-//            this.mapper.autoUpdateConfigurationsApplication(id, toAppVersionId);
-//            int autoUpdatedMainAppsCount = this.mapper.autoUpdateConfigurationsMainApplication(
-//                    id, toAppVersionId
-//            );
-//            int autoUpdatedContentAppsCount = this.mapper.autoUpdateConfigurationsContentApplication(
-//                    id, toAppVersionId
-//            );
-//
-//            log.debug("Auto-updated main application for {} configurations", autoUpdatedMainAppsCount);
-//            log.debug("Auto-updated content application for {} configurations", autoUpdatedContentAppsCount);
-
             this.mapper.removeApplicationVersionById(id);
 
             // Recalculate latest version for application if necessary
             if (dbApplication.getLatestVersion() != null && dbApplication.getLatestVersion().equals(id)) {
                 this.mapper.recalculateLatestVersion(dbApplication.getId());
+                final Application application = this.mapper.findById(dbApplication.getId());
+                if (application.getLatestVersion() != null) {
+                    final ApplicationVersion latestVersion = this.mapper.findVersionById(application.getLatestVersion());
+                    doAutoUpdateToApplicationVersion(latestVersion);
+                }
             }
 
 
@@ -780,30 +793,35 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         }
 
         final Application existingApplication = findById(applicationVersion.getApplicationId());
-        if (existingApplication != null && existingApplication.isCommonApplication()) {
+        if (existingApplication == null) {
+            throw new DAOException("The requested application does not exist: #" + applicationVersion.getApplicationId());
+        }
+
+        if (existingApplication.isCommonApplication()) {
             if (!SecurityContext.get().isSuperAdmin()) {
                 throw SecurityException.onApplicationAccessViolation(existingApplication);
             }
         }
 
         // Check the version package id against application's package id - they must be the same
-        if (existingApplication != null && appPkg.get() != null) {
+        if (appPkg.get() != null) {
             if (!existingApplication.getPkg().equals(appPkg.get())) {
                 throw new ApplicationVersionPackageMismatchException(appPkg.get(), existingApplication.getPkg());
             }
         }
 
-        guardDuplicateApp(existingApplication, applicationVersion);
+        guardDuplicateAppVersion(existingApplication, applicationVersion);
 //        guardDowngradeAppVersion(existingApplication, applicationVersion);
 
         this.mapper.insertApplicationVersion(applicationVersion);
-
-        // Auto update the configurations
-        doAutoUpdateToApplicationVersion(applicationVersion);
-
-//        this.mapper.updateApplicationLatestVersion(existingApplication.getId(), applicationVersion.getId());
         this.mapper.recalculateLatestVersion(existingApplication.getId());
 
+        // Auto update the configurations if the created application version becomes the latest version for application
+        final Application refreshedExistingApplication = findById(applicationVersion.getApplicationId());
+        final Integer latestVersionId = refreshedExistingApplication.getLatestVersion();
+        if (latestVersionId != null && latestVersionId.equals(applicationVersion.getId())) {
+            doAutoUpdateToApplicationVersion(applicationVersion);
+        }
 
         return applicationVersion.getId();
     }
@@ -872,5 +890,23 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         return SecurityContext.get().getCurrentUser()
                 .map(u -> this.mapper.findMatchingApplicationPackages(u.getCustomerId(), searchFilter, resultsCount))
                 .orElse(new ArrayList<>());
+    }
+
+    /**
+     * <p>Locates the applications other than specified one which have the same package ID.</p>
+     *
+     * @param application an application to be validated.
+     * @return a list of existing applications with same package ID as set for validated one.
+     */
+    public List<Application> getApplicationsForPackageID(Application application) {
+        if (application.getPkg() != null) {
+            final List<Application> dbApps = findByPackageId(application.getPkg())
+                    .stream()
+                    .filter(dbApp -> !dbApp.getId().equals(application.getId()))
+                    .collect(Collectors.toList());
+            return dbApps;
+        }
+
+        return new ArrayList<>();
     }
 }

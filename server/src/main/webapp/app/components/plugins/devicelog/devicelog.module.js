@@ -8,7 +8,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: "Журналы" //label to show in breadcrumbs
+                    label: '{{"breadcrumb.plugin.devicelog.main" | localize}}', //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {
@@ -26,7 +26,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
                 templateUrl: 'app/components/main/view/content.html',
                 controller: 'TabController',
                 ncyBreadcrumb: {
-                    label: 'Настройки' //label to show in breadcrumbs
+                    label: '{{"breadcrumb.plugin.devicelog.main" | localize}}', //label to show in breadcrumbs
                 },
                 resolve: {
                     openTab: function () {
