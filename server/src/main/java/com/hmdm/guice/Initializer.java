@@ -26,9 +26,15 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.ProvisionException;
+import com.google.inject.Stage;
 import com.google.inject.internal.util.$ImmutableSet;
 import com.google.inject.servlet.GuiceServletContextListener;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,7 +46,6 @@ import javax.servlet.ServletContextEvent;
 
 import com.google.inject.spi.Message;
 import com.hmdm.guice.module.ConfigureModule;
-import com.hmdm.guice.module.InitializationCompletionSignalingModule;
 import com.hmdm.guice.module.LiquibaseModule;
 import com.hmdm.guice.module.PersistenceModule;
 import com.hmdm.guice.module.PrivateRestModule;
@@ -56,26 +61,72 @@ import com.hmdm.plugin.guice.module.PluginLiquibaseModule;
 import com.hmdm.plugin.guice.module.PluginPersistenceModule;
 import com.hmdm.plugin.guice.module.PluginRestModule;
 import com.hmdm.swagger.SwaggerModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Initializer extends GuiceServletContextListener {
     private ServletContext context;
     private Injector injector;
     private List<Class<? extends PluginTaskModule>> pluginTaskModules;
+    private static final Logger log = LoggerFactory.getLogger(Initializer.class);
 
     public Initializer() {
     }
 
     protected Injector getInjector() {
+        boolean success = false;
+
+        final StringWriter errorOut = new StringWriter();
+        PrintWriter errorWriter = new PrintWriter(errorOut);
         try {
-            this.injector = Guice.createInjector(this.getModules());
+            this.injector = Guice.createInjector(Stage.PRODUCTION, this.getModules());
+            success = true;
         } catch (ProvisionException e){
-            handleException(e);
+            handleException(e, errorWriter);
         } catch (CreationException e){
-            handleException(e);
+            handleException(e, errorWriter);
         } catch (Exception e){
-            handleException(e);
+            handleException(e, errorWriter);
+        }
+        if (success) {
+            log.debug("Application initialization was successful");
+            onInitializationCompletion(null);
+        } else {
+            log.debug("Application initialization has failed");
+            onInitializationCompletion(errorOut);
         }
         return injector;
+    }
+
+    /**
+     * <p>Signals on application initialization completion.</p>
+     */
+    private void onInitializationCompletion(StringWriter errorOut) {
+
+        final String signalFilePath = this.context.getInitParameter("initialization.completion.signal.file");
+        if (signalFilePath != null && !signalFilePath.trim().isEmpty()) {
+            File signalFile  = new File(signalFilePath);
+            if (!signalFile.exists()) {
+                try (PrintWriter pw = new PrintWriter(new FileWriter(signalFile))) {
+                    if (errorOut == null) {
+                        pw.print("OK");
+                    } else {
+                        pw.print(errorOut.toString());
+                    }
+                    log.info("Created a signal file for application initialization completion: {}",
+                            signalFile.getAbsolutePath());
+                } catch (IOException e) {
+                    log.error("Failed to create and write to signal file '{}' for application initialization completion",
+                            signalFile.getAbsolutePath(), e);
+                }
+            } else {
+                log.warn("The signal file for application initialization completion already exists: {}",
+                        signalFile.getAbsolutePath());
+            }
+        } else {
+            log.warn("Could not find 'initialization.completion.signal.file' parameter in context. Signaling on " +
+                    "application initialization completion will be skipped.");
+        }
     }
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -83,10 +134,10 @@ public final class Initializer extends GuiceServletContextListener {
 
         String log4jConfig = context.getInitParameter("log4j.config");
         if (log4jConfig != null && !log4jConfig.isEmpty()) {
-            System.out.println("[LOGGING] Using log4j configuration from: " + log4jConfig);
+            log.info("[LOGGING] Using log4j configuration from: " + log4jConfig);
             System.setProperty("log4j.configuration", log4jConfig);
         } else {
-            System.out.println("[LOGGING] Using log4j configuration from build");
+            log.info("[LOGGING] Using log4j configuration from build");
         }
 
         super.contextInitialized(servletContextEvent);
@@ -110,8 +161,6 @@ public final class Initializer extends GuiceServletContextListener {
         modules.add(new SwaggerModule());
 
         modules.addAll(getPlugins());
-        
-        modules.add(new InitializationCompletionSignalingModule(this.context));
 
         return modules;
     }
@@ -179,41 +228,51 @@ public final class Initializer extends GuiceServletContextListener {
     }
 
     @SuppressWarnings("unchecked")
-    private void handleException(ProvisionException e) {
+    private void handleException(ProvisionException e, PrintWriter errorWriter) {
         try {
             Field messagesField = ProvisionException.class.getDeclaredField("messages");
             messagesField.setAccessible(true);
             $ImmutableSet<Message> messages = ($ImmutableSet<Message>) messagesField.get(e);
-            messages.iterator().forEachRemaining(message -> System.out.println("[INITIALIZER]: ERROR: " + message.getMessage()));
+            messages.iterator().forEachRemaining(message -> log.error("[INITIALIZER]: ERROR: " + message.getMessage()));
+            messages.iterator().forEachRemaining(message -> errorWriter.println("[INITIALIZER]: ERROR: " + message.getMessage()));
             messagesField.setAccessible(false);
         } catch (Exception e1) {
-            System.out.println("Failed to access [messages] field: " + e1);
+            log.error("Failed to access [messages] field: " + e1);
         }
     }
 
-    private void handleException(Exception e) {
+    private void handleException(Exception e, PrintWriter errorWriter) {
         try {
-            System.out.println("[INITIALIZER] : ERROR : ");
+            log.error("[INITIALIZER] : ERROR : ");
             e.printStackTrace();
+            e.printStackTrace(errorWriter);
         } catch (Exception e1) {
             if (e.getCause() != null) {
-                System.out.println("[INITIALIZER] : ERROR : " + e.getCause().getMessage());
+                log.error("[INITIALIZER] : ERROR : " + e.getCause().getMessage());
+                errorWriter.println("[INITIALIZER] : ERROR : " + e.getCause().getMessage());
                 e.getCause().printStackTrace();
+                e.getCause().printStackTrace(errorWriter);
             } else {
-                System.out.println("[INITIALIZER] : ERROR OF TYPE : " + e.getClass().getName());
+                log.error("[INITIALIZER] : ERROR OF TYPE : " + e.getClass().getName());
+                errorWriter.println("[INITIALIZER] : ERROR OF TYPE : " + e.getClass().getName());
             }
         }
     }
 
-    private void handleException(CreationException e) {
+    private void handleException(CreationException e, PrintWriter errorWriter) {
         try {
-            e.getErrorMessages().forEach(m-> System.out.println("[INITIALIZER] : ERROR : " +  m.getMessage()));
+            e.getErrorMessages().forEach(m-> log.error("[INITIALIZER] : ERROR : " +  m.getMessage()));
+            e.getErrorMessages().forEach(m-> errorWriter.println(m.getMessage()));
+            e.printStackTrace(errorWriter);
         } catch (Exception e1) {
             if (e.getCause() != null) {
-                System.out.println("[INITIALIZER] : ERROR : " + e.getCause().getMessage());
+                log.error("[INITIALIZER] : ERROR : " + e.getCause().getMessage());
+                errorWriter.println(e.getCause().getMessage());
                 e.getCause().printStackTrace();
+                e.getCause().printStackTrace(errorWriter);
             } else {
-                System.out.println("[INITIALIZER] : ERROR OF TYPE : " + e.getClass().getName());
+                log.error("[INITIALIZER] : ERROR OF TYPE : " + e.getClass().getName());
+                errorWriter.println("[INITIALIZER] : ERROR OF TYPE : " + e.getClass().getName());
             }
         }
     }
