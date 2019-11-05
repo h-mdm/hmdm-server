@@ -47,6 +47,7 @@
         <result property="configName" column="configName"/>
         <result property="launcherPkg" column="launcherPkg"/>
         <result property="launcherVersion" column="launcherVersion"/>
+        <result property="statusCode" column="statusCode"/>
 
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>
@@ -60,8 +61,8 @@
     </insert>
 
     <update id="updateDevice" parameterType="Device">
-        UPDATE devices SET number=#{number}, description=#{description}, lastUpdate=#{lastUpdate},
-            configurationId=#{configurationId}, imei=#{imei}, phone=#{phone}, customerId=#{customerId} WHERE id=#{id}
+        UPDATE devices SET number = #{number}, description = #{description},
+                           configurationId = #{configurationId}, imei = #{imei}, phone = #{phone} WHERE id = #{id}
     </update>
 
     <sql id="allowedDevicesSelect">
@@ -117,7 +118,12 @@
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName,
                applications.pkg AS launcherPkg,
-               applicationVersions.version AS launcherVersion
+               applicationVersions.version AS launcherVersion,
+               CASE
+                   WHEN (EXTRACT(EPOCH FROM NOW()) * 1000 - devices.lastupdate) &lt; (2 * 3600 * 1000) THEN 'green'
+                   WHEN (EXTRACT(EPOCH FROM NOW()) * 1000 - devices.lastupdate) &lt; (4 * 3600 * 1000) THEN 'yellow'
+                   ELSE 'red'
+               END AS statusCode
         FROM devices
         INNER JOIN (<include refid="allowedDevicesSelect"/>) allowedDevices ON allowedDevices.deviceId = devices.id
         LEFT JOIN configurations ON devices.configurationId = configurations.id

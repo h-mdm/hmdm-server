@@ -23,7 +23,7 @@ package com.hmdm.persistence.domain;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
@@ -31,7 +31,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserRoleSettings implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 7429939670848820966L;
+    private static final long serialVersionUID = -3149133764385852478L;
 
     @ApiModelProperty("An ID of a settings record")
     private Integer id;
@@ -68,7 +68,8 @@ public class UserRoleSettings implements CustomerData, Serializable {
     private Boolean columnDisplayedDeviceGroup;
     @ApiModelProperty("A flag indicating if Launcher Version column to be displayed in MDM web application")
     private Boolean columnDisplayedLauncherVersion;
-
+    @ApiModelProperty("A flag indicating if Battery Level column to be displayed in MDM web application")
+    private Boolean columnDisplayedBatteryLevel;
 
     /**
      * <p>Constructs new <code>UserRoleSettings</code> instance. This implementation does nothing.</p>
@@ -188,6 +189,14 @@ public class UserRoleSettings implements CustomerData, Serializable {
         this.columnDisplayedLauncherVersion = columnDisplayedLauncherVersion;
     }
 
+    public Boolean getColumnDisplayedBatteryLevel() {
+        return columnDisplayedBatteryLevel;
+    }
+
+    public void setColumnDisplayedBatteryLevel(Boolean columnDisplayedBatteryLevel) {
+        this.columnDisplayedBatteryLevel = columnDisplayedBatteryLevel;
+    }
+
     @Override
     public Integer getId() {
         return id;
@@ -215,6 +224,7 @@ public class UserRoleSettings implements CustomerData, Serializable {
                 ", columnDisplayedDeviceDesc=" + columnDisplayedDeviceDesc +
                 ", columnDisplayedDeviceGroup=" + columnDisplayedDeviceGroup +
                 ", columnDisplayedLauncherVersion=" + columnDisplayedLauncherVersion +
+                ", columnDisplayedBatteryLevel=" + columnDisplayedBatteryLevel +
                 '}';
     }
 }

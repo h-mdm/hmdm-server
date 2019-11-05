@@ -21,8 +21,8 @@
 
 package com.hmdm.notification.rest;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.notification.rest.json.PlainPushMessage;

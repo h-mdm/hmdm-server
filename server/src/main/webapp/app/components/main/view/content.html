@@ -50,6 +50,10 @@
                     <tab-heading localized-change-tracking>tab.hints</tab-heading>
                     <ng-include src="'app/components/main/view/settings/hints.html'" ng-if="activeTab === 'HINTS'"></ng-include>
                 </tab>
+                <tab active="act.PLUGINS" ng-click="openTab('PLUGINS')" ng-if="hasPermission('plugins_customer_access_management')">
+                    <tab-heading localized-change-tracking>tab.plugins</tab-heading>
+                    <ng-include src="'app/components/main/view/settings/plugins.html'" ng-if="activeTab === 'PLUGINS'"></ng-include>
+                </tab>
 
                 <tab ng-repeat="plugin in settingsPlugins" active="act['plugin-settings-' + plugin.identifier]"
                      ng-if="!plugin.settingsPermission || hasPermission(plugin.settingsPermission)"

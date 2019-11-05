@@ -21,15 +21,15 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.inject.Named;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.CustomerDAO;
@@ -106,8 +106,8 @@ public class PublicResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/applications/upload")
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
-                                @FormDataParam("file") @ApiParam("A file to upload") FormDataContentDisposition fileDetail,
-                                @FormDataParam("app") @ApiParam("A JSON-string with application details") String app) throws Exception {
+                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                @ApiParam("A JSON-string with application details") @FormDataParam("app") String app) throws Exception {
 
         logger.info("Received Upload App request. App: {}", app);
 

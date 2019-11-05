@@ -21,9 +21,9 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.sun.jersey.core.header.ContentDisposition;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.apache.poi.util.IOUtils;
 
 import javax.ws.rs.GET;

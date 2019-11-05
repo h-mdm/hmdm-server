@@ -24,7 +24,7 @@ package com.hmdm.rest.json;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @ApiModel(description = "A link between the single application and single configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)

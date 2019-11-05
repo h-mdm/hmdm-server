@@ -25,11 +25,10 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.hmdm.persistence.domain.ApplicationSetting;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.Device;
@@ -38,7 +37,7 @@ import com.hmdm.util.CryptoUtil;
 
 @ApiModel(description = "The details and settings for a single device used for configuring MDM mobile application")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SyncResponse implements Serializable {
+public class SyncResponse implements Serializable, SyncResponseInt {
 
     private static final long serialVersionUID = 2895420517051285750L;
 
@@ -88,23 +87,23 @@ public class SyncResponse implements Serializable {
     private boolean lockStatusBar;
 
     @ApiModelProperty("A package ID for the main application")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String mainApp;
 
     @ApiModelProperty(value = "A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed", allowableValues = "0,1,2,3")
     private int systemUpdateType;
 
     @ApiModelProperty(value = "A start time for system update period formatted as HH:MM. (If system update time is 2)")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String systemUpdateFrom;
 
     @ApiModelProperty(value = "A finish time for system update period formatted as HH:MM. (If system update time is 2)")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String systemUpdateTo;
 
     @ApiModelProperty(value = "A list of application settings to apply on device")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    private List<SyncApplicationSetting> applicationSettings;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<SyncApplicationSettingInt> applicationSettings;
 
     public SyncResponse() {
     }
@@ -145,6 +144,7 @@ public class SyncResponse implements Serializable {
         this.applications = (applications != null ? applications : new LinkedList<>());
     }
 
+    @Override
     public String getBackgroundColor() {
         return this.backgroundColor;
     }
@@ -153,6 +153,7 @@ public class SyncResponse implements Serializable {
         this.backgroundColor = backgroundColor;
     }
 
+    @Override
     public String getTextColor() {
         return this.textColor;
     }
@@ -161,6 +162,7 @@ public class SyncResponse implements Serializable {
         this.textColor = textColor;
     }
 
+    @Override
     public String getBackgroundImageUrl() {
         return this.backgroundImageUrl;
     }
@@ -169,14 +171,12 @@ public class SyncResponse implements Serializable {
         this.backgroundImageUrl = backgroundImageUrl;
     }
 
+    @Override
     public List<Application> getApplications() {
         return this.applications;
     }
 
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
-    }
-
+    @Override
     public String getPassword() {
         return this.password;
     }
@@ -185,6 +185,7 @@ public class SyncResponse implements Serializable {
         this.password = password;
     }
 
+    @Override
     public String getImei() {
         return imei;
     }
@@ -193,6 +194,7 @@ public class SyncResponse implements Serializable {
         this.imei = imei;
     }
 
+    @Override
     public String getPhone() {
         return phone;
     }
@@ -201,6 +203,7 @@ public class SyncResponse implements Serializable {
         this.phone = phone;
     }
 
+    @Override
     public String getIconSize() {
         return iconSize;
     }
@@ -209,6 +212,7 @@ public class SyncResponse implements Serializable {
         this.iconSize = iconSize;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
@@ -217,6 +221,7 @@ public class SyncResponse implements Serializable {
         this.title = title;
     }
 
+    @Override
     public Boolean getGps() {
         return gps;
     }
@@ -225,6 +230,7 @@ public class SyncResponse implements Serializable {
         this.gps = gps;
     }
 
+    @Override
     public Boolean getBluetooth() {
         return bluetooth;
     }
@@ -233,6 +239,7 @@ public class SyncResponse implements Serializable {
         this.bluetooth = bluetooth;
     }
 
+    @Override
     public Boolean getWifi() {
         return wifi;
     }
@@ -241,6 +248,7 @@ public class SyncResponse implements Serializable {
         this.wifi = wifi;
     }
 
+    @Override
     public Boolean getMobileData() {
         return mobileData;
     }
@@ -249,6 +257,7 @@ public class SyncResponse implements Serializable {
         this.mobileData = mobileData;
     }
 
+    @Override
     public boolean isKioskMode() {
         return kioskMode;
     }
@@ -257,6 +266,7 @@ public class SyncResponse implements Serializable {
         this.kioskMode = kioskMode;
     }
 
+    @Override
     public String getMainApp() {
         return mainApp;
     }
@@ -265,6 +275,7 @@ public class SyncResponse implements Serializable {
         this.mainApp = mainApp;
     }
 
+    @Override
     public boolean isLockStatusBar() {
         return lockStatusBar;
     }
@@ -273,6 +284,7 @@ public class SyncResponse implements Serializable {
         this.lockStatusBar = lockStatusBar;
     }
 
+    @Override
     public int getSystemUpdateType() {
         return systemUpdateType;
     }
@@ -281,6 +293,7 @@ public class SyncResponse implements Serializable {
         this.systemUpdateType = systemUpdateType;
     }
 
+    @Override
     public String getSystemUpdateFrom() {
         return systemUpdateFrom;
     }
@@ -289,6 +302,7 @@ public class SyncResponse implements Serializable {
         this.systemUpdateFrom = systemUpdateFrom;
     }
 
+    @Override
     public String getSystemUpdateTo() {
         return systemUpdateTo;
     }
@@ -297,11 +311,12 @@ public class SyncResponse implements Serializable {
         this.systemUpdateTo = systemUpdateTo;
     }
 
-    public List<SyncApplicationSetting> getApplicationSettings() {
+    @Override
+    public List<SyncApplicationSettingInt> getApplicationSettings() {
         return applicationSettings;
     }
 
-    public void setApplicationSettings(List<SyncApplicationSetting> applicationSettings) {
+    public void setApplicationSettings(List<SyncApplicationSettingInt> applicationSettings) {
         this.applicationSettings = applicationSettings;
     }
 }

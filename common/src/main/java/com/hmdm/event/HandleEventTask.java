@@ -19,36 +19,38 @@
  *
  */
 
-package com.hmdm.swagger;
-
-import com.google.inject.servlet.ServletModule;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.hmdm.event;
 
 /**
- * <p>A Guice module to use for integration with Swagger.</p>
+ * <p>A task to be run in background thread for notifying the listener on event.</p>
  *
  * @author isv
  */
-public class SwaggerModule extends ServletModule {
+class HandleEventTask<K extends Event> implements Runnable {
 
     /**
-     * <p>Constructs new <code>SwaggerModule</code> instance. This implementation does nothing.</p>
+     * <p>A fired event.</p>
      */
-    public SwaggerModule() {
+    private final K event;
+
+    /**
+     * <p>A listener ot be notified of the event.</p>
+     */
+    private final EventListener<K> eventListener;
+
+    /**
+     * <p>Constructs new <code>HandleEventTask</code> instance. This implementation does nothing.</p>
+     */
+    HandleEventTask(K event, EventListener<K> eventListener) {
+        this.event = event;
+        this.eventListener = eventListener;
     }
 
     /**
-     * <p>Configures the environment for integration with Swagger.</p>
+     * <p>Runs this task. Notifies the listener on the event fired.</p>
      */
     @Override
-    protected void configureServlets() {
-        super.configureServlets();
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("com.sun.jersey.config.property.packages",
-                "io.swagger.jaxrs.json;io.swagger.jaxrs.listing;com.hmdm");
-        serve("/api/*").with(Bootstrap.class, params);
+    public void run() {
+        this.eventListener.onEvent(this.event);
     }
 }

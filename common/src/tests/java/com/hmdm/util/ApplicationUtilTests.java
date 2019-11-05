@@ -72,4 +72,18 @@ public class ApplicationUtilTests {
         Assert.assertEquals("Should be greater", 1, ApplicationUtil.compareVersions("1.1.110", "1.a.12"));
         Assert.assertEquals("Should be greater", 1, ApplicationUtil.compareVersions("1.03", "1.2.12"));
     }
+
+    @Test
+    public void testNormalization() {
+        Assert.assertEquals("Incorrect version normalization", "12.334.78", ApplicationUtil.normalizeVersion("a12.334tyz.78x"));
+        Assert.assertEquals("Incorrect version normalization", "1.03", ApplicationUtil.normalizeVersion("1.03"));
+        Assert.assertEquals("Incorrect version normalization", "1.03.011", ApplicationUtil.normalizeVersion("1.03.011"));
+        Assert.assertEquals("Incorrect version normalization", "1.03", ApplicationUtil.normalizeVersion("1.03-a"));
+        Assert.assertEquals("Incorrect version normalization", "1.03", ApplicationUtil.normalizeVersion("1.03a"));
+        Assert.assertEquals("Incorrect version normalization", "1.03", ApplicationUtil.normalizeVersion("v1.03"));
+        Assert.assertEquals("Incorrect version normalization", "103", ApplicationUtil.normalizeVersion("v103"));
+        Assert.assertEquals("Incorrect version normalization", "", ApplicationUtil.normalizeVersion("aaaa"));
+        Assert.assertEquals("Incorrect version normalization", "1", ApplicationUtil.normalizeVersion("aaaa1"));
+        Assert.assertEquals("Incorrect version normalization", "1.", ApplicationUtil.normalizeVersion("1."));
+    }
 }

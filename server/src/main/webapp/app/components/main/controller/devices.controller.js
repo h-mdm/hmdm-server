@@ -93,8 +93,6 @@ angular.module('headwind-kiosk')
         });
         $scope.$on('$destroy', sub);
 
-        $scope.updateTime = 2 * 60 * 60 * 1000;
-
         $scope.init = function () {
             $rootScope.settingsTabActive = false;
             $rootScope.pluginsTabActive = false;
@@ -132,8 +130,11 @@ angular.module('headwind-kiosk')
                 }
                 $scope.showSpinner = false;
 
-                if (response.data && response.data.items) {
-                    response.data.items.forEach(function (device) {
+                if (response.data && response.data.devices.items) {
+
+                    var configurations = response.data.configurations;
+
+                    response.data.devices.items.forEach(function (device) {
                         var deviceInfo = $scope.getDeviceInfo(device);
                         var serverIMEI = device.imei || '';
                         var deviceInfoIMEI = deviceInfo ? (deviceInfo.imei || '') : '';
@@ -141,6 +142,7 @@ angular.module('headwind-kiosk')
                         device.displayedIMEI = resolvedIMEI[0];
                         device.imeiTooltip = resolvedIMEI[1];
                         device.imeiTooltipClass = resolvedIMEI[2];
+                        device.configuration = configurations[device.configurationId];
 
                         var serverPhone = device.phone || '';
                         var deviceInfoPhone = deviceInfo ? (deviceInfo.phone || '') : '';
@@ -151,12 +153,12 @@ angular.module('headwind-kiosk')
 
                     });
 
-                    $scope.devices = response.data.items;
+                    $scope.devices = response.data.devices.items;
                     for (var i = 0; i < $scope.devices.length; i++) {
                         $scope.devices[i].lastUpdateDate = new Date($scope.devices[i].lastUpdate);
                     }
 
-                    $scope.paging.totalItems = response.data.totalItemsCount;
+                    $scope.paging.totalItems = response.data.devices.totalItemsCount;
                 }
             }, function () {
                 searchIsRunning = false;
@@ -195,26 +197,25 @@ angular.module('headwind-kiosk')
             return true;
         };
 
+        const updateTime = 2 * 60 * 60 * 1000;
         $scope.getDeviceIndicatorImage = function (device) {
-            if ((new Date().getTime() - device.lastUpdate) < $scope.updateTime) {
-                return 'images/online.png';
-            } else if ((new Date().getTime() - device.lastUpdate) < (2 * $scope.updateTime)) {
-                return 'images/away.png';
+            if (device.statusCode) {
+                return "images/circle-" + device.statusCode + ".png";
             } else {
-                return 'images/offline.png';
+                // This is an old approach but it is left for now just in case
+                if ((new Date().getTime() - device.lastUpdate) < updateTime) {
+                    return 'images/online.png';
+                } else if ((new Date().getTime() - device.lastUpdate) < (2 * updateTime)) {
+                    return 'images/away.png';
+                } else {
+                    return 'images/offline.png';
+                }
             }
         };
 
         // Gets the info on the device parsed from the JSON-string taken from "info" attribute of the device
         $scope.getDeviceInfo = function (device) {
-            if (device.info) {
-                try {
-                    return JSON.parse(device.info);
-                } catch (e) {
-                }
-            }
-
-            return undefined;
+            return device.info;
         };
 
         $scope.getDeviceModel = function (device) {
@@ -222,7 +223,7 @@ angular.module('headwind-kiosk')
             if (info) {
                 return info.model;
             } else {
-                return "Не известна";
+                return localization.localize("devices.model.unknown");
             }
         };
 
@@ -259,6 +260,7 @@ angular.module('headwind-kiosk')
                             } else {
                                 title = title + localization.localize('devices.permissions.history.access.prohibited');
                             }
+                            title += '\n';
                         }
                     }
 
@@ -325,16 +327,19 @@ angular.module('headwind-kiosk')
                             let localizedText = localization.localize('devices.app.version.available').replace('${applicationVersion}', applications[j].version);
                             title += localizedText;
                         }
+                        title += '\n';
                     } else if (applications[j].status === 4) {
                         let localizedText = localization.localize('devices.app.installed').replace('${applicationName}', applications[j].name);
                         let localizedText2 = localization.localize('devices.app.needs.removal').replace('${applicationVersion}', (applications[j].installedVersion ? ' ' + applications[j].installedVersion : ""));
                         title = title + localizedText + localizedText2;
+                        title += '\n';
                     } else if (applications[j].status === 2) {
                         let localizedText = localization.localize('devices.app.installed.and.version.available')
                             .replace('${applicationName}', applications[j].name)
                             .replace('${applicationInstalledVersion}', applications[j].installedVersion)
                             .replace('${applicationVersionAvailable}', applications[j].version);
                         title = title + localizedText;
+                        title += '\n';
                     }
                 }
 
@@ -366,6 +371,15 @@ angular.module('headwind-kiosk')
                         return deviceLauncherApp.version;
                     }
                 }
+            }
+
+            return null;
+        };
+
+        $scope.getDeviceBatteryLevel = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info && info.batteryLevel) {
+                return info.batteryLevel + '%';
             }
 
             return null;
@@ -495,7 +509,12 @@ angular.module('headwind-kiosk')
         pluginService.getAvailablePlugins(function (response) {
             if (response.status === 'OK') {
                 if (response.data) {
-                    $scope.plugins = response.data;
+                    $scope.plugins = response.data.filter(function (plugin) {
+                        return plugin.enabledForDevice
+                            && plugin.functionsViewTemplate
+                            && (!plugin.deviceFunctionsPermission
+                                || authService.hasPermission(plugin.deviceFunctionsPermission));
+                    });
                 }
             }
         });
@@ -553,18 +572,17 @@ angular.module('headwind-kiosk')
                 'dynamicButtonTextSuffix': localization.localize('table.filtering.suffix.group')
             };
 
-            // $scope.tableFilteringTexts = { 'buttonDefaultText': localization.localize( 'device.list.events.button' ),
-            //     'checkAll': localization.localize( 'device.list.events.select.all' ),
-            //     'uncheckAll': localization.localize( 'device.list.events.deselect.all' ),
-            //     'dynamicButtonTextSuffix': localization.localize( 'device.list.events.button.selected' ) };
-
-
+            var deviceFields = ["id", "number", "description", "configurationId", "imei", "phone", "groups"];
             $scope.device = {};
             for (var prop in device) {
                 if (device.hasOwnProperty(prop)) {
-                    $scope.device[prop] = device[prop];
+                    if (deviceFields.indexOf(prop) >= 0) {
+                        $scope.device[prop] = device[prop];
+                    }
                 }
             }
+
+            $scope.loading = false;
 
             $scope.save = function () {
                 $scope.errorMessage = undefined;
@@ -574,13 +592,38 @@ angular.module('headwind-kiosk')
                 } else {
                     $scope.device.groups = $scope.groupsSelection;
 
-                    deviceService.updateDevice($scope.device, function (response) {
+                    $scope.loading = true;
+
+                    var targetService;
+                    var pathParams = {};
+                    var request;
+
+                    if ($scope.canEditDevice) {
+                        targetService = deviceService.updateDevice;
+                        request = {};
+                        for (var prop in $scope.device) {
+                            if ($scope.device.hasOwnProperty(prop)) {
+                                request[prop] = $scope.device[prop]
+                            }
+                        }
+                    } else {
+                        targetService = deviceService.updateDeviceDesc;
+                        pathParams.id = $scope.device.id;
+                        request = $scope.device.description;
+                    }
+
+                    targetService(pathParams, request, function (response) {
+                        $scope.loading = false;
                         if (response.status === 'OK') {
                             $modalInstance.close();
                         } else {
-                            $scope.errorMessage = localization.localize('error.duplicate.device.number');
+                            $scope.errorMessage = localization.localizeServerResponse(response);
                         }
+                    }, function () {
+                        $scope.loading = false;
+                        $scope.errorMessage = localization.localizeServerResponse('error.request.failure');
                     });
+                    
                 }
             };
 

@@ -26,14 +26,14 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.rest.json.LookupItem;
 
 @ApiModel(description = "A device registered to MDM server and running the MDM mobile application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Device implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 5203452561878147147L;
+    private static final long serialVersionUID = 8429040669592571351L;
 
     @ApiModelProperty("An ID of device")
     private Integer id;
@@ -77,6 +77,8 @@ public class Device implements CustomerData, Serializable {
     private String launcherVersion;
     @ApiModelProperty(hidden = true)
     private String launcherPkg;
+    @ApiModelProperty(hidden = true)
+    private String statusCode;
 
     public Device() {
     }
@@ -231,6 +233,14 @@ public class Device implements CustomerData, Serializable {
         this.launcherPkg = launcherPkg;
     }
 
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
@@ -252,6 +262,7 @@ public class Device implements CustomerData, Serializable {
                 ", applied=" + applied +
                 ", launcherPkg='" + launcherPkg + '\'' +
                 ", launcherVersion='" + launcherVersion + '\'' +
+                ", statusCode='" + statusCode + '\'' +
                 '}';
     }
 }

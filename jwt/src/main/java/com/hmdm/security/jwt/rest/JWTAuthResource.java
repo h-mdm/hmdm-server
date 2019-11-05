@@ -21,8 +21,8 @@
 
 package com.hmdm.security.jwt.rest;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import io.swagger.annotations.Api;

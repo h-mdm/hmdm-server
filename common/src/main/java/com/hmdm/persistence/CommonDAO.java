@@ -22,11 +22,13 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.mapper.CommonMapper;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 
+@Singleton
 public class CommonDAO extends AbstractDAO<Settings> {
     
     private final CommonMapper mapper;

@@ -26,7 +26,7 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import static com.hmdm.persistence.domain.DesktopHeader.NO_HEADER;
 import static com.hmdm.persistence.domain.IconSize.SMALL;

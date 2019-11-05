@@ -22,14 +22,13 @@
 package com.hmdm.notification.persistence;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.notification.persistence.mapper.NotificationMapper;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.Device;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
 import org.mybatis.guice.transactional.Transactional;
 
 import java.util.List;
@@ -40,6 +39,7 @@ import java.util.stream.Collectors;
  *
  * @author isv
  */
+@Singleton
 public class NotificationDAO {
 
     private final NotificationMapper notificationMapper;

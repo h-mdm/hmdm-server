@@ -121,6 +121,10 @@ public class Response implements Serializable {
         return ERROR("error.internal.server", null);
     }
 
+    public static Response PLUGIN_DISABLED() {
+        return ERROR("error.resource.disabled", null);
+    }
+
     public static Response PERMISSION_DENIED() {
         return ERROR("error.permission.denied", null);
     }

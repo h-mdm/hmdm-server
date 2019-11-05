@@ -21,12 +21,14 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
@@ -37,14 +39,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.hmdm.event.DeviceBatteryLevelUpdatedEvent;
+import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationSettingType;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.rest.json.SyncResponseHook;
 import com.hmdm.rest.json.SyncApplicationSetting;
+import com.hmdm.rest.json.SyncResponseInt;
+import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
@@ -53,13 +62,34 @@ import com.hmdm.persistence.domain.Settings;
 import com.hmdm.rest.json.DeviceInfo;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.SyncResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * <p>A resource used for synchronizing the data with devices.</p>
+ */
 @Singleton
 @Path("/public/sync")
 @Api(tags = {"Device data synchronization"})
 public class SyncResource {
 
+
+    private static final Logger logger = LoggerFactory.getLogger(SyncResource.class);
+
+    /**
+     * <p>A</p>
+     */
     private UnsecureDAO unsecureDAO;
+
+    /**
+     * <p>A service used for sending notifications on battery level update for device</p>
+     */
+    private EventService eventService;
+
+    /**
+     * <p>A list of hooks to be executed against the response to device confoguration synchronization request.</p>
+     */
+    private Set<SyncResponseHook> syncResponseHooks;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -71,8 +101,20 @@ public class SyncResource {
      * <p>Constructs new <code>SyncResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public SyncResource(UnsecureDAO unsecureDAO) {
+    public SyncResource(UnsecureDAO unsecureDAO,
+                        EventService eventService,
+                        Injector injector) {
         this.unsecureDAO = unsecureDAO;
+        this.eventService = eventService;
+
+        Set<SyncResponseHook> allYourInterfaces = new HashSet<>();
+        for (Key<?> key : injector.getAllBindings().keySet()) {
+            if (SyncResponseHook.class.isAssignableFrom(key.getTypeLiteral().getRawType())) {
+                SyncResponseHook yourInterface = (SyncResponseHook) injector.getInstance(key);
+                allYourInterfaces.add(yourInterface);
+            }
+        }
+        this.syncResponseHooks = allYourInterfaces;
     }
 
     // =================================================================================================================
@@ -87,67 +129,88 @@ public class SyncResource {
     public Response getDeviceSetting(@PathParam("deviceId")
                                          @ApiParam("An identifier of device within MDM server")
                                                  String number) {
-        Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
-        if (dbDevice != null) {
+        logger.debug("/public/sync/configuration/{}", number);
+        
+        try {
+            Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
+            if (dbDevice != null) {
 
-            Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());
-            final List<Application> applications = this.unsecureDAO.getPlainConfigurationApplications(
-                    dbDevice.getCustomerId(), dbDevice.getConfigurationId()
-            );
+                Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());
+                final List<Application> applications = this.unsecureDAO.getPlainConfigurationApplications(
+                        dbDevice.getCustomerId(), dbDevice.getConfigurationId()
+                );
 
-            Configuration configuration = this.unsecureDAO.getConfigurationByIdWithAppSettings(dbDevice.getConfigurationId());
+                Configuration configuration = this.unsecureDAO.getConfigurationByIdWithAppSettings(dbDevice.getConfigurationId());
 
-            SyncResponse data;
-            if (configuration.isUseDefaultDesignSettings()) {
-                data = new SyncResponse(settings, configuration.getPassword(), applications, dbDevice);
-            } else {
-                data = new SyncResponse(configuration, applications, dbDevice);
-            }
+                SyncResponse data;
+                if (configuration.isUseDefaultDesignSettings()) {
+                    data = new SyncResponse(settings, configuration.getPassword(), applications, dbDevice);
+                } else {
+                    data = new SyncResponse(configuration, applications, dbDevice);
+                }
 
-            data.setGps(configuration.getGps());
-            data.setBluetooth(configuration.getBluetooth());
-            data.setWifi(configuration.getWifi());
-            data.setMobileData(configuration.getMobileData());
-            data.setLockStatusBar(configuration.isBlockStatusBar());
-            data.setSystemUpdateType(configuration.getSystemUpdateType());
-            if (configuration.getSystemUpdateType() == 2) {
-                data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
-                data.setSystemUpdateTo(configuration.getSystemUpdateTo());
-            }
+                data.setGps(configuration.getGps());
+                data.setBluetooth(configuration.getBluetooth());
+                data.setWifi(configuration.getWifi());
+                data.setMobileData(configuration.getMobileData());
+                data.setLockStatusBar(configuration.isBlockStatusBar());
+                data.setSystemUpdateType(configuration.getSystemUpdateType());
+                if (configuration.getSystemUpdateType() == 2) {
+                    data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
+                    data.setSystemUpdateTo(configuration.getSystemUpdateTo());
+                }
 
-            data.setKioskMode(configuration.isKioskMode());
-            if (data.isKioskMode()) {
-                Integer contentAppId = configuration.getContentAppId();
-                if (contentAppId != null) {
-                    ApplicationVersion applicationVersion = this.unsecureDAO.findApplicationVersionById(contentAppId);
-                    if (applicationVersion != null) {
-                        Application application = this.unsecureDAO.findApplicationById(applicationVersion.getApplicationId());
-                        data.setMainApp(application.getPkg());
+                data.setKioskMode(configuration.isKioskMode());
+                if (data.isKioskMode()) {
+                    Integer contentAppId = configuration.getContentAppId();
+                    if (contentAppId != null) {
+                        ApplicationVersion applicationVersion = this.unsecureDAO.findApplicationVersionById(contentAppId);
+                        if (applicationVersion != null) {
+                            Application application = this.unsecureDAO.findApplicationById(applicationVersion.getApplicationId());
+                            data.setMainApp(application.getPkg());
+                        }
                     }
                 }
+
+                // Evaluate the application settings
+                final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
+                final List<ApplicationSetting> configApplicationSettings = configuration.getApplicationSettings();
+                final List<ApplicationSetting> applicationSettings
+                        = combineDeviceLogRules(configApplicationSettings, deviceAppSettings);
+
+                data.setApplicationSettings(applicationSettings.stream().map(s -> {
+                    SyncApplicationSetting syncSetting = new SyncApplicationSetting();
+                    syncSetting.setPackageId(s.getApplicationPkg());
+                    syncSetting.setName(s.getName());
+                    syncSetting.setType(s.getType().getId());
+                    syncSetting.setReadonly(s.isReadonly());
+                    syncSetting.setValue(s.getValue());
+                    syncSetting.setLastUpdate(s.getLastUpdate());
+
+                    return syncSetting;
+                }).collect(Collectors.toList()));
+
+                SyncResponseInt syncResponse = data;
+
+                SecurityContext.init(dbDevice.getCustomerId());
+                try {
+                    if (this.syncResponseHooks != null && !this.syncResponseHooks.isEmpty()) {
+                        for (SyncResponseHook hook : this.syncResponseHooks) {
+                            syncResponse = hook.handle(dbDevice.getId(), syncResponse);
+                        }
+                    }
+                } finally {
+                    SecurityContext.release();
+                }
+
+                return Response.OK(syncResponse);
+            } else {
+                logger.warn("Requested device {} was not found", number);
+                return Response.DEVICE_NOT_FOUND_ERROR();
             }
-
-            // Evaluate the application settings
-            final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
-            final List<ApplicationSetting> configApplicationSettings = configuration.getApplicationSettings();
-            final List<ApplicationSetting> applicationSettings
-                    = combineDeviceLogRules(configApplicationSettings, deviceAppSettings);
-
-            data.setApplicationSettings(applicationSettings.stream().map(s -> {
-                SyncApplicationSetting syncSetting = new SyncApplicationSetting();
-                syncSetting.setPackageId(s.getApplicationPkg());
-                syncSetting.setName(s.getName());
-                syncSetting.setType(s.getType().getId());
-                syncSetting.setReadonly(s.isReadonly());
-                syncSetting.setValue(s.getValue());
-                syncSetting.setLastUpdate(s.getLastUpdate());
-
-                return syncSetting;
-            }).collect(Collectors.toList()));
-
-            return Response.OK(data);
-        } else {
-            return Response.DEVICE_NOT_FOUND_ERROR();
+        } catch (Exception e) {
+            logger.error("Unexpected error when getting device info", e);
+            return Response.INTERNAL_ERROR();
         }
     }
 
@@ -162,22 +225,26 @@ public class SyncResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateDeviceInfo(DeviceInfo deviceInfo) {
+        logger.debug("/public/sync/info --> {}", deviceInfo);
+
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceInfo.getDeviceId());
             if (dbDevice != null) {
-                try {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    this.unsecureDAO.updateDeviceInfo(dbDevice.getId(), objectMapper.writeValueAsString(deviceInfo));
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                this.unsecureDAO.updateDeviceInfo(dbDevice.getId(), objectMapper.writeValueAsString(deviceInfo));
+
+                if (deviceInfo.getBatteryLevel() != null) {
+                    this.eventService.fireEvent(new DeviceBatteryLevelUpdatedEvent(dbDevice.getId(), deviceInfo.getBatteryLevel()));
                 }
 
                 return Response.OK();
             } else {
+                logger.warn("Requested device {} was not found", deviceInfo.getDeviceId());
                 return Response.DEVICE_NOT_FOUND_ERROR();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Unexpected error when processing info submitted by device", e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -196,6 +263,8 @@ public class SyncResource {
                                                 @ApiParam("An identifier of device within MDM server")
                                                         String deviceNumber,
                                             List<SyncApplicationSetting> applicationSettings) {
+        logger.debug("/public/sync/applicationSettings/{} --> {}", deviceNumber, applicationSettings);
+
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
             if (dbDevice != null) {
@@ -213,14 +282,18 @@ public class SyncResource {
 
                 return Response.OK();
             } else {
+                logger.warn("Requested device {} was not found", deviceNumber);
                 return Response.DEVICE_NOT_FOUND_ERROR();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Unexpected error when saving device application settings for device {}", deviceNumber, e);
             return Response.INTERNAL_ERROR();
         }
     }
 
+    /**
+     * <p>A function producing the key for referencing the specified application setting.</p>
+     */
     private static final Function<ApplicationSetting, String> appSettingMapKeyGenerator = (s) -> s.getApplicationId() + "," + s.getName();
 
     /**

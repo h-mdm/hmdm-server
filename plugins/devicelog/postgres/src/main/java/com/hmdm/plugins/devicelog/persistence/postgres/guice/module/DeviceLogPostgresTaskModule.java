@@ -24,64 +24,42 @@ package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 import com.google.inject.Inject;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.PostgresDeviceLogDAO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hmdm.util.BackgroundTaskRunnerService;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>$</p>
+ * <p>A module used for initializing the tasks to be executed in background.</p>
  *
  * @author isv
  */
 public class DeviceLogPostgresTaskModule implements PluginTaskModule {
 
-    private final ScheduledExecutorService logPurgeService = Executors.newScheduledThreadPool(1);
-
+    /**
+     * <p>An interface to persistence layer.</p>
+     */
     private final PostgresDeviceLogDAO deviceLogDAO;
+
+    /**
+     * <p>A runner for the repeatable tasks.</p>
+     */
+    private final BackgroundTaskRunnerService taskRunner;
 
     /**
      * <p>Constructs new <code>DeviceLogPostgresTaskModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceLogPostgresTaskModule(PostgresDeviceLogDAO deviceLogDAO) {
+    public DeviceLogPostgresTaskModule(PostgresDeviceLogDAO deviceLogDAO, BackgroundTaskRunnerService taskRunner) {
         this.deviceLogDAO = deviceLogDAO;
+        this.taskRunner = taskRunner;
     }
 
     /**
-     * <p>Initializes this module. The implementations are expected to initialize and setup any necessary services.</p>
+     * <p>Initializes this module. Schedules the task for purging the outdated device log records from DB on a daily
+     * basis.</p>
      */
     @Override
     public void init() {
-        logPurgeService.scheduleWithFixedDelay(new LogPurgeWorker(deviceLogDAO),
-                0, 1, TimeUnit.DAYS);
-
-        Runtime.getRuntime().addShutdownHook(new Thread(logPurgeService::shutdown));
-
-    }
-
-    /**
-     * <p>A task to delete the device log records with lifespans longer than pre-defined limits.</p>
-     */
-    public static class LogPurgeWorker implements Runnable {
-        private final static Logger log = LoggerFactory.getLogger(LogPurgeWorker.class);
-        private final PostgresDeviceLogDAO deviceLogDAO;
-
-        public LogPurgeWorker(PostgresDeviceLogDAO deviceLogDAO) {
-            this.deviceLogDAO = deviceLogDAO;
-        }
-
-        @Override
-        public void run() {
-            log.info("Starting the iteration ...");
-            try {
-                this.deviceLogDAO.purgeLogRecords();
-                log.info("Finished the iteration.");
-            } catch (Exception e) {
-                log.error("Unexpected error when purging the device log records", e);
-            }
-        }
+        taskRunner.submitRepeatableTask(deviceLogDAO::purgeLogRecords, 1, 24, TimeUnit.HOURS);
     }
 }

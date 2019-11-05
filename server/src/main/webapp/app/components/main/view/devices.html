@@ -79,6 +79,7 @@
             <th ng-if="settings.columnDisplayedDeviceDesc" localized>table.heading.device.desc</th>
             <th ng-if="settings.columnDisplayedDeviceGroup" localized>table.heading.device.group</th>
             <th ng-if="settings.columnDisplayedLauncherVersion" localized>table.heading.device.launcher.version</th>
+            <th ng-if="settings.columnDisplayedBatteryLevel" localized>table.heading.device.battery.level</th>
             <th ng-if="hasPermission('edit_devices')" class='actions-column' localized>table.heading.device.actions</th>
         </tr>
         </thead>
@@ -116,7 +117,7 @@
                      title='{{getDeviceApplicationsTitle(device)}}'>
             </td>
             <td ng-if="settings.columnDisplayedDeviceConfiguration">
-                {{device.configName}}
+                {{device.configuration.name}}
             </td>
             <td ng-if="settings.columnDisplayedDeviceDesc">
                 <span ng-bind-html="formatMultiLine(device.description)"></span>
@@ -126,6 +127,9 @@
             </td>
             <td ng-if="settings.columnDisplayedLauncherVersion">
                 <span ng-style="{color: getDeviceLauncherVersionColor(device)}">{{getDeviceLauncherVersion(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedBatteryLevel">
+                <span>{{getDeviceBatteryLevel(device)}}</span>
             </td>
 
             <td class="deviceActions">
@@ -138,18 +142,17 @@
                     <span class='glyphicon glyphicon-trash'></span>
                 </button>
 
-                <span class="btn-group dropdown">
+                <span class="btn-group dropdown" ng-if="plugins && plugins.length > 0 || hasPermission('edit_device_app_settings')">
                     <button id="single-button-{{device.id}}" type="button" localized-title="button.more"
                             class="btn btn-default dropdown-toggle">
                         <span class='glyphicon glyphicon-list'></span> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="single-button-{{device.id}}">
-                        <li role="menuitem">
+                        <li role="menuitem" ng-if="hasPermission('edit_device_app_settings')">
                             <a ng-click="manageApplicationSettings(device)" localized>button.app.settings</a>
                         </li>
                         <li role="menuitem" ng-repeat="plugin in plugins" ng-if="plugins && plugins.length > 0">
-                            <a ng-click="notifyPluginOnDevice(plugin, device)"
-                               ng-if="plugin.enabledForDevice && plugin.functionsViewTemplate && (!plugin.deviceFunctionsPermission || hasPermission(plugin.deviceFunctionsPermission))">{{localization.localize(plugin.nameLocalizationKey)}}</a>
+                            <a ng-click="notifyPluginOnDevice(plugin, device)">{{plugin.nameLocalizationKey | localize}}</a>
                         </li>
                     </ul>
                     </span>

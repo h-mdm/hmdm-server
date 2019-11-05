@@ -21,15 +21,15 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.inject.Named;
 import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.FileUploadResult;
 import com.hmdm.util.APKFileAnalyzer;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -217,7 +217,7 @@ public class FilesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
-                                @FormDataParam("file") @ApiParam("A file to upload") FormDataContentDisposition fileDetail) throws Exception {
+                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         try {
             File uploadFile = File.createTempFile(fileDetail.getFileName() + DELIMITER, "temp");
             writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());

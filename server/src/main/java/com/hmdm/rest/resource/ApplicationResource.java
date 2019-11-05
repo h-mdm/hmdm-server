@@ -21,8 +21,8 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -34,7 +34,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.google.inject.name.Named;
+import javax.inject.Named;
 import com.hmdm.persistence.ApplicationReferenceExistsException;
 import com.hmdm.persistence.ApplicationVersionPackageMismatchException;
 import com.hmdm.persistence.CommonAppAccessException;

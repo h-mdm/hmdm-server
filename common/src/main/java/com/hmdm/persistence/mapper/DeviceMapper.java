@@ -21,10 +21,10 @@
 
 package com.hmdm.persistence.mapper;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.persistence.domain.DeviceApplication;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -34,7 +34,6 @@ import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.persistence.domain.Group;
 import com.hmdm.rest.json.DeviceLookupItem;
-import org.apache.ibatis.cursor.Cursor;
 
 public interface DeviceMapper {
 
@@ -91,11 +90,10 @@ public interface DeviceMapper {
     void updateDeviceConfiguration(@Param("deviceId") Integer deviceId,
                                    @Param("configurationId") Integer configurationId);
 
-    @Deprecated
-    @Update({"UPDATE devices SET oldConfigurationId = #{configurationId} WHERE id = #{id}"})
-    void updateDeviceOldConfiguration(@Param("id") Integer id,
-                                      @Param("configurationId") Integer configurationId);
-    
+    @Update({"UPDATE devices SET description = #{description} WHERE id = #{deviceId}"})
+    void updateDeviceDescription(@Param("deviceId") Integer deviceId,
+                                 @Param("description") String newDeviceDesc);
+
     List<Group> getAllGroups(@Param("customerId") int customerId,
                              @Param("userId") Integer userId);
 
@@ -132,4 +130,15 @@ public interface DeviceMapper {
 
     @Delete("DELETE FROM deviceApplicationSettings WHERE extRefId = #{id}")
     void deleteDeviceApplicationSettings(@Param("id") Integer deviceId);
+
+    @Select("SELECT " +
+            "    deviceApps.app::json ->> 'pkg' AS pkg, " +
+            "    deviceApps.app::json ->> 'version' AS version, " +
+            "    deviceApps.app::json ->> 'name' AS name " +
+            "FROM (" +
+            "    SELECT json_array_elements(info::json -> 'applications') AS app " +
+            "    FROM devices " +
+            "    WHERE id = #{deviceId}" +
+            ") deviceApps")
+    List<DeviceApplication> getDeviceInstalledApplications(@Param("deviceId") int deviceId);
 }

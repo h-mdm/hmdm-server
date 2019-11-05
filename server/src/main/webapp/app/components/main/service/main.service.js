@@ -4,6 +4,7 @@ angular.module('headwind-kiosk')
         return $resource('', {}, {
             getAllDevices: {url: 'rest/private/devices/search', method: 'POST'},
             updateDevice: {url: 'rest/private/devices', method: 'PUT'},
+            updateDeviceDesc: {url: 'rest/private/devices/:id/description', method: 'POST'},
             removeDevice: {url: 'rest/private/devices/:id', method: 'DELETE'},
             getDeviceApplicationSettings: {url: 'rest/private/devices/:id/applicationSettings', method: 'GET'},
             saveDeviceApplicationSettings: {url: 'rest/private/devices/:id/applicationSettings', method: 'POST'},
@@ -55,6 +56,7 @@ angular.module('headwind-kiosk')
             getAvailablePlugins: {url: 'rest/plugin/main/private/available', method: 'GET'},
             getRegisteredPlugins: {url: 'rest/plugin/main/public/registered', method: 'GET'},
             getActivePlugins: {url: 'rest/plugin/main/private/active', method: 'GET'},
+            disablePlugins: {url: 'rest/plugin/main/private/disabled', method: 'POST'},
         })
     })
     .factory('applicationService', function ($resource) {

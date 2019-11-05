@@ -21,8 +21,6 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.rest.json.Response;
@@ -30,6 +28,8 @@ import com.hmdm.rest.json.UserCredentials;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.util.BackgroundTaskRunnerService;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;

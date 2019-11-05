@@ -21,12 +21,12 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.inject.Named;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -65,7 +65,8 @@ public class VideosResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadVideo(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+    public Response uploadVideo(@FormDataParam("file") InputStream uploadedInputStream,
+                                @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         File videoDir = new File(this.videoDirectory);
         if (!videoDir.exists()) {
             videoDir.mkdirs();

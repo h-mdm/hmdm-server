@@ -23,7 +23,6 @@ package com.hmdm.plugin.guice.module;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import com.hmdm.plugin.rest.PluginResource;
 import com.hmdm.rest.filter.AuthFilter;
 
@@ -44,8 +43,6 @@ public class PluginRestModule extends ServletModule {
      * <p>Configures the resources for <code>Plugin Platform</code>.</p>
      */
     protected void configureServlets() {
-        this.bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
-//        this.serve("/rest/plugin/*").with(GuiceContainer.class);
         this.filter("/rest/plugin/main/private/*").through(AuthFilter.class);
         this.bind(PluginResource.class);
     }

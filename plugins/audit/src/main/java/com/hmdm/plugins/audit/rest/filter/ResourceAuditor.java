@@ -21,10 +21,10 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.rest.json.Response;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

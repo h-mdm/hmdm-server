@@ -22,6 +22,7 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.UserRoleSettings;
 import com.hmdm.persistence.mapper.UserRoleSettingsMapper;
 import com.hmdm.security.SecurityContext;
@@ -34,6 +35,7 @@ import java.util.List;
  *
  * @author isv
  */
+@Singleton
 public class UserRoleSettingsDAO extends AbstractDAO<UserRoleSettings> {
 
     private final UserRoleSettingsMapper mapper;

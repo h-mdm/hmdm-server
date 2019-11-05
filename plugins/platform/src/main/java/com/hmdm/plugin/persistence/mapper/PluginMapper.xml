@@ -20,25 +20,15 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.plugin.persistence.mapper.PluginMapper">
 
-    <modelVersion>4.0.0</modelVersion>
+    <insert id="insertDisabledPlugin">
+        INSERT INTO pluginsdisabled (pluginId, customerId)
+        VALUES
+        <foreach item="item" index="index" collection="pluginIds" open="" separator="," close="">
+            (#{item}, #{customerId})
+        </foreach>
+    </insert>
 
-    <artifactId>mdm-swagger</artifactId>
-
-    <packaging>jar</packaging>
-    <version>0.1.0</version>
-    <name>Swagger Integration</name>
-
-    <parent>
-        <groupId>com.hmdm</groupId>
-        <artifactId>root</artifactId>
-        <version>0.1.0</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
-
-    <dependencies>
-    </dependencies>
-
-</project>
+</mapper>

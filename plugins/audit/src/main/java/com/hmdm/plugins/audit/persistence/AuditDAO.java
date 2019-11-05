@@ -22,6 +22,7 @@
 package com.hmdm.plugins.audit.persistence;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.persistence.mapper.AuditMapper;
@@ -37,6 +38,7 @@ import java.util.List;
  *
  * @author isv
  */
+@Singleton
 public class AuditDAO extends AbstractDAO<AuditLogRecord> {
 
     /**

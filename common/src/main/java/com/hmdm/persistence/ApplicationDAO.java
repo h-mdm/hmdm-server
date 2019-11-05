@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import javax.inject.Named;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.ApplicationConfigurationLink;

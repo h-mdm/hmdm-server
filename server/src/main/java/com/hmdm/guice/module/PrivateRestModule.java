@@ -24,7 +24,6 @@ package com.hmdm.guice.module;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.rest.resource.HintResource;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.resource.ApplicationResource;
 import com.hmdm.rest.resource.ConfigurationResource;
@@ -41,7 +40,6 @@ public class PrivateRestModule extends ServletModule {
     }
 
     protected void configureServlets() {
-        this.bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
         this.filter("/rest/private/*").through(JWTFilter.class);
         this.filter("/rest/private/*").through(AuthFilter.class);
         this.bind(DeviceResource.class);

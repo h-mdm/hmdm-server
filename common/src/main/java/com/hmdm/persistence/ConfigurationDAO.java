@@ -24,6 +24,7 @@ package com.hmdm.persistence;
 import com.google.inject.Inject;
 import java.util.List;
 
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.Configuration;
@@ -35,6 +36,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Application> {
 
     private static final Logger log = LoggerFactory.getLogger(ConfigurationDAO.class);

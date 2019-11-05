@@ -21,12 +21,13 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -39,6 +40,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.rest.json.view.devicelist.DeviceListView;
+import com.hmdm.rest.json.view.devicelist.DeviceView;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 import io.swagger.annotations.Api;
@@ -87,8 +90,7 @@ public class DeviceResource {
     @ApiOperation(
             value = "Search devices",
             notes = "Search devices meeting the specified filter value",
-            response = Device.class,
-            responseContainer = "List"
+            response = DeviceListView.class
     )
     @POST
     @Path("/search")
@@ -96,17 +98,32 @@ public class DeviceResource {
     public Response getAllDevices(DeviceSearchRequest request) {
         PaginatedData<Device> devices = this.deviceDAO.getAllDevices(request);
         Map<Integer, List<Application>> configIdToApplicationsMap = new HashMap<>();
+        Map<Integer, Configuration> configIdToConfigurationsMap = new HashMap<>();
         for (Device device : devices.getItems()) {
-            if (!configIdToApplicationsMap.containsKey(device.getConfigurationId())) {
-                configIdToApplicationsMap.put(device.getConfigurationId(), this.configurationDAO.getConfigurationApplications(device.getConfigurationId()));
+            final Integer deviceConfigurationId = device.getConfigurationId();
+
+            if (!configIdToApplicationsMap.containsKey(deviceConfigurationId)) {
+                configIdToApplicationsMap.put(deviceConfigurationId, this.configurationDAO.getConfigurationApplications(deviceConfigurationId));
             }
 
-            Configuration configuration = new Configuration();
-            configuration.setApplications(configIdToApplicationsMap.get(device.getConfigurationId()));
-            device.setConfiguration(configuration);
+            if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
+                Configuration configuration = new Configuration();
+                configuration.setId(deviceConfigurationId);
+                configuration.setName(device.getConfigName());
+                configuration.setApplications(configIdToApplicationsMap.get(deviceConfigurationId));
+                configIdToConfigurationsMap.put(deviceConfigurationId, configuration);
+            }
+
+            device.setConfiguration(configIdToConfigurationsMap.get(deviceConfigurationId));
         }
 
-        return Response.OK(devices);
+        final List<DeviceView> deviceViews = devices.getItems().stream().map(DeviceView::new).collect(Collectors.toList());
+        PaginatedData<DeviceView> devicesPage = new PaginatedData<>(deviceViews, devices.getTotalItemsCount());
+
+        DeviceListView view = new DeviceListView(configIdToConfigurationsMap.values(), devicesPage);
+
+        return Response.OK(view);
+
     }
 
     // =================================================================================================================
@@ -120,10 +137,9 @@ public class DeviceResource {
     public Response updateDevice(Device device) {
         try {
             final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
-            final boolean canEditDeviceDescription = SecurityContext.get().hasPermission("edit_device_desc");
 
-            if (!(canEditDevices || canEditDeviceDescription)) {
-                log.error("Unathorized attempt to create or edit device",
+            if (!canEditDevices) {
+                log.error("Unauthorized attempt to create or edit device",
                         SecurityException.onCustomerDataAccessViolation(device.getId(), "device"));
                 return Response.PERMISSION_DENIED();
             }
@@ -136,23 +152,16 @@ public class DeviceResource {
                 dbDevice = this.deviceDAO.getDeviceById(device.getId());
                 if (device.getId() != null) {
                     if (dbDevice != null) {
-//                        if (dbDevice.getOldConfigurationId() == null) {
-//                            this.deviceDAO.updateDeviceOldConfiguration(device.getId(), dbDevice.getConfigurationId());
-//                        }
-
                         this.deviceDAO.updateDevice(device);
                     }
                 } else if (device.getIds() != null) {
+                    // This is a bulk request to update configurations for selected devices
                     Iterator it = device.getIds().iterator();
 
                     while(it.hasNext()) {
                         Integer id = (Integer)it.next();
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
-//                            if (!dbDevice.getConfigurationId().equals(device.getConfigurationId())) {
-//                                this.deviceDAO.updateDeviceOldConfiguration(id, dbDevice.getConfigurationId());
-//                            }
-
                             this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
                         }
                     }
@@ -181,7 +190,7 @@ public class DeviceResource {
         final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
 
         if (!(canEditDevices)) {
-            log.error("Unathorized attempt to delete device",
+            log.error("Unauthorized attempt to delete device",
                     SecurityException.onCustomerDataAccessViolation(id, "device"));
             return Response.PERMISSION_DENIED();
         }
@@ -242,6 +251,33 @@ public class DeviceResource {
             return Response.OK();
         } catch (Exception e) {
             log.error("Failed to send notification on application settings update to device #{}", id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Save device description",
+            notes = "Updates existing device description"
+    )
+    @POST
+    @Path("/{id}/description")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveDeviceDescription(@PathParam("id") @ApiParam("Device ID") Integer deviceId,
+                                          String newDeviceDescription) {
+        try {
+            final boolean canEditDeviceDescription = SecurityContext.get().hasPermission("edit_device_desc");
+
+            if (!canEditDeviceDescription) {
+                log.error("Unauthorized attempt to edit device description",
+                        SecurityException.onCustomerDataAccessViolation(deviceId, "device"));
+                return Response.PERMISSION_DENIED();
+            }
+
+            this.deviceDAO.updateDeviceDescription(deviceId, newDeviceDescription);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Failed to save the description for device #{}", deviceId, e);
             return Response.INTERNAL_ERROR();
         }
     }

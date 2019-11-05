@@ -21,12 +21,10 @@
 
 package com.hmdm.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonIgnoreType;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -59,7 +57,7 @@ public class Application implements CustomerData, Serializable {
     @ApiModelProperty("A flag indicating if application must be run after installation")
     private boolean runAfterInstall;
     @ApiModelProperty("A flag indicating if version check must be skipped for application")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean skipVersion;
 
     // A flag indicating that application is to be removed from the application

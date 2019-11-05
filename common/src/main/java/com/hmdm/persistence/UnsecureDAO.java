@@ -246,11 +246,22 @@ public class UnsecureDAO {
     }
 
     /**
-     * <p>Gets the settings for the customer account mapped to specified device.</p>
+     * <p>Gets the device referenced by the specified ID.</p>
      *
-     * @param deviceId a device number identifying the device.
-     * @return the settings for related customer account.
+     * @param id an ID of a device.
+     * @return a device referenced by the specified ID or <code>null</code> if there is no such device found.
      */
+    public Device getDeviceById(Integer id) {
+        return this.deviceMapper.getDeviceById(id);
+    }
+
+
+//    /**
+//     * <p>Gets the settings for the customer account mapped to specified device.</p>
+//     *
+//     * @param deviceId a device number identifying the device.
+//     * @return the settings for related customer account.
+//     */
 //    public Settings getSettingsByDeviceId(String deviceId) {
 //        return this.settingsMapper.getSettingsByDeviceId(deviceId);
 //    }

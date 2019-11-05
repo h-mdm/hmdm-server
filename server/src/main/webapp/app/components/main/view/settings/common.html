@@ -123,6 +123,14 @@
             </div>
 
             <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c113" localized>form.settings.common.battery.level</label>
+                <div class='col-sm-1'>
+                    <input id="c113" ng-model='userRoleSettings.columnDisplayedBatteryLevel' ng-disabled="loading"
+                           type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
                 <div class='col-sm-offset-6 col-sm-9 padding-left'>
                     <button type='submit' class='btn btn-default' ng-disabled="loading"
                             ng-click='saveCommonSettings()' localized>button.save</button>

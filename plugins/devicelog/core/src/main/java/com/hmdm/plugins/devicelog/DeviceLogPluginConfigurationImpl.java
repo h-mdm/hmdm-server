@@ -40,6 +40,8 @@ import java.util.Optional;
  */
 public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
 
+    public static final String PLUGIN_ID = "devicelog";
+
     /**
      * <p>Constructs new <code>DeviceLogPluginConfigurationImpl</code> instance. This implementation does nothing.</p>
      */
@@ -54,7 +56,7 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
      */
     @Override
     public String getPluginId() {
-        return "devicelog";
+        return PLUGIN_ID;
     }
 
     /**

@@ -23,11 +23,11 @@ package com.hmdm.plugins.devicelog.guice.module;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import com.hmdm.plugin.rest.PluginAccessFilter;
 import com.hmdm.plugins.devicelog.rest.resource.DeviceLogPluginSettingsResource;
 import com.hmdm.plugins.devicelog.rest.resource.DeviceLogResource;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.security.jwt.JWTFilter;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 /**
  * <p>A <code>Guice</code> module for <code>Device Log Plugin</code> REST resources.</p>
@@ -46,13 +46,15 @@ public class DeviceLogRestModule extends ServletModule {
      * <p>Configures the <code>Photo Plugin</code> REST resources.</p>
      */
     protected void configureServlets() {
-        this.bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
         this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private/*").through(JWTFilter.class);
         this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private").through(JWTFilter.class);
         this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private/*").through(AuthFilter.class);
         this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private").through(AuthFilter.class);
+        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private/*").through(PluginAccessFilter.class);
+        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private").through(PluginAccessFilter.class);
         this.filter("/rest/plugins/devicelog/log/private/*").through(JWTFilter.class);
         this.filter("/rest/plugins/devicelog/log/private/*").through(AuthFilter.class);
+        this.filter("/rest/plugins/devicelog/log/private/*").through(PluginAccessFilter.class);
         this.bind(DeviceLogPluginSettingsResource.class);
         this.bind(DeviceLogResource.class);
     }

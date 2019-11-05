@@ -24,10 +24,17 @@ package com.hmdm.persistence;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.persistence.domain.DeviceApplication;
+import com.hmdm.rest.json.DeviceListHook;
 import org.mybatis.guice.transactional.Transactional;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.DeviceSearchRequest;
@@ -38,14 +45,28 @@ import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 
+@Singleton
 public class DeviceDAO extends AbstractDAO<Device> {
     private final DeviceMapper mapper;
     private final ApplicationSettingDAO applicationSettingDAO;
 
+    private final Set<DeviceListHook> deviceListHooks;
+
     @Inject
-    public DeviceDAO(DeviceMapper mapper, ApplicationSettingDAO applicationSettingDAO) {
+    public DeviceDAO(DeviceMapper mapper, ApplicationSettingDAO applicationSettingDAO, Injector injector) {
         this.mapper = mapper;
         this.applicationSettingDAO = applicationSettingDAO;
+
+        // TODO : Such a logic needs to be extracted into some utility service
+        Set<DeviceListHook> hooks = new HashSet<>();
+        for (Key<?> key : injector.getAllBindings().keySet()) {
+            if (DeviceListHook.class.isAssignableFrom(key.getTypeLiteral().getRawType())) {
+                DeviceListHook hook = (DeviceListHook) injector.getInstance(key);
+                hooks.add(hook);
+            }
+        }
+
+        this.deviceListHooks = hooks;
     }
 
     public PaginatedData<Device> getAllDevices(DeviceSearchRequest request) {
@@ -54,6 +75,12 @@ public class DeviceDAO extends AbstractDAO<Device> {
             request.setUserId(currentUser.getId());
             return this.mapper.getAllDevices(request);
         });
+
+        if (!this.deviceListHooks.isEmpty()) {
+            for (DeviceListHook hook : this.deviceListHooks) {
+                devices = hook.handle(devices);
+            }
+        }
 
         Long totalItemsCount = this.mapper.countAllDevices(request);
         return new PaginatedData<>(devices, totalItemsCount);
@@ -78,7 +105,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     public void removeDeviceById(Integer id) {
         updateById(
                 id,
-                this::getDeviceById,
+                this.mapper::getDeviceById,
                 device -> this.mapper.removeDevice(device.getId()),
                 SecurityException::onDeviceAccessViolation
         );
@@ -87,7 +114,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     public void updateDeviceConfiguration(Integer deviceId, Integer configurationId) {
         updateById(
                 deviceId,
-                this::getDeviceById,
+                this.mapper::getDeviceById,
                 device -> this.mapper.updateDeviceConfiguration(device.getId(), configurationId),
                 SecurityException::onDeviceAccessViolation
         );
@@ -113,32 +140,47 @@ public class DeviceDAO extends AbstractDAO<Device> {
         });
     }
 
+    /**
+     * <p>Updates the device data in persistent data store. The reference to related customer account and last update
+     * time of the device are not affected by this method.</p>
+     *
+     * @param device a device to be updated.
+     * @throws SecurityException if current user is not authorized to update this device.
+     */
     @Transactional
     public void updateDevice(Device device) {
-        updateRecord(device, d -> {
-            Integer currentUserId = SecurityContext.get().getCurrentUser().get().getId();
-            this.mapper.updateDevice(d);
-            this.mapper.removeDeviceGroupsByDeviceId(currentUserId, d.getCustomerId(), d.getId());
-            if (d.getGroups() != null && !d.getGroups().isEmpty()) {
+        updateById(device.getId(), this.mapper::getDeviceById, dbDevice -> {
+            device.setCustomerId(dbDevice.getCustomerId());
+
+            final Integer currentUserId = SecurityContext.get().getCurrentUser().get().getId();
+            this.mapper.updateDevice(device);
+            this.mapper.removeDeviceGroupsByDeviceId(currentUserId, device.getCustomerId(), device.getId());
+            if (device.getGroups() != null && !device.getGroups().isEmpty()) {
                 this.mapper.insertDeviceGroups(
-                        d.getId(), d.getGroups().stream().map(LookupItem::getId).collect(Collectors.toList())
+                        device.getId(), device.getGroups().stream().map(LookupItem::getId).collect(Collectors.toList())
                 );
             }
         }, SecurityException::onDeviceAccessViolation);
     }
 
-    public Device getDeviceById(Integer id) {
-        return this.mapper.getDeviceById(id);
+    public Device getDeviceById(Integer deviceId) {
+        return getSingleRecord(() -> this.mapper.getDeviceById(deviceId), SecurityException::onDeviceAccessViolation);
     }
 
-    @Deprecated
-    public void updateDeviceOldConfiguration(Integer id, Integer configurationId) {
-        updateById(
-                id,
-                this::getDeviceById,
-                device -> this.mapper.updateDeviceOldConfiguration(device.getId(), configurationId),
-                SecurityException::onDeviceAccessViolation
-        );
+    /**
+     * <p>Gets the applications installed on specified device.</p>
+     *
+     * @param deviceId an ID of a device.
+     * @return a list of applications reported as installed on specified device.
+     */
+    @Transactional
+    public List<DeviceApplication> getDeviceInstalledApplications(int deviceId) {
+        final Device dbDevice = getDeviceById(deviceId);
+        if (dbDevice != null) {
+            return this.mapper.getDeviceInstalledApplications(dbDevice.getId());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -157,10 +199,27 @@ public class DeviceDAO extends AbstractDAO<Device> {
 
     @Transactional
     public void saveDeviceApplicationSettings(Integer deviceId, List<ApplicationSetting> applicationSettings) {
-        final Device dbDevice = getSingleRecord(() -> this.mapper.getDeviceById(deviceId), SecurityException::onDeviceAccessViolation);
+        final Device dbDevice = getDeviceById(deviceId);
         if (dbDevice != null) {
             this.mapper.deleteDeviceApplicationSettings(dbDevice.getId());
             this.mapper.insertDeviceApplicationSettings(dbDevice.getId(), applicationSettings);
         }
+    }
+
+    /**
+     * <p>Updates the description for the specified device.</p>
+     *
+     * @param deviceId an ID of a device to update description for.
+     * @param newDeviceDescription a new device description.
+     * @throws SecurityException if current user is not authorized to update the specified device description.
+     */
+    @Transactional
+    public void updateDeviceDescription(Integer deviceId, String newDeviceDescription) {
+        updateById(
+                deviceId,
+                this.mapper::getDeviceById,
+                device -> this.mapper.updateDeviceDescription(deviceId, newDeviceDescription),
+                SecurityException::onDeviceAccessViolation
+        );
     }
 }

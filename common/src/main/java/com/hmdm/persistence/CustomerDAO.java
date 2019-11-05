@@ -22,7 +22,9 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import javax.inject.Named;
+
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
@@ -61,6 +63,7 @@ import java.util.stream.Stream;
  *
  * @author isv
  */
+@Singleton
 public class CustomerDAO {
 
     private final Logger log = LoggerFactory.getLogger(CustomerDAO.class);

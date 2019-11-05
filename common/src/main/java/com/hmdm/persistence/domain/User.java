@@ -21,11 +21,10 @@
 
 package com.hmdm.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.rest.json.LookupItem;
 
 import java.io.Serializable;
@@ -33,7 +32,7 @@ import java.util.List;
 
 @ApiModel(description = "A user account within MDM web application")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include = Inclusion.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -5231237331183323703L;

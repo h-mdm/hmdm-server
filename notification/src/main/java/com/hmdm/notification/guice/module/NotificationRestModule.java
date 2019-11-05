@@ -25,7 +25,6 @@ import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.notification.rest.NotificationResource;
 import com.hmdm.rest.filter.AuthFilter;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 /**
  * <p>A <code>Guice</code> module for <code>Notification API</code> sub-system.</p>
@@ -45,7 +44,6 @@ public class NotificationRestModule extends ServletModule {
      * <p>Configures the resources for <code>Plugin Platform</code>.</p>
      */
     protected void configureServlets() {
-        this.bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
         this.filter("/rest/notification/private/*").through(AuthFilter.class);
         this.bind(NotificationResource.class);
     }

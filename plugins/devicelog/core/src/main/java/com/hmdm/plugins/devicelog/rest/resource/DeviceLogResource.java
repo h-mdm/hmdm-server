@@ -21,10 +21,13 @@
 
 package com.hmdm.plugins.devicelog.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.DeviceDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Device;
+import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.plugins.devicelog.model.DeviceLogRecord;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogDAO;
 import com.hmdm.plugins.devicelog.rest.json.AppliedDeviceLogRule;
@@ -35,7 +38,9 @@ import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
-import com.sun.jersey.core.header.ContentDisposition;
+import com.hmdm.security.SecurityContext;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -62,6 +67,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.hmdm.plugins.devicelog.DeviceLogPluginConfigurationImpl.PLUGIN_ID;
+
 /**
  * <p>A resource to be used for accessing the data for <code>Device Log</code> records.</p>
  *
@@ -87,6 +94,13 @@ public class DeviceLogResource {
 
     private ApplicationDAO applicationDAO;
 
+    private PluginStatusCache pluginStatusCache;
+
+    /**
+     * <p>An interface to persistence without security checks.</p>
+     */
+    private UnsecureDAO unsecureDAO;
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -99,10 +113,14 @@ public class DeviceLogResource {
     @Inject
     public DeviceLogResource(DeviceLogDAO deviceLogDAO,
                              DeviceDAO deviceDAO,
-                             ApplicationDAO applicationDAO) {
+                             ApplicationDAO applicationDAO,
+                             PluginStatusCache pluginStatusCache,
+                             UnsecureDAO unsecureDAO) {
         this.deviceLogDAO = deviceLogDAO;
         this.deviceDAO = deviceDAO;
         this.applicationDAO = applicationDAO;
+        this.pluginStatusCache = pluginStatusCache;
+        this.unsecureDAO = unsecureDAO;
     }
 
     /**
@@ -211,10 +229,26 @@ public class DeviceLogResource {
                                @Context HttpServletRequest httpRequest) {
         logger.debug("#uploadLogs: {} => {}", deviceNumber, logs);
         try {
-            this.executor.submit(
-                    new InsertDeviceLogRecordsTask(deviceNumber, httpRequest.getRemoteAddr(), logs, this.deviceLogDAO)
-            );
-            return Response.OK();
+            final Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
+            if (dbDevice == null) {
+                logger.error("Device {} was not found", deviceNumber);
+                return Response.DEVICE_NOT_FOUND_ERROR();
+            }
+
+            SecurityContext.init(dbDevice.getCustomerId());
+            try {
+                if (this.pluginStatusCache.isPluginDisabled(PLUGIN_ID)) {
+                    logger.error("Rejecting request from device {} due to disabled plugin", deviceNumber);
+                    return Response.PLUGIN_DISABLED();
+                }
+
+                this.executor.submit(
+                        new InsertDeviceLogRecordsTask(deviceNumber, httpRequest.getRemoteAddr(), logs, this.deviceLogDAO)
+                );
+                return Response.OK();
+            } finally {
+                SecurityContext.release();
+            }
         } catch (Exception e) {
             logger.error("Unexpected error when handling uploaded log records", e);
             return Response.INTERNAL_ERROR();
@@ -233,9 +267,25 @@ public class DeviceLogResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeviceLogRules(@PathParam("deviceNumber") String deviceNumber) {
         try {
-            final List<AppliedDeviceLogRule> deviceLogRules = this.deviceLogDAO.getDeviceLogRules(deviceNumber);
-            logger.debug("#getDeviceLogRules: {} => {}", deviceNumber, deviceLogRules);
-            return Response.OK(deviceLogRules);
+            final Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
+            if (dbDevice == null) {
+                logger.error("Device {} was not found", deviceNumber);
+                return Response.DEVICE_NOT_FOUND_ERROR();
+            }
+
+            SecurityContext.init(dbDevice.getCustomerId());
+            try {
+                if (this.pluginStatusCache.isPluginDisabled(PLUGIN_ID)) {
+                    logger.error("Rejecting request from device {} due to disabled plugin", deviceNumber);
+                    return Response.PLUGIN_DISABLED();
+                }
+
+                final List<AppliedDeviceLogRule> deviceLogRules = this.deviceLogDAO.getDeviceLogRules(deviceNumber);
+                logger.debug("#getDeviceLogRules: {} => {}", deviceNumber, deviceLogRules);
+                return Response.OK(deviceLogRules);
+            } finally {
+                SecurityContext.release();
+            }
         } catch (Exception e) {
             logger.error("Unexpected error when handling request for device log rules", e);
             return Response.INTERNAL_ERROR();

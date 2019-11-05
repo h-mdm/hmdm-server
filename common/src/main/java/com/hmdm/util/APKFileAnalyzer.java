@@ -23,7 +23,7 @@ package com.hmdm.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import javax.inject.Named;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.rest.json.APKFileDetails;
 import org.slf4j.Logger;

@@ -22,6 +22,7 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.mapper.ApplicationSettingMapper;
 
@@ -32,6 +33,7 @@ import java.util.List;
  *
  * @author isv
  */
+@Singleton
 public class ApplicationSettingDAO {
 
     private final ApplicationSettingMapper mapper;

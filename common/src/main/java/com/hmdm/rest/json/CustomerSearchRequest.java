@@ -22,7 +22,7 @@
 package com.hmdm.rest.json;
 
 import io.swagger.annotations.ApiModel;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 

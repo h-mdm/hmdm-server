@@ -75,7 +75,7 @@ public interface CustomerMapper {
     Customer findCustomerByName(@Param("name") String name);
 
     // TODO : This is a weak point. It is a direct link to table from Licensing plugin. Needs to be re-worked
-    @Insert("INSERT INTO plugin_licensing_settings (apiKey, customerId) VALUES (#{apiKey}, #{id})" +
+    @Insert("INSERT INTO plugin_licensing_settings (apiKey, customerId) VALUES (#{apiKey}, #{id}) " +
             "ON CONFLICT ON CONSTRAINT plugin_licensing_settings_customer_unique DO " +
             "UPDATE SET " +
             "apiKey = EXCLUDED.apiKey"

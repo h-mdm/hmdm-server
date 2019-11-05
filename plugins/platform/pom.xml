@@ -44,5 +44,13 @@
             <artifactId>jwt</artifactId>
             <version>0.1.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.53-SNAPSHOT-jre8</version>
+        </dependency>
+
     </dependencies>
 </project>

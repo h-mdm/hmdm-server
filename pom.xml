@@ -35,7 +35,6 @@
         <module>jwt</module>
         <module>notification</module>
         <module>plugins</module>
-        <module>swagger/api</module>
         <module>swagger/ui</module>
         <module>server</module>
     </modules>
@@ -45,17 +44,15 @@
     <properties>
         <java.version>1.8</java.version>
         <javax.mail>1.5.0-b01</javax.mail>
-
-        <jersey.version>1.19</jersey.version>
         <java.rest.webservice>2.0.1</java.rest.webservice>
         <jackson.version>1.9.13</jackson.version>
 
-        <guice.version>3.0</guice.version>
+        <guice.version>4.2.2</guice.version>
 
         <servlet-api.version>2.5</servlet-api.version>
 
-        <mybatis.version>3.5.2</mybatis.version>
-        <mybatis.guice.version>3.6</mybatis.guice.version>
+        <mybatis.version>3.5.3</mybatis.version>
+        <mybatis.guice.version>3.10</mybatis.guice.version>
 
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <liquibase.version>3.6.3</liquibase.version>
@@ -71,72 +68,106 @@
         <app>${timestamp}</app>
 
         <opensource.dist.dir>/Headwind/AndroidKioskWeb/opensource</opensource.dist.dir>
+
+        <glassfish-jersey.version>2.25.1</glassfish-jersey.version>
+        <guice-bridge.version>2.6.1</guice-bridge.version>
     </properties>
 
     <dependencies>
-        <!-- Jersey -->
+        <!-- Upgrading Jersey to 2.x -->
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-common -->
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>${jersey.version}</version>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${glassfish-jersey.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server -->
         <dependency>
-            <groupId>com.sun.jersey</groupId>
+            <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.19</version>
+            <version>${glassfish-jersey.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client -->
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-guice</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
+            <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>${jersey.version}</version>
+            <version>${glassfish-jersey.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-multipart -->
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-multipart</artifactId>
-            <version>${jersey.version}</version>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${glassfish-jersey.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.containers/jersey-container-servlet-core -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>${glassfish-jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${glassfish-jersey.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>guice-bridge</artifactId>
+            <version>${guice-bridge.version}</version>
         </dependency>
 
+        <!-- Missing from JRE 11 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.11</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.2.11</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.11</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Java REST WebService -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>${java.rest.webservice}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Jackson -->
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Swagger -->
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-jersey2-jaxrs -->
         <dependency>
             <groupId>io.swagger</groupId>
-            <artifactId>swagger-jersey-jaxrs</artifactId>
-            <version>1.5.0</version>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
+            <version>1.5.24</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.6</version>
+            <version>2.10.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.9.0</version>
+            <version>2.10.0</version>
         </dependency>
 
 

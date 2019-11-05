@@ -1434,6 +1434,28 @@
             ALTER TABLE settings ADD COLUMN columnDisplayedLauncherVersion BOOLEAN;
         </rollback>
     </changeSet>
-    
+
+    <changeSet id="18.10.2019-17:21" author="isv" context="common">
+        <comment>Permission,new: edit_device_app_settings</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('edit_device_app_settings', 'Имеет доступ к редактированию и добавлению настроек приложения для устройства');
+            INSERT INTO userRolePermissions (roleId, permissionId)
+            SELECT id, currval('permissions_id_seq') FROM userroles WHERE name IN ('Администратор', 'Супер-Администратор');
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'edit_device_app_settings';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="22.10.19-12:34" author="isv" context="common">
+        <comment>Column,new: userRoleSettings#columnDisplayedBatteryLevel</comment>
+        <sql>
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedBatteryLevel BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedBatteryLevel;
+        </rollback>
+    </changeSet>
+
 
 </databaseChangeLog>

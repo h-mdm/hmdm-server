@@ -16,11 +16,6 @@
     <Parameter name="usage.scenario" value="${usage.scenario}"/>
     <Parameter name="hash.secret" value="${hash.secret}"/>
     <Parameter name="role.orgadmin.id" value="${role.orgadmin.id}"/>
-    <Parameter name="plugins" value="${plugins}"/>
-
-    <!-- Swagger -->
-    <Parameter name="swagger.host" value="${swagger.host}"/>
-    <Parameter name="swagger.base.path" value="${swagger.base.path}"/>
 
     <!-- A path to a file to be created by the application initializer to signal on initialization completion -->
     <Parameter name="initialization.completion.signal.file" value="${initialization.completion.signal.file}"/>
@@ -29,7 +24,8 @@
 
     <Parameter name="aapt.command" value="${aapt.command}"/>
 
-
     <Parameter name="log4j.config" value="${log4j.config}"/>
+
+    <Parameter name="plugin.photo.enable.places" value="${plugin.photo.enable.places}"/>
 
 </Context>

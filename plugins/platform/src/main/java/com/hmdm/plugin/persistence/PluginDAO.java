@@ -26,7 +26,10 @@ import com.google.inject.Singleton;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.persistence.domain.Plugin;
 import com.hmdm.plugin.persistence.mapper.PluginMapper;
+import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
+import org.mybatis.guice.transactional.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +52,7 @@ public class PluginDAO {
      * <p>Constructs new <code>PluginDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public PluginDAO(PluginMapper pluginMapper) {
+    public PluginDAO(PluginMapper pluginMapper, PluginStatusCache pluginStatusCache) {
         this.pluginMapper = pluginMapper;
     }
 
@@ -92,5 +95,23 @@ public class PluginDAO {
                 .stream()
                 .filter(p -> PluginList.isPluginEnabled(p.getIdentifier()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * <p>Disables the specified plugins for customer account assoicated with the current user.</p>
+     *
+     * @param pluginIds a list of plugin IDs.
+     */
+    @Transactional
+    public void saveDisabledPlugins(Integer[] pluginIds) {
+        SecurityContext.get().getCurrentUser()
+                .map(user -> {
+                    this.pluginMapper.cleanUpDisabledPlugins(user.getCustomerId());
+                    if (pluginIds.length > 0) {
+                        this.pluginMapper.insertDisabledPlugin(pluginIds, user.getCustomerId());
+                    }
+                    return 1;
+                })
+                .orElseThrow(SecurityException::onAnonymousAccess);
     }
 }

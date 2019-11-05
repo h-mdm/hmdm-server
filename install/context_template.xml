@@ -19,9 +19,6 @@
          Don't change this unless you know what you're doing -->
     <Parameter name="hash.secret" value="12345"/>
 
-    <!-- Do not change this -->
-    <Parameter name="plugins" value="com.hmdm.plugins.photo.PluginConfigurationImpl,com.hmdm.plugins.devicelog.DeviceLogPluginConfigurationImpl,com.hmdm.plugins.licensing.LicensingPluginConfigurationImpl,com.hmdm.plugins.audit.AuditPluginConfigurationImpl"/>
-
     <!-- This directory is used to store files by plugins, must be accessible for tomcat user -->
     <Parameter name="plugins.files.directory" value="_BASE_DIRECTORY_/plugins"/>
 
@@ -31,17 +28,9 @@
     <!-- Don't change this -->
     <Parameter name="role.orgadmin.id" value="2"/>
 
-    <!-- Swagger Docs UI location -->
-    <Parameter name="swagger.host" value="_BASE_HOST_"/>
-    <Parameter name="swagger.base.path" value="_BASE_PATH_/rest"/>
-
     <Parameter name="initialization.completion.signal.file" value="_INSTALL_FLAG_"/>
 
     <Parameter name="aapt.command" value="aapt"/>
-
-    <Parameter name="license.server.url" value="http://license.h-mdm.com"/>
-    <Parameter name="license.server.rest.path" value="/rest/license"/>
-    <Parameter name="license.hash.secret" value="12345"/>
 
     <Parameter name="log4j.config" value="_BASE_DIRECTORY_/log4j.xml"/>
 

@@ -21,8 +21,8 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Customer;

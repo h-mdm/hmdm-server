@@ -53,6 +53,7 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedDeviceDesc," +
                     "columnDisplayedDeviceGroup," +
                     "columnDisplayedLauncherVersion," +
+                    "columnDisplayedBatteryLevel," +
                     "roleId," +
                     "customerId" +
                     ") VALUES (" +
@@ -68,6 +69,7 @@ public interface UserRoleSettingsMapper {
                     "#{columnDisplayedDeviceDesc}," +
                     "#{columnDisplayedDeviceGroup}," +
                     "#{columnDisplayedLauncherVersion}," +
+                    "#{columnDisplayedBatteryLevel}," +
                     "#{roleId}," +
                     "#{customerId}" +
                     ") " +
@@ -84,7 +86,8 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedDevicePhone = EXCLUDED.columnDisplayedDevicePhone, " +
                     "columnDisplayedDeviceDesc = EXCLUDED.columnDisplayedDeviceDesc, " +
                     "columnDisplayedDeviceGroup = EXCLUDED.columnDisplayedDeviceGroup, " +
-                    "columnDisplayedLauncherVersion = EXCLUDED.columnDisplayedLauncherVersion"
+                    "columnDisplayedLauncherVersion = EXCLUDED.columnDisplayedLauncherVersion, " +
+                    "columnDisplayedBatteryLevel = EXCLUDED.columnDisplayedBatteryLevel"
     })
     void saveUserRoleCommonSettings(UserRoleSettings settings);
 }

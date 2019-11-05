@@ -51,6 +51,7 @@ angular.module( 'headwind-kiosk' )
         authService.logout();
         hintService.onLogout();
         $state.transitionTo( 'login' );
+        $rootScope.$emit('aero_USER_LOGOUT');
     };
 
     $scope.isActive = function( state ) {

@@ -21,19 +21,19 @@
 
 package com.hmdm.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationSettingType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
 @ApiModel(description = "A single setting for an application installed and used on mobile device and used in data " +
         "sycnhronization between mobile device and server application")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class SyncApplicationSetting implements Serializable {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SyncApplicationSetting implements Serializable, SyncApplicationSettingInt {
 
     private static final long serialVersionUID = -3986494672661532347L;
     
@@ -61,6 +61,7 @@ public class SyncApplicationSetting implements Serializable {
     public SyncApplicationSetting() {
     }
 
+    @Override
     public String getPackageId() {
         return packageId;
     }
@@ -69,6 +70,7 @@ public class SyncApplicationSetting implements Serializable {
         this.packageId = packageId;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -77,6 +79,7 @@ public class SyncApplicationSetting implements Serializable {
         this.name = name;
     }
 
+    @Override
     public int getType() {
         return type;
     }
@@ -85,6 +88,7 @@ public class SyncApplicationSetting implements Serializable {
         this.type = type;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
@@ -93,6 +97,7 @@ public class SyncApplicationSetting implements Serializable {
         this.value = value;
     }
 
+    @Override
     public boolean isReadonly() {
         return readonly;
     }
@@ -101,6 +106,7 @@ public class SyncApplicationSetting implements Serializable {
         this.readonly = readonly;
     }
 
+    @Override
     public long getLastUpdate() {
         return lastUpdate;
     }

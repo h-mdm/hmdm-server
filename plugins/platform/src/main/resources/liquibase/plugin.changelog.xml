@@ -93,4 +93,17 @@
             ALTER TABLE plugins DROP COLUMN enabledForDevice;
         </rollback>
     </changeSet>
+
+    <changeSet id="plugin-platform-29.10.2019-17:55" author="isv" context="common">
+        <comment>Permission,new: plugins_customer_access_management</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('plugins_customer_access_management', 'Имеет доступ к управлению списком используемых плагинов на уровне учетной записи своей организации');
+            INSERT INTO userRolePermissions (roleId, permissionId)
+            SELECT id, currval('permissions_id_seq')
+            FROM userroles WHERE name IN ('Администратор', 'Супер-Администратор');
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'plugins_customer_access_management';
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

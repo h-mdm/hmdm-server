@@ -23,7 +23,7 @@ package com.hmdm.rest.json;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @ApiModel(description = "A request to upgrade application for configuration up to recent version")
 @JsonIgnoreProperties(ignoreUnknown = true)

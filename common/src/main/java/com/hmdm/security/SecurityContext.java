@@ -43,10 +43,24 @@ public class SecurityContext {
     private final User currentUser;
 
     /**
+     * <p>A reference to current user associated with request being processed.</p>
+     */
+    private final Integer customerId;
+
+    /**
      * <p>Constructs new <code>SecurityContext</code> instance.</p>
      */
     private SecurityContext(User currentUser) {
         this.currentUser = currentUser;
+        this.customerId = currentUser.getCustomerId();
+    }
+
+    /**
+     * <p>Constructs new <code>SecurityContext</code> instance.</p>
+     */
+    private SecurityContext(Integer customerId) {
+        this.currentUser = null;
+        this.customerId = customerId;
     }
 
     /**
@@ -56,6 +70,15 @@ public class SecurityContext {
      */
     public static void init(User currentUser) {
         ctx.set(new SecurityContext(currentUser));
+    }
+
+    /**
+     * <p>Initializes the context at the start of processing the incoming request.</p>
+     *
+     * @param customerId a reference to current user associated with request being processed.
+     */
+    public static void init(Integer customerId) {
+        ctx.set(new SecurityContext(customerId));
     }
 
     public static SecurityContext get() {
@@ -76,6 +99,15 @@ public class SecurityContext {
      */
     public Optional<User> getCurrentUser() {
         return Optional.ofNullable(this.currentUser);
+    }
+
+    /**
+     * <p>Gets the current customer ID associated with processed request.</p>
+     *
+     * @return an optional reference to current customer ID.
+     */
+    public Optional<Integer> getCurrentCustomerId() {
+        return Optional.ofNullable(this.customerId);
     }
 
     /**

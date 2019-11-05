@@ -40,8 +40,6 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named("plugins.files.directory")).to(this.context.getInitParameter("plugins.files.directory"));
         this.bindConstant().annotatedWith(Names.named("usage.scenario")).to(this.context.getInitParameter("usage.scenario"));
         this.bindConstant().annotatedWith(Names.named("hash.secret")).to(this.context.getInitParameter("hash.secret"));
-        this.bindConstant().annotatedWith(Names.named("swagger.host")).to(this.context.getInitParameter("swagger.host"));
-        this.bindConstant().annotatedWith(Names.named("swagger.base.path")).to(this.context.getInitParameter("swagger.base.path"));
         this.bindConstant().annotatedWith(Names.named("aapt.command")).to(this.context.getInitParameter("aapt.command"));
         this.bindConstant().annotatedWith(Names.named("role.orgadmin.id")).to(
                 Integer.parseInt(this.context.getInitParameter("role.orgadmin.id"))

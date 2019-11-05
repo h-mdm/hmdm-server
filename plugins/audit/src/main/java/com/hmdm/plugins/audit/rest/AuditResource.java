@@ -21,8 +21,8 @@
 
 package com.hmdm.plugins.audit.rest;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import com.hmdm.plugins.audit.persistence.AuditDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.rest.json.AuditLogFilter;

@@ -76,7 +76,7 @@ public interface CommonMapper {
                     "#{useDefaultLanguage}, " +
                     "#{language}, " +
                     "#{customerId}" +
-                    ")" +
+                    ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
                     "UPDATE SET " +
                     "useDefaultLanguage = EXCLUDED.useDefaultLanguage, " +

@@ -21,11 +21,7 @@
 
 package com.hmdm.guice.module;
 
-import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import com.hmdm.rest.filter.ApiOriginFilter;
 import com.hmdm.rest.resource.AuthResource;
 import com.hmdm.rest.resource.DownloadFilesServlet;
 import com.hmdm.rest.resource.PublicFilesResource;
@@ -39,12 +35,7 @@ public class PublicRestModule extends ServletModule {
     }
 
     protected void configureServlets() {
-        this.bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
         this.serve("/files/*").with(DownloadFilesServlet.class);
-//        this.serve("/rest/public/*").with(GuiceContainer.class);
-        this.serve("/rest/*").with(GuiceContainer.class);
-        this.filter("/rest/*").through(ApiOriginFilter.class);
-        this.filter("/api/*").through(ApiOriginFilter.class);
         this.bind(AuthResource.class);
         this.bind(JWTAuthResource.class);
         this.bind(PublicResource.class);

@@ -93,16 +93,6 @@ public final class ApplicationUtil {
      * @return a normalized version text.
      */
     public static String normalizeVersion(String version) {
-        StringBuilder normalized = new StringBuilder();
-
-        final int N = version.length();
-        for (int i = 0; i < N; i++) {
-            char c = version.charAt(i);
-            if (Character.isDigit(c) || c == '.') {
-                normalized.append(c);
-            }
-        }
-
-        return normalized.toString();
+        return (version == null ? "" : version).replaceAll("[^\\d.]", "");
     }
 }

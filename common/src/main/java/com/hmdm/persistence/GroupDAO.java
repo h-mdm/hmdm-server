@@ -22,6 +22,7 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Group;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.mapper.DeviceMapper;
@@ -34,6 +35,7 @@ import java.util.Optional;
 /**
  * @author isv
  */
+@Singleton
 public class GroupDAO extends AbstractDAO<Group> {
 
     private final DeviceMapper mapper;

@@ -38,6 +38,8 @@ import java.util.List;
  */
 public class AuditPluginConfigurationImpl implements PluginConfiguration {
 
+    public static final String PLUGIN_ID = "audit";
+
     /**
      * <p>Constructs new <code>AuditPluginConfigurationImpl</code> instance. This implementation does nothing.</p>
      */
@@ -52,7 +54,7 @@ public class AuditPluginConfigurationImpl implements PluginConfiguration {
      */
     @Override
     public String getPluginId() {
-        return "audit";
+        return PLUGIN_ID;
     }
 
     /**

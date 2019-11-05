@@ -21,9 +21,9 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.inject.Named;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +35,6 @@ import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
@@ -53,7 +52,6 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.BufferedInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.security.MessageDigest;
 
 /**
@@ -82,7 +80,7 @@ public class QRCodeResource {
      * <p>Constructs new <code>QRCodeResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public QRCodeResource(ApplicationDAO applicationDAO, UnsecureDAO configurationDAO,
+    public QRCodeResource(UnsecureDAO configurationDAO,
                           @Named("base.url") String baseUrl) throws MalformedURLException {
         this.configurationDAO = configurationDAO;
         final URL url = new URL(baseUrl);

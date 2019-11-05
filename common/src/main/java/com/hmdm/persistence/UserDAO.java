@@ -22,7 +22,9 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import javax.inject.Named;
+
+import com.google.inject.Singleton;
 import org.mybatis.guice.transactional.Transactional;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Singleton
 public class UserDAO extends AbstractDAO<User> {
     private final UserMapper mapper;
     private final int orgAdminRoleId;

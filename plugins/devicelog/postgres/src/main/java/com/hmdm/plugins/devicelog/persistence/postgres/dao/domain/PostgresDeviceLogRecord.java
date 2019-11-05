@@ -23,7 +23,7 @@ package com.hmdm.plugins.devicelog.persistence.postgres.dao.domain;
 
 import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.plugins.devicelog.model.DeviceLogRecord;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * <p>A device log record stored in <code>Postgres</code> database.</p>

@@ -22,6 +22,7 @@
 package com.hmdm.plugins.devicelog.persistence.postgres.dao;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
  *
  * @author isv
  */
+@Singleton
 public class PostgresDeviceLogPluginSettingsDAO extends AbstractDAO<PostgresDeviceLogPluginSettings>
         implements DeviceLogPluginSettingsDAO {
 

@@ -11,7 +11,7 @@ angular.module('headwind-kiosk',
         'ru': "ru_RU",
         'ru_RU': "ru_RU",
     })
-    .constant("APP_VERSION", "3.08.0001") // Update this value on each commit
+    .constant("APP_VERSION", "3.08.0009") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -187,6 +187,17 @@ angular.module('headwind-kiosk',
                     openTab: function () {return "HINTS"}
                 }
             })
+            .state('pluginSettings', {
+                url: '/pluginSettings',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.plugins" | localize}}' //label to show in breadcrumbs
+                },
+                resolve: {
+                    openTab: function () {return "PLUGINS"}
+                }
+            })
             .state('configEditor', {
                 url: '/configuration/{id}/{typical}',
                 templateUrl: 'app/components/main/view/configuration.html',
@@ -218,16 +229,18 @@ angular.module('headwind-kiosk',
         $httpProvider.interceptors.push(function ($q, $injector) {
             return {
                 'responseError': function (rejection) {
+                    var $body = angular.element(document.body);
+                    var $rootScope = $body.scope().$root;
+
                     if (rejection.status === 403) {
                         $injector.get('authService').logout();
                         $injector.get('$state').transitionTo('login');
                         $injector.get('hintService').onLogout();
+                        $rootScope.$broadcast("aero_USER_LOGOUT");
 
                         return new Promise(function () {
                         });
                     } else if (rejection.status !== 200 && rejection.status !== 204) {
-                        var $body = angular.element(document.body);
-                        var $rootScope = $body.scope().$root;
                         $rootScope.$broadcast('RELOAD_MESSAGE');
                     }
 

@@ -25,17 +25,20 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.Application;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(description = "The details related to a single device. Such details are sent from the MDM mobile application " +
         "to MDM server")
 public class DeviceInfo implements Serializable {
 
-    private static final long serialVersionUID = -2969488681388412820L;
+    private static final long serialVersionUID = 9140079707834803040L;
 
     @ApiModelProperty("A name of the device model")
     private String model;
@@ -54,6 +57,18 @@ public class DeviceInfo implements Serializable {
 
     @ApiModelProperty("A phone number")
     private String phone;
+
+    @ApiModelProperty(value = "A battery level in percents", allowableValues = "range[0, 100]")
+    private Integer batteryLevel;
+
+    @ApiModelProperty(value = "A battery charge type", allowableValues = "usb,ac", allowEmptyValue = true)
+    private String batteryCharging;
+
+    @ApiModelProperty(value = "Android OS version")
+    private String androidVersion;
+
+    @ApiModelProperty(value = "A flag indicating if MDM mode is ON or not")
+    private Boolean mdmMode;
 
     public DeviceInfo() {
     }
@@ -104,5 +119,53 @@ public class DeviceInfo implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getBatteryLevel() {
+        return batteryLevel;
+    }
+
+    public void setBatteryLevel(Integer batteryLevel) {
+        this.batteryLevel = batteryLevel;
+    }
+
+    public String getBatteryCharging() {
+        return batteryCharging;
+    }
+
+    public void setBatteryCharging(String batteryCharging) {
+        this.batteryCharging = batteryCharging;
+    }
+
+    public String getAndroidVersion() {
+        return androidVersion;
+    }
+
+    public void setAndroidVersion(String androidVersion) {
+        this.androidVersion = androidVersion;
+    }
+
+    public Boolean getMdmMode() {
+        return mdmMode;
+    }
+
+    public void setMdmMode(Boolean mdmMode) {
+        this.mdmMode = mdmMode;
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceInfo{" +
+                "model='" + model + '\'' +
+                ", permissions=" + permissions +
+                ", applications=" + applications +
+                ", deviceId='" + deviceId + '\'' +
+                ", imei='" + imei + '\'' +
+                ", phone='" + phone + '\'' +
+                ", batteryLevel=" + batteryLevel +
+                ", batteryCharging='" + batteryCharging + '\'' +
+                ", androidVersion='" + androidVersion + '\'' +
+                ", mdmMode='" + mdmMode + '\'' +
+                '}';
     }
 }

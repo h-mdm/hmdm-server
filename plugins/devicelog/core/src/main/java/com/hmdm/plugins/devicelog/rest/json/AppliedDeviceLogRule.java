@@ -21,12 +21,12 @@
 
 package com.hmdm.plugins.devicelog.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
 import com.hmdm.plugins.devicelog.model.LogLevel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
@@ -37,7 +37,7 @@ import java.io.Serializable;
  */
 @ApiModel(description = "The parameters for filtering the lists of device log record objects")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AppliedDeviceLogRule implements Serializable {
 
     private static final long serialVersionUID = -1856203581931832489L;
