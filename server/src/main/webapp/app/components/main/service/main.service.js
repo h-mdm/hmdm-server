@@ -21,7 +21,6 @@ angular.module('headwind-kiosk')
             upgradeConfigurationApplication: {url: 'rest/private/configurations/:id/application/:appId/upgrade', method: 'PUT'},
             removeConfiguration: {url: 'rest/private/configurations/:id', method: 'DELETE'},
             getApplications: {url: 'rest/private/configurations/applications/:id', method: 'GET'},
-            notifyDevicesOnUpdate: {url: 'rest/private/configurations/notifications/:id', method: 'GET'}
         });
     })
     .factory('customerService', function ($resource) {
@@ -32,6 +31,12 @@ angular.module('headwind-kiosk')
             removeCustomer: {url: 'rest/private/customers/:id', method: 'DELETE'},
             loginAs: {url: 'rest/private/customers/impersonate/:id', method: 'GET'},
             isUsedPrefix: {url: 'rest/private/customers/prefix/:prefix/used', method: 'GET'},
+        });
+    })
+    .factory('iconService', function ($resource) {
+        return $resource('', {}, {
+            getAllIcons: {url: 'rest/private/icons', method: 'GET'},
+            createIcon: {url: 'rest/private/icons', method: 'PUT'},
         });
     })
     .factory('settingsService', function ($resource) {
@@ -65,7 +70,8 @@ angular.module('headwind-kiosk')
             getApplicationVersions: {url: 'rest/private/applications/:id/versions', method: 'GET'},
             getAllAdminApplications: {url: 'rest/private/applications/admin/search/:value', method: 'GET'},
             getApplication: {url: 'rest/private/applications/:id', method: 'GET'},
-            updateApplication: {url: 'rest/private/applications', method: 'PUT'},
+            updateApplication: {url: 'rest/private/applications/android', method: 'PUT'},
+            updateWebApplication: {url: 'rest/private/applications/web', method: 'PUT'},
             validateApplicationPackage: {url: 'rest/private/applications/validatePkg', method: 'PUT'},
             updateApplicationVersion: {url: 'rest/private/applications/versions', method: 'PUT'},
             removeApplication: {url: 'rest/private/applications/:id', method: 'DELETE'},

@@ -1,7 +1,7 @@
 angular.module('headwind-kiosk',
     ['ngResource', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ngTagsInput', 'ngAnimate', 'ngSanitize',
         'lr.upload', 'colorpicker.module',
-        'ui.mask', 'ncy-angular-breadcrumb', 'oc.lazyLoad', 'angularjs-dropdown-multiselect'])
+        'ui.mask', 'ncy-angular-breadcrumb', 'oc.lazyLoad', 'angularjs-dropdown-multiselect', 'angularCSS'])
     .constant("SUPPORTED_LANGUAGES", {
         'en': 'en_US',
         'en_US': 'en_US',
@@ -11,7 +11,8 @@ angular.module('headwind-kiosk',
         'ru': "ru_RU",
         'ru_RU': "ru_RU",
     })
-    .constant("APP_VERSION", "3.08.0009") // Update this value on each commit
+    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU'])
+    .constant("APP_VERSION", "3.09.0004") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -256,7 +257,134 @@ angular.module('headwind-kiosk',
         $httpProvider.defaults.headers.get['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
         $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
     })
+    .constant("SUPPORTED_LIBS", [
+        {
+            name: 'leaflet',
+            files: [
+                'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js',
+            ],
+            styles: [
+                'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css'
+            ]
+        },
+        {
+            name: 'leaflet.markercluster',
+            files: [
+                'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js',
+            ],
+            styles: [
+                'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css'
+            ]
+        },
+        {
+            name: 'leaflet.markercluster.layersupport',
+            files: [
+                'https://cdn.jsdelivr.net/npm/leaflet.markercluster.layersupport@2.0.1/dist/leaflet.markercluster.layersupport.js'
+            ]
+        }
+    ])
+    .config(['$ocLazyLoadProvider', 'SUPPORTED_LIBS', function($ocLazyLoadProvider, SUPPORTED_LIBS) {
+        $ocLazyLoadProvider.config({
+            events: true,
+            modules: angular.copy(SUPPORTED_LIBS, [])
+        });
+    }])
+    .config(function($cssProvider) {
+        angular.extend($cssProvider.defaults, {
+            container: 'head',
+            method: 'append',
+            persist: false,
+            preload: false,
+            bustCache: false
+        });
+    })
+    .factory("externalLibLoader", function ($rootScope, $ocLazyLoad, $timeout, $css, SUPPORTED_LIBS) {
 
+        var libs = {};
+        SUPPORTED_LIBS.forEach(function (lib) {
+            libs[lib.name] = angular.extend(angular.copy(lib, {}), {loadedFiles: [], loading: false, loaded: false})
+        });
+
+        var noOpLoader = function () {
+            console.log("External library has been loaded already: ", libId);
+            return new Promise((resolve) => {
+                resolve();
+            });
+        };
+
+        var getLoader = function (libId) {
+            var loader = noOpLoader;
+
+            if (isSupported(libId)) {
+                var library = libs[libId];
+
+                if (!library.loaded) {
+                    if (!library.loading) {
+                        library.loading = true;
+
+                        if (library.styles && library.styles.length > 0) {
+                            library.styles.forEach(function (style) {
+                                $css.bind(style, $rootScope);
+                            });
+                        }
+                        
+                        loader = function () {
+                            console.log("Loading external library: ", libId, " ...");
+
+                            return new Promise(function (resolve) {
+                                var listenerRemove = $rootScope.$on('ocLazyLoad.fileLoaded', function (e, url) {
+                                    if (library.files.indexOf(url) >= 0) {
+                                        console.log('Loaded external library: ', url);
+                                        
+                                        if (library.loadedFiles.indexOf(url) < 0) {
+                                            library.loadedFiles.push(url);
+                                        }
+                                        if (library.files.length === library.loadedFiles.length) {
+                                            library.loaded = true;
+                                            library.loading = false;
+                                            resolve();
+                                            listenerRemove();
+                                        }
+                                    }
+                                });
+
+                                $ocLazyLoad.load(libId);
+                            })
+                        }
+                    } else {
+                        loader = function () {
+                            console.log("Waiting for the library to load: " + libId);
+                            return new Promise(function (resolve) {
+                                var wait = function () {
+                                    if (library.loaded) {
+                                        console.log("Awaited library has been loaded: " + libId);
+                                        resolve();
+                                    } else {
+                                        $timeout(wait, 100);
+                                    }
+                                };
+
+                                $timeout(wait, 100);
+                            });
+                        }
+                    }
+                }
+            }
+
+            return {
+                load: loader
+            }
+        };
+
+        var isSupported = function (libId) {
+            return libs.hasOwnProperty(libId);
+        };
+
+        return {
+            getLoader: getLoader,
+            isLibrarySupported: isSupported
+        }
+    })
     .run(function ($rootScope, $state, $stateParams, authService, pluginService, $ocLazyLoad, localization, hintService,
                    $window) {
         $rootScope.$state = $state;
@@ -298,6 +426,10 @@ angular.module('headwind-kiosk',
         // $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         //     hintService.onStateChangeSuccess();
         // });
+
+        $rootScope.$on('$cssAdd', function (a, b, c) {
+            console.log('$cssAdd:', a, b, c);
+        });
 
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
 

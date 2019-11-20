@@ -25,12 +25,14 @@ import com.google.inject.Inject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,7 @@ import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.util.APKFileAnalyzer;
 import com.hmdm.util.ApplicationUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,6 +142,40 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     }
 
     /**
+     * <p>Creates new application record in DB.</p>
+     *
+     * @param application an application record to be created.
+     */
+    @Transactional
+    public int insertWebApplication(Application application) {
+        log.debug("Entering #insertWebApplication: application = {}", application);
+
+        final Optional<Integer> currentCustomerId = SecurityContext.get().getCurrentCustomerId();
+        if (currentCustomerId.isPresent()) {
+            String pkg;
+            Long count;
+            do {
+                pkg = DigestUtils.sha1Hex(application.getUrl() + System.currentTimeMillis());
+                count = this.mapper.countByPackageId(currentCustomerId.get(), pkg);
+            } while (count > 0);
+
+            application.setPkg(pkg);
+            application.setVersion("0");
+
+            insertRecord(application, this.mapper::insertApplication);
+
+            final ApplicationVersion applicationVersion = new ApplicationVersion(application);
+
+            this.mapper.insertApplicationVersion(applicationVersion);
+            this.mapper.recalculateLatestVersion(application.getId());
+
+            return application.getId();
+        } else {
+            throw SecurityException.onAnonymousAccess();
+        }
+    }
+
+    /**
      * <p>Checks if another application with same package ID and version already exists or not.</p>
      *
      * @param application an application to check against duplicates.
@@ -201,43 +238,6 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 //    }
 
     /**
-     * <p>Determines the application which the specified application version corresponds to.</p>
-     *
-     * @param application an application version to resolve application for.
-     * @return an application matching the specified application version or <code>null</code> if there is none found.
-     * @throws IllegalArgumentException if there is more than 1 candidate application found.
-     * @throws CommonAppAccessException if resolved application is a common application and current user is not
-     *         a super-admin.
-     */
-    private Application resolveApplication(Application application) {
-        if (application.getPkg() != null) {
-            final List<Application> dbApps = findByPackageId(application.getPkg());
-            if (!dbApps.isEmpty()) {
-                if (dbApps.size() == 1) {
-                    return SecurityContext.get().getCurrentUser().map(currentUser -> {
-                        final Application dbApp = dbApps.get(0);
-                        if (dbApp.isCommon()) {
-                            if (dbApp.getCustomerId() != currentUser.getCustomerId()) {
-                                throw new CommonAppAccessException(application.getPkg(), dbApps.get(0).getCustomerId());
-                            }
-                            return dbApp;
-                        } else if (dbApp.getCustomerId() == currentUser.getCustomerId()) {
-                            return dbApp;
-                        } else {
-                            return null;
-                        }
-                    }).orElseThrow(SecurityException::onAnonymousAccess);
-                } else {
-                    throw new IllegalStateException("More than 1 application with same package ID found: "
-                            + application.getPkg());
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * <p>Updates existing application record in DB.</p>
      *
      * @param application an application record to be updated.
@@ -256,6 +256,27 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         }
 
         updateRecord(application, this.mapper::updateApplication, SecurityException::onApplicationAccessViolation);
+    }
+
+    /**
+     * <p>Updates existing web application record in DB.</p>
+     *
+     * @param application an application record to be updated.
+     * @throws DuplicateApplicationException if another application record with same package ID and version already
+     *         exists either for current or master customer account.
+     */
+    @Transactional
+    public void updateWebApplication(Application application) {
+        final Optional<Integer> currentCustomerId = SecurityContext.get().getCurrentCustomerId();
+        if (currentCustomerId.isPresent()) {
+            final Application dbDevice = this.mapper.findById(application.getId());
+            application.setPkg(dbDevice.getPkg());
+            application.setVersion("0");
+
+            updateRecord(application, this.mapper::updateApplication, SecurityException::onApplicationAccessViolation);
+        } else {
+            throw SecurityException.onAnonymousAccess();
+        }
     }
 
     /**
@@ -760,6 +781,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * @param applicationVersion an application version record to be created.
      * @throws DuplicateApplicationException if another application record with same package ID and version already
      *         exists either for current or master customer account.
+     * @throws CommonAppAccessException if target application is common and current user is not a super-admin.
      */
     @Transactional
     public int insertApplicationVersion(ApplicationVersion applicationVersion) {
@@ -799,7 +821,9 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
         if (existingApplication.isCommonApplication()) {
             if (!SecurityContext.get().isSuperAdmin()) {
-                throw SecurityException.onApplicationAccessViolation(existingApplication);
+                throw new CommonAppAccessException(
+                        existingApplication.getPkg(), SecurityContext.get().getCurrentCustomerId().get()
+                );
             }
         }
 

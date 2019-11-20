@@ -62,11 +62,13 @@ public interface ConfigurationMapper {
             "backgroundImageUrl=#{backgroundImageUrl}, " +
             "iconSize=#{iconSize}, " +
             "desktopHeader=#{desktopHeader}, " +
+            "requestUpdates=#{requestUpdates}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
             "wifi=#{wifi}, " +
             "mobileData=#{mobileData}, " +
+            "usbStorage=#{usbStorage}, " +
             "mainAppId=#{mainAppId}, " +
             "contentAppId=#{contentAppId}, " +
             "eventReceivingComponent=#{eventReceivingComponent}, " +

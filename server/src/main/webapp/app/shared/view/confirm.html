@@ -2,7 +2,7 @@
 <div class='modal-body confirm'>
     <span>{{message}}</span>
     <div>
-        <button class='btn btn-default' ng-click='OK()' localized>button.yes</button>
+        <button class='btn btn-default' ng-click='OK()'>{{okButtonTextKey | localize}}</button>
         <button class='btn btn-default' ng-click='cancel()' localized>button.cancel</button>
     </div>
 </div>

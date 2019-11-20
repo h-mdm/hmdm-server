@@ -73,7 +73,8 @@ public interface ApplicationMapper {
                     "applicationVersions.apkHash, " +
                     "(usageData.usageCount > 0 OR versionsData.appVersionsCount = 1) AS deletionProhibited, " +
                     "customers.master AS commonApplication," +
-                    "applications.system " +
+                    "applications.system, " +
+                    "applications.type " +
                     "FROM applicationVersions " +
                     "INNER JOIN applications ON applicationVersions.applicationId = applications.id " +
                     "INNER JOIN customers ON applications.customerId = customers.id " +
@@ -124,8 +125,8 @@ public interface ApplicationMapper {
             "ORDER BY applications.name"})
     List<Application> getAllApplicationsByUrl(@Param("customerId") int customerId, @Param("url") String url);
 
-    @Insert({"INSERT INTO applications (name, pkg, showIcon, system, customerId, runAfterInstall) " +
-            "VALUES (#{name}, #{pkg}, #{showIcon}, #{system}, #{customerId}, #{runAfterInstall})"})
+    @Insert({"INSERT INTO applications (name, pkg, showIcon, system, customerId, runAfterInstall, type, iconText, iconId) " +
+            "VALUES (#{name}, #{pkg}, #{showIcon}, #{system}, #{customerId}, #{runAfterInstall}, #{type}, #{iconText}, #{iconId})"})
     @SelectKey( statement = "SELECT currval('applications_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertApplication(Application application);
 
@@ -139,7 +140,8 @@ public interface ApplicationMapper {
 //                                        @Param("applicationVersionId") int applicationVersionId);
 
     @Update({"UPDATE applications SET name=#{name}, pkg=#{pkg}, " +
-            "showIcon=#{showIcon}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall} " +
+            "showIcon=#{showIcon}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall}, " +
+            "type = #{type}, iconText = #{iconText}, iconId = #{iconId} " +
             "WHERE id=#{id}"})
     void updateApplication(Application application);
 
@@ -264,15 +266,22 @@ public interface ApplicationMapper {
     List<Application> findByPackageId(@Param("customerId") int customerId,
                                       @Param("pkg") String pkg);
 
+    @Select({"SELECT COUNT(*) " +
+            "FROM applications " +
+            "INNER JOIN customers ON applications.customerId = customers.id " +
+            "WHERE (applications.customerId = #{customerId} OR customers.master = TRUE)" +
+            "AND applications.pkg = #{pkg}"})
+    Long countByPackageId(@Param("customerId") int customerId, @Param("pkg") String pkg);
+
     @Select({SELECT_BY_VERSION_BASE +
             "WHERE pkg = #{pkg}"})
     List<Application> findAllByPackageId(@Param("pkg") String pkg);
 
-    @Select({SELECT_BY_VERSION_BASE +
-            "WHERE pkg = #{pkg} " +
-            "AND applicationVersions.version=#{version}"})
-    List<Application> findAllByPackageIdAndVersion(@Param("pkg") String pkg,
-                                                   @Param("version") String version);
+//    @Select({SELECT_BY_VERSION_BASE +
+//            "WHERE pkg = #{pkg} " +
+//            "AND applicationVersions.version=#{version}"})
+//    List<Application> findAllByPackageIdAndVersion(@Param("pkg") String pkg,
+//                                                   @Param("version") String version);
 
     @Select({SELECT_BASE +
             "WHERE applications.id = #{id}"})
@@ -459,6 +468,13 @@ public interface ApplicationMapper {
     int uninstallOtherVersions(@Param("versionId") int applicationVersionId,
                                @Param("configurationId") int configurationId);
 
+    /**
+     * <p>Resolves the application IDs for the specified application package IDs for specified customer account.</p>
+     *
+     * @param customerId an ID of a customer account to resolve applications for.
+     * @param appPackages a list of package IDs to resolve.
+     * @return a list of items mapping the package ID (as name) to application ID.
+     */
     List<LookupItem> resolveAppsByPackageId(@Param("customerId") Integer customerId,
                                             @Param("apps") Collection<String> appPackages);
 

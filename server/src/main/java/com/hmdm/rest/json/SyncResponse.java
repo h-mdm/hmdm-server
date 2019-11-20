@@ -39,7 +39,7 @@ import com.hmdm.util.CryptoUtil;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SyncResponse implements Serializable, SyncResponseInt {
 
-    private static final long serialVersionUID = 2895420517051285750L;
+    private static final long serialVersionUID = 515981796541187811L;
 
     @ApiModelProperty("A background color to use when running MDM application")
     private String backgroundColor;
@@ -52,6 +52,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     @ApiModelProperty("A size of the icons to use when running MDM application")
     private String iconSize;
+
+    @ApiModelProperty("A type of location tracking")
+    private String requestUpdates;
 
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
@@ -79,6 +82,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     @ApiModelProperty("A flag indicating if Mobile Data is enabled on device")
     private Boolean mobileData;
+
+    @ApiModelProperty("A flag indicating if USB storage is enabled on device")
+    private Boolean usbStorage;
 
     @ApiModelProperty("A flag indicating if MDM is operating in kiosk mode")
     private boolean kioskMode;
@@ -318,5 +324,21 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setApplicationSettings(List<SyncApplicationSettingInt> applicationSettings) {
         this.applicationSettings = applicationSettings;
+    }
+
+    public Boolean getUsbStorage() {
+        return usbStorage;
+    }
+
+    public void setUsbStorage(Boolean usbStorage) {
+        this.usbStorage = usbStorage;
+    }
+
+    public String getRequestUpdates() {
+        return requestUpdates;
+    }
+
+    public void setRequestUpdates(String requestUpdates) {
+        this.requestUpdates = requestUpdates;
     }
 }

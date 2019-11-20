@@ -60,9 +60,13 @@
         </thead>
         <tbody>
         <tr ng-repeat='application in applications.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
-            <td>{{application.pkg}}</td>
+            <td>
+                <span ng-if="pkgInfoVisible(application)">{{application.pkg}}</span>
+            </td>
             <td>{{application.name}}</td>
-            <td>{{application.version}}</td>
+            <td>
+                <span ng-if="pkgInfoVisible(application)">{{application.version}}</span>
+            </td>
             <td>{{application.url}}</td>
             <td>{{application.showIcon ? '+' : ''}}</td>
 

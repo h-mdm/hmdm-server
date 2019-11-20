@@ -155,9 +155,10 @@ public class ApplicationResource {
 
     // =================================================================================================================
     @ApiOperation(
-            value = "Create or update application",
-            notes = "Create a new application (if id is not provided) or update existing one otherwise."
+            value = "Create or update Android application",
+            notes = "Create a new Android application (if id is not provided) or update existing one otherwise."
     )
+    @Path("/android")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -170,6 +171,44 @@ public class ApplicationResource {
             } else {
                 // TODO : ISV : Handle the scenario for inserting new version for the same package here
                 this.applicationDAO.updateApplication(application);
+                return Response.OK();
+            }
+        } catch (DuplicateApplicationException e) {
+            logger.error("Failed to create or update application", e);
+            return Response.DUPLICATE_APPLICATION();
+        } catch (RecentApplicationVersionExistsException e) {
+            logger.error("Failed to create or update application", e);
+            return Response.RECENT_APPLICATION_VERSION_EXISTS();
+        } catch (CommonAppAccessException e) {
+            logger.error("Failed to create or update application", e);
+            return Response.COMMON_APPLICATION_ACCESS_PROHIBITED();
+        } catch (FileExistsException e) {
+            logger.error("Failed to create or update application", e);
+            return Response.FILE_EXISTS();
+        } catch (Exception e) {
+            logger.error("Failed to create or update application", e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Create or update Web-page application",
+            notes = "Create a new Web-page application (if id is not provided) or update existing one otherwise."
+    )
+    @Path("/web")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateWebApplication(Application application) {
+        try {
+            if (application.getId() == null) {
+                final int appId = this.applicationDAO.insertWebApplication(application);
+                application = this.applicationDAO.findById(appId);
+                return Response.OK(application);
+            } else {
+                // TODO : ISV : Handle the scenario for inserting new version for the same package here
+                this.applicationDAO.updateWebApplication(application);
                 return Response.OK();
             }
         } catch (DuplicateApplicationException e) {

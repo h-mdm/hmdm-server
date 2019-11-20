@@ -149,6 +149,7 @@ public class ConfigurationResource {
                     this.configurationDAO.insertConfiguration(configuration);
                 } else {
                     this.configurationDAO.updateConfiguration(configuration);
+                    this.notificationDAO.notifyDevicesOnUpdate(configuration.getId());
                 }
                 configuration = getConfiguration(configuration.getId());
 
@@ -263,25 +264,6 @@ public class ConfigurationResource {
         Configuration configurationById = getConfiguration(id);
 
         return Response.OK(configurationById);
-    }
-
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Notify devices on update",
-            notes = "Sends a notification to devices on configuration update",
-            response = Void.class
-    )
-    @GET
-    @Path("/notifications/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response notifyDevicesOnUpdate(@PathParam("id") Integer id) {
-        try {
-            this.notificationDAO.notifyDevicesOnUpdate(id);
-            return Response.OK();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.INTERNAL_ERROR();
-        }
     }
 
     /**

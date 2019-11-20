@@ -1,6 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .factory('localization', function (settingsService, authService, getBrowserLanguage, ENGLISH, localizeText) {
+    .factory('localization', function ($http, $timeout, settingsService, authService, getBrowserLanguage,
+                                       ENGLISH, localizeText, LOCALIZATION_BUNDLES) {
 
         var loadUserLangSettings = function (scope) {
             settingsService.getSettings(function (response) {
@@ -71,6 +72,44 @@ angular.module('headwind-kiosk')
             },
             onLogin: function (scope) {
                 loadUserLangSettings(scope);
+            },
+            loadPluginResourceBundles: function (pluginId) {
+
+                const loadLocalizationBundle = function (bundleId) {
+                    $http.get('app/components/plugins/' + pluginId + '/i18n/' + bundleId + ".json")
+                        .then(function (response) {
+                            if (response.status === 200) {
+                                if (response.data) {
+                                    if (typeof response.data === 'object') {
+                                        angular.extend(document.localization[bundleId], response.data);
+                                    }
+                                }
+                            }
+                        });
+                };
+
+                var attempts = 0;
+                const waitAndLoadLocalizationBundles = function () {
+                    var ready = !!document.localization;
+                    for (var i = 0; ready && (i < LOCALIZATION_BUNDLES.length); i++) {
+                        ready = ready && (!!document.localization[LOCALIZATION_BUNDLES[i]]);
+                    }
+
+                    if ( !ready) {
+                        attempts++;
+
+                        var delay = 100 + (attempts % 10) * 100;
+
+                        console.log("Initial resource bundles are NOT loaded yet. Waiting for " + delay + "ms");
+                        $timeout(waitAndLoadLocalizationBundles, delay);
+                    } else {
+                        console.log("Loading resource bundles for plugin: ", pluginId);
+                        LOCALIZATION_BUNDLES.forEach(loadLocalizationBundle);
+                    }
+                };
+
+                waitAndLoadLocalizationBundles();
+
             }
         }
     })

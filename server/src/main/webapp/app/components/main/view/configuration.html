@@ -56,16 +56,25 @@
                     </div>
 
                     <div class='form-group'>
-                        <label class='col-sm-3 control-label' localized>form.configuration.settings.auto.update</label>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.block.status.bar</label>
                         <div class='col-sm-1'>
-                            <input ng-model='configuration.autoUpdate' name="mdm3" type='checkbox' class='form-control'/>
+                            <input ng-model='configuration.blockStatusBar' name="mdm32323" type='checkbox' class='form-control'/>
                         </div>
                     </div>
 
                     <div class='form-group'>
-                        <label class='col-sm-3 control-label' localized>form.configuration.settings.block.status.bar</label>
-                        <div class='col-sm-1'>
-                            <input ng-model='configuration.blockStatusBar' name="mdm32323" type='checkbox' class='form-control'/>
+                        <label class='col-sm-3 control-label' for="requestUpdates-c"
+                               localized>form.configuration.settings.request.updates</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="requestUpdates-c" name="n8399" ng-change="requestUpdatesChanged()"
+                                    ng-model='configuration.requestUpdates'>
+                                <option ng-value="'DONOTTRACK'" ng-selected="configuration.requestUpdates === 'DONOTTRACK'"
+                                        localized>form.configuration.settings.request.updates.donottrack</option>
+                                <option ng-value="'GPS'" ng-selected="configuration.requestUpdates === 'GPS'"
+                                        localized>form.configuration.settings.request.updates.gps</option>
+                                <option ng-value="'WIFI'" ng-selected="configuration.requestUpdates === 'WIFI'"
+                                        localized>form.configuration.settings.request.updates.wifi</option>
+                            </select>
                         </div>
                     </div>
 
@@ -118,6 +127,18 @@
                     </div>
 
                     <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.usb.storage</label>
+                        <div class='col-sm-9 three-state'>
+                            <label><span localized>form.configuration.settings.common.gps.any</span>
+                                <input ng-model='configuration.usbStorage'  name="c_usbStorage" type='radio' class='form-control' ng-value="null"/></label>
+                            <label><span localized>form.configuration.settings.common.gps.off</span>
+                                <input ng-model='configuration.usbStorage'  name="c_usbStorage" type='radio' class='form-control' ng-value="false"/></label>
+                            <label><span localized>form.configuration.settings.common.gps.on</span>
+                                <input ng-model='configuration.usbStorage'  name="c_usbStorage" type='radio' class='form-control' ng-value="true"/></label>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.system.update</label>
                         <div class='col-sm-9 three-state'>
                             <label><span localized>form.configuration.settings.system.update.default</span>
@@ -147,7 +168,6 @@
                         <div class='col-sm-offset-3 col-sm-8'>
                             <button type='submit' class='btn btn-default' ng-click='save(false)' localized>button.save</button>
                             <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
-                            <button type='submit' class='btn btn-default' ng-click='save(false, true)' localized>button.renew.config</button>
                             <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
                         </div>
                     </div>
@@ -310,12 +330,13 @@
                                             <tbody>
                                             <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
                                                 <td>{{application.name}}</td>
-                                                <td>
+                                                <td ng-if="pkgInfoVisible(application)">
                                                     <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
                                                         {{application.version}}
                                                     </a>
                                                     <span ng-if="application.action != 1">{{application.version}}</span>
                                                 </td>
+                                                <td ng-if="!pkgInfoVisible(application)"></td>
                                                 <td>
                                                     <select ng-model="application.action" name="action{{application.id}}"
                                                             ng-change="actionChanged(application)"

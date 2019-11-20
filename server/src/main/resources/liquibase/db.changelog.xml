@@ -1457,5 +1457,76 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="06.11.19-18:10" author="isv" context="common">
+        <comment>Column,new: configurations#usbStorage</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN usbStorage BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN usbStorage;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="07.11.19-10:43" author="isv" context="common">
+        <comment>Column,new: configurations#requestUpdates</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN requestUpdates VARCHAR(20) NOT NULL DEFAULT 'DONOTTRACK';
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN requestUpdates;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.11.19-11:31" author="isv" context="common">
+        <comment>Data,update: configurations#autoUpdate: reset for all to FALSE</comment>
+        <sql>
+            UPDATE configurations SET autoUpdate = FALSE;
+        </sql>
+    </changeSet>
+
+    <changeSet id="18.11.19-11:40" author="isv" context="common">
+        <comment>Table,new: uploadedFiles</comment>
+        <sql>
+            CREATE TABLE uploadedFiles (
+                id SERIAL NOT NULL CONSTRAINT uploadedFiles_pr_key PRIMARY KEY,
+                customerId INT NOT NULL REFERENCES customers( id ) ON DELETE CASCADE,
+                filePath TEXT NOT NULL,
+                uploadTime BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW()) * 1000
+            );
+        </sql>
+        <rollback>
+            DROP TABLE uploadedFiles;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="18.11.19-11:46" author="isv" context="common">
+        <comment>Table,new: icons</comment>
+        <sql>
+            CREATE TABLE icons (
+                id SERIAL NOT NULL CONSTRAINT icons_pr_key PRIMARY KEY,
+                customerId INT NOT NULL REFERENCES customers( id ) ON DELETE CASCADE,
+                name VARCHAR(64) NOT NULL,
+                fileId INT NOT NULL REFERENCES uploadedFiles( id ) ON DELETE CASCADE
+            );
+            CREATE INDEX icons_customerId_idx ON icons (customerId);
+        </sql>
+        <rollback>
+            DROP TABLE icons;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="18.11.19-11:55" author="isv" context="common">
+        <comment>Columns,new: applications#type,iconText,iconId</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN type VARCHAR(10) NOT NULL DEFAULT 'app';
+            ALTER TABLE applications ADD COLUMN iconText VARCHAR(256);
+            ALTER TABLE applications ADD COLUMN iconId INT REFERENCES icons( id ) ON DELETE SET NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN iconId;
+            ALTER TABLE applications DROP COLUMN iconText;
+            ALTER TABLE applications DROP COLUMN type;
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

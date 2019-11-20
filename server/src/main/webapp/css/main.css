@@ -102,7 +102,15 @@
 }
 
 .map-wrapper {
-    padding-top: 50px;
+    /*padding-top: 50px;*/
+    height: 90%;
+}
+
+.map-wrapper-1 {
+    height: calc(100% - 52px);
+}
+
+.map-wrapper-2 {
     height: 100%;
 }
 
@@ -471,6 +479,7 @@
     height: 100%;
     border-right: 1px solid #e7e7e7;
     overflow: auto;
+    overflow-x: hidden;
 }
 
 .device-list .device-last-date {
@@ -2135,4 +2144,16 @@ th.sortable {
 
 h4.collapse-control {
     display: inline;
+}
+
+
+@keyframes fade {
+    from { opacity: 0.0; }
+}
+
+.blinking {
+    animation: fade 0.2s infinite alternate;
+}
+.zIndex1000 {
+    z-index: 1000;
 }

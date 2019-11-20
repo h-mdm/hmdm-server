@@ -25,11 +25,11 @@
 
     <insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
-                                    iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth, wifi, mobileData,
+                                    iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates,
                                     mainAppId, eventReceivingComponent, kioskMode, contentAppId, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
-                #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth}, #{wifi}, #{mobileData},
+                #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
                 #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})
     </insert>
@@ -63,7 +63,7 @@
     </insert>
 
     <select id="getConfigurationApplications" resultType="Application">
-        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall,
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.type, applications.iconText, applications.iconId,
                applicationVersions.version, applicationVersions.url,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
@@ -98,7 +98,7 @@
     </select>
 
     <select id="getPlainConfigurationApplications" resultType="Application">
-        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall,
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
                applicationVersions.version, applicationVersions.url,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
@@ -119,6 +119,8 @@
         INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
         JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
         LEFT JOIN configurationapplicationparameters cap ON cap.applicationId = applications.id AND cap.configurationId = #{id}
+        LEFT JOIN icons ON icons.id = applications.iconId
+        LEFT JOIN uploadedFiles ON uploadedFiles.id = icons.fileId
         WHERE applications.customerId=#{customerId}
            OR customers.master
             AND NOT EXISTS

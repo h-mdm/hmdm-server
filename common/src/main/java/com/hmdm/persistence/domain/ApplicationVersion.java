@@ -31,7 +31,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationVersion implements Serializable {
 
-    private static final long serialVersionUID = -7253076157423236073L;
+    private static final long serialVersionUID = 3429103100994111887L;
     @ApiModelProperty("An application version ID")
     private Integer id;
 
@@ -52,6 +52,9 @@ public class ApplicationVersion implements Serializable {
 
     @ApiModelProperty(hidden = true)
     private boolean system;
+
+    @ApiModelProperty(hidden = true)
+    private ApplicationType type;
 
     @ApiModelProperty(hidden = true)
     private String apkHash;
@@ -151,6 +154,14 @@ public class ApplicationVersion implements Serializable {
         this.apkHash = apkHash;
     }
 
+    public ApplicationType getType() {
+        return type;
+    }
+
+    public void setType(ApplicationType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersion{" +
@@ -163,6 +174,7 @@ public class ApplicationVersion implements Serializable {
                 ", deletionProhibited='" + deletionProhibited + '\'' +
                 ", commonApplication='" + commonApplication + '\'' +
                 ", filePath='" + filePath + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

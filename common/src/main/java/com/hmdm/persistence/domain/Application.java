@@ -34,7 +34,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Application implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = -911919013171848302L;
+    private static final long serialVersionUID = -5580525163643021270L;
 
     @ApiModelProperty("An application ID")
     private Integer id;
@@ -59,6 +59,16 @@ public class Application implements CustomerData, Serializable {
     @ApiModelProperty("A flag indicating if version check must be skipped for application")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean skipVersion;
+    @ApiModelProperty("A text for the application icon")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String iconText;
+    @ApiModelProperty(value = "A type of the application icon", allowableValues = "app,web")
+    private ApplicationType type;
+    @ApiModelProperty("An ID of an icon to represent the application")
+    private Integer iconId;
+    @ApiModelProperty("An file name with the icon to represent the application")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String icon;
 
     // A flag indicating that application is to be removed from the application
     // This field is going to be removed as now action field is stored in DB and encodes the removed apps with
@@ -82,6 +92,14 @@ public class Application implements CustomerData, Serializable {
     private String latestVersionText;
     @ApiModelProperty(hidden = true)
     private Integer usedVersionId;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
     /**
      * <p>A path to uploaded file to link this application to when adding an application.</p>
@@ -282,15 +300,42 @@ public class Application implements CustomerData, Serializable {
         this.skipVersion = skipVersion;
     }
 
+    public String getIconText() {
+        return iconText;
+    }
+
+    public void setIconText(String iconText) {
+        this.iconText = iconText;
+    }
+
+    public ApplicationType getType() {
+        return type;
+    }
+
+    public void setType(ApplicationType type) {
+        this.type = type;
+    }
+
+    public Integer getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(Integer iconId) {
+        this.iconId = iconId;
+    }
+
     @Override
     public String toString() {
         return "Application{" +
                 "id=" + id +
+                ", type='" + type + '\'' +
                 ", name='" + name + '\'' +
                 ", pkg='" + pkg + '\'' +
                 ", version='" + version + '\'' +
                 ", url='" + url + '\'' +
                 ", showIcon=" + showIcon +
+                ", iconText='" + iconText + '\'' +
+                ", iconId='" + iconId + '\'' +
                 ", runAfterInstall=" + runAfterInstall +
                 ", skipVersion=" + skipVersion +
                 ", system=" + system +

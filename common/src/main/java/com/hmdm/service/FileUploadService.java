@@ -19,23 +19,22 @@
  *
  */
 
-package com.hmdm.persistence;
+package com.hmdm.service;
 
-import com.hmdm.security.SecurityException;
+import com.google.inject.Singleton;
 
 /**
- * <p>An exception to be raised when there is an attempt to edit/delete data related to common application by
- * unauthorized client.</p>
+ * <p>A service to use for file uploading process.</p>
  *
  * @author isv
  */
-public class CommonAppAccessException extends SecurityException {
+@Singleton
+public class FileUploadService {
 
     /**
-     * <p>Constructs new <code>CommonAppAccessException</code> instance. This implementation does nothing.</p>
+     * <p>Constructs new <code>FileUploadService</code> instance. This implementation does nothing.</p>
      */
-    public CommonAppAccessException(String pkg, Integer customerId) {
-        super(String.format("An attempt to common application %s is prohibited. Customer account ID: %s", pkg, customerId), 403);
+    public FileUploadService() {
     }
 
 }

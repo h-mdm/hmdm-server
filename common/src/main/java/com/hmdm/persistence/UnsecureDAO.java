@@ -139,7 +139,7 @@ public class UnsecureDAO {
         }
 
         List<LookupItem> ddd = this.applicationMapper.resolveAppsByPackageId(customerId, appPackages);
-        return ddd.stream().collect(Collectors.toMap(LookupItem::getName, LookupItem::getId));
+        return ddd.stream().collect(Collectors.toMap(LookupItem::getName, LookupItem::getId, (r1, r2) -> r1));
     }
 
     public void insertApplication(Application application) {
@@ -186,13 +186,13 @@ public class UnsecureDAO {
         final Map<String, ApplicationSetting> dbDeviceAppSettingsMapping
                 = this.applicationSettingDAO.getApplicationSettingsByDeviceId(dbDevice.getId())
                 .stream()
-                .collect(Collectors.toMap(appSettingMapKeyGenerator, s -> s));
+                .collect(Collectors.toMap(appSettingMapKeyGenerator, s -> s, (r1, r2) -> r1));
 
         final Map<String, ApplicationSetting> appSettingsMapping
                 = applicationSettings
                 .stream()
-                .filter(s -> s.getValue() != null && s.getValue().trim().isEmpty())
-                .collect(Collectors.toMap(appSettingMapKeyGenerator, s -> s));
+                .filter(s -> s.getValue() != null && !s.getValue().trim().isEmpty())
+                .collect(Collectors.toMap(appSettingMapKeyGenerator, s -> s, (r1, r2) -> r1));
 
         List<ApplicationSetting> mergedApplicationSettings = new ArrayList<>();
 
@@ -212,7 +212,7 @@ public class UnsecureDAO {
 
         final Map<String, Application> appsMapping = this.applicationMapper.getAllApplications(dbDevice.getCustomerId())
                 .stream()
-                .collect(Collectors.toMap(Application::getPkg, a -> a));
+                .collect(Collectors.toMap(Application::getPkg, a -> a, (r1, r2) -> r1));
 
         appSettingsMapping.values().forEach(appSetting -> {
             final String appSettingKey = appSettingMapKeyGenerator.apply(appSetting);
@@ -232,7 +232,13 @@ public class UnsecureDAO {
         });
 
         this.deviceMapper.deleteDeviceApplicationSettings(dbDevice.getId());
-        this.deviceMapper.insertDeviceApplicationSettings(dbDevice.getId(), mergedApplicationSettings);
+        if (!mergedApplicationSettings.isEmpty()) {
+            final List<ApplicationSetting> validSettings = mergedApplicationSettings
+                    .stream()
+                    .filter(appSetting -> appSetting.getApplicationId() != null)
+                    .collect(Collectors.toList());
+            this.deviceMapper.insertDeviceApplicationSettings(dbDevice.getId(), validSettings);
+        }
     }
 
     /**

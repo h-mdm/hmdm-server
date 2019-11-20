@@ -22,8 +22,10 @@
 package com.hmdm.rest.resource;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,10 +44,14 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.hmdm.event.DeviceBatteryLevelUpdatedEvent;
+import com.hmdm.event.DeviceLocationUpdatedEvent;
 import com.hmdm.event.EventService;
+import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationSettingType;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.rest.json.DeviceLocation;
 import com.hmdm.rest.json.SyncResponseHook;
 import com.hmdm.rest.json.SyncApplicationSetting;
 import com.hmdm.rest.json.SyncResponseInt;
@@ -91,6 +97,10 @@ public class SyncResource {
      */
     private Set<SyncResponseHook> syncResponseHooks;
 
+    private CustomerDAO customerDAO;
+    
+    private String baseUrl;
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -103,9 +113,13 @@ public class SyncResource {
     @Inject
     public SyncResource(UnsecureDAO unsecureDAO,
                         EventService eventService,
-                        Injector injector) {
+                        Injector injector,
+                        CustomerDAO customerDAO,
+                        @Named("base.url") String baseUrl) {
         this.unsecureDAO = unsecureDAO;
         this.eventService = eventService;
+        this.customerDAO = customerDAO;
+        this.baseUrl = baseUrl;
 
         Set<SyncResponseHook> allYourInterfaces = new HashSet<>();
         for (Key<?> key : injector.getAllBindings().keySet()) {
@@ -135,10 +149,24 @@ public class SyncResource {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
             if (dbDevice != null) {
 
+                final Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
+
                 Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());
                 final List<Application> applications = this.unsecureDAO.getPlainConfigurationApplications(
                         dbDevice.getCustomerId(), dbDevice.getConfigurationId()
                 );
+
+                for (Application app: applications) {
+                    final String icon = app.getIcon();
+                    if (icon != null) {
+                        if (!icon.trim().isEmpty()) {
+                            String iconUrl = String.format("%s/files/%s/%s", this.baseUrl,
+                                    URLEncoder.encode(customer.getFilesDir(), "UTF8"),
+                                    URLEncoder.encode(icon, "UTF8"));
+                            app.setIcon(iconUrl);
+                        }
+                    }
+                }
 
                 Configuration configuration = this.unsecureDAO.getConfigurationByIdWithAppSettings(dbDevice.getConfigurationId());
 
@@ -153,8 +181,10 @@ public class SyncResource {
                 data.setBluetooth(configuration.getBluetooth());
                 data.setWifi(configuration.getWifi());
                 data.setMobileData(configuration.getMobileData());
+                data.setUsbStorage(configuration.getUsbStorage());
                 data.setLockStatusBar(configuration.isBlockStatusBar());
                 data.setSystemUpdateType(configuration.getSystemUpdateType());
+                data.setRequestUpdates(configuration.getRequestUpdates().getTransmittedValue());
                 if (configuration.getSystemUpdateType() == 2) {
                     data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
                     data.setSystemUpdateTo(configuration.getSystemUpdateTo());
@@ -236,6 +266,15 @@ public class SyncResource {
 
                 if (deviceInfo.getBatteryLevel() != null) {
                     this.eventService.fireEvent(new DeviceBatteryLevelUpdatedEvent(dbDevice.getId(), deviceInfo.getBatteryLevel()));
+                }
+
+                final DeviceLocation location = deviceInfo.getLocation();
+                if (location != null) {
+                    this.eventService.fireEvent(
+                            new DeviceLocationUpdatedEvent(
+                                    dbDevice.getId(), location.getTs(), location.getLat(), location.getLon()
+                            )
+                    );
                 }
 
                 return Response.OK();

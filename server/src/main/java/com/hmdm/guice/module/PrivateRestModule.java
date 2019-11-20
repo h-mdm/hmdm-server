@@ -31,6 +31,8 @@ import com.hmdm.rest.resource.CustomerResource;
 import com.hmdm.rest.resource.DeviceResource;
 import com.hmdm.rest.resource.FilesResource;
 import com.hmdm.rest.resource.GroupResource;
+import com.hmdm.rest.resource.IconFileResource;
+import com.hmdm.rest.resource.IconResource;
 import com.hmdm.rest.resource.SettingsResource;
 import com.hmdm.rest.resource.UserResource;
 import com.hmdm.security.jwt.JWTFilter;
@@ -48,8 +50,10 @@ public class PrivateRestModule extends ServletModule {
         this.bind(CustomerResource.class);
         this.bind(SettingsResource.class);
         this.bind(ApplicationResource.class);
+        this.bind(IconResource.class);
         this.bind(UserResource.class);
         this.bind(FilesResource.class);
+        this.bind(IconFileResource.class);
         this.bind(HintResource.class);
     }
 }

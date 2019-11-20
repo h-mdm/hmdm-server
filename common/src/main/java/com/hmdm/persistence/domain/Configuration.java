@@ -21,6 +21,7 @@
 
 package com.hmdm.persistence.domain;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,8 +34,10 @@ import static com.hmdm.persistence.domain.IconSize.SMALL;
 
 @ApiModel(description = "An MDM configuration used on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Configuration implements CustomerData {
+public class Configuration implements CustomerData, Serializable {
 
+    private static final long serialVersionUID = -6406186910959907259L;
+    
     // This group of settings corresponds to common settings
     @ApiModelProperty("A configuration ID")
     private Integer id;
@@ -50,8 +53,8 @@ public class Configuration implements CustomerData {
     private List<Application> applications = new LinkedList<>();
     @ApiModelProperty(hidden = true)
     private int customerId;
-    @ApiModelProperty("A flag indicating if application versions update is enabled")
-    private boolean autoUpdate;
+    @ApiModelProperty(value = "A flag indicating if application versions update is enabled", hidden = true)
+    private final boolean autoUpdate = false;
     @ApiModelProperty("A flag indicating if status bar is locked")
     private boolean blockStatusBar;
     @ApiModelProperty(value = "A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed", allowableValues = "0,1,2,3")
@@ -69,6 +72,10 @@ public class Configuration implements CustomerData {
     private Boolean wifi;
     @ApiModelProperty("A flag indicating if Mobile Data is enabled on device")
     private Boolean mobileData;
+    @ApiModelProperty("A flag indicating if USB storage is enabled on device")
+    private Boolean usbStorage;
+    @ApiModelProperty("A type of location tracking")
+    private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -309,9 +316,9 @@ public class Configuration implements CustomerData {
         return autoUpdate;
     }
 
-    public void setAutoUpdate(boolean autoUpdate) {
-        this.autoUpdate = autoUpdate;
-    }
+//    public void setAutoUpdate(boolean autoUpdate) {
+//        this.autoUpdate = autoUpdate;
+//    }
 
     public boolean isBlockStatusBar() {
         return blockStatusBar;
@@ -361,6 +368,22 @@ public class Configuration implements CustomerData {
         this.applicationUsageParameters = applicationUsageParameters;
     }
 
+    public Boolean getUsbStorage() {
+        return usbStorage;
+    }
+
+    public void setUsbStorage(Boolean usbStorage) {
+        this.usbStorage = usbStorage;
+    }
+
+    public RequestUpdatesType getRequestUpdates() {
+        return requestUpdates;
+    }
+
+    public void setRequestUpdates(RequestUpdatesType requestUpdates) {
+        this.requestUpdates = requestUpdates;
+    }
+
     public Configuration newCopy() {
         Configuration copy = new Configuration();
 
@@ -372,7 +395,7 @@ public class Configuration implements CustomerData {
         copy.setPassword(getPassword());
         copy.setType(getType());
         copy.setCustomerId(getCustomerId());
-        copy.setAutoUpdate(isAutoUpdate());
+//        copy.setAutoUpdate(isAutoUpdate());
         copy.setBlockStatusBar(isBlockStatusBar());
         copy.setSystemUpdateType(getSystemUpdateType());
         copy.setSystemUpdateFrom(getSystemUpdateFrom());
@@ -387,6 +410,8 @@ public class Configuration implements CustomerData {
         copy.setBluetooth(getBluetooth());
         copy.setWifi(getWifi());
         copy.setMobileData(getMobileData());
+        copy.setUsbStorage(getUsbStorage());
+        copy.setRequestUpdates(getRequestUpdates());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());

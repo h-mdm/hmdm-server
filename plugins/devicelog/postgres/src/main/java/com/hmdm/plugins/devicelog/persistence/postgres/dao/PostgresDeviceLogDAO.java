@@ -281,7 +281,7 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      */
     private static List<DeviceLogRule> combineDeviceLogRules(List<DeviceLogRule> lessPreferred, List<DeviceLogRule> morePreferred) {
         final Map<String, DeviceLogRule> moreMapping
-                = morePreferred.stream().collect(Collectors.toMap(DeviceLogRule::getApplicationPkg, r -> r));
+                = morePreferred.stream().collect(Collectors.toMap(DeviceLogRule::getApplicationPkg, r -> r, (r1, r2) -> r1));
 
         List<DeviceLogRule> result = new ArrayList<>();
 

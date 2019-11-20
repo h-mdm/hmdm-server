@@ -788,7 +788,7 @@ angular.module('headwind-kiosk')
             $scope.errorMessage = undefined;
             $scope.successMessage = undefined;
 
-            deviceService.saveDeviceApplicationSettings({id: device.id}, $scope.applicationSettings, function (response) {
+            deviceService.saveDeviceApplicationSettings({id: device.id}, allApplicationSettings, function (response) {
                 if (response.status === 'OK') {
                     $modalInstance.close();
                 } else {

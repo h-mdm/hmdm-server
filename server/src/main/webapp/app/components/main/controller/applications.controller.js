@@ -118,31 +118,48 @@ angular.module('headwind-kiosk')
 
         };
 
+        $scope.pkgInfoVisible = function (application) {
+            return application.type !== 'web';
+        };
+
         $scope.editVersions = function (application) {
             $state.transitionTo('appVersionsEditor', {"id": application.id});
         };
 
         $scope.init();
     })
-    .controller('ApplicationModalController', function ($scope, $modalInstance, applicationService, application,
+    .controller('ApplicationModalController', function ($scope, $modalInstance, applicationService, iconService,
+                                                        application,
                                                         $modal, isControlPanel, localization, closeOnSave) {
         $scope.isControlPanel = isControlPanel;
 
         $scope.isNewApp = application.id === null || application.id === undefined;
 
+        $scope.application = angular.copy(application, {});
+        if ($scope.application.iconId === null || $scope.application.iconId === undefined) {
+            $scope.application.iconId = -1;
+        }
+
+        $scope.icons = [{id: -1, name: localization.localize("form.application.icon.default")}];
+
+        const loadIcons = function (callback) {
+            iconService.getAllIcons(function (response) {
+                if (response.status === 'OK') {
+                    $scope.icons = $scope.icons.concat(response.data);
+                }
+            });
+        };
+
+        loadIcons();
+
         if ($scope.isNewApp) {
-            $scope.file = {};
             $scope.loading = false;
+            $scope.file = {};
             $scope.fileName = null;
             $scope.invalidFile = false;
             $scope.fileSelected = false;
-        }
-
-        $scope.application = {};
-        for (var prop in application) {
-            if (application.hasOwnProperty(prop)) {
-                $scope.application[prop] = application[prop];
-            }
+            
+            $scope.application.type = 'app';
         }
 
         $scope.onStartedUpload = function (files) {
@@ -202,7 +219,32 @@ angular.module('headwind-kiosk')
             $scope.loading = false;
         };
 
-        var doSaveApplication = function (request) {
+        const doSaveWebApplication = function (request) {
+            applicationService.updateWebApplication(request, function (response) {
+                if (response.status === 'OK') {
+                    if (!closeOnSave) {
+                        if ($scope.isNewApp) {
+                            $scope.application = response.data;
+                            $scope.isNewApp = false;
+                            $scope.file = {};
+                            $scope.loading = false;
+                            $scope.fileName = null;
+                            $scope.invalidFile = false;
+                            $scope.fileSelected = false;
+                            $scope.manageConfigurations(true);
+                        } else {
+                            $modalInstance.close();
+                        }
+                    } else {
+                        $modalInstance.close(response.data);
+                    }
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            });
+        };
+
+        var doSaveAndroidApplication = function (request) {
             applicationService.updateApplication(request, function (response) {
                 if (response.status === 'OK') {
                     if (!closeOnSave) {
@@ -254,45 +296,103 @@ angular.module('headwind-kiosk')
             });
         };
 
+        const webAppValidator = function() {
+            const iconRequired = $scope.application.showIcon;
+
+            if (!$scope.application.name || $scope.application.name.trim().length === 0) {
+                return 'error.empty.app.name';
+            } else if (!$scope.application.url || $scope.application.url.trim().length === 0) {
+                return 'error.empty.app.url';
+            } else if (iconRequired && (!$scope.application.iconText || $scope.application.iconText.trim().length === 0)) {
+                return 'error.empty.app.iconText';
+            }
+
+            return null;
+        };
+
+        const webAppPersistor = function () {
+            var request = angular.copy($scope.application, {});
+            if (request.iconId == -1) {
+                delete request.iconId;
+            }
+            doSaveWebApplication(request);
+        };
+
+        const androidAppValidator = function () {
+            if (!$scope.application.name || $scope.application.name.trim().length === 0) {
+                return 'error.empty.app.name';
+            } else if (!$scope.application.pkg && !$scope.fileSelected) {
+                return 'error.empty.app.pkg';
+            } else if (!$scope.application.version && !$scope.fileSelected) {
+                return 'error.empty.app.version';
+            }
+
+            return null;
+        };
+
+        const androidAppPersistor = function () {
+            var request = angular.copy($scope.application, {});
+            if (request.iconId == -1) {
+                delete request.iconId;
+            }
+
+            if ($scope.isNewApp) {
+                if ($scope.fileSelected) {
+                    request.filePath = $scope.file.path;
+                }
+            }
+
+            applicationService.validateApplicationPackage(request, function (response) {
+                if (response.status === 'OK') {
+                    var existingAppsForPkg = response.data;
+                    if (existingAppsForPkg.length > 0) {
+                        if (!request.id || request.pkg !== application.pkg) {
+                            startDuplicatePkgResolutionDialog(request, existingAppsForPkg);
+                            return;
+                        }
+                    }
+                    doSaveAndroidApplication(request);
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            });
+        };
+
         $scope.save = function () {
             $scope.errorMessage = undefined;
             $scope.successMessage = undefined;
 
-            if (!$scope.application.name) {
-                $scope.errorMessage = localization.localize('error.empty.app.name');
-            } else if (!$scope.application.pkg && !$scope.fileSelected) {
-                $scope.errorMessage = localization.localize('error.empty.app.pkg');
-            } else if (!$scope.application.version && !$scope.fileSelected) {
-                $scope.errorMessage = localization.localize('error.empty.app.version');
+            var validator;
+            var persistor;
+            if ($scope.application.type === 'app') {
+                validator = androidAppValidator;
+                persistor = androidAppPersistor;
             } else {
-                var request = {};
-                for (var prop in $scope.application) {
-                    if ($scope.application.hasOwnProperty(prop)) {
-                        request[prop] = $scope.application[prop];
-                    }
-                }
-
-                if ($scope.isNewApp) {
-                    if ($scope.fileSelected) {
-                        request.filePath = $scope.file.path;
-                    }
-                }
-
-                applicationService.validateApplicationPackage(request, function (response) {
-                    if (response.status === 'OK') {
-                        var existingAppsForPkg = response.data;
-                        if (existingAppsForPkg.length > 0) {
-                            if (!request.id || request.pkg !== application.pkg) {
-                                startDuplicatePkgResolutionDialog(request, existingAppsForPkg);
-                                return;
-                            }
-                        }
-                        doSaveApplication(request);
-                    } else {
-                        $scope.errorMessage = localization.localizeServerResponse(response);
-                    }
-                });
+                validator = webAppValidator;
+                persistor = webAppPersistor;
             }
+
+            const err = validator();
+
+            if (err) {
+                $scope.errorMessage = localization.localize(err);
+            } else {
+                persistor();
+            }
+        };
+
+        $scope.addNewIcon = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/main/view/modal/addIcon.html',
+                controller: 'AddIconController'
+            });
+
+            modalInstance.result.then(function (newIcon) {
+                if (newIcon) {
+                    $scope.application.iconId = newIcon.id;
+                    loadIcons();
+                }
+            });
         };
 
         var startDuplicatePkgResolutionDialog = function (request, existingAppsForPkg) {
@@ -311,9 +411,9 @@ angular.module('headwind-kiosk')
 
             modalInstance.result.then(function (result) {
                 if (result.changePkg) {
-                    doSaveApplication(request);
+                    doSaveAndroidApplication(request);
                 } else if (result.newApp) {
-                    doSaveApplication(request);
+                    doSaveAndroidApplication(request);
                 } else if (result.newAppVersion) {
                     request.applicationId = result.targetAppId;
                     doSaveApplicationVersion(request, result.targetApp);
@@ -557,8 +657,9 @@ angular.module('headwind-kiosk')
     .controller('ApplicationVersionModalController', function ($scope, $modalInstance, applicationService,
                                                                applicationVersion,
                                                                $modal, isControlPanel, localization) {
-        $scope.application = {};
         $scope.isControlPanel = isControlPanel;
+
+        $scope.isWebType = applicationVersion.type === 'web';
 
         $scope.isNewApp = applicationVersion.id === null || applicationVersion.id === undefined;
 
@@ -570,11 +671,7 @@ angular.module('headwind-kiosk')
             $scope.fileSelected = false;
         }
 
-        for (var prop in applicationVersion) {
-            if (applicationVersion.hasOwnProperty(prop)) {
-                $scope.application[prop] = applicationVersion[prop];
-            }
-        }
+        $scope.application = angular.copy(applicationVersion, {});
 
         $scope.onStartedUpload = function (files) {
             $scope.successMessage = undefined;
@@ -836,6 +933,84 @@ angular.module('headwind-kiosk')
 
         $scope.closeModal = function () {
             $modalInstance.dismiss();
+        };
+    })
+    .controller('AddIconController', function ($scope, $modalInstance, iconService, localization) {
+        $scope.errorMessage = undefined;
+        $scope.successMessage = undefined;
+
+        $scope.icon = {
+            name: undefined,
+            fileId: undefined
+        };
+
+        $scope.newIconFile = undefined;
+
+        $scope.loading = false;
+
+        $scope.save = function () {
+            clearMessages();
+
+            if (!$scope.icon.name || $scope.icon.name.trim().length === 0) {
+                $scope.errorMessage = localization.localize('error.icon.empty.name');
+            } else if (!$scope.icon.fileId) {
+                $scope.errorMessage = localization.localize('error.icon.empty.file');
+            } else {
+                $scope.loading = true;
+
+                const request = angular.copy($scope.icon, {});
+                iconService.createIcon(request, function (response) {
+                    $scope.loading = false;
+                    if (response.status === 'OK') {
+                        $modalInstance.close(response.data);
+                    } else {
+                        $scope.errorMessage = localization.localizeServerResponse(response);
+                    }
+                }, function () {
+                    $scope.loading = false;
+                    $scope.errorMessage = localization.localize('error.request.failure');
+                });
+            }
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+        };
+
+        $scope.onStartedUploadIcon = function (files) {
+            clearMessages();
+
+            if (files.length > 0) {
+                $scope.loading = true;
+                $scope.successMessage = localization.localize('success.uploading.file');
+            }
+        };
+
+        $scope.fileUploadedIcon = function (response) {
+            clearMessages();
+
+            $scope.loading = false;
+
+            if (response.data.status === 'OK') {
+                $scope.newIconFile = response.data.data;
+                $scope.icon.fileId = response.data.data.id;
+                $scope.successMessage = localization.localize('success.file.uploaded');
+            } else {
+                $scope.errorMessage = localization.localize(response.data.message);
+            }
+        };
+
+        $scope.clearFileIcon = function () {
+            $scope.newIconFile = undefined;
+            $scope.icon.fileId = undefined;
+
+            $scope.loading = false;
+            clearMessages();
+        };
+        
+        const clearMessages = function () {
+            $scope.successMessage = undefined;
+            $scope.errorMessage = undefined;
         };
     })
 ;

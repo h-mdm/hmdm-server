@@ -38,15 +38,27 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * <p>$</p>
+ * <p>An interceptor for the request to resources provided by installed plugins. Verifies that respective plugin is not
+ * currently disabled and rejects the request if that's the case.</p>
+ *
+ * <p>This filter must be added to requests processing chains for plugins private resources only (e.g. those resources
+ * which require the user identity established before accessing the resource. For plugins public resources (e.g. those
+ * resources which are available to mobile clients running on devices) it is the responsibility of a resource to perform
+ * such a check.</p>
  *
  * @author isv
  */
 @Singleton
 public class PluginAccessFilter implements Filter {
 
+    /**
+     * <p>A looger to be used for logging the details on request interception.</p>
+     */
     private static final Logger logger = LoggerFactory.getLogger(PluginAccessFilter.class);
 
+    /**
+     * <p>A current status of the installed plugins.</p>
+     */
     private final PluginStatusCache pluginStatusCache;
 
     /**
@@ -57,11 +69,23 @@ public class PluginAccessFilter implements Filter {
         this.pluginStatusCache = pluginStatusCache;
     }
 
+    /**
+     * <p>Does nothing.</p>
+     */
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
+    public void init(FilterConfig filterConfig) {
     }
 
+    /**
+     * <p>Intercepts the incoming request. If request URI maps to some plugin then checks the current status of plugin
+     * and if it is disabled them rejects the request. Otherwise the request is processed further.</p>
+     *
+     * @param request an incoming request.
+     * @param response an outgoing response.
+     * @param chain a request processing chain.
+     * @throws IOException if an unexpected error occurs.
+     * @throws ServletException if an unexpected error occurs.
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
@@ -86,8 +110,10 @@ public class PluginAccessFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    /**
+     * <p>Does nothing.</p>
+     */
     @Override
     public void destroy() {
-
     }
 }

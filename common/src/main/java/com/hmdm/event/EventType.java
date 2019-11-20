@@ -28,7 +28,8 @@ package com.hmdm.event;
  */
 public enum EventType {
 
-    DEVICE_BATTERY_LEVEL_UPDATED(DeviceBatteryLevelUpdatedEvent.class);
+    DEVICE_BATTERY_LEVEL_UPDATED(DeviceBatteryLevelUpdatedEvent.class),
+    DEVICE_LOCATION_UPDATED(DeviceLocationUpdatedEvent.class);
 
     /**
      * <p>A type of the event.</p>

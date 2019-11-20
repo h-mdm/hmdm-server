@@ -70,6 +70,9 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty(value = "A flag indicating if MDM mode is ON or not")
     private Boolean mdmMode;
 
+    @ApiModelProperty(value = "The details on device location")
+    private DeviceLocation location;
+
     public DeviceInfo() {
     }
 
@@ -153,6 +156,14 @@ public class DeviceInfo implements Serializable {
         this.mdmMode = mdmMode;
     }
 
+    public DeviceLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(DeviceLocation location) {
+        this.location = location;
+    }
+
     @Override
     public String toString() {
         return "DeviceInfo{" +
@@ -166,6 +177,7 @@ public class DeviceInfo implements Serializable {
                 ", batteryCharging='" + batteryCharging + '\'' +
                 ", androidVersion='" + androidVersion + '\'' +
                 ", mdmMode='" + mdmMode + '\'' +
+                ", location='" + location + '\'' +
                 '}';
     }
 }

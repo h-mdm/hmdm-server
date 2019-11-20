@@ -8,14 +8,26 @@
 <div class='modal-body'>
     <form class='form-horizontal'>
 
-        <div class='form-group' ng-if="!fileSelected">
+        <div class='form-group'>
+            <label class='col-sm-4 control-label' for="kjdfkkfj" localized>form.application.type</label>
+            <div class='col-sm-8'>
+                <select class="form-control" ng-model='application.type' id="kjdfkkfj" ng-disabled="!isNewApp">
+                    <option ng-value="'app'" ng-selected="application.type === 'app'"
+                            localized>form.application.type.option.app</option>
+                    <option ng-value="'web'" ng-selected="application.type === 'web'"
+                            localized>form.application.type.option.web</option>
+                </select>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="!fileSelected && application.type !== 'web'">
             <label class='col-sm-4 control-label' for="lasdkjd" localized>form.application.pkg</label>
             <div class='col-sm-8'>
                 <input ng-model='application.pkg' type='text' class='form-control' id="lasdkjd"/>
             </div>
         </div>
 
-        <div class='form-group' ng-if="fileSelected">
+        <div class='form-group' ng-if="fileSelected && application.type !== 'web'">
             <label class='col-sm-4 control-label' for="djhsfksfhj" localized>form.application.pkg</label>
             <div class='col-sm-8'>
                 <input disabled localized-placeholder="form.application.from.file" type='text' class='form-control'
@@ -30,7 +42,7 @@
             </div>
         </div>
 
-        <div class='form-group' ng-if="!fileSelected">
+        <div class='form-group' ng-if="!fileSelected && application.type !== 'web'">
             <label class='col-sm-4 control-label' for="kjsdkfskfjhskfjh" localized>form.application.version</label>
             <div class='col-sm-8'>
                 <input ng-model='application.version' type='text' class='form-control'
@@ -38,7 +50,7 @@
             </div>
         </div>
 
-        <div class='form-group' ng-if="fileSelected">
+        <div class='form-group' ng-if="fileSelected && application.type !== 'web'">
             <label class='col-sm-4 control-label' for="kjrfkfhwk" localized>form.application.version</label>
             <div class='col-sm-8'>
                 <input disabled type='text' class='form-control' id="kjrfkfhwk"
@@ -46,14 +58,14 @@
             </div>
         </div>
 
-        <div class='form-group'>
+        <div class='form-group' ng-if="application.type !== 'web'">
             <label class='col-sm-4 control-label' for="sfjshfsjkf" localized>form.application.system</label>
             <div class='col-sm-8'>
                 <input ng-model='application.system' type='checkbox' class='form-control' id="sfjshfsjkf"/>
             </div>
         </div>
 
-        <div class='form-group'>
+        <div class='form-group' ng-if="application.type !== 'web'">
             <label class='col-sm-4 control-label' for="kjdfjejbwerfjwefij"
                    localized>form.application.run.after.install</label>
             <div class='col-sm-8'>
@@ -66,11 +78,11 @@
             <label class='col-sm-4 control-label' for="kajdfhakjdkj" localized>form.application.url</label>
             <div class='col-sm-8'>
                 <input ng-model='application.url' type='text' class='form-control' id="kajdfhakjdkj"
-                       ng-disabled="application.system || application.id">
+                       ng-disabled="(application.system || application.id)">
             </div>
         </div>
 
-        <div class='form-group' ng-if="isNewApp">
+        <div class='form-group' ng-if="isNewApp && application.type !== 'web'">
             <label class='col-sm-4 control-label' localized>form.application.file</label>
             <div class='col-sm-8'>
                 <div class="btn btn-default full-width btn-upload" ng-if="!file.path"
@@ -90,6 +102,28 @@
                 <input ng-model='application.showIcon' type='checkbox' class='form-control' id="showLabelBox"/>
             </div>
         </div>
+
+        <div class='form-group' ng-if="application.showIcon">
+            <label class='col-sm-4 control-label' for="iconTextInput" localized>form.application.iconText</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.iconText' type='text' class='form-control' id="iconTextInput"
+                       localized-placeholder="form.application.iconText.placeholder"
+                       maxlength="256"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="application.showIcon">
+            <label class='col-sm-4 control-label' for="iconInput" localized>form.application.icon</label>
+            <div class='col-sm-6'>
+                <select ng-options="icon.id as icon.name for icon in icons" name="icon"
+                        ng-model='application.iconId' class='form-control' id="iconInput">
+                </select>
+            </div>
+            <dic class="col-sm-2">
+                <button class="btn btn-default" type="button" ng-click="addNewIcon()" localized>button.add.icon</button>
+            </dic>
+        </div>
+
 
         <div class='form-group'>
             <div class='col-sm-offset-4 col-sm-8'>

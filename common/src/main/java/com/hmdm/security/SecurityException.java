@@ -23,6 +23,8 @@ package com.hmdm.security;
 
 
 import com.hmdm.persistence.domain.CustomerData;
+import com.hmdm.persistence.domain.Icon;
+import com.hmdm.persistence.domain.UploadedFile;
 
 /**
  * <p>An unchecked exception to be thrown to indicate that there is security issue encountered.</p>
@@ -146,6 +148,26 @@ public class SecurityException extends RuntimeException {
      */
     public static SecurityException onGroupAccessViolation(CustomerData group) {
         return onCustomerDataAccessViolation(group.getCustomerId(), group.getId(), "group");
+    }
+
+    /**
+     * <p>Constructs an exception to be thrown in case an unauthorized access to specified icon is detected.</p>
+     *
+     * @param icon a source of the exception.
+     * @return a security exception to be thrown.
+     */
+    public static SecurityException onIconAccessViolation(Icon icon) {
+        return onCustomerDataAccessViolation(icon.getCustomerId(), icon.getId(), "icon");
+    }
+
+    /**
+     * <p>Constructs an exception to be thrown in case an unauthorized access to specified uploaded file is detected.</p>
+     *
+     * @param file a source of the exception.
+     * @return a security exception to be thrown.
+     */
+    public static SecurityException onUploadedFileAccessViolation(UploadedFile file) {
+        return onCustomerDataAccessViolation(file.getCustomerId(), file.getId(), "file");
     }
 
     /**

@@ -305,6 +305,10 @@ angular.module('headwind-kiosk')
 
             $scope.successMessage = null;
 
+            $scope.pkgInfoVisible = function (application) {
+                return application.type !== 'web';
+            };
+
             $scope.localizeRenewVersionTitle = function (application) {
                 let localizedText = localization.localize('configuration.app.version.upgrade.message')
                     .replace('${installedVersion}', application.version)
@@ -573,7 +577,7 @@ angular.module('headwind-kiosk')
                 });
             };
 
-            $scope.save = function (doClose, notifyDevices) {
+            $scope.save = function (doClose) {
                 $scope.errorMessage = '';
                 $scope.saved = false;
 
@@ -657,20 +661,6 @@ angular.module('headwind-kiosk')
                                 });
 
                                 filterApplicationSettings();
-                            }
-
-                            if (notifyDevices) {
-                                configurationService.notifyDevicesOnUpdate({id: $scope.configuration.id}, function (response) {
-                                    if (response.status === "OK") {
-                                        $scope.successMessage = localization.localize('success.config.update.notification');
-                                        let $timeout1 = $timeout(function () {
-                                            $scope.successMessage = null;
-                                        }, 5000);
-                                        $scope.$on('$destroy', function () {
-                                            $timeout.cancel($timeout1);
-                                        });
-                                    }
-                                });
                             }
                         } else {
                             $scope.errorMessage = localization.localize(response.message);
@@ -952,6 +942,36 @@ angular.module('headwind-kiosk')
                 if (index >= 0) {
                     $scope.configuration.applicationSettings.splice(index, 1);
                     filterApplicationSettings();
+                }
+            };
+
+            var turnWifiOn = function () {
+                $scope.configuration.wifi = true;
+            };
+
+            var turnGpsOn = function () {
+                $scope.configuration.gps = true;
+            };
+
+            $scope.requestUpdatesChanged = function () {
+                var networkStatus = true;
+                var alertText;
+                var alertCallback;
+                var alertButtonText;
+                if ($scope.configuration.requestUpdates === 'WIFI') {
+                    networkStatus = $scope.configuration.wifi;
+                    alertText = 'form.configuration.settings.request.updates.prompt.wifi';
+                    alertButtonText = 'button.wifi.on';
+                    alertCallback = turnWifiOn;
+                } else if ($scope.configuration.requestUpdates === 'GPS') {
+                    networkStatus = $scope.configuration.gps;
+                    alertText = 'form.configuration.settings.request.updates.prompt.gps';
+                    alertButtonText = 'button.gps.on';
+                    alertCallback = turnGpsOn;
+                }
+
+                if (networkStatus === false) {
+                    confirmModal.getUserConfirmation(localization.localize(alertText), alertCallback, alertButtonText);
                 }
             };
 

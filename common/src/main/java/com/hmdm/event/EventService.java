@@ -24,6 +24,8 @@ package com.hmdm.event;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.util.BackgroundTaskRunnerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -38,6 +40,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Singleton
 public class EventService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EventService.class);
 
     /**
      * <p>A mapping from the types of event objects and respective listeners for the events of those types.</p>
@@ -85,7 +89,7 @@ public class EventService {
                 this.taskRunner.submitTask(task);
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Unexpected error when firing event: {}", event, e);
         }
     }
 
