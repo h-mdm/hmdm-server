@@ -1,0 +1,6 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Mon Oct 28 00:17:59 MSK 2019
+classgraph-4.8.53-SNAPSHOT-jre8.jar>=
+classgraph-4.8.53-SNAPSHOT-jre8-sources.jar>=
+classgraph-4.8.53-SNAPSHOT-jre8.pom>=
+classgraph-4.8.53-SNAPSHOT-jre8-javadoc.jar>=
