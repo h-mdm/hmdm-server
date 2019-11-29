@@ -4,9 +4,6 @@ angular.module('headwind-kiosk')
                                                          configurationService, authService, $window, localization,
                                                          alertService, hintService, $timeout) {
         $scope.isTypical = false;
-        $scope.sort = {
-            by: 'name'
-        };
 
         $scope.paging = {
             currentPage: 1,
@@ -305,6 +302,10 @@ angular.module('headwind-kiosk')
 
             $scope.successMessage = null;
 
+            $scope.sort = {
+                by: 'name'
+            };
+
             $scope.pkgInfoVisible = function (application) {
                 return application.type !== 'web';
             };
@@ -319,8 +320,13 @@ angular.module('headwind-kiosk')
 
             $scope.filterApps = function (item) {
                 var filter = ($scope.paging.filterText || '').toLowerCase();
-                return (item.name && item.name.toLowerCase().indexOf(filter) >= 0) ||
+                var hide = ($scope.sort.by === 'pkg') && (item.type === 'web');
+
+                return !hide && (
+                    (item.name && item.name.toLowerCase().indexOf(filter) >= 0)
+                    ||
                     (item.pkg && item.pkg.toLowerCase().indexOf(filter) >= 0)
+                );
             };
 
             $scope.addApp = function () {

@@ -38,7 +38,7 @@ public interface SyncResponseInt {
 
     String getBackgroundImageUrl();
 
-    List<Application> getApplications();
+    List<SyncApplicationInt> getApplications();
 
     String getPassword();
 

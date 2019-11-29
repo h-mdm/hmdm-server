@@ -24,6 +24,7 @@ package com.hmdm.rest.json;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -69,7 +70,7 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     private String title;
 
     @ApiModelProperty("A list of applications to be used on device")
-    private List<Application> applications;
+    private List<SyncApplicationInt> applications;
 
     @ApiModelProperty("A flag indicating if GPS is enabled on device")
     private Boolean gps;
@@ -129,7 +130,11 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         }
 
         this.password = CryptoUtil.getMD5String(password);
-        this.applications = (applications != null ? applications : new LinkedList<>());
+        this.applications = (
+                applications != null ?
+                        applications.stream().map(SyncApplication::new).collect(Collectors.toList())
+                        : new LinkedList<>()
+        );
     }
 
     public SyncResponse(Configuration settings, List<Application> applications, Device device) {
@@ -147,7 +152,11 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         }
 
         this.password = CryptoUtil.getMD5String(settings.getPassword());
-        this.applications = (applications != null ? applications : new LinkedList<>());
+        this.applications = (
+                applications != null ?
+                        applications.stream().map(SyncApplication::new).collect(Collectors.toList())
+                        : new LinkedList<>()
+        );
     }
 
     @Override
@@ -178,7 +187,7 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     }
 
     @Override
-    public List<Application> getApplications() {
+    public List<SyncApplicationInt> getApplications() {
         return this.applications;
     }
 
