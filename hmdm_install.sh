@@ -5,7 +5,7 @@
 #
 TOMCAT_BASE=/var/lib/tomcat8
 REPOSITORY_BASE=https://h-mdm.com/files
-CLIENT_VERSION=2.17
+CLIENT_VERSION=2.36
 DEFAULT_SQL_HOST=localhost
 DEFAULT_SQL_PORT=5432
 DEFAULT_SQL_BASE=hmdm
@@ -18,11 +18,11 @@ TOMCAT_HOST="localhost"
 DEFAULT_PROTOCOL=http
 DEFAULT_BASE_HOST=
 DEFAULT_BASE_PATH="/hmdm"
+DEFAULT_PORT="8080"
 TEMP_DIRECTORY="/tmp"
 TEMP_SQL_FILE="$TEMP_DIRECTORY/hmdm_init.sql"
 INSTALL_FLAG_FILE="$TEMP_DIRECTORY/hmdm_install_flag"
 TOMCAT_USER="tomcat"
-INSTALL_FILES=("wifi-manager-4-2-7-220.apk")
 
 # Check if we are root
 CURRENTUSER=$(whoami)
@@ -90,7 +90,6 @@ fi
 #fi
 
 CLIENT_APK="hmdm-$CLIENT_VERSION-$CLIENT_VARIANT.apk"
-INSTALL_FILES+=("$CLIENT_APK")
 
 read -e -p "Please choose the installation language (en/ru) [en]: " -i "en" LANGUAGE
 echo
@@ -133,12 +132,20 @@ if [ ! -d $LOCATION ]; then
 fi
 if [ ! -d $LOCATION/files ]; then
     mkdir $LOCATION/files
+    chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/files || exit 1
 fi
 if [ ! -d $LOCATION/plugins ]; then
     mkdir $LOCATION/plugins
+    chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/plugins || exit 1
 fi
-chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/files || exit 1
-chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/plugins || exit 1
+if [ ! -d $LOCATION/logs ]; then
+    mkdir $LOCATION/logs
+    chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/logs || exit 1
+fi
+
+# Logger configuration
+cat ./install/log4j_template.xml | sed "s|_BASE_DIRECTORY_|$LOCATION|g" > $LOCATION/log4j-hmdm.xml
+chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/log4j-hmdm.xml
 
 echo
 echo "Web application setup"
@@ -149,12 +156,23 @@ echo
 
 read -e -p "Protocol (http|https) [$DEFAULT_PROTOCOL]: " -i "$DEFAULT_PROTOCOL" PROTOCOL
 read -e -p "Domain name or public IP (e.g. example.com): " -i "$DEFAULT_BASE_HOST" BASE_HOST
-read -e -p "Project path on server [$DEFAULT_BASE_PATH]: " -i "$DEFAULT_BASE_PATH" BASE_PATH
+read -e -p "Port (leave empty for default ports 80 or 443): " -i "$DEFAULT_PORT" PORT
+read -e -p "Project path on server or ROOT [$DEFAULT_BASE_PATH]: " -i "$DEFAULT_BASE_PATH" BASE_PATH
 read -e -p "Tomcat virtual host [$TOMCAT_HOST]: " -i "$TOMCAT_HOST" TOMCAT_HOST
+
+TOMCAT_DEPLOY_PATH=$BASE_PATH
+if [ "$BASE_PATH" == "ROOT" ]; then
+    BASE_PATH=""
+fi 
+
+if [[ ! -z "$PORT" ]]; then
+    BASE_HOST="$BASE_HOST:$PORT"
+fi
+
 echo
 echo "Ready to install!"
 echo "Location on server: $LOCATION"
-echo "URL: $PROTOCOL://$BASE_HOST:8080$BASE_PATH"
+echo "URL: $PROTOCOL://$BASE_HOST$BASE_PATH"
 read -p "Is this information correct [Y/n]? " -n 1 -r
 echo
 
@@ -162,54 +180,39 @@ if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
-# Copy files from the installer or download them from the web
-for APK in ${INSTALL_FILES[@]}; do
-    if [ -f "$DEFAULT_LOCATION/files/$APK" ]; then
-        continue
-    fi
-    if [ ! -f "./install/files/$APK" ]; then
-        wget -O "$DEFAULT_LOCATION/files/$APK" "$REPOSITORY_BASE/$APK"
-        if [ "$?" -eq 0 ]; then
-            echo "$APK downloaded to $DEFAULT_LOCATION/files"
-        else
-            echo "FAILED to download $REPOSITORY_BASE/$APK"
-            rm -f "$DEFAULT_LOCATION/files/$APK"
-        fi
-    else
-        cp "./install/files/$APK" "$DEFAULT_LOCATION/files/$APK" > /dev/null
-        if [ "$?" -eq 0 ]; then
-            echo "$APK copied to $DEFAULT_LOCATION/files"
-        else
-            echo "FAILED to copy ./install/files/$APK to $DEFAULT_LOCATION/files"
-        fi        
-    fi
-done
-
 # Prepare the XML config
 if [ ! -f ./install/context_template.xml ]; then
-    echo "ERROR: Missing ./install/context.xml!"
+    echo "ERROR: Missing ./install/context_template.xml!"
     echo "The package seems to be corrupted!"
     exit 1
 fi
 
+# Removing old application
+rm -rf $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH > /dev/null 2>&1
+rm -f $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war > /dev/null 2>&1
+
 TOMCAT_CONFIG_PATH=$TOMCAT_HOME/conf/$TOMCAT_ENGINE/$TOMCAT_HOST
 mkdir -p $TOMCAT_CONFIG_PATH || exit 1
-cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g" > $TOMCAT_CONFIG_PATH/$BASE_PATH.xml
+cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 if [ "$?" -ne 0 ]; then
-    echo "Failed to create a Tomcat config file $TOMCAT_CONFIG_PATH/$BASE_PATH.xml!"
+    echo "Failed to create a Tomcat config file $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml!"
     exit 1
 fi 
-echo "Tomcat config file created: $TOMCAT_CONFIG_PATH/$BASE_PATH.xml"
+echo "Tomcat config file created: $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml"
 
-echo "Deploying $SERVER_WAR to Tomcat: $TOMCAT_HOME/webapps/$BASE_PATH.war"
+echo "Deploying $SERVER_WAR to Tomcat: $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war"
 rm -f $INSTALL_FLAG_FILE > /dev/null 2>&1
-cp $SERVER_WAR $TOMCAT_HOME/webapps/$BASE_PATH.war
+cp $SERVER_WAR $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war
 
 # Waiting until the end of deployment
-SUCCESSFUL_DEPLOY=
+SUCCESSFUL_DEPLOY=0
 for i in {1..60}; do
     if [ -f $INSTALL_FLAG_FILE ]; then
-        SUCCESSFUL_DEPLOY=1
+        if [[ $(< $INSTALL_FLAG_FILE) == "OK" ]]; then
+            SUCCESSFUL_DEPLOY=1
+        else
+            SUCCESSFUL_DEPLOY=0
+        fi
         break
     fi
     echo -n "."
@@ -232,10 +235,11 @@ if [ "$?" -ne 0 ]; then
     echo "See $TEMP_SQL_FILE for details."
     exit 1
 fi
-rm $TEMP_SQL_FILE
+rm -f $TEMP_SQL_FILE > /dev/null 2>&1
 
 echo
 echo "======================================"
 echo "Headwind MDM has been installed!"
 echo "To continue, open in your web browser:"
-echo "$PROTOCOL://$BASE_HOST:8080$BASE_PATH"
+echo "$PROTOCOL://$BASE_HOST$BASE_PATH"
+echo "Login: admin:admin"

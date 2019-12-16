@@ -28,10 +28,13 @@
     <!-- Don't change this -->
     <Parameter name="role.orgadmin.id" value="2"/>
 
+    <!-- Swagger Docs UI location -->
+    <Parameter name="swagger.host" value="_BASE_HOST_"/>
+    <Parameter name="swagger.base.path" value="_BASE_PATH_/rest"/>
+
     <Parameter name="initialization.completion.signal.file" value="_INSTALL_FLAG_"/>
 
+    <Parameter name="log4j.config" value="file://_BASE_DIRECTORY_/log4j-hmdm.xml"/>
+
     <Parameter name="aapt.command" value="aapt"/>
-
-    <Parameter name="log4j.config" value="_BASE_DIRECTORY_/log4j.xml"/>
-
 </Context>

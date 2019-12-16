@@ -1,6 +1,12 @@
 UPDATE users SET email='info@h-mdm.com' WHERE id=1;
 
-INSERT INTO settings (id, backgroundcolor, textcolor, backgroundimageurl, columndisplayeddevicestatus, columndisplayeddevicedate, columndisplayeddevicenumber, columndisplayeddevicemodel, columndisplayeddevicepermissionsstatus, columndisplayeddeviceappinstallstatus, columndisplayeddeviceconfiguration, iconsize, desktopheader, columndisplayeddeviceimei, columndisplayeddevicephone, columndisplayeddevicedesc, columndisplayeddevicegroup, customerid, usedefaultlanguage, language) VALUES (1, '#1c40e3', '#fcfcfc', NULL, true, true, true, NULL, true, true, true, 'SMALL', 'NO_HEADER', NULL, NULL, NULL, NULL, 1, true, NULL);
+INSERT INTO settings (id, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, customerid, usedefaultlanguage, language) VALUES (1, '#1c40e3', '#fcfcfc', NULL, 'SMALL', 'NO_HEADER', 1, true, NULL);
+
+INSERT INTO userrolesettings (id, roleid, customerid, columndisplayeddevicestatus, columndisplayeddevicedate, columndisplayeddevicenumber, columndisplayeddevicemodel, columndisplayeddevicepermissionsstatus, columndisplayeddeviceappinstallstatus, columndisplayeddeviceconfiguration, columndisplayeddeviceimei, columndisplayeddevicephone, columndisplayeddevicedesc, columndisplayeddevicegroup, columndisplayedlauncherversion) VALUES 
+(1, 1, 1, true, true, true, NULL, true, true, true, NULL, NULL, NULL, NULL, NULL),
+(2, 2, 1, true, true, true, NULL, true, true, true, NULL, NULL, NULL, NULL, NULL),
+(3, 3, 1, true, true, true, NULL, true, true, true, NULL, NULL, NULL, NULL, NULL),
+(4, 100, 1, true, true, true, NULL, true, true, true, NULL, NULL, NULL, NULL, NULL);
 
 SELECT pg_catalog.setval('public.settings_id_seq', 1, true);
 
@@ -50,9 +56,11 @@ INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestver
     (4, 'com.google.android.apps.docs', 'Google Drive', true, 1, true, 10003),
     (30, 'com.huawei.android.launcher', 'Штатная оболочка (Huawei)', false, 1, true, 10029),
     (8, 'com.android.browser', 'Браузер (generic)', true, 1, true, 10007),
-    (46, 'com.hmdm.launcher', 'Headwind MDM', false, 1, false, 10045);
+    (46, 'com.hmdm.launcher', 'Headwind MDM', false, 1, false, 10045),
+    (47, 'com.huawei.android.internal.app', 'Huawei - выбор лаунчера', false, 1, true, 10046);
 
-SELECT pg_catalog.setval('public.applications_id_seq', 46, true);
+
+SELECT pg_catalog.setval('public.applications_id_seq', 47, true);
 
 INSERT INTO applicationversions (id, applicationid, version, url) VALUES 
     (10000, 1, '0', NULL),
@@ -61,7 +69,7 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10003, 4, '0', NULL),
     (10004, 5, '0', NULL),
     (10005, 6, '0', NULL),
-    (10006, 7, '4.2.7-220', '_HMDM_BASE_/files//wifi-manager-4-2-7-220.apk'),
+    (10006, 7, '4.2.7-220', 'https://h-mdm.com/files/wifi-manager-4-2-7-220.apk'),
     (10007, 8, '0', NULL),
     (10008, 9, '0', NULL),
     (10009, 10, '0', NULL),
@@ -98,9 +106,10 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10040, 41, '0', NULL),
     (10041, 42, '0', NULL),
     (10042, 43, '0', NULL),
-    (10045, 46, '_HMDM_VERSION_', '_HMDM_BASE_/files//HMDM_APK');
+    (10045, 46, '_HMDM_VERSION_', 'https://h-mdm.com/files/_HMDM_APK_'),
+    (10046, 47, '0', NULL);
 
-SELECT pg_catalog.setval('public.applicationversions_id_seq', 10045, true);
+SELECT pg_catalog.setval('public.applicationversions_id_seq', 10046, true);
 
 ALTER TABLE applications ADD CONSTRAINT applications_latestversion_fkey FOREIGN KEY (latestversion) REFERENCES applicationversions(id) ON DELETE SET NULL;
 
@@ -152,9 +161,10 @@ INSERT INTO configurationapplications (id, configurationid, applicationid, remov
     (40, 1, 11, false, false, 10010),
     (41, 1, 28, false, false, 10027),
     (42, 1, 1, false, false, 10000),
-    (43, 1, 46, false, false, 10045);
+    (43, 1, 46, false, false, 10045),
+    (44, 1, 47, false, false, 10046);
     
-SELECT pg_catalog.setval('public.configurationapplications_id_seq', 43, true);
+SELECT pg_catalog.setval('public.configurationapplications_id_seq', 44, true);
 
 INSERT INTO devices (id, number, description, lastupdate, configurationid, oldconfigurationid, info, imei, phone, customerid) VALUES (1, 'h0001', 'Мое первое Android-устройство', 0, 1, NULL, NULL, NULL, NULL, 1);
 
