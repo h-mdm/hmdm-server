@@ -107,42 +107,4 @@ public class NotificationDAO {
     public void purgeMessages(int nonDeliveredMessagesLifeSpan, int deliveredMessagesLifeSpan) {
         this.notificationMapper.purgeMessages(nonDeliveredMessagesLifeSpan * 1000, deliveredMessagesLifeSpan * 1000);
     }
-
-    /**
-     * <p>Sends the messages on configuration update for the devices related to specified configuration.</p>
-     *
-     * @param configurationId an ID of updated configuration.
-     */
-    @Transactional
-    public void notifyDevicesOnUpdate(Integer configurationId) {
-        final Configuration configuration = this.configurationDAO.getConfigurationById(configurationId);
-        if (configuration != null) {
-            final List<Device> devices
-                    = this.deviceDAO.getDeviceIdsByConfigurationId(configurationId);
-            devices.forEach(device -> {
-                PushMessage message = new PushMessage();
-                message.setDeviceId(device.getId());
-                message.setMessageType("configUpdated");
-
-                this.send(message);
-            });
-        }
-    }
-
-    /**
-     * <p>Sends the message on application settings update to specified device.</p>
-     *
-     * @param deviceId an ID of device to be notified.
-     */
-    @Transactional
-    public void notifyDeviceOnApplicationSettingUpdate(Integer deviceId) {
-        final Device dbDevice = this.deviceDAO.getDeviceById(deviceId);
-        if (dbDevice != null) {
-            PushMessage message = new PushMessage();
-            message.setDeviceId(dbDevice.getId());
-            message.setMessageType("appConfigUpdated");
-
-            this.send(message);
-        }
-    }
 }

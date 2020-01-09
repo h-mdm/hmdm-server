@@ -153,6 +153,7 @@ document.localization[ 'ru_RU' ] = {
     'error.password.wrong': 'Неверный пароль',
     'error.password.empty': 'Пароль не указан',
     'error.params.missing': 'Отсутствуют параметры:',
+    'error.empty.push.options': 'Пожалуйста, выберите вариант Push-уведомлений',
 
     'table.filtering.check.all': 'Выбрать все',
     'table.filtering.uncheck.all': 'Отменить все',
@@ -252,6 +253,10 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.request.updates.wifi': 'По Wi-Fi',
     'form.configuration.settings.request.updates.prompt.gps': 'Для отслеживания координат по GPS необходимо включить GPS',
     'form.configuration.settings.request.updates.prompt.wifi': 'Для отслеживания координат по Wi-Fi необходимо включить Wi-Fi',
+    'form.configuration.settings.push.options' : 'Push-уведомления',
+    'form.configuration.settings.push.options.mqtt.worker' : 'MQTT протокол (энергосбережение)',
+    'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT протокол (доставка в спящем режиме)',
+    'form.configuration.settings.push.options.polling' : 'Опрос URL по HTTP',
 
     'form.password.title': 'Сменить пароль',
     'form.password.label.user': 'Пользователь',
@@ -804,13 +809,6 @@ document.localization[ 'ru_RU' ] = {
     'plugin.deviceinfo.intervalMins.option.5': '6 часов',
     'plugin.deviceinfo.intervalMins.option.6': '12 часов',
     'plugin.deviceinfo.intervalMins.option.7': '24 часа',
-
-    'plugin.devicereset.localization.key.name': 'Сброс настроек',
-    'plugin.devicereset.tab.title': 'Сброс к заводским астройкам',
-    'plugin.devicereset.text.line1': 'Сброс к заводским настройкам приведет к удалению Headwind MDM и невозможности управлять устройством до его повторной настройки.',
-    'plugin.devicereset.text.line2': 'Вы уверены, что хотите выполнить сброс устройства "${deviceNumber}" к заводским настройкам?',
-    'plugin.devicereset.button.submit': 'Сбросить настройки',
-    'plugin.devicereset.success': 'Настройки сбрасываются',
 
     'breadcrumb.devices': 'Устройства',
     'breadcrumb.applications': 'Приложения',

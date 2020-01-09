@@ -74,12 +74,6 @@ public class DeviceLogPluginSettingsResource {
      */
     private DeviceLogPluginSettingsDAO settingsDAO;
 
-    private GroupDAO groupDAO;
-
-    private ConfigurationDAO configurationDAO;
-
-    private DeviceDAO deviceDAO;
-
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -90,14 +84,8 @@ public class DeviceLogPluginSettingsResource {
      * <p>Constructs new <code>PhotoPluginSettingsResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceLogPluginSettingsResource(DeviceLogPluginSettingsDAO settingsDAO,
-                                           DeviceDAO deviceDAO,
-                                           GroupDAO groupDAO,
-                                           ConfigurationDAO configurationDAO) {
+    public DeviceLogPluginSettingsResource(DeviceLogPluginSettingsDAO settingsDAO) {
         this.settingsDAO = settingsDAO;
-        this.groupDAO = groupDAO;
-        this.configurationDAO = configurationDAO;
-        this.deviceDAO = deviceDAO;
     }
 
     /**
@@ -193,75 +181,6 @@ public class DeviceLogPluginSettingsResource {
             return Response.PERMISSION_DENIED();
         } catch (Exception e) {
             log.error("Failed to delete device log plugin settings rule #{} due to unexpected error", id, e);
-            return Response.INTERNAL_ERROR();
-        }
-    }
-
-    /**
-     * <p>Gets the list of groups matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of groups matching the specified filter.
-     */
-    @ApiOperation(value = "", hidden = true)
-    @POST
-    @Path("/private/group/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroups(String filter) {
-        try {
-            List<LookupItem> groups = this.groupDAO.getAllGroupsByValue(filter)
-                    .stream()
-                    .map(group -> new LookupItem(group.getId(), group.getName()))
-                    .collect(Collectors.toList());
-            return Response.OK(groups);
-        } catch (Exception e) {
-            log.error("Failed to search the groups due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
-        }
-    }
-
-    /**
-     * <p>Gets the list of configurations matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of configurations matching the specified filter.
-     */
-    @ApiOperation(value = "", hidden = true)
-    @POST
-    @Path("/private/configuration/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getConfigurations(String filter) {
-        try {
-            List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByTypeAndValue(0, filter)
-                    .stream()
-                    .map(configuration -> new LookupItem(configuration.getId(), configuration.getName()))
-                    .collect(Collectors.toList());
-            return Response.OK(groups);
-        } catch (Exception e) {
-            log.error("Failed to search the configurations due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
-        }
-    }
-
-    /**
-     * <p>Gets the list of devices matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of devices matching the specified filter.
-     */
-    @ApiOperation(value = "", hidden = true)
-    @POST
-    @Path("/private/device/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDevices(DeviceLogFilter filter) {
-        try {
-            List<LookupItem> devices = this.deviceDAO.findDevices(filter.getDeviceFilter(), filter.getPageSize())
-                    .stream()
-                    .map(device -> new LookupItem(device.getId(), device.getName()))
-                    .collect(Collectors.toList());
-            return Response.OK(devices);
-        } catch (Exception e) {
-            log.error("Failed to search the devices due to unexpected error. Filter: {}", filter, e);
             return Response.INTERNAL_ERROR();
         }
     }

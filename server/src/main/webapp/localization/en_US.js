@@ -153,6 +153,7 @@ document.localization ['en_US'] = {
     'error.password.wrong': 'Invalid password',
     'error.password.empty': 'Password not specified',
     'error.params.missing': 'Missing parameters:',
+    'error.empty.push.options': 'Please select the Push notifications options',
 
     'table.filtering.check.all': 'Select All',
     'table.filtering.uncheck.all': 'Cancel All',
@@ -251,7 +252,11 @@ document.localization ['en_US'] = {
     'form.configuration.settings.request.updates.wifi': 'Over Wi-Fi',
     'form.configuration.settings.request.updates.prompt.gps': 'To track GPS coordinates you need to enable GPS',
     'form.configuration.settings.request.updates.prompt.wifi': 'To track Wi-Fi coordinates you need to enable Wi-Fi',
-    
+    'form.configuration.settings.push.options' : 'Push notifications',
+    'form.configuration.settings.push.options.mqtt.worker' : 'MQTT protocol (save battery)',
+    'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT protocol (instant delivery)',
+    'form.configuration.settings.push.options.polling' : 'HTTP polling',
+
     'form.password.title': 'Change Password',
     'form.password.label.user': 'User',
     'form.password.label.password.new': 'New password',
@@ -804,13 +809,6 @@ document.localization ['en_US'] = {
     'plugin.deviceinfo.intervalMins.option.5': '6 hours',
     'plugin.deviceinfo.intervalMins.option.6': '12 hours',
     'plugin.deviceinfo.intervalMins.option.7': '24 hours',
-
-    'plugin.devicereset.localization.key.name': 'Reset settings',
-    'plugin.devicereset.tab.title': 'Reset to factory settings',
-    'plugin.devicereset.text.line1': 'Resetting to factory settings will delete Headwind MDM and inability to control the device until it is reconfigured.',
-    'plugin.devicereset.text.line2': 'Are you sure you want to reset the device "${deviceNumber}" to the factory settings?',
-    'plugin.devicereset.button.submit': 'Reset settings',
-    'plugin.devicereset.success': 'Settings are reset',
 
     'breadcrumb.devices': 'Devices',
     'breadcrumb.applications': 'Applications',

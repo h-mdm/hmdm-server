@@ -90,10 +90,6 @@ public class DeviceLogResource {
      */
     private DeviceLogDAO deviceLogDAO;
 
-    private DeviceDAO deviceDAO;
-
-    private ApplicationDAO applicationDAO;
-
     private PluginStatusCache pluginStatusCache;
 
     /**
@@ -112,13 +108,9 @@ public class DeviceLogResource {
      */
     @Inject
     public DeviceLogResource(DeviceLogDAO deviceLogDAO,
-                             DeviceDAO deviceDAO,
-                             ApplicationDAO applicationDAO,
                              PluginStatusCache pluginStatusCache,
                              UnsecureDAO unsecureDAO) {
         this.deviceLogDAO = deviceLogDAO;
-        this.deviceDAO = deviceDAO;
-        this.applicationDAO = applicationDAO;
         this.pluginStatusCache = pluginStatusCache;
         this.unsecureDAO = unsecureDAO;
     }
@@ -292,44 +284,4 @@ public class DeviceLogResource {
         }
     }
 
-    /**
-     * <p>Gets the list of devices matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of devices matching the specified filter.
-     */
-    @ApiOperation(value = "", hidden = true)
-    @POST
-    @Path("/private/device/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDevices(DeviceLogFilter filter) {
-        try {
-            List<DeviceLookupItem> devices = this.deviceDAO.findDevices(filter.getDeviceFilter(), filter.getPageSize());
-            return Response.OK(devices);
-        } catch (Exception e) {
-            logger.error("Failed to search the devices due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
-        }
-    }
-
-    /**
-     * <p>Gets the list of devices matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of devices matching the specified filter.
-     */
-    @ApiOperation(value = "", hidden = true)
-    @POST
-    @Path("/private/application/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getApplications(DeviceLogFilter filter) {
-        try {
-            List<LookupItem> applications
-                    = this.applicationDAO.getApplicationPkgLookup(filter.getApplicationFilter(), filter.getPageSize());
-            return Response.OK(applications);
-        } catch (Exception e) {
-            logger.error("Failed to search the applications due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
-        }
-    }
 }

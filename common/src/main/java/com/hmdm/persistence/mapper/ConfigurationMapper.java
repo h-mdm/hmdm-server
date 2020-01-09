@@ -63,6 +63,7 @@ public interface ConfigurationMapper {
             "iconSize=#{iconSize}, " +
             "desktopHeader=#{desktopHeader}, " +
             "requestUpdates=#{requestUpdates}, " +
+            "pushOptions=#{pushOptions}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +

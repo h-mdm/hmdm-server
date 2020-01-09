@@ -26,11 +26,11 @@
     <insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
                                     iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates,
-                                    mainAppId, eventReceivingComponent, kioskMode, contentAppId, autoUpdate,
+                                    pushOptions, mainAppId, eventReceivingComponent, kioskMode, contentAppId, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
                 #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
-                #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId}, #{autoUpdate},
+                #{pushOptions}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})
     </insert>
 

@@ -23,19 +23,17 @@ package com.hmdm.rest.resource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import javax.inject.Named;
+
+import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.ConfigurationReferenceExistsException;
+import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.UpgradeConfigurationApplicationRequest;
+import com.sun.org.apache.bcel.internal.generic.PUSH;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(tags = {"Configuration"}, authorizations = {@Authorization("Bearer Token")})
 @Singleton
@@ -59,7 +58,7 @@ public class ConfigurationResource {
 
     private ConfigurationDAO configurationDAO;
     private ApplicationDAO applicationDAO;
-    private NotificationDAO notificationDAO;
+    private PushService pushService;
     private String baseUrl;
 
     /**
@@ -71,11 +70,11 @@ public class ConfigurationResource {
     @Inject
     public ConfigurationResource(ConfigurationDAO configurationDAO,
                                  ApplicationDAO applicationDAO,
-                                 NotificationDAO notificationDAO,
+                                 PushService pushService,
                                  @Named("base.url") String baseUrl) {
         this.configurationDAO = configurationDAO;
         this.applicationDAO = applicationDAO;
-        this.notificationDAO = notificationDAO;
+        this.pushService = pushService;
         this.baseUrl = baseUrl;
     }
     // =================================================================================================================
@@ -130,6 +129,31 @@ public class ConfigurationResource {
         return Response.OK(configurations);
     }
 
+
+    // =================================================================================================================
+    /**
+     * <p>Gets the list of configuration id/names matching the specified filter for autocompletions.</p>
+     *
+     * @param filter a filter to be used for filtering the records.
+     * @return a response with list of configurations matching the specified filter.
+     */
+    @ApiOperation(value = "Get configurations for autocompletions")
+    @POST
+    @Path("/autocomplete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getConfigurations(String filter) {
+        try {
+            List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByTypeAndValue(0, filter)
+                    .stream()
+                    .map(configuration -> new LookupItem(configuration.getId(), configuration.getName()))
+                    .collect(Collectors.toList());
+            return Response.OK(groups);
+        } catch (Exception e) {
+            log.error("Failed to search the configurations due to unexpected error. Filter: {}", filter, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
     // =================================================================================================================
     @ApiOperation(
             value = "Create or update configuration",
@@ -149,7 +173,7 @@ public class ConfigurationResource {
                     this.configurationDAO.insertConfiguration(configuration);
                 } else {
                     this.configurationDAO.updateConfiguration(configuration);
-                    this.notificationDAO.notifyDevicesOnUpdate(configuration.getId());
+                    this.pushService.notifyDevicesOnUpdate(configuration.getId());
                 }
                 configuration = getConfiguration(configuration.getId());
 

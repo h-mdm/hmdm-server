@@ -26,4 +26,9 @@
 
     <Parameter name="log4j.config" value="${log4j.config}"/>
 
+    <Parameter name="plugin.photo.enable.places" value="${plugin.photo.enable.places}"/>
+
+    <!-- MQTT notification service parameters -->
+    <Parameter name="mqtt.server.uri" value="${mqtt.server.uri}"/>
+
 </Context>

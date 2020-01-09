@@ -185,6 +185,7 @@ public class SyncResource {
                 data.setLockStatusBar(configuration.isBlockStatusBar());
                 data.setSystemUpdateType(configuration.getSystemUpdateType());
                 data.setRequestUpdates(configuration.getRequestUpdates().getTransmittedValue());
+                data.setPushOptions(configuration.getPushOptions());
                 if (configuration.getSystemUpdateType() == 2) {
                     data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
                     data.setSystemUpdateTo(configuration.getSystemUpdateTo());

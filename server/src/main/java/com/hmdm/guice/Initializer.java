@@ -43,10 +43,7 @@ import com.hmdm.guice.module.MainRestModule;
 import com.hmdm.guice.module.PersistenceModule;
 import com.hmdm.guice.module.PrivateRestModule;
 import com.hmdm.guice.module.PublicRestModule;
-import com.hmdm.notification.guice.module.NotificationLiquibaseModule;
-import com.hmdm.notification.guice.module.NotificationPersistenceModule;
-import com.hmdm.notification.guice.module.NotificationRestModule;
-import com.hmdm.notification.guice.module.NotificationTaskModule;
+import com.hmdm.notification.guice.module.*;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugin.guice.module.PluginLiquibaseModule;
@@ -142,6 +139,8 @@ public final class Initializer extends GuiceServletContextListener {
         modules.add(new NotificationPersistenceModule(this.context));
         modules.add(new NotificationLiquibaseModule(this.context));
         modules.add(new NotificationRestModule());
+        modules.add(new NotificationEngineSelectorModule());
+        modules.add(new NotificationMqttConfigModule(this.context));
         modules.add(new PluginPersistenceModule(this.context));
         modules.add(new PluginLiquibaseModule(this.context));
         modules.add(new PluginRestModule());
@@ -156,6 +155,9 @@ public final class Initializer extends GuiceServletContextListener {
     private void initTasks() {
         final NotificationTaskModule notificationTaskModule = this.injector.getInstance(NotificationTaskModule.class);
         notificationTaskModule.init();
+
+        final NotificationMqttTaskModule notificationMqttTaskModule = this.injector.getInstance(NotificationMqttTaskModule.class);
+        notificationMqttTaskModule.init();
 
         final List<Class<? extends PluginTaskModule>> pluginTaskModules = PluginList.getPluginTaskModules();
         if (pluginTaskModules != null) {

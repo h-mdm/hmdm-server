@@ -58,10 +58,10 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
                     };
                 }
             },
-            lookupDevices: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/device/search', method: 'POST'},
-            lookupApplications: {url: 'rest/plugins/devicelog/log/private/application/search', method: 'POST'},
-            lookupGroups: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/group/search', method: 'POST'},
-            lookupConfigurations: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/configuration/search', method: 'POST'},
+            lookupDevices: {url: 'rest/private/devices/autocomplete', method: 'POST'},
+            lookupApplications: {url: 'rest/private/applications/autocomplete', method: 'POST'},
+            lookupGroups: {url: 'rest/private/groups/autocomplete', method: 'POST'},
+            lookupConfigurations: {url: 'rest/private/configurations/autocomplete', method: 'POST'},
         });
     })
     .controller('PluginDeviceLogTabController', function ($scope, $rootScope, $window, $location, $interval, $http,
@@ -128,12 +128,9 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         };
 
         $scope.getDevices = function(val) {
-            return $http.post('rest/plugins/devicelog/log/private/device/search', {
-                deviceFilter: val,
-                pageSize: 10
-            }).then(function(response){
-                if (response.data.status === 'OK') {
-                    return response.data.data.map(function (device) {
+            return pluginDeviceLogService.lookupDevices(val).$promise.then(function(response){
+                if (response.status === 'OK') {
+                    return response.data.map(function (device) {
                         var deviceInfo = getDeviceInfo(device);
                         var serverIMEI = device.imei || '';
                         var deviceInfoIMEI = deviceInfo ? (deviceInfo.imei || '') : '';
@@ -158,12 +155,9 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         };
 
         $scope.getApplications = function(val) {
-            return $http.post('rest/plugins/devicelog/log/private/application/search', {
-                applicationFilter: val,
-                pageSize: 10
-            }).then(function(response){
-                if (response.data.status === 'OK') {
-                    return response.data.data.map(function (app) {
+            return pluginDeviceLogService.lookupApplications(val).$promise.then(function(response){
+                if (response.status === 'OK') {
+                    return response.data.map(function (app) {
                         return app.name;
                     });
                 } else {
@@ -379,10 +373,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         var configurationCandidates = [];
 
         $scope.getApplications = function(val) {
-            return pluginDeviceLogService.lookupApplications({
-                applicationFilter: val,
-                pageSize: 10
-            }).$promise.then(function(response){
+            return pluginDeviceLogService.lookupApplications(val).$promise.then(function(response){
                 if (response.status === 'OK') {
                     appCandidates = response.data;
                     return response.data.map(function (item) {
@@ -583,10 +574,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         };
 
         $scope.getDevices = function(val) {
-            return pluginDeviceLogService.lookupDevices({
-                deviceFilter: val,
-                pageSize: 10
-            }).$promise.then(function(response){
+            return pluginDeviceLogService.lookupDevices(val).$promise.then(function(response){
                 if (response.status === 'OK') {
                     deviceCandidates = response.data.filter(function (device) {
                         return $scope.rule.devices.findIndex(function (ruleDevice) {

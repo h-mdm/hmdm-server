@@ -79,6 +79,22 @@
                     </div>
 
                     <div class='form-group'>
+                        <label class='col-sm-3 control-label' for="pushOptions-c"
+                               localized>form.configuration.settings.push.options</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="pushOptions-c" name="pushOptions"
+                                    ng-model='configuration.pushOptions'>
+                                <option ng-value="'mqttWorker'" ng-selected="configuration.pushOptions === 'mqttWorker'"
+                                        localized>form.configuration.settings.push.options.mqtt.worker</option>
+                                <option ng-value="'mqttAlarm'" ng-selected="configuration.pushOptions === 'mqttAlarm'"
+                                        localized>form.configuration.settings.push.options.mqtt.alarm</option>
+                                <option ng-value="'polling'" ng-selected="configuration.pushOptions === 'polling'"
+                                        localized>form.configuration.settings.push.options.polling</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.common.gps</label>
                         <div class='col-sm-9 three-state'>
                             <label><span localized>form.configuration.settings.common.gps.any</span>

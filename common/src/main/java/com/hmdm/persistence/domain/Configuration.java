@@ -76,6 +76,8 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean usbStorage;
     @ApiModelProperty("A type of location tracking")
     private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
+    @ApiModelProperty("Push notification options")
+    private String pushOptions;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -384,6 +386,14 @@ public class Configuration implements CustomerData, Serializable {
         this.requestUpdates = requestUpdates;
     }
 
+    public String getPushOptions() {
+        return pushOptions;
+    }
+
+    public void setPushOptions(String pushOptions) {
+        this.pushOptions = pushOptions;
+    }
+
     public Configuration newCopy() {
         Configuration copy = new Configuration();
 
@@ -412,6 +422,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setMobileData(getMobileData());
         copy.setUsbStorage(getUsbStorage());
         copy.setRequestUpdates(getRequestUpdates());
+        copy.setPushOptions(getPushOptions());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());

@@ -1529,4 +1529,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="09.01.20-11:10" author="seva" context="common">
+        <comment>Column,new: configurations#pushOptions</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN pushOptions VARCHAR(20) NOT NULL DEFAULT 'mqttWorker';
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN pushOptions;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

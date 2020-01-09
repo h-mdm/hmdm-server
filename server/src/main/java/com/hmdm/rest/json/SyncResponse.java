@@ -57,6 +57,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("A type of location tracking")
     private String requestUpdates;
 
+    @ApiModelProperty("Push notification options")
+    private String pushOptions;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -349,5 +352,13 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setRequestUpdates(String requestUpdates) {
         this.requestUpdates = requestUpdates;
+    }
+
+    public String getPushOptions() {
+        return pushOptions;
+    }
+
+    public void setPushOptions(String pushOptions) {
+        this.pushOptions = pushOptions;
     }
 }

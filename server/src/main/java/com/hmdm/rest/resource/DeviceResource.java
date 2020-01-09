@@ -38,8 +38,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.rest.json.view.devicelist.DeviceListView;
 import com.hmdm.rest.json.view.devicelist.DeviceView;
 import com.hmdm.security.SecurityContext;
@@ -68,7 +70,7 @@ public class DeviceResource {
 
     private DeviceDAO deviceDAO;
     private ConfigurationDAO configurationDAO;
-    private NotificationDAO notificationDAO;
+    private PushService pushService;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -79,10 +81,10 @@ public class DeviceResource {
     @Inject
     public DeviceResource(DeviceDAO deviceDAO,
                           ConfigurationDAO configurationDAO,
-                          NotificationDAO notificationDAO) {
+                          PushService pushService) {
         this.deviceDAO = deviceDAO;
         this.configurationDAO = configurationDAO;
-        this.notificationDAO = notificationDAO;
+        this.pushService = pushService;
 
     }
 
@@ -124,6 +126,27 @@ public class DeviceResource {
 
         return Response.OK(view);
 
+    }
+
+
+    /**
+     * <p>Gets the list of device ids/names matching the specified string filter for autocompletions.</p>
+     *
+     * @param filter a filter to be used for filtering the records.
+     * @return a response with list of devices matching the specified filter.
+     */
+    @ApiOperation(value = "")
+    @POST
+    @Path("/autocomplete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDevicesForAutocomplete(String filter) {
+        try {
+            List<DeviceLookupItem> devices = this.deviceDAO.findDevices(filter, 10);
+            return Response.OK(devices);
+        } catch (Exception e) {
+            log.error("Failed to search the devices due to unexpected error. Filter: {}", filter, e);
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     // =================================================================================================================
@@ -247,7 +270,7 @@ public class DeviceResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response notifyDevicesOnUpdate(@PathParam("id") Integer id) {
         try {
-            this.notificationDAO.notifyDeviceOnApplicationSettingUpdate(id);
+            this.pushService.notifyDeviceOnApplicationSettingUpdate(id);
             return Response.OK();
         } catch (Exception e) {
             log.error("Failed to send notification on application settings update to device #{}", id, e);

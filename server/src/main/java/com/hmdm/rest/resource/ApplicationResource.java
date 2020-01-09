@@ -40,9 +40,7 @@ import com.hmdm.persistence.ApplicationVersionPackageMismatchException;
 import com.hmdm.persistence.CommonAppAccessException;
 import com.hmdm.persistence.RecentApplicationVersionExistsException;
 import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.rest.json.ApplicationConfigurationLink;
-import com.hmdm.rest.json.LinkConfigurationsToAppRequest;
-import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
+import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.DuplicateApplicationException;
 import com.hmdm.persistence.domain.Application;
-import com.hmdm.rest.json.Response;
 import com.hmdm.util.FileExistsException;
 
 import java.io.File;
@@ -102,7 +99,7 @@ public class ApplicationResource {
         return Response.OK(this.applicationDAO.getAllApplications());
     }
 
-    // =================================================================================================================
+ // =================================================================================================================
     @ApiOperation(
             value = "Search applications",
             notes = "Search applications meeting the specified filter value",
@@ -114,6 +111,29 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchApplications(@PathParam("value") @ApiParam("A filter value") String value) {
         return Response.OK(this.applicationDAO.getAllApplicationsByValue(value));
+    }
+
+    // =================================================================================================================
+
+    /**
+     * <p>Gets the list of application ids/names matching the specified filter for autocompletions.</p>
+     *
+     * @param filter a filter to be used for filtering the records.
+     * @return a response with list of devices matching the specified filter.
+     */
+    @ApiOperation(value = "Get app ids and names for autocompletions")
+    @POST
+    @Path("/autocomplete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getApplicationsForAutocomplete(String filter) {
+        try {
+            List<LookupItem> applications
+                    = this.applicationDAO.getApplicationPkgLookup(filter, 10);
+            return Response.OK(applications);
+        } catch (Exception e) {
+            logger.error("Failed to search the applications due to unexpected error. Filter: {}", filter, e);
+            return Response.INTERNAL_ERROR();
+        }
     }
 
     // =================================================================================================================

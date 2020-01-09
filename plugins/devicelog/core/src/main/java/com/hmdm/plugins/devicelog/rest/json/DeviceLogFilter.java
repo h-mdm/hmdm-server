@@ -38,7 +38,7 @@ import java.util.Date;
 public class DeviceLogFilter implements Serializable {
 
     private static final long serialVersionUID = -2102574525702596048L;
-    
+
     /**
      * <p>A number of records per single page of data to be retrieved.</p>
      */

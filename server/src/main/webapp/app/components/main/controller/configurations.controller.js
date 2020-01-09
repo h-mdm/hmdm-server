@@ -587,7 +587,9 @@ angular.module('headwind-kiosk')
                 $scope.errorMessage = '';
                 $scope.saved = false;
 
-                if (!$scope.configuration.name) {
+                if (!$scope.configuration.pushOptions) {
+                    $scope.errorMessage = localization.localize('error.empty.push.options');
+                } else if (!$scope.configuration.name) {
                     $scope.errorMessage = localization.localize('error.empty.configuration.name');
                 } else if (!$scope.configuration.password) {
                     $scope.errorMessage = localization.localize('error.empty.configuration.password');
