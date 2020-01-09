@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.plugins.messaging.persistence.mapper.MessageMapper">
+
+    <delete id="purgeOldMessages">
+        DELETE FROM plugin_messaging_messages
+        WHERE customerId = #{customerId}
+        <if test="ts != 0">
+        AND ts &lt;= #{ts}
+        </if>
+    </delete>
+
+    <select id="findAllMessages"
+            parameterType="com.hmdm.plugins.messaging.rest.json.MessageFilter"
+            resultType="com.hmdm.plugins.messaging.persistence.domain.Message">
+        SELECT pmm.*, devices.number deviceNumber
+        FROM plugin_messaging_messages pmm
+        LEFT JOIN devices ON devices.id = pmm.deviceId
+        WHERE
+            pmm.customerId = #{customerId}
+        <if test="deviceFilter != null">
+            AND (
+            devices.number ILIKE #{deviceFilter}
+            )
+        </if>
+        <if test="messageFilter != null">
+            AND (
+            pmm.message ILIKE #{messageFilter}
+            )
+        </if>
+        <if test="status != null">
+            <if test="status != -1">
+                AND (
+                pmm.status = #{status}
+                )
+            </if>
+        </if>
+        <if test="dateFrom != null">
+            AND ( pmm.ts &gt;= #{dateFromMillis} )
+        </if>
+        <if test="dateTo != null">
+            AND ( pmm.ts &lt;= #{dateToMillis} )
+        </if>
+        <if test="sortValue.equals('createTime')">
+            <if test="export == true">
+                ORDER BY pmm.ts ASC
+            </if>
+            <if test="export == false">
+                ORDER BY pmm.ts DESC
+            </if>
+        </if>
+        <if test="sortValue.equals('deviceNumber')">
+            <if test="export == true">
+                ORDER BY devices.number ASC, pmm.ts ASC
+            </if>
+            <if test="export == false">
+                ORDER BY devices.number ASC, pmm.ts DESC
+            </if>
+        </if>
+        OFFSET (#{pageNum} - 1) * #{pageSize}
+        LIMIT #{pageSize}
+    </select>
+
+    <select id="countAll"
+            parameterType="com.hmdm.plugins.messaging.rest.json.MessageFilter"
+            resultType="long">
+        SELECT COUNT(pmm.*) AS counter
+        FROM plugin_messaging_messages pmm
+        <if test="deviceFilter != null">
+            LEFT JOIN devices ON devices.id = pmm.deviceId
+        </if>
+        WHERE
+            pmm.customerId = #{customerId}
+        <if test="deviceFilter != null">
+            AND (
+            devices.number ILIKE #{deviceFilter}
+            )
+        </if>
+        <if test="messageFilter != null">
+            AND (
+            pmm.message ILIKE #{messageFilter}
+            )
+        </if>
+        <if test="status != null">
+            <if test="status != -1">
+                AND (
+                pmm.status = #{status}
+                )
+            </if>
+        </if>
+        <if test="dateFrom != null">
+            AND ( pmm.ts &gt;= #{dateFromMillis} )
+        </if>
+        <if test="dateTo != null">
+            AND ( pmm.ts &lt;= #{dateToMillis} )
+        </if>
+    </select>
+
+</mapper>

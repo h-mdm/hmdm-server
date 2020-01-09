@@ -1,0 +1,34 @@
+Headwind MDM: a corporate launcher for Android
+==============================================
+=   INSTALL INSTRUCTIONS FOR THE WEB PANEL   =
+==============================================
+
+This instruction has been tested on Ubuntu Linux 18.04 LTS.
+
+1. Install required software
+
+# sudo apt install aapt tomcat8 postgresql
+
+2. Make sure Tomcat is running
+
+telnet localhost 8080
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
+
+(if you get "Connection refused" error, fix the installation issue)
+
+3. Create the PostgreSQL database and user
+
+# sudo su postgres
+# psql
+postgres=# CREATE USER hmdm WITH PASSWORD 'topsecret';
+postgres=# CREATE DATABASE hmdm WITH OWNER=hmdm;
+postgres=# \q
+
+4. Run the installer script (as root)
+
+sudo ./hmdm_install.sh
+
+5. On success, the installer script provides you with the URL. Open Headwind MDM in browser.
+
