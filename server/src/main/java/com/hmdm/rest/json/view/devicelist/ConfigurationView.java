@@ -23,6 +23,7 @@ package com.hmdm.rest.json.view.devicelist;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.persistence.domain.Configuration;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -62,7 +63,10 @@ public class ConfigurationView implements Serializable {
     ConfigurationView(Configuration configuration) {
         this.configuration = configuration;
         this.applications = Optional.ofNullable(configuration.getApplications())
-                .map(apps -> apps.stream().map(ApplicationView::new).collect(Collectors.toList()))
+                .map(apps -> apps.stream()
+                        .filter(app -> app.getType().equals(ApplicationType.app))         // Check only real apps
+                        .map(ApplicationView::new)
+                        .collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
     }
 

@@ -726,6 +726,8 @@ document.localization ['en_US'] = {
     'plugin.deviceinfo.title.phone': 'Phone',
     'plugin.deviceinfo.title.model': 'Model',
     'plugin.deviceinfo.title.os.version': 'OS version',
+    'plugin.deviceinfo.title.mdm.mode': 'MDM mode',
+    'plugin.deviceinfo.title.launcher.type': 'Launcher variant',
     'plugin.deviceinfo.title.battery.level': 'Battery charge',
     'plugin.deviceinfo.title.permission.1': 'Permission to install as device administrator',
     'plugin.deviceinfo.title.permission.2': 'Permission to overlay on top of other windows',

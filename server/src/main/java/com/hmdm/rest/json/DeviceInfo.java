@@ -73,6 +73,9 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty(value = "The details on device location")
     private DeviceLocation location;
 
+    @ApiModelProperty(value = "Headwind MDM launcher build variant")
+    private String launcherType;
+
     public DeviceInfo() {
     }
 
@@ -164,6 +167,14 @@ public class DeviceInfo implements Serializable {
         this.location = location;
     }
 
+    public String getLauncherType() {
+        return launcherType;
+    }
+
+    public void setLauncherType(String launcherType) {
+        this.launcherType = launcherType;
+    }
+
     @Override
     public String toString() {
         return "DeviceInfo{" +
@@ -178,6 +189,7 @@ public class DeviceInfo implements Serializable {
                 ", androidVersion='" + androidVersion + '\'' +
                 ", mdmMode='" + mdmMode + '\'' +
                 ", location='" + location + '\'' +
+                ", launcherType='" + launcherType + '\'' +
                 '}';
     }
 }

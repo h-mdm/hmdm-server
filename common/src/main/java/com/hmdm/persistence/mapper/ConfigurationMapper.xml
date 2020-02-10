@@ -77,12 +77,14 @@
                    WHEN configurationApplications.configurationId IS NOT NULL THEN configurationApplications.showIcon
                    ELSE applications.showIcon
                END AS showIcon,
-               configurationApplications.action AS action
+               configurationApplications.action AS action,
+               cap.skipVersionCheck AS skipVersion
         FROM applications
         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
         INNER JOIN customers ON customers.id = applications.customerId
         INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
         LEFT JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
+        LEFT JOIN configurationApplicationParameters cap ON applications.id = cap.applicationId AND cap.configurationId = #{id}
         WHERE (applications.customerId=#{customerId}
            OR customers.master
             AND NOT EXISTS

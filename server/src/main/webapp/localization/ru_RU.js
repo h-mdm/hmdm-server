@@ -726,6 +726,8 @@ document.localization[ 'ru_RU' ] = {
     'plugin.deviceinfo.title.phone': 'Телефон',
     'plugin.deviceinfo.title.model': 'Модель',
     'plugin.deviceinfo.title.os.version': 'Версия ОС',
+    'plugin.deviceinfo.title.mdm.mode': 'Режим MDM',
+    'plugin.deviceinfo.title.launcher.type': 'Сборка лаунчера',
     'plugin.deviceinfo.title.battery.level': 'Заряд батареи',
     'plugin.deviceinfo.title.permission.1': 'Разрешение на установку как администратор устройства',
     'plugin.deviceinfo.title.permission.2': 'Разрешение на наложение поверх других окон',

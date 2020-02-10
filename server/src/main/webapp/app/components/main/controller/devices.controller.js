@@ -425,7 +425,7 @@ angular.module('headwind-kiosk')
                                         configApplications[j].installedVersion = deviceApplications[i].version;
                                         configApplications[j].status = 4; // Needs to be removed
                                     }
-                                } else if (configApplications[j].version !== '0'
+                                } else if (configApplications[j].version !== '0' && !configApplications[j].skipVersion
                                     && !areVersionsEqual(deviceApplications[i].version, configApplications[j].version)) {
                                     configApplications[j].installedVersion = deviceApplications[i].version;
                                     configApplications[j].status = 2; // Version mismatch
