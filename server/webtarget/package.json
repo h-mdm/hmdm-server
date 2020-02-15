@@ -1,0 +1,22 @@
+{
+  "name": "controlled-launcher-webclient",
+  "version": "0.1.0",
+  "devDependencies": {
+    "bower": "~1.8.8",
+    "grunt": "~1.0.4",
+    "grunt-bower-task": "~0.5.0",
+    "grunt-cli": "~1.3.2",
+    "grunt-contrib-clean": "~2.0.0",
+    "grunt-contrib-copy": "~1.0.0"
+  },
+  "dependencies": {
+    "leaflet.gridlayer.googlemutant": "~0.8.0"
+  },
+  "resolutions": {
+    "deep-extend": "0.5.1",
+    "lodash": "4.17.12"
+  },
+  "scripts": {
+    "npm-force-resolutions": "node ./node/node_modules/npm/bin/npx-cli.js --userconfig .npmrc npm-force-resolutions"
+  }
+}

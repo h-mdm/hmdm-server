@@ -38,6 +38,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.google.inject.name.Named;
 import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
@@ -71,6 +72,7 @@ public class DeviceResource {
     private DeviceDAO deviceDAO;
     private ConfigurationDAO configurationDAO;
     private PushService pushService;
+    private String baseUrl;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -81,11 +83,12 @@ public class DeviceResource {
     @Inject
     public DeviceResource(DeviceDAO deviceDAO,
                           ConfigurationDAO configurationDAO,
-                          PushService pushService) {
+                          PushService pushService,
+                          @Named("base.url") String baseUrl) {
         this.deviceDAO = deviceDAO;
         this.configurationDAO = configurationDAO;
         this.pushService = pushService;
-
+        this.baseUrl = baseUrl;
     }
 
     // =================================================================================================================
@@ -109,9 +112,17 @@ public class DeviceResource {
             }
 
             if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
+                Configuration dbConfig = configurationDAO.getConfigurationById(deviceConfigurationId);
+
+                // Here we keep only required properties
                 Configuration configuration = new Configuration();
                 configuration.setId(deviceConfigurationId);
                 configuration.setName(device.getConfigName());
+                if (dbConfig.getMainAppId() != null && dbConfig.getMainAppId() > 0 &&
+                        dbConfig.getEventReceivingComponent() != null && dbConfig.getEventReceivingComponent().length() > 0) {
+                    configuration.setQrCodeKey(dbConfig.getQrCodeKey());
+                    configuration.setBaseUrl(baseUrl);
+                }
                 configuration.setApplications(configIdToApplicationsMap.get(deviceConfigurationId));
                 configIdToConfigurationsMap.put(deviceConfigurationId, configuration);
             }

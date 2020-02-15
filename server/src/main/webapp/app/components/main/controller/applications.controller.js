@@ -291,6 +291,9 @@ angular.module('headwind-kiosk')
                         $modalInstance.close(app);
                     }
                 } else {
+                    if (response.message === 'error.duplicate.file') {
+                        response.message = 'error.version.exists';
+                    }
                     $scope.errorMessage = localization.localizeServerResponse(response);
                 }
             });
@@ -345,11 +348,19 @@ angular.module('headwind-kiosk')
             applicationService.validateApplicationPackage(request, function (response) {
                 if (response.status === 'OK') {
                     var existingAppsForPkg = response.data;
-                    if (existingAppsForPkg.length > 0) {
-                        if (!request.id || request.pkg !== application.pkg) {
+                    if (existingAppsForPkg.length > 0 && (!request.id || request.pkg !== $scope.application.pkg)) {
+                        if (existingAppsForPkg.length != 1 ||
+                            existingAppsForPkg[0].version >= request.version ||
+                            existingAppsForPkg[0].name != request.name) {
+                            // If the user change the name, he may decide to create a new app
+                            // Also, let him choose the proper option if there are multiple apps with the same package ID
                             startDuplicatePkgResolutionDialog(request, existingAppsForPkg);
-                            return;
+                        } else {
+                            // Apparently a new version, no need to confirm
+                            request.applicationId = existingAppsForPkg[0].id;
+                            doSaveApplicationVersion(request, existingAppsForPkg[0]);
                         }
+                        return;
                     }
                     doSaveAndroidApplication(request);
                 } else {

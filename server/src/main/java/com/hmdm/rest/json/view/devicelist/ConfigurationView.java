@@ -80,6 +80,16 @@ public class ConfigurationView implements Serializable {
         return configuration.getName();
     }
 
+    @ApiModelProperty("QR code to enroll the configuration")
+    public String getQrCodeKey() {
+        return configuration.getQrCodeKey();
+    }
+
+    @ApiModelProperty(hidden = true)
+    public String getBaseUrl() {
+        return configuration.getBaseUrl();
+    }
+
     @ApiModelProperty("A list of applications set and available for for configuration")
     public List<ApplicationView> getApplications() {
         return this.applications;

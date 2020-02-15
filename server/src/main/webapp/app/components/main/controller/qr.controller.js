@@ -2,10 +2,10 @@
 angular.module('headwind-kiosk')
     .controller('QRController', function ($state, $scope, $window, $stateParams, hintService, $timeout) {
         $scope.size = (Math.min($window.innerWidth, $window.innerHeight) * 0.80).toFixed(0);
-        $scope.deviceId = "";
+        $scope.deviceId = $stateParams.deviceId;
 
         $scope.formData = {
-            deviceIdNew: ""
+            deviceIdNew: $stateParams.deviceId
         };
 
         $scope.qrCodeKey = $stateParams.code;

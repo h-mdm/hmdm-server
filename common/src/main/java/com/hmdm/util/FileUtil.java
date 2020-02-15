@@ -59,6 +59,11 @@ public final class FileUtil {
         }
     }
 
+    public static String getNameFromTmpPath(String tmpFilePath) {
+        File localFile = new File(tmpFilePath);
+        return localFile.getName().split(DELIMITER)[0];
+    }
+
     /**
      * <p>Moves the specified uploaded file to desired location related to specified customer account.</p>
      *
@@ -71,7 +76,7 @@ public final class FileUtil {
      */
     public static File moveFile(Customer customer, String filesDirectory, String localPath, String tmpFilePath) {
         File localFile = new File(tmpFilePath);
-        String fileName = localFile.getName().split(DELIMITER)[0];
+        String fileName = getNameFromTmpPath(tmpFilePath);
 
         String filePath;
         if (localPath == null || localPath.isEmpty()) {

@@ -147,10 +147,11 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
         // });
 
     })
-    .run(function ($rootScope, $location) {
+    .run(function ($rootScope, $location, localization) {
         // $rootScope.$on('plugin-devicelog-device-selected', function (event, device) {
         //     $location.url('/plugin-devicelog?deviceNumber=' + device.number);
         // })
+        localization.loadPluginResourceBundles("audit");
     });
 
 

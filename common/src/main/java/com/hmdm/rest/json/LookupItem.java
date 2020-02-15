@@ -21,6 +21,8 @@
 
 package com.hmdm.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Objects;
 
 /**
@@ -28,6 +30,7 @@ import java.util.Objects;
  *
  * @author isv
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LookupItem {
 
     // An ID of the item.

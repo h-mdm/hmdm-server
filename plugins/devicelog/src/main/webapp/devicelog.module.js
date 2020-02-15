@@ -606,10 +606,11 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             $modalInstance.close($scope.rule.devices);
         };
     })
-    .run(function ($rootScope, $location) {
+    .run(function ($rootScope, $location, localization) {
         $rootScope.$on('plugin-devicelog-device-selected', function (event, device) {
             $location.url('/plugin-devicelog?deviceNumber=' + device.number);
-        })
+        });
+        localization.loadPluginResourceBundles("devicelog");
     });
 
 

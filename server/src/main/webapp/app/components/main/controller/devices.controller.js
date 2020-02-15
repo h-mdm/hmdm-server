@@ -169,6 +169,10 @@ angular.module('headwind-kiosk')
             });
         };
 
+        $scope.showQrCode = function (device) {
+            var url = device.configuration.baseUrl + "/#/qr/" + device.configuration.qrCodeKey + "/" + device.number;
+            $window.open(url, "_blank");
+        };
 
         $scope.interval = $interval(function () {
             $scope.search(true);

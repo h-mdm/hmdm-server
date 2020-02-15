@@ -26,7 +26,7 @@ angular.module('headwind-kiosk')
         };
 
         $scope.showQrCode = function (configuration) {
-            var url = configuration.baseUrl + "/#/qr/" + configuration.qrCodeKey;
+            var url = configuration.baseUrl + "/#/qr/" + configuration.qrCodeKey + "/";
             $window.open(url, "_blank");
         };
 
@@ -310,6 +310,10 @@ angular.module('headwind-kiosk')
                 return application.type !== 'web';
             };
 
+            $scope.saveButtonClass = function () {
+                return $scope.configurationForm.$dirty ? 'btn-attention' : '';
+            }
+
             $scope.localizeRenewVersionTitle = function (application) {
                 let localizedText = localization.localize('configuration.app.version.upgrade.message')
                     .replace('${installedVersion}', application.version)
@@ -320,13 +324,9 @@ angular.module('headwind-kiosk')
 
             $scope.filterApps = function (item) {
                 var filter = ($scope.paging.filterText || '').toLowerCase();
-                var hide = ($scope.sort.by === 'pkg') && (item.type === 'web');
 
-                return !hide && (
-                    (item.name && item.name.toLowerCase().indexOf(filter) >= 0)
-                    ||
-                    (item.pkg && item.pkg.toLowerCase().indexOf(filter) >= 0)
-                );
+                return (item.name && item.name.toLowerCase().indexOf(filter) >= 0)
+                    || (item.type === 'app' && item.pkg && item.pkg.toLowerCase().indexOf(filter) >= 0);
             };
 
             $scope.addApp = function () {

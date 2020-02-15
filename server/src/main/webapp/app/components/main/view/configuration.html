@@ -180,9 +180,10 @@
                         </div>
                     </div>
 
+                    <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
-                        <div class='col-sm-offset-3 col-sm-8'>
-                            <button type='submit' class='btn btn-default' ng-click='save(false)' localized>button.save</button>
+                        <div class='config-save'>
+                            <button type='submit' class='btn btn-default {{saveButtonClass()}}' ng-click='save(false)' localized>button.save</button>
                             <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
                             <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
                         </div>
@@ -262,9 +263,10 @@
                         </div>
                     </div>
 
+                    <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
-                        <div class='col-sm-offset-3 col-sm-8'>
-                            <button type='submit' class='btn btn-default' ng-click='save(false)' localized>button.save</button>
+                        <div class='config-save'>
+                            <button type='submit' class='btn btn-default {{saveButtonClass()}}' ng-click='save(false)' localized>button.save</button>
                             <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
                             <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
                         </div>
@@ -304,14 +306,14 @@
                                     <div class="row padding-bottom" ng-init="sort.by = 'name'">
                                         <div class="col-sm-2" localized>form.configuration.apps.sort.label</div>
                                         <div class="col-sm-2">
-                                            <input id='sort-by-name' type="radio" name="sortBy" class='file-checkbox' ng-value="'name'"
-                                                   ng-model="sort.by" ng-change="sortByChanged()"/>
-                                            <label for='sort-by-name' localized>form.configuration.apps.sort.byname</label>
-                                        </div>
-                                        <div class="col-sm-2">
                                             <input id='sort-by-pkg' type="radio" name="sortBy" class='file-checkbox' ng-value="'pkg'"
                                                    ng-model="sort.by" ng-change="sortByChanged()"/>
                                             <label for='sort-by-pkg' localized>form.configuration.apps.sort.bypkg</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input id='sort-by-name' type="radio" name="sortBy" class='file-checkbox' ng-value="'name'"
+                                                   ng-model="sort.by" ng-change="sortByChanged()"/>
+                                            <label for='sort-by-name' localized>form.configuration.apps.sort.byname</label>
                                         </div>
                                         <div class="col-sm-3">
                                             <input id='show-system-apps' type="checkbox" name="showSystem" class='file-checkbox'
@@ -331,10 +333,11 @@
                                         </div>
                                     </div>
 
-                                    <div ng-if="sort.by === 'name'">
+                                    <div>
                                         <table class='table'>
                                             <thead>
                                             <tr>
+                                                <th localized>table.heading.application.pkg</th>
                                                 <th localized>table.heading.application.name</th>
                                                 <th localized>table.heading.application.version</th>
                                                 <th localized>table.heading.application.actions</th>
@@ -344,6 +347,7 @@
                                             </thead>
                                             <tbody>
                                             <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
+                                                <td ng-if="pkgInfoVisible(application)">{{application.pkg}}</td><td ng-if="!pkgInfoVisible(application)"></td>
                                                 <td>{{application.name}}</td>
                                                 <td ng-if="pkgInfoVisible(application)">
                                                     <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
@@ -352,61 +356,6 @@
                                                     <span ng-if="application.action != 1">{{application.version}}</span>
                                                 </td>
                                                 <td ng-if="!pkgInfoVisible(application)"></td>
-                                                <td>
-                                                    <select ng-model="application.action" name="action{{application.id}}"
-                                                            ng-change="actionChanged(application)"
-                                                            class="form-control">
-                                                        <option ng-value="1" ng-selected="application.action == 1"
-                                                                ng-if="isPermitOptionAvailable(application)"
-                                                                localized>form.configuration.apps.action.permit</option>
-                                                        <option ng-value="1" ng-selected="application.action == 1"
-                                                                ng-if="isInstallOptionAvailable(application)"
-                                                                localized>form.configuration.apps.action.install</option>
-                                                        <option ng-value="0" ng-selected="application.action == 0"
-                                                                ng-if="isProhibitOptionAvailable(application)"
-                                                                localized>form.configuration.apps.action.prohibit</option>
-                                                        <option ng-value="2" ng-selected="application.action == 2"
-                                                                ng-if="isRemoveOptionAvailable(application)"
-                                                                localized>form.configuration.apps.action.delete</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select ng-model="application.showIcon" name="showLabel{{application.id}}"
-                                                            ng-options="value.id as value.label for value in showIconSelectOptions"
-                                                            ng-if="application.action == 1" class="form-control">
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <button ng-if="application.outdated && application.action == 1" class="btn btn-default"
-                                                            ng-click="upgradeApp(application)"
-                                                            title="{{localizeRenewVersionTitle(application)}}"
-                                                            localized>button.upgrade</button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <div ng-if="sort.by === 'pkg'">
-                                        <table class='table'>
-                                            <thead>
-                                            <tr>
-                                                <th localized>table.heading.application.pkg</th>
-                                                <th localized>table.heading.application.version</th>
-                                                <th localized>table.heading.application.actions</th>
-                                                <th localized>table.heading.application.label</th>
-                                                <th localized></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
-                                                <td>{{application.pkg}}</td>
-                                                <td>
-                                                    <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
-                                                        {{application.version}}
-                                                    </a>
-                                                    <span ng-if="application.action != 1">{{application.version}}</span>
-                                                </td>
                                                 <td>
                                                     <select ng-model="application.action" name="action{{application.id}}"
                                                             ng-change="actionChanged(application)"
@@ -467,9 +416,10 @@
                         </div>
                     </div>
 
+                    <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
-                        <div class='center'>
-                            <button type='submit' class='btn btn-default' ng-click='save(false)' localized>button.save</button>
+                        <div class='config-save'>
+                            <button type='submit' class='btn btn-default {{saveButtonClass()}}' ng-click='save(false)' localized>button.save</button>
                             <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
                             <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
                         </div>
@@ -546,9 +496,10 @@
                         </div>
                     </div>
 
+                    <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
-                        <div class='col-sm-offset-3 col-sm-8'>
-                            <button type='submit' class='btn btn-default' ng-click='save(false)' localized>button.save</button>
+                        <div class='config-save'>
+                            <button type='submit' class='btn btn-default {{saveButtonClass()}}' ng-click='save(false)' localized>button.save</button>
                             <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
                             <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
                         </div>
@@ -656,11 +607,11 @@
                             </div>
                         </div>
                     </div>
-                    
 
+                    <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
-                        <div class='center'>
-                            <button type='submit' class='btn btn-default' ng-click='save(false)' localized>button.save</button>
+                        <div class='config-save'>
+                            <button type='submit' class='btn btn-default {{saveButtonClass()}}' ng-click='save(false)' localized>button.save</button>
                             <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
                             <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
                         </div>

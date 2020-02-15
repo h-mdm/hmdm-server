@@ -1,0 +1,15 @@
+{
+  "breadcrumb.plugin.audit.main": "Audit",
+  "plugin.audit.localization.key.name": "Audit",
+  "plugin.audit.action.user.login": "Successful login of user",
+  "plugin.audit.action.jwt.login": "Successful login of API client",
+  "plugin.audit.tab.title": "Audit",
+  "format.date.plugin.audit.createTime": "dd/MM/yyyy HH:mm:ss",
+  "format.date.plugin.audit.datePicker": "dd-MM-yyyy",
+  "error.plugin.audit.date.range.invalid": "Invalid date interval",
+  "table.heading.plugin.audit.dateTime": "Date and Time",
+  "table.heading.plugin.audit.user": "User login",
+  "table.heading.plugin.audit.ipAddress": "IP-address",
+  "table.heading.plugin.audit.action": "Action",
+  "notfound.common.plugin.audit.logs": "No audit log records found. Try a different query."
+}

@@ -2005,8 +2005,8 @@ td.no-right-padding {
 }
 
 td.deviceActions {
-    min-width: 150px;
-    width: 150px;
+    min-width: 190px;
+    width: 190px;
 }
 
 td.deviceActions span.btn-group button.dropdown-toggle {
@@ -2024,7 +2024,24 @@ div.form-group div.three-state label {
     padding-right: 20px;
 }
 
+.btn-attention {
+    background-color: #ffee88;
+}
 
+.config-save {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 0 15px 0;
+    margin: 0 0 0 0;
+    text-align: center;
+    background-color: rgba(0,0,0,0.5)
+}
+
+.config-bottom {
+    height: 65px;
+}
 
 .sarsha-spinner-container{
     position: absolute;

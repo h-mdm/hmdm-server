@@ -137,11 +137,15 @@
                         localized-title="button.change" ng-if="hasPermission('edit_devices') || hasPermission('edit_device_desc')">
                     <span class='glyphicon glyphicon-pencil'></span>
                 </button>
+                <button type='button' class='btn btn-default' localized-title="button.qrcode"
+                        ng-disabled="device.configuration.qrCodeKey == null"
+                        ng-click='showQrCode(device)'>
+                    <span class='glyphicon glyphicon-qrcode'></span>
+                </button>
                 <button type='button' class='btn btn-default' ng-click='removeDevice( device )'
                         localized-title="button.delete" ng-if="hasPermission('edit_devices')">
                     <span class='glyphicon glyphicon-trash'></span>
                 </button>
-
                 <span class="btn-group dropdown" ng-if="plugins && plugins.length > 0 || hasPermission('edit_device_app_settings')">
                     <button id="single-button-{{device.id}}" type="button" localized-title="button.more"
                             class="btn btn-default dropdown-toggle">

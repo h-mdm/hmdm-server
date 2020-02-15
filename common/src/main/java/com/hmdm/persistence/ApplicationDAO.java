@@ -47,6 +47,7 @@ import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.util.APKFileAnalyzer;
 import com.hmdm.util.ApplicationUtil;
+import com.hmdm.util.FileExistsException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -113,7 +114,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             final int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
             Customer customer = customerDAO.findById(customerId);
 
-            File movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
+            File movedFile = null;
+            try {
+                movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
+            } catch (FileExistsException e) {
+                FileUtil.deleteFile(filesDirectory, FileUtil.getNameFromTmpPath(filePath));
+                movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
+            }
             if (movedFile != null) {
                 final String fileName = movedFile.getAbsolutePath();
                 final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(fileName);
@@ -246,15 +253,6 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      */
     @Transactional
     public void updateApplication(Application application) {
-        // TODO : ISV : Handle the scenario for inserting new version for the same package here
-        final List<Application> dbApps = findByPackageIdAndVersion(application.getPkg(), application.getVersion());
-        if (!dbApps.isEmpty()) {
-            final boolean exists = dbApps.stream().anyMatch(app -> !app.getId().equals(application.getId()));
-            if (exists) {
-                throw new DuplicateApplicationException(application.getPkg(), application.getVersion(), dbApps.get(0).getCustomerId());
-            }
-        }
-
         updateRecord(application, this.mapper::updateApplication, SecurityException::onApplicationAccessViolation);
     }
 

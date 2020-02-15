@@ -35,6 +35,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import javax.inject.Named;
+
+import com.hmdm.notification.PushService;
 import com.hmdm.persistence.ApplicationReferenceExistsException;
 import com.hmdm.persistence.ApplicationVersionPackageMismatchException;
 import com.hmdm.persistence.CommonAppAccessException;
@@ -67,6 +69,7 @@ public class ApplicationResource {
     private static final Logger logger  = LoggerFactory.getLogger(ApplicationResource.class);
     private File baseDirectory;
     private ApplicationDAO applicationDAO;
+    private PushService pushService;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -76,8 +79,10 @@ public class ApplicationResource {
 
     @Inject
     public ApplicationResource(ApplicationDAO applicationDAO,
+                               PushService pushService,
                                @Named("files.directory") String filesDirectory) {
         this.applicationDAO = applicationDAO;
+        this.pushService = pushService;
         this.baseDirectory = new File(filesDirectory);
 
         if (!this.baseDirectory.exists()) {
@@ -409,6 +414,9 @@ public class ApplicationResource {
     public Response updateApplicationVersionConfigurations(LinkConfigurationsToAppVersionRequest request) {
         try {
             this.applicationDAO.updateApplicationVersionConfigurations(request);
+            for (ApplicationVersionConfigurationLink configurationLink : request.getConfigurations()) {
+                this.pushService.notifyDevicesOnUpdate(configurationLink.getConfigurationId());
+            }
 
             return Response.OK();
         } catch (Exception e) {

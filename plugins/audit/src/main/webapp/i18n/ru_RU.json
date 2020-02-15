@@ -1,0 +1,15 @@
+{
+  "breadcrumb.plugin.audit.main": "Аудит",
+  "plugin.audit.localization.key.name": "Аудит",
+  "plugin.audit.action.user.login": "Вход в систему",
+  "plugin.audit.action.jwt.login": "Вход клиента API",
+  "plugin.audit.tab.title": "Аудит",
+  "format.date.plugin.audit.createTime": "dd/MM/yyyy HH:mm:ss",
+  "format.date.plugin.audit.datePicker": "dd-MM-yyyy",
+  "error.plugin.audit.date.range.invalid": "Неверный интервал дат",
+  "table.heading.plugin.audit.dateTime": "Дата и время",
+  "table.heading.plugin.audit.user": "Имя пользователя",
+  "table.heading.plugin.audit.ipAddress": "IP-адрес",
+  "table.heading.plugin.audit.action": "Действие",
+  "notfound.common.plugin.audit.logs": "Записи журнала аудита не найдены. Попробуйте другой запрос."
+}
