@@ -71,7 +71,7 @@ INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestver
     (8, 'com.android.browser', 'Browser (generic)', true, 1, true, 10007, false),
     (46, 'com.hmdm.launcher', 'Headwind MDM', false, 1, false, 10045, false),
     (47, 'com.huawei.android.internal.app', 'Huawei Launcher Selector', false, 1, true, 10046, false),
-    (48, 'com.hmdm.pager', 'Headwind MDM Pager Plugin', true, 1, false, 10047, true),
+    (48, 'com.hmdm.pager', 'Headwind MDM Pager Plugin', true, 1, false, 10047, false),
     (49, 'com.hmdm.phoneproxy', 'Dialer Helper', true, 1, false, 10048, false),
     (50, 'com.hmdm.emuilauncherrestarter', 'Headwind MDM update helper', false, 1, false, 10049, false),
     (51, 'com.miui.cleanmaster', 'MIUI Clean Master', false, 1, true, 10050, false),
