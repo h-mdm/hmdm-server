@@ -12,55 +12,64 @@ SELECT pg_catalog.setval('public.settings_id_seq', 1, true);
 
 ALTER TABLE applications DROP CONSTRAINT applications_latestversion_fkey;
 
-INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestversion) VALUES 
-    (1, 'com.android.systemui', 'Системный интерфейс', false, 1, true, 10000),
-    (2, 'com.android.bluetooth', 'Сервис Bluetooth', false, 1, true, 10001),
-    (3, 'com.google.android.gms', 'Сервисы Google', false, 1, true, 10002),
-    (34, 'com.android.email', 'Email клиент', true, 1, true, 10033),
-    (7, 'org.kman.WifiManager', 'WiFi Менеджер', true, 1, false, 10006),
-    (9, 'com.android.chrome', 'Браузер Chrome', true, 1, true, 10008),
-    (10, 'com.sec.android.app.browser', 'Браузер (Samsung)', true, 1, true, 10009),
-    (11, 'com.samsung.android.video', 'Samsung Video', false, 1, true, 10010),
-    (12, 'com.android.providers.media', 'Media Service', false, 1, true, 10011),
-    (13, 'com.android.gallery3d', 'Галерея', true, 1, true, 10012),
-    (14, 'com.sec.android.gallery3d', 'Галерея (Samsung)', true, 1, true, 10013),
-    (15, 'com.android.vending', 'Поддержка Google Payment', false, 1, true, 10014),
-    (16, 'com.samsung.android.app.memo', 'Заметки (Samsung)', true, 1, true, 10015),
-    (35, 'com.android.documentsui', 'Менеджер файлов - расширение', false, 1, true, 10034),
-    (5, 'com.google.android.packageinstaller', 'Установщик пакетов (Google)', false, 1, true, 10004),
-    (17, 'com.android.packageinstaller', 'Установщик пакетов', false, 1, true, 10016),
-    (18, 'com.samsung.android.calendar', 'Календарь (Samsung)', true, 1, true, 10017),
-    (19, 'com.android.calculator2', 'Калькулятор (generic)', true, 1, true, 10018),
-    (20, 'com.sec.android.app.popupcalculator', 'Калькулятор (Samsung)', true, 1, true, 10019),
-    (21, 'com.android.camera', 'Камера (generic)', true, 1, true, 10020),
-    (22, 'com.huawei.camera', 'Камера (Huawei)', true, 1, true, 10021),
-    (23, 'org.codeaurora.snapcam', 'Камера (Lenovo)', true, 1, true, 10022),
-    (24, 'com.mediatek.camera', 'Камера (Mediatek)', true, 1, true, 10023),
-    (25, 'com.sec.android.app.camera', 'Камера (Samsung, legacy)', true, 1, true, 10024),
-    (26, 'com.sec.android.camera', 'Камера (Samsung)', true, 1, true, 10025),
-    (27, 'com.google.android.apps.maps', 'Карты Google', true, 1, true, 10026),
-    (28, 'com.touchtype.swiftkey', 'Расширение клавиатуры Swiftkey', false, 1, true, 10027),
-    (29, 'com.android.contacts', 'Контакты', true, 1, true, 10028),
-    (31, 'com.sec.android.app.myfiles', 'Менеджер файлов (Samsung)', true, 1, true, 10030),
-    (32, 'com.android.settings', 'Настройки (запретите их!)', false, 1, true, 10031),
-    (33, 'com.sec.android.inputmethod', 'Настройки клавиатуры (Samsung)', false, 1, true, 10032),
-    (36, 'com.samsung.android.email.provider', 'Провайдер почты (Samsung)', false, 1, true, 10035),
-    (37, 'android', 'Системный пакет Android', false, 1, true, 10036),
-    (38, 'com.android.mms', 'Сообщения (generic)', true, 1, true, 10037),
-    (39, 'com.google.android.apps.messaging', 'Сообщения (Google)', true, 1, true, 10038),
-    (40, 'com.android.dialer', 'Телефон (generic UI)', true, 1, true, 10039),
-    (41, 'com.sec.phone', 'Телефон (Samsung)', true, 1, true, 10040),
-    (42, 'com.android.phone', 'Телефон (generic service)', true, 1, true, 10041),
-    (43, 'com.huaqin.filemanager', 'Менеджер файлов (Lenovo)', true, 1, true, 10042),
-    (6, 'com.google.android.apps.photos', 'Галерея (Google)', true, 1, true, 10005),
-    (4, 'com.google.android.apps.docs', 'Google Drive', true, 1, true, 10003),
-    (30, 'com.huawei.android.launcher', 'Штатная оболочка (Huawei)', false, 1, true, 10029),
-    (8, 'com.android.browser', 'Браузер (generic)', true, 1, true, 10007),
-    (46, 'com.hmdm.launcher', 'Headwind MDM', false, 1, false, 10045),
-    (47, 'com.huawei.android.internal.app', 'Huawei - выбор лаунчера', false, 1, true, 10046);
+INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestversion, runafterinstall) VALUES 
+    (1, 'com.android.systemui', 'Системный интерфейс', false, 1, true, 10000, false),
+    (2, 'com.android.bluetooth', 'Сервис Bluetooth', false, 1, true, 10001, false),
+    (3, 'com.google.android.gms', 'Сервисы Google', false, 1, true, 10002, false),
+    (34, 'com.android.email', 'Email клиент', true, 1, true, 10033, false),
+    (7, 'org.kman.WifiManager', 'WiFi Менеджер', true, 1, false, 10006, false),
+    (9, 'com.android.chrome', 'Браузер Chrome', true, 1, true, 10008, false),
+    (10, 'com.sec.android.app.browser', 'Браузер (Samsung)', true, 1, true, 10009, false),
+    (11, 'com.samsung.android.video', 'Samsung Video', false, 1, true, 10010, false),
+    (12, 'com.android.providers.media', 'Media Service', false, 1, true, 10011, false),
+    (13, 'com.android.gallery3d', 'Галерея', true, 1, true, 10012, false),
+    (14, 'com.sec.android.gallery3d', 'Галерея (Samsung)', true, 1, true, 10013, false),
+    (15, 'com.android.vending', 'Поддержка Google Payment', false, 1, true, 10014, false),
+    (16, 'com.samsung.android.app.memo', 'Заметки (Samsung)', true, 1, true, 10015, false),
+    (35, 'com.android.documentsui', 'Менеджер файлов - расширение', false, 1, true, 10034, false),
+    (5, 'com.google.android.packageinstaller', 'Установщик пакетов (Google)', false, 1, true, 10004, false),
+    (17, 'com.android.packageinstaller', 'Установщик пакетов', false, 1, true, 10016, false),
+    (18, 'com.samsung.android.calendar', 'Календарь (Samsung)', true, 1, true, 10017, false),
+    (19, 'com.android.calculator2', 'Калькулятор (generic)', true, 1, true, 10018, false),
+    (20, 'com.sec.android.app.popupcalculator', 'Калькулятор (Samsung)', true, 1, true, 10019, false),
+    (21, 'com.android.camera', 'Камера (generic)', true, 1, true, 10020, false),
+    (22, 'com.huawei.camera', 'Камера (Huawei)', true, 1, true, 10021, false),
+    (23, 'org.codeaurora.snapcam', 'Камера (Lenovo)', true, 1, true, 10022, false),
+    (24, 'com.mediatek.camera', 'Камера (Mediatek)', true, 1, true, 10023, false),
+    (25, 'com.sec.android.app.camera', 'Камера (Samsung, legacy)', true, 1, true, 10024, false),
+    (26, 'com.sec.android.camera', 'Камера (Samsung)', true, 1, true, 10025, false),
+    (27, 'com.google.android.apps.maps', 'Карты Google', true, 1, true, 10026, false),
+    (28, 'com.touchtype.swiftkey', 'Расширение клавиатуры Swiftkey', false, 1, true, 10027, false),
+    (29, 'com.android.contacts', 'Контакты', true, 1, true, 10028, false),
+    (31, 'com.sec.android.app.myfiles', 'Менеджер файлов (Samsung)', true, 1, true, 10030, false),
+    (32, 'com.android.settings', 'Настройки (запретите их!)', false, 1, true, 10031, false),
+    (33, 'com.sec.android.inputmethod', 'Настройки клавиатуры (Samsung)', false, 1, true, 10032, false),
+    (36, 'com.samsung.android.email.provider', 'Провайдер почты (Samsung)', false, 1, true, 10035, false),
+    (37, 'android', 'Системный пакет Android', false, 1, true, 10036, false),
+    (38, 'com.android.mms', 'Сообщения (generic)', true, 1, true, 10037, false),
+    (39, 'com.google.android.apps.messaging', 'Сообщения (Google)', true, 1, true, 10038, false),
+    (40, 'com.android.dialer', 'Телефон (generic UI)', true, 1, true, 10039, false),
+    (41, 'com.sec.phone', 'Телефон (Samsung)', true, 1, true, 10040, false),
+    (42, 'com.android.phone', 'Телефон (generic service)', true, 1, true, 10041, false),
+    (43, 'com.huaqin.filemanager', 'Менеджер файлов (Lenovo)', true, 1, true, 10042, false),
+    (6, 'com.google.android.apps.photos', 'Галерея (Google)', true, 1, true, 10005, false),
+    (4, 'com.google.android.apps.docs', 'Google Drive', true, 1, true, 10003, false),
+    (30, 'com.huawei.android.launcher', 'Штатная оболочка (Huawei)', false, 1, true, 10029, false),
+    (8, 'com.android.browser', 'Браузер (generic)', true, 1, true, 10007, false),
+    (46, 'com.hmdm.launcher', 'Headwind MDM', false, 1, false, 10045, false),
+    (47, 'com.huawei.android.internal.app', 'Huawei - выбор лаунчера', false, 1, true, 10046, false),
+    (48, 'com.hmdm.pager', 'Headwind MDM Пейджер', true, 1, false, 10047, true),
+    (49, 'com.hmdm.phoneproxy', 'Прокси для телефона', true, 1, false, 10048, false),
+    (50, 'com.hmdm.emuilauncherrestarter', 'Помощник обновления Headwind MDM', false, 1, false, 10049, false),
+    (51, 'com.miui.cleanmaster', 'MIUI Мастер очистки', false, 1, true, 10050, false),
+    (52, 'com.miui.gallery', 'MIUI Галерея', true, 1, true, 10051, false),
+    (53, 'com.miui.notes', 'MIUI Заметки', true, 1, true, 10052, false),
+    (54, 'com.miui.global.packageinstaller', 'MIUI Инсталлятор пакетов', false, 1, true, 10053, false),
+    (55, 'com.miui.msa.global', 'MIUI Менеджер разрешений', false, 1, true, 10054, false),
+    (56, 'com.miui.securitycenter', 'MIUI Центр безопасности', false, 1, true, 10055, false),
+    (57, 'com.xiaomi.discover', 'Xiaomi Обновления', false, 1, true, 10056, false);
 
-
-SELECT pg_catalog.setval('public.applications_id_seq', 47, true);
+SELECT pg_catalog.setval('public.applications_id_seq', 57, true);
 
 INSERT INTO applicationversions (id, applicationid, version, url) VALUES 
     (10000, 1, '0', NULL),
@@ -107,19 +116,31 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10041, 42, '0', NULL),
     (10042, 43, '0', NULL),
     (10045, 46, '_HMDM_VERSION_', 'https://h-mdm.com/files/_HMDM_APK_'),
-    (10046, 47, '0', NULL);
-
-SELECT pg_catalog.setval('public.applicationversions_id_seq', 10046, true);
+    (10046, 47, '0', NULL),
+    (10047, 48, '1.01', 'https://h-mdm.com/files/pager-1.01.apk'),
+    (10048, 49, '1.02', 'https://h-mdm.com/files/phoneproxy-1.02.apk'),
+    (10049, 50, '1.04', 'https://h-mdm.com/files/LauncherRestarter-1.04.apk'),
+    (10050, 51, '0', NULL),
+    (10051, 52, '0', NULL),
+    (10052, 53, '0', NULL),
+    (10053, 54, '0', NULL),
+    (10054, 55, '0', NULL),
+    (10055, 56, '0', NULL),
+    (10056, 57, '0', NULL);
+    
+SELECT pg_catalog.setval('public.applicationversions_id_seq', 10056, true);
 
 ALTER TABLE applications ADD CONSTRAINT applications_latestversion_fkey FOREIGN KEY (latestversion) REFERENCES applicationversions(id) ON DELETE SET NULL;
 
 DELETE FROM configurations;
-INSERT INTO configurations (id, name, description, type, password, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, usedefaultdesignsettings, customerid, gps, bluetooth, wifi, mobiledata, mainappid, eventreceivingcomponent, kioskmode, qrcodekey, contentappid,autoupdate, blockstatusbar, systemupdatetype, systemupdatefrom, systemupdateto) VALUES (1, 'По умолчанию', 'Подходит для большинства устройств; минимальный набор приложений на экране', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '6fb9c8dc81483173a0c0e9f8b2e46be1', NULL, false, false, 0, NULL, NULL);
+INSERT INTO configurations (id, name, description, type, password, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, usedefaultdesignsettings, customerid, gps, bluetooth, wifi, mobiledata, mainappid, eventreceivingcomponent, kioskmode, qrcodekey, contentappid,autoupdate, blockstatusbar, systemupdatetype, systemupdatefrom, systemupdateto) VALUES 
+(1, 'По умолчанию', 'Подходит для большинства устройств; минимальный набор приложений на экране', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '6fb9c8dc81483173a0c0e9f8b2e46be1', NULL, false, false, 0, NULL, NULL),
+(2, 'MIUI (Xiaomi Redmi)', 'Оптимизирована для устройств на базе MIUI', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '8e6ca072ddb926a1af61578dfa9fc334', NULL, false, false, 0, NULL, NULL);
 
-SELECT pg_catalog.setval('public.configurations_id_seq', 1, true);
+SELECT pg_catalog.setval('public.configurations_id_seq', 2, true);
 
 INSERT INTO configurationapplications (id, configurationid, applicationid, remove, showicon, applicationversionid) VALUES 
-    (1, 1, 7, false, false, 10006),
+    (1, 1, 7, false, true, 10006),
     (2, 1, 8, false, true, 10007),
     (3, 1, 37, false, false, 10036),
     (4, 1, 2, false, false, 10001),
@@ -162,9 +183,46 @@ INSERT INTO configurationapplications (id, configurationid, applicationid, remov
     (41, 1, 28, false, false, 10027),
     (42, 1, 1, false, false, 10000),
     (43, 1, 46, false, false, 10045),
-    (44, 1, 47, false, false, 10046);
+    (44, 1, 47, false, false, 10046),
+    (45, 1, 48, false, true, 10047),
+    (46, 1, 50, false, false, 10049),
+    (47, 2, 7, false, true, 10006),
+    (48, 2, 8, false, true, 10007),
+    (49, 2, 37, false, false, 10036),
+    (50, 2, 2, false, false, 10001),
+    (51, 2, 21, false, true, 10020),
+    (52, 2, 9, false, true, 10008),
+    (53, 2, 29, false, true, 10028),
+    (54, 2, 34, false, true, 10033),
+    (55, 2, 35, false, false, 10034),
+    (56, 2, 13, false, false, 10012),
+    (57, 2, 6, false, false, 10005),
+    (58, 2, 4, false, false, 10003),
+    (59, 2, 27, false, false, 10026),
+    (60, 2, 15, false, false, 10014),
+    (61, 2, 3, false, false, 10002),
+    (62, 2, 12, false, false, 10011),
+    (63, 2, 38, false, true, 10037),
+    (64, 2, 39, false, true, 10038),
+    (65, 2, 5, false, false, 10004),
+    (66, 2, 17, false, false, 10016),
+    (67, 2, 42, false, true, 10041),
+    (68, 2, 40, false, true, 10039),
+    (69, 2, 28, false, false, 10027),
+    (70, 2, 1, false, false, 10000),
+    (71, 2, 46, false, false, 10045),
+    (72, 2, 48, false, true, 10047),
+    (73, 2, 49, false, true, 10048),
+    (74, 2, 50, false, false, 10049),
+    (75, 2, 51, false, false, 10050),
+    (76, 2, 52, false, false, 10051),
+    (77, 2, 53, false, false, 10052),
+    (78, 2, 54, false, false, 10053),
+    (79, 2, 55, false, false, 10054),
+    (80, 2, 56, false, false, 10055),
+    (81, 2, 57, false, false, 10056);
     
-SELECT pg_catalog.setval('public.configurationapplications_id_seq', 44, true);
+SELECT pg_catalog.setval('public.configurationapplications_id_seq', 81, true);
 
 INSERT INTO devices (id, number, description, lastupdate, configurationid, oldconfigurationid, info, imei, phone, customerid) VALUES (1, 'h0001', 'Мое первое Android-устройство', 0, 1, NULL, NULL, NULL, NULL, 1);
 
