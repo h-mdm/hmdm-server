@@ -71,7 +71,7 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # Search for the WAR
-SERVER_WAR=./server/target/server-0.1.0.war
+SERVER_WAR=./server/target/launcher.war
 if [ ! -f $SERVER_WAR ]; then
     SERVER_WAR=$(ls hmdm*.war | tail -1)
 fi
