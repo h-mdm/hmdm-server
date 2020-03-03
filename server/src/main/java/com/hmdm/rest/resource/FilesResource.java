@@ -219,13 +219,14 @@ public class FilesResource {
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
                                 @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         try {
-            File uploadFile = File.createTempFile(fileDetail.getFileName() + DELIMITER, "temp");
+            File uploadFile = File.createTempFile(fileDetail.getFileName().replace(' ', '_') + DELIMITER, ".temp");
             writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
 
             FileUploadResult result = new FileUploadResult();
             result.setServerPath(uploadFile.getAbsolutePath());
 
-            final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
+            final APKFileDetails apkFileDetails;
+            apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
             result.setFileDetails(apkFileDetails);
 
             final List<Application> dbAppsByPkg = this.applicationDAO.findByPackageId(apkFileDetails.getPkg());

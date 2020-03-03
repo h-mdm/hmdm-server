@@ -69,18 +69,25 @@
         </dependency>
 
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>photo</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>licensing</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceimport</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceexport</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceinfo</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicereset</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelocations</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>messaging</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
 

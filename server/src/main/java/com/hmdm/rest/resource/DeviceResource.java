@@ -72,7 +72,6 @@ public class DeviceResource {
     private DeviceDAO deviceDAO;
     private ConfigurationDAO configurationDAO;
     private PushService pushService;
-    private String baseUrl;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -83,12 +82,10 @@ public class DeviceResource {
     @Inject
     public DeviceResource(DeviceDAO deviceDAO,
                           ConfigurationDAO configurationDAO,
-                          PushService pushService,
-                          @Named("base.url") String baseUrl) {
+                          PushService pushService) {
         this.deviceDAO = deviceDAO;
         this.configurationDAO = configurationDAO;
         this.pushService = pushService;
-        this.baseUrl = baseUrl;
     }
 
     // =================================================================================================================
@@ -121,7 +118,7 @@ public class DeviceResource {
                 if (dbConfig.getMainAppId() != null && dbConfig.getMainAppId() > 0 &&
                         dbConfig.getEventReceivingComponent() != null && dbConfig.getEventReceivingComponent().length() > 0) {
                     configuration.setQrCodeKey(dbConfig.getQrCodeKey());
-                    configuration.setBaseUrl(baseUrl);
+                    configuration.setBaseUrl(this.configurationDAO.getBaseUrl());
                 }
                 configuration.setApplications(configIdToApplicationsMap.get(deviceConfigurationId));
                 configIdToConfigurationsMap.put(deviceConfigurationId, configuration);

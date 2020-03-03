@@ -68,13 +68,25 @@ class ResourceAuditor {
     private final FilterChain chain;
 
     /**
+     * <p>A flag indicating if request data must be saved as a payload.</p>
+     */
+    private final boolean payload;
+
+    /**
      * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
      */
-    ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response, FilterChain chain) {
+    ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response,
+                    FilterChain chain, boolean payload) throws IOException {
         this.auditLogActionKey = auditLogActionKey;
-        this.request = request;
-        this.response = new ServletResponseAuditWrapper((HttpServletResponse) response);
+        if (payload) {
+            // Wrap request only if we need to log it
+            this.request = new ServletRequestAuditWrapper((HttpServletRequest)request);
+        } else {
+            this.request = request;
+        }
+        this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
         this.chain = chain;
+        this.payload = payload;
     }
 
     /**
@@ -101,27 +113,46 @@ class ResourceAuditor {
             currentUser = (User) session.getAttribute(sessionCredentials);
         }
 
+        String payloadString = null;
+        if (payload) {
+            ServletRequestAuditWrapper requestWrapper = (ServletRequestAuditWrapper)this.request;
+            payloadString = "Method: " + requestWrapper.getMethod() + "\n" +
+                    "URI: " + requestWrapper.getRequestURI();
+            String body = requestWrapper.getBody();
+            if (body != null && body.length() > 0) {
+                payloadString += "\nBody: " + body;
+            }
+        }
+
+        AuditLogRecord logRecord = new AuditLogRecord();
+        String action = this.auditLogActionKey;
+        logRecord.setCreateTime(System.currentTimeMillis());
+        logRecord.setIpAddress(request.getRemoteAddr());
+        if (currentUser != null) {
+            logRecord.setCustomerId(currentUser.getCustomerId());
+            logRecord.setLogin(currentUser.getLogin());
+            logRecord.setUserId(currentUser.getId());
+        } else {
+            // 1 is the default customer ID, otherwise the record won't be visible
+            logRecord.setCustomerId(1);
+        }
         if (this.response.getStatus() == 200) {
             final byte[] content = this.response.getContent();
             ObjectMapper objectMapper = new ObjectMapper();
             final Response response = objectMapper.readValue(content, Response.class);
-            if (response != null) {
-                if (response.getStatus() == Response.ResponseStatus.OK) {
-                    AuditLogRecord logRecord = new AuditLogRecord();
-                    logRecord.setAction(this.auditLogActionKey);
-                    logRecord.setCreateTime(System.currentTimeMillis());
-                    logRecord.setIpAddress(request.getRemoteAddr());
-                    if (currentUser != null) {
-                        logRecord.setCustomerId(currentUser.getCustomerId());
-                        logRecord.setLogin(currentUser.getLogin());
-                        logRecord.setUserId(currentUser.getId());
-                    }
-
-                    return logRecord;
-                }
+            if (response == null || response.getStatus() != Response.ResponseStatus.OK) {
+                logRecord.setErrorCode(1);
+            } else {
+                logRecord.setErrorCode(0);
             }
+        } else {
+            logRecord.setErrorCode(2);
         }
+        if (payload) {
+            logRecord.setPayload(payloadString);
+        }
+        logRecord.setAction(action);
 
-        return null;
+        return logRecord;
     }
 }

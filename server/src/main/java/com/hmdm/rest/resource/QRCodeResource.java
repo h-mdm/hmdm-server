@@ -151,35 +151,42 @@ public class QRCodeResource {
                         }
 
                         Application appMain = this.configurationDAO.findApplicationById(appVersion.getApplicationId());
+
+                        String deviceIdEntry = "";
                         if (deviceID != null && !deviceID.trim().isEmpty()) {
                             deviceID = deviceID.trim();
-                            s = "{\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
-                                    "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +
-                                    "\"android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE\": " +
-                                      "{" +
-                                        "\"com.hmdm.DEVICE_ID\":\"" + deviceID + "\"," +
-                                        "\"com.hmdm.BASE_URL\":\"" + this.baseUrlForQrCode + "\"," +
-                                        "\"com.hmdm.SERVER_PROJECT\":\"" + contextPath + "\"" +
-                                      "}\n" +
-                                    "}\n";
-                        } else {
-                            s = "{\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
-                                    "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
-                                    "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +
-                                    "\"android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE\": " +
-                                      "{" +
-                                        "\"com.hmdm.BASE_URL\":\"" + this.baseUrlForQrCode + "\"," +
-                                        "\"com.hmdm.SERVER_PROJECT\":\"" + contextPath + "\"" +
-                                      "}\n" +
-                                    "}\n";
+                            deviceIdEntry = "\"com.hmdm.DEVICE_ID\":\"" + deviceID + "\",";
                         }
+
+                        String wifiSsidEntry = "";
+                        if (configuration.getWifiSSID() != null && !configuration.getWifiSSID().trim().isEmpty()) {
+                            String wifiSecurityType = configuration.getWifiSecurityType();
+                            if (wifiSecurityType == null || wifiSecurityType.isEmpty()) {
+                                wifiSecurityType = "WPA";   // De-facto standard
+                            }
+                            wifiSsidEntry = "\"android.app.extra.PROVISIONING_WIFI_SSID\":\"" + configuration.getWifiSSID().trim() + "\",\n" +
+                                            "\"android.app.extra.PROVISIONING_WIFI_SECURITY_TYPE\":\"" + wifiSecurityType + "\",\n";
+                        }
+
+                        String wifiPasswordEntry = "";
+                        if (configuration.getWifiPassword() != null && !configuration.getWifiPassword().trim().isEmpty()) {
+                            wifiPasswordEntry = "\"android.app.extra.PROVISIONING_WIFI_PASSWORD\":\"" + configuration.getWifiPassword().trim() + "\",\n";
+                        }
+
+                        s = "{\n" +
+                                "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
+                                "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
+                                "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
+                                wifiSsidEntry + wifiPasswordEntry +
+                                "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
+                                "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +
+                                "\"android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE\": " +
+                                  "{" +
+                                    deviceIdEntry +
+                                    "\"com.hmdm.BASE_URL\":\"" + this.baseUrlForQrCode + "\"," +
+                                    "\"com.hmdm.SERVER_PROJECT\":\"" + contextPath + "\"" +
+                                  "}\n" +
+                                "}\n";
 
                         logger.info("The base for QR code generation:\n{}", s);
 

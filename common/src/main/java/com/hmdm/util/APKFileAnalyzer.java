@@ -26,19 +26,18 @@ import com.google.inject.Singleton;
 import javax.inject.Named;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.rest.json.APKFileDetails;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * <p>An analyzer for uploaded APK-files.</p>
@@ -67,13 +66,29 @@ public class APKFileAnalyzer {
     }
 
     /**
+     * <p>Analyzes the specified file (APK or XAPK).</p>
+     *
+     * @param filePath an absolute path to an file to be analyzed.
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
+     *         error.
+     */
+    public APKFileDetails analyzeFile(String filePath) {
+        String realFileName = filePath.endsWith(".temp") ? FileUtil.getNameFromTmpPath(filePath) : filePath;
+        if (realFileName.endsWith(".xapk")) {
+            return analyzeXapkFile(filePath);
+        } else {
+            return analyzeApkFile(filePath);
+        }
+    }
+
+    /**
      * <p>Analyzes the specified APK file.</p>
      *
      * @param filePath an absolute path to an APK-file to be analyzed.
      * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
      *         error.
      */
-    public APKFileDetails analyzeFile(String filePath) {
+    private APKFileDetails analyzeApkFile(String filePath) {
         try {
             final String[] commands = {this.aaptCommand, "dump", "badging", filePath};
             log.debug("Executing shell-commands: {}", Arrays.toString(commands));
@@ -138,7 +153,6 @@ public class APKFileAnalyzer {
         }
     }
 
-
     /**
      * <p>A consumer for the stream contents. Outputs the line read from the stream and passes it to provided line
      * consumer.</p>
@@ -165,5 +179,49 @@ public class APKFileAnalyzer {
                 log.error("An error in {} stream handler for external process {}", this.type, aaptCommand, e);
             }
         }
+    }
+
+    /**
+     * <p>Analyzes the specified XAPK file.</p>
+     *
+     * @param filePath an absolute path to an XAPK-file to be analyzed.
+     * @throws APKFileAnalyzerException if an unexpected error occurs
+     */
+    private APKFileDetails analyzeXapkFile(String filePath) {
+        try {
+            ZipFile zipFile = new ZipFile(filePath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+            while(entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                if (entry.getName().equalsIgnoreCase("manifest.json")) {
+                    InputStream stream = zipFile.getInputStream(entry);
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null) {
+                        responseStrBuilder.append(inputStr);
+                    }
+                    stream.close();
+                    zipFile.close();
+                    return analyzeXapkManifest(responseStrBuilder.toString());
+                }
+
+            }
+            zipFile.close();
+            throw new APKFileAnalyzerException("Missing manifest in XAPK-file", new Exception());
+
+        } catch (Exception e) {
+            log.error("Unexpected error while analyzing XAPK-file: {}", filePath, e);
+            throw new APKFileAnalyzerException("Unexpected error while analyzing XAPK-file", e);
+        }
+    }
+
+    private APKFileDetails analyzeXapkManifest(String manifest) {
+        JSONObject jsonObject = new JSONObject(manifest);
+        APKFileDetails fileDetails = new APKFileDetails();
+        fileDetails.setPkg(jsonObject.getString("package_name"));
+        fileDetails.setVersion(jsonObject.getString("version_name"));
+        return fileDetails;
     }
 }

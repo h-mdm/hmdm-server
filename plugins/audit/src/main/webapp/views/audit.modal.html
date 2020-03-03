@@ -1,0 +1,39 @@
+<!-- Localization completed -->
+<div class="modal-body" id="modal-body" style="text-align: center">
+    <form class='form-horizontal'>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>table.heading.plugin.audit.dateTime</label>
+            <div class='col-sm-9 audit-info'>
+                {{log.createTime | date:createTimeFormat}}.{{("00000" + (log.createTime % 1000)).slice(-3) }}
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>table.heading.plugin.audit.user</label>
+            <div class='col-sm-9 audit-info'>{{log.login}}</div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>table.heading.plugin.audit.ipAddress</label>
+            <div class='col-sm-9 audit-info'>{{log.ipAddress}}</div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>table.heading.plugin.audit.action</label>
+            <div class='col-sm-9 audit-info'>{{log.action | localize}}{{log.errorCode ? ('plugin.audit.error' | localize) : ''}}</div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-12 audit-info audit-payload'>{{log.payload}}</div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-12'>
+                <button type='button' class='btn btn-default' ng-click='closeModal()'
+                        ng-disabled="loading"
+                        localized>button.close</button>
+            </div>
+        </div>
+    </form>
+</div>

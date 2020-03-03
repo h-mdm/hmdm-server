@@ -1539,4 +1539,45 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="06.11.19-18:10" author="seva" context="common">
+        <comment>Column,new: configurations#manageBrightness, #brightness, #manageTimeout, #timeout, #lockVolume</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN autoBrightness BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN brightness INT DEFAULT 180;
+            ALTER TABLE configurations ADD COLUMN manageTimeout BOOLEAN DEFAULT false;
+            ALTER TABLE configurations ADD COLUMN timeout INT DEFAULT 60;
+            ALTER TABLE configurations ADD COLUMN lockVolume BOOLEAN DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN lockVolume;
+            ALTER TABLE configurations DROP COLUMN timeout;
+            ALTER TABLE configurations DROP COLUMN manageTimeout;
+            ALTER TABLE configurations DROP COLUMN brightness;
+            ALTER TABLE configurations DROP COLUMN autoBrightness;
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="25.02.20-14:56" author="seva" context="common">
+        <comment>Add MDM wifi settings columns to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN wifiSSID VARCHAR(256);
+            ALTER TABLE configurations ADD COLUMN wifiPassword VARCHAR(256);
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN wifiPassword;
+            ALTER TABLE configurations DROP COLUMN wifiSSID;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="25.02.20-16:26" author="seva" context="common">
+        <comment>Add MDM wifi security type columns to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN wifiSecurityType VARCHAR(16);
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN wifiSecurityType;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

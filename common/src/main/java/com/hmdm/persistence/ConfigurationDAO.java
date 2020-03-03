@@ -36,6 +36,8 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
+
 @Singleton
 public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Application> {
 
@@ -45,13 +47,18 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
     private final ApplicationMapper applicationMapper;
 
     private final ApplicationSettingDAO applicationSettingDAO;
+    private String baseUrl;
 
     @Inject
     public ConfigurationDAO(ConfigurationMapper mapper,
-                            ApplicationMapper applicationMapper, ApplicationSettingDAO applicationSettingDAO) {
+                            ApplicationMapper applicationMapper,
+                            ApplicationSettingDAO applicationSettingDAO,
+                            @Named("base.url") String baseUrl) {
         this.mapper = mapper;
         this.applicationMapper = applicationMapper;
         this.applicationSettingDAO = applicationSettingDAO;
+        this.baseUrl = baseUrl;
+        log.info("Base URL: " + baseUrl);
     }
 
     public List<Configuration> getAllConfigurationsByType(int type) {
@@ -182,5 +189,14 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                 },
                 SecurityException::onConfigurationAccessViolation
         );
+    }
+
+    // Moved baseUrl here from resources due to a weird Guice issue (bug?):
+    // the resource singleton initializes multiple times and (for DeviceResource)
+    // baseUrl is injected incorrectly (either an empty string or a wrong context parameter)
+    // This is apparently due to call the constructor from a background thread
+    // Nevermind, looks like injection of baseUrl in this DAO object works well!
+    public String getBaseUrl() {
+        return baseUrl;
     }
 }

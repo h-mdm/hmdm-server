@@ -91,4 +91,14 @@
             DROP TABLE plugin_audit_log;
         </rollback>
     </changeSet>
+
+    <changeSet id="plugin-audit-23.02.2020-16:42" author="seva" context="common">
+        <comment>Column,new: errorCode</comment>
+        <sql>
+            ALTER TABLE plugin_audit_log ADD COLUMN errorCode INT DEFAULT 0;
+        </sql>
+        <rollback>
+            ALTER TABLE plugin_audit_log DROP COLUMN errorCode;
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

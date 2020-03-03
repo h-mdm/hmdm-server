@@ -45,13 +45,39 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
             getLogs: {url: 'rest/plugins/audit/private/log/search', method: 'POST'},
         });
     })
-    .controller('PluginAuditTabController', function ($scope, $rootScope, $window, $location, $interval, $http,
+    .controller('PluginAuditTabController', function ($scope, $rootScope, $window, $location, $interval, $http, $modal,
                                                       pluginAuditService, confirmModal, authService, localization) {
 
         $scope.hasPermission = authService.hasPermission;
 
         $rootScope.settingsTabActive = false;
         $rootScope.pluginsTabActive = true;
+
+        filters = [
+            "plugin.audit.action.user.login",
+            "plugin.audit.action.jwt.login",
+            "plugin.audit.action.update.configuration",
+            "plugin.audit.action.copy.configuration",
+            "plugin.audit.action.remove.configuration",
+            "plugin.audit.action.update.device",
+            "plugin.audit.action.remove.device",
+            "plugin.audit.action.update.application",
+            "plugin.audit.action.update.webapp",
+            "plugin.audit.action.remove.application",
+            "plugin.audit.action.update.app.config",
+            "plugin.audit.action.update.design",
+            "plugin.audit.action.update.user.roles",
+            "plugin.audit.action.update.language",
+            "plugin.audit.action.update.plugins",
+            "plugin.audit.action.update.user",
+            "plugin.audit.action.remove.user",
+            "plugin.audit.action.update.group",
+            "plugin.audit.action.remove.group"
+        ];
+        $scope.filters = [{item: '', localized: localization.localize('plugin.audit.all.items')}];
+        filters.forEach(function(item, index) {
+            $scope.filters.push({item: item, localized: localization.localize(item)});
+        });
 
         $scope.paging = {
             pageNum: 1,
@@ -102,6 +128,18 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
             loadData();
         };
 
+        $scope.viewLog = function (log) {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/plugins/audit/views/audit.modal.html',
+                controller: 'PluginAuditModalController',
+                resolve: {
+                    log: function () {
+                        return log;
+                    }
+                }
+            });
+        };
+
         $scope.$watch('paging.pageNum', function () {
             loadData();
         });
@@ -147,10 +185,15 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
         // });
 
     })
+    .controller('PluginAuditModalController',
+        function ($scope, $modalInstance, log, localization) {
+            $scope.createTimeFormat = localization.localize('format.date.plugin.audit.createTime');
+            $scope.log = log;
+            $scope.closeModal = function () {
+                $modalInstance.dismiss();
+            };
+    })
     .run(function ($rootScope, $location, localization) {
-        // $rootScope.$on('plugin-devicelog-device-selected', function (event, device) {
-        //     $location.url('/plugin-devicelog?deviceNumber=' + device.number);
-        // })
         localization.loadPluginResourceBundles("audit");
     });
 

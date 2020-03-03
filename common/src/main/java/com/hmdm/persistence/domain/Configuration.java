@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -78,6 +80,16 @@ public class Configuration implements CustomerData, Serializable {
     private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
     @ApiModelProperty("Push notification options")
     private String pushOptions;
+    @ApiModelProperty("Brightness management flag. null: not managed, false: manual, true: auto")
+    private Boolean autoBrightness;
+    @ApiModelProperty("Brightness value (if manual), 0-255")
+    private Integer brightness;
+    @ApiModelProperty("A flag indicating if screen timeout is managed on device")
+    private Boolean manageTimeout;
+    @ApiModelProperty("Timeout value (in seconds)")
+    private Integer timeout;
+    @ApiModelProperty("A flag indicating if volume is locked on device")
+    private Boolean lockVolume;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -88,6 +100,12 @@ public class Configuration implements CustomerData, Serializable {
     private boolean kioskMode;
     @ApiModelProperty("A package ID for content application")
     private Integer contentAppId;
+    @ApiModelProperty("WiFi SSID for provisioning")
+    private String wifiSSID;
+    @ApiModelProperty("WiFi password for provisioning")
+    private String wifiPassword;
+    @ApiModelProperty("WiFi security type for provisioning: NONE/WPA/WEP/EAP")
+    private String wifiSecurityType;
 
     // This group of settings corresponds to Design settings
     private boolean useDefaultDesignSettings;
@@ -306,6 +324,30 @@ public class Configuration implements CustomerData, Serializable {
         this.qrCodeKey = qrCodeKey;
     }
 
+    public String getWifiSSID() {
+        return wifiSSID;
+    }
+
+    public void setWifiSSID(String wifiSSID) {
+        this.wifiSSID = wifiSSID;
+    }
+
+    public String getWifiPassword() {
+        return wifiPassword;
+    }
+
+    public void setWifiPassword(String wifiPassword) {
+        this.wifiPassword = wifiPassword;
+    }
+
+    public String getWifiSecurityType() {
+        return wifiSecurityType;
+    }
+
+    public void setWifiSecurityType(String wifiSecurityType) {
+        this.wifiSecurityType = wifiSecurityType;
+    }
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -394,6 +436,46 @@ public class Configuration implements CustomerData, Serializable {
         this.pushOptions = pushOptions;
     }
 
+    public Boolean getAutoBrightness() {
+        return autoBrightness;
+    }
+
+    public void setAutoBrightness(Boolean autoBrightness) {
+        this.autoBrightness = autoBrightness;
+    }
+
+    public Integer getBrightness() {
+        return brightness;
+    }
+
+    public void setBrightness(Integer brightness) {
+        this.brightness = brightness;
+    }
+
+    public Boolean getManageTimeout() {
+        return manageTimeout;
+    }
+
+    public void setManageTimeout(Boolean manageTimeout) {
+        this.manageTimeout = manageTimeout;
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
+    }
+
+    public Boolean getLockVolume() {
+        return lockVolume;
+    }
+
+    public void setLockVolume(Boolean lockVolume) {
+        this.lockVolume = lockVolume;
+    }
+
     public Configuration newCopy() {
         Configuration copy = new Configuration();
 
@@ -415,6 +497,9 @@ public class Configuration implements CustomerData, Serializable {
         copy.setContentAppId(getContentAppId());
         copy.setEventReceivingComponent(getEventReceivingComponent());
         copy.setKioskMode(isKioskMode());
+        copy.setWifiSSID(getWifiSSID());
+        copy.setWifiPassword(getWifiPassword());
+        copy.setWifiSecurityType(getWifiSecurityType());
 
         copy.setGps(getGps());
         copy.setBluetooth(getBluetooth());
@@ -423,6 +508,11 @@ public class Configuration implements CustomerData, Serializable {
         copy.setUsbStorage(getUsbStorage());
         copy.setRequestUpdates(getRequestUpdates());
         copy.setPushOptions(getPushOptions());
+        copy.setAutoBrightness(getAutoBrightness());
+        copy.setBrightness(getBrightness());
+        copy.setManageTimeout(getManageTimeout());
+        copy.setTimeout(getTimeout());
+        copy.setLockVolume(getLockVolume());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());

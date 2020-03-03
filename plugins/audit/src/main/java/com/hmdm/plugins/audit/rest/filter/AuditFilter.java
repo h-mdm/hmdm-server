@@ -23,6 +23,8 @@ package com.hmdm.plugins.audit.rest.filter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.plugin.service.PluginStatusCache;
+import com.hmdm.plugins.audit.AuditPluginConfigurationImpl;
 import com.hmdm.plugins.audit.persistence.AuditDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.util.BackgroundTaskRunnerService;
@@ -68,12 +70,19 @@ public class AuditFilter implements Filter {
     private final BackgroundTaskRunnerService backgroundTaskRunnerService;
 
     /**
+     * <p>The current status of installed plugins.</p>
+     */
+    private PluginStatusCache pluginStatusCache;
+
+    /**
      * <p>Constructs new <code>AuditFilter</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public AuditFilter(AuditDAO auditDAO, BackgroundTaskRunnerService backgroundTaskRunnerService) {
+    public AuditFilter(AuditDAO auditDAO, BackgroundTaskRunnerService backgroundTaskRunnerService,
+                       PluginStatusCache pluginStatusCache) {
         this.auditDAO = auditDAO;
         this.backgroundTaskRunnerService = backgroundTaskRunnerService;
+        this.pluginStatusCache = pluginStatusCache;
     }
 
     /**
@@ -93,7 +102,14 @@ public class AuditFilter implements Filter {
         final String requestURI = httpRequest.getRequestURI();
         final String context = httpRequest.getContextPath();
 
-        final Optional<ResourceAuditInfo> auditInfo = ResourceAuditInfo.findAuditInfo(requestURI.substring(context.length()));
+        if (pluginStatusCache.isPluginDisabled(AuditPluginConfigurationImpl.PLUGIN_ID) ||
+            httpRequest.getMethod().equalsIgnoreCase("GET")) {
+            // GET requests are not recorded
+            chain.doFilter(request, response);
+            return;
+        }
+
+        final Optional<ResourceAuditInfo> auditInfo = ResourceAuditInfo.findAuditInfo(httpRequest.getMethod(), requestURI.substring(context.length()));
         boolean needAudit = auditInfo.isPresent();
 
         ResourceAuditor resourceAuditor = null;
@@ -108,6 +124,8 @@ public class AuditFilter implements Filter {
             } else {
                 chain.doFilter(request, response);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (needAudit && resourceAuditor != null) {
                 AuditLogRecord logRecord = resourceAuditor.getAuditLogRecord();

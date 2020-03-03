@@ -58,7 +58,7 @@
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.block.status.bar</label>
                         <div class='col-sm-1'>
-                            <input ng-model='configuration.blockStatusBar' name="mdm32323" type='checkbox' class='form-control'/>
+                            <input ng-model='configuration.blockStatusBar' name="mdm32323" type='checkbox' class='form-control common-checkbox'/>
                         </div>
                     </div>
 
@@ -144,13 +144,54 @@
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.common.usb.storage</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.usbStorage' name="c_usbStorage" type='checkbox' class='form-control common-checkbox'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.brightness</label>
                         <div class='col-sm-9 three-state'>
-                            <label><span localized>form.configuration.settings.common.gps.any</span>
-                                <input ng-model='configuration.usbStorage'  name="c_usbStorage" type='radio' class='form-control' ng-value="null"/></label>
-                            <label><span localized>form.configuration.settings.common.gps.off</span>
-                                <input ng-model='configuration.usbStorage'  name="c_usbStorage" type='radio' class='form-control' ng-value="false"/></label>
-                            <label><span localized>form.configuration.settings.common.gps.on</span>
-                                <input ng-model='configuration.usbStorage'  name="c_usbStorage" type='radio' class='form-control' ng-value="true"/></label>
+                            <label><span localized>form.configuration.settings.common.brightness.none</span>
+                                <input ng-model='configuration.autoBrightness'  name="c_manageBrightness" type='radio' class='form-control' ng-value="null"/></label>
+                            <label><span localized>form.configuration.settings.common.brightness.manual</span>
+                                <input ng-model='configuration.autoBrightness'  name="c_manageBrightness" type='radio' class='form-control' ng-value="false"/></label>
+                            <label><span localized>form.configuration.settings.common.brightness.auto</span>
+                                <input ng-model='configuration.autoBrightness'  name="c_manageBrightness" type='radio' class='form-control' ng-value="true"/></label>
+                        </div>
+                    </div>
+
+                    <div class='form-group' ng-if="configuration.autoBrightness === false">
+                        <label class='col-sm-3 control-label' for="c_brightness" localized>form.configuration.settings.common.brightness.value</label>
+                        <div class='col-sm-8'>
+                            <input ng-model='configuration.brightness' id="c_brightness" name="c_brightness" type='range' class='form-control'
+                                   min="0" max="255" step="1"/>
+                        </div>
+                        <div class='col-sm-1'>
+                            <span class="form-control">{{configuration.brightness}}</span>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.timeout</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.manageTimeout' name="c_manageTimeout" type='checkbox' class='form-control common-checkbox'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group' ng-if="configuration.manageTimeout === true">
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.timeout.value</label>
+                        <div class='col-sm-9'>
+                        <input ng-model='configuration.timeout' required name="c_timeout"
+                               type='number' class='form-control'
+                               localized-placeholder='form.configuration.settings.common.timeout.value'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.volume.block</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.lockVolume' name="c_lockVolume" type='checkbox' class='form-control common-checkbox'/>
                         </div>
                     </div>
 
@@ -486,12 +527,43 @@
                         </div>
                     </div>
 
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.component.wifi.ssid</label>
+                        <div class='col-sm-9'>
+                            <input ng-model='configuration.wifiSSID'
+                                   name="c_wifiSSID" type='text' class='form-control' maxlength="512"
+                                   localized-placeholder='form.configuration.settings.mdm.component.wifi.ssid.placeholder'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.component.wifi.password</label>
+                        <div class='col-sm-9'>
+                            <input ng-model='configuration.wifiPassword'
+                                   name="c_wifiPassword" type='text' class='form-control' maxlength="512"
+                                   localized-placeholder='form.configuration.settings.mdm.component.wifi.password.placeholder'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.component.wifi.security</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="wifiSecurityType" name="c_wifiSecurityType"
+                                    ng-model='configuration.wifiSecurityType'>
+                                <option ng-value="'WPA'" ng-selected="configuration.wifiSecurityType === 'WPA'">WPA</option>
+                                <option ng-value="'WEP'" ng-selected="configuration.wifiSecurityType === 'WEP'">WEP</option>
+                                <option ng-value="'EAP'" ng-selected="configuration.wifiSecurityType === 'EAP'">EAP</option>
+                                <option ng-value="'NONE'" ng-selected="configuration.wifiSecurityType === 'NONE'">NONE</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class='form-group' ng-if="configuration.id">
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.qrcode.url</label>
                         <div class='col-sm-9'>
                             <span ng-if="mainApp.id > 0 && configuration.eventReceivingComponent">
-                                <a href="{{configuration.baseUrl}}/#/qr/{{configuration.qrCodeKey}}" target="_blank">
-                                {{configuration.baseUrl}}/#/qr/{{configuration.qrCodeKey}}</a></span>
+                                <a href="{{configuration.baseUrl}}/#/qr/{{configuration.qrCodeKey}}/" target="_blank">
+                                {{configuration.baseUrl}}/#/qr/{{configuration.qrCodeKey}}/</a></span>
                             <span ng-if="!(mainApp.id > 0 && configuration.eventReceivingComponent)" localized>form.configuration.settings.mdm.hint</span>
                         </div>
                     </div>

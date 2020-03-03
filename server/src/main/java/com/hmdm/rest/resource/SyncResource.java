@@ -186,6 +186,16 @@ public class SyncResource {
                 data.setSystemUpdateType(configuration.getSystemUpdateType());
                 data.setRequestUpdates(configuration.getRequestUpdates().getTransmittedValue());
                 data.setPushOptions(configuration.getPushOptions());
+                data.setAutoBrightness(configuration.getAutoBrightness());
+                if (data.getAutoBrightness() != null && !data.getAutoBrightness()) {
+                    // Set only if autoBrightness == false
+                    data.setBrightness(configuration.getBrightness());
+                }
+                data.setManageTimeout(configuration.getManageTimeout());
+                if (data.getManageTimeout() != null && data.getManageTimeout()) {
+                    data.setTimeout(configuration.getTimeout());
+                }
+                data.setLockVolume(configuration.getLockVolume());
                 if (configuration.getSystemUpdateType() == 2) {
                     data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
                     data.setSystemUpdateTo(configuration.getSystemUpdateTo());

@@ -2022,6 +2022,24 @@ div.form-group div.photo-label {
 
 div.form-group div.three-state label {
     padding-right: 20px;
+    width: 120px;
+    text-align: center;
+}
+
+div.form-group input.common-checkbox {
+    margin-left: 20px;
+}
+
+.audit-info {
+    text-align: left;
+    padding-top: 7px;
+}
+
+.audit-payload {
+    overflow: auto;
+    max-height: 300px;
+    font-size: 12px;
+    width: 98%;
 }
 
 .btn-attention {

@@ -32,11 +32,10 @@
 
         <div class="form-group">
             <div class="col-sm-3">
-                <input type="text"
-                       ng-model="paging.messageFilter"
-                       ng-enter='search()'
-                       localized-placeholder="search.placeholder"
-                       class="form-control">
+                <select class='form-control'
+                        ng-model='paging.messageFilter'
+                        ng-options="filter.item as filter.localized for filter in filters">
+                </select>
             </div>
             <div class='col-sm-3'>
                 <div class='min-padding date-picker date-picker-input'>
@@ -90,6 +89,7 @@
                 <th localized>table.heading.plugin.audit.user</th>
                 <th localized>table.heading.plugin.audit.ipAddress</th>
                 <th localized>table.heading.plugin.audit.action</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -97,7 +97,14 @@
                 <td>{{log.createTime | date:createTimeFormat}}.{{("00000" + (log.createTime % 1000)).slice(-3) }}</td>
                 <td>{{log.login}}</td>
                 <td>{{log.ipAddress}}</td>
-                <td>{{log.action | localize}}</td>
+                <td>{{log.action | localize}}{{log.errorCode ? ('plugin.audit.error' | localize) : ''}}</td>
+                <td>
+                    <button type='button' class='btn btn-default' ng-click='viewLog(log)'
+                            localized-title="plugin.audit.button.details">
+                        <span class='glyphicon glyphicon-search'></span>
+                    </button>
+
+                </td>
             </tr>
             </tbody>
         </table>

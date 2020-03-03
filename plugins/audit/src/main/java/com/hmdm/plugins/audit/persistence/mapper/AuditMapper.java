@@ -41,7 +41,8 @@ public interface AuditMapper {
             "    login," +
             "    action," +
             "    payload," +
-            "    ipAddress" +
+            "    ipAddress," +
+            "    errorCode" +
             ") " +
             "VALUES (" +
             "    #{createTime}," +
@@ -50,7 +51,8 @@ public interface AuditMapper {
             "    #{login}," +
             "    #{action}," +
             "    #{payload}," +
-            "    #{ipAddress}" +
+            "    #{ipAddress}," +
+            "    #{errorCode}" +
             ")"})
     int insertAuditLogRecord(AuditLogRecord logRecord);
 

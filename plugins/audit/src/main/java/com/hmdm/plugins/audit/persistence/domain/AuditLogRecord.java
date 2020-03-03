@@ -64,6 +64,9 @@ public class AuditLogRecord implements CustomerData, Serializable {
     @ApiModelProperty("An IP-address of the request sender")
     private String ipAddress;
 
+    @ApiModelProperty("Error flag, 0 - no error")
+    private Integer errorCode;
+
     /**
      * <p>Constructs new <code>AuditLogRecord</code> instance. This implementation does nothing.</p>
      */
@@ -141,6 +144,14 @@ public class AuditLogRecord implements CustomerData, Serializable {
         this.ipAddress = ipAddress;
     }
 
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(Integer errorCode) {
+        this.errorCode = errorCode;
+    }
+
     @Override
     public String toString() {
         return "AuditLogRecord{" +
@@ -152,6 +163,7 @@ public class AuditLogRecord implements CustomerData, Serializable {
                 ", action='" + action + '\'' +
                 ", payload='" + payload + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
+                ", errorCode='" + errorCode + '\'' +
                 '}';
     }
 
@@ -162,7 +174,8 @@ public class AuditLogRecord implements CustomerData, Serializable {
                 ", login='" + login + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", action='" + action + '\'' +
-                ", payload='" + payload + '\''
-                ;
+                ", payload='" + payload + '\'' +
+                ", errorCode='" + errorCode + '\''
+        ;
     }
 }

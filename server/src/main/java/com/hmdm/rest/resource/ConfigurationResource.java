@@ -59,7 +59,6 @@ public class ConfigurationResource {
     private ConfigurationDAO configurationDAO;
     private ApplicationDAO applicationDAO;
     private PushService pushService;
-    private String baseUrl;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -70,12 +69,10 @@ public class ConfigurationResource {
     @Inject
     public ConfigurationResource(ConfigurationDAO configurationDAO,
                                  ApplicationDAO applicationDAO,
-                                 PushService pushService,
-                                 @Named("base.url") String baseUrl) {
+                                 PushService pushService) {
         this.configurationDAO = configurationDAO;
         this.applicationDAO = applicationDAO;
         this.pushService = pushService;
-        this.baseUrl = baseUrl;
     }
     // =================================================================================================================
     @ApiOperation(
@@ -89,7 +86,7 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllConfigurations() {
         List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByType(0);
-        configurations.forEach(c -> c.setBaseUrl(baseUrl));
+        configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
     }
 
@@ -105,7 +102,7 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchConfigurations(@PathParam("value") String value) {
         List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByTypeAndValue(0, value);
-        configurations.forEach(c -> c.setBaseUrl(baseUrl));
+        configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
     }
 
@@ -115,7 +112,7 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllTypicalConfigurations() {
         List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByType(1);
-        configurations.forEach(c -> c.setBaseUrl(baseUrl));
+        configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
     }
 
@@ -125,7 +122,7 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchTypicalConfigurations(@PathParam("value") String value) {
         List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByTypeAndValue(1, value);
-        configurations.forEach(c -> c.setBaseUrl(baseUrl));
+        configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
     }
 
@@ -226,7 +223,7 @@ public class ConfigurationResource {
             Configuration copy = dbConfiguration.newCopy();
             copy.setName(configuration.getName());
             copy.setApplications(configurationApplications);
-            copy.setBaseUrl(this.baseUrl);
+            copy.setBaseUrl(this.configurationDAO.getBaseUrl());
             this.configurationDAO.insertConfiguration(copy);
             return Response.OK();
         }
@@ -299,7 +296,7 @@ public class ConfigurationResource {
     private Configuration getConfiguration(Integer id) {
         Configuration configuration = this.configurationDAO.getConfigurationByIdFull(id);
         if (configuration != null) {
-            configuration.setBaseUrl(this.baseUrl);
+            configuration.setBaseUrl(this.configurationDAO.getBaseUrl());
         }
         return configuration;
     }

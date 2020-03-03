@@ -12,7 +12,7 @@ angular.module('headwind-kiosk',
         'ru_RU': "ru_RU",
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU'])
-    .constant("APP_VERSION", "3.12.0001") // Update this value on each commit
+    .constant("APP_VERSION", "3.14.0002") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {

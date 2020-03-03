@@ -170,7 +170,7 @@ angular.module('headwind-kiosk')
 
             if (files.length > 0) {
                 $scope.fileName = files[0].name;
-                if ($scope.fileName.endsWith(".apk")) {
+                if ($scope.fileName.endsWith(".apk") || $scope.fileName.endsWith(".xapk")) {
                     $scope.loading = true;
                     $scope.successMessage = localization.localize('success.uploading.file');
                 } else {
@@ -692,7 +692,7 @@ angular.module('headwind-kiosk')
 
             if (files.length > 0) {
                 $scope.fileName = files[0].name;
-                if ($scope.fileName.endsWith(".apk")) {
+                if ($scope.fileName.endsWith(".apk") || $scope.fileName.endsWith(".xapk")) {
                     $scope.loading = true;
                     $scope.successMessage = localization.localize('success.uploading.file');
                 } else {

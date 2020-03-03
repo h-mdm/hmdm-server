@@ -64,6 +64,11 @@ public interface ConfigurationMapper {
             "desktopHeader=#{desktopHeader}, " +
             "requestUpdates=#{requestUpdates}, " +
             "pushOptions=#{pushOptions}, " +
+            "autoBrightness=#{autoBrightness}, " +
+            "brightness=#{brightness}, " +
+            "manageTimeout=#{manageTimeout}, " +
+            "timeout=#{timeout}, " +
+            "lockVolume=#{lockVolume}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
@@ -74,6 +79,9 @@ public interface ConfigurationMapper {
             "contentAppId=#{contentAppId}, " +
             "eventReceivingComponent=#{eventReceivingComponent}, " +
             "kioskMode=#{kioskMode}, " +
+            "wifiSSID=#{wifiSSID}, " +
+            "wifiPassword=#{wifiPassword}, " +
+            "wifiSecurityType=#{wifiSecurityType}, " +
             "autoUpdate=#{autoUpdate}, " +
             "blockStatusBar=#{blockStatusBar}, " +
             "systemUpdateType=#{systemUpdateType}, " +

@@ -60,6 +60,26 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Push notification options")
     private String pushOptions;
 
+    @ApiModelProperty("Brightness management option")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean autoBrightness;
+
+    @ApiModelProperty("Brightness value (0-255)")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer brightness;
+
+    @ApiModelProperty("Timeout management option")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean manageTimeout;
+
+    @ApiModelProperty("Timeout value (sec)")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer timeout;
+
+    @ApiModelProperty("Volume lock option")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean lockVolume;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -360,5 +380,45 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setPushOptions(String pushOptions) {
         this.pushOptions = pushOptions;
+    }
+
+    public Boolean getAutoBrightness() {
+        return autoBrightness;
+    }
+
+    public void setAutoBrightness(Boolean autoBrightness) {
+        this.autoBrightness = autoBrightness;
+    }
+
+    public Integer getBrightness() {
+        return brightness;
+    }
+
+    public void setBrightness(Integer brightness) {
+        this.brightness = brightness;
+    }
+
+    public Boolean getManageTimeout() {
+        return manageTimeout;
+    }
+
+    public void setManageTimeout(Boolean manageTimeout) {
+        this.manageTimeout = manageTimeout;
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
+    }
+
+    public Boolean getLockVolume() {
+        return lockVolume;
+    }
+
+    public void setLockVolume(Boolean lockVolume) {
+        this.lockVolume = lockVolume;
     }
 }

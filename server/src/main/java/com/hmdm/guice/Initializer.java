@@ -89,12 +89,16 @@ public final class Initializer extends GuiceServletContextListener {
         if (signalFilePath != null && !signalFilePath.trim().isEmpty()) {
             File signalFile  = new File(signalFilePath);
             if (!signalFile.exists()) {
-                try (PrintWriter pw = new PrintWriter(new FileWriter(signalFile))) {
+                try {
+                    FileWriter fw = new FileWriter(signalFile);
+                    PrintWriter pw = new PrintWriter(fw);
                     if (errorOut == null) {
                         pw.print("OK");
                     } else {
                         pw.print(errorOut.toString());
                     }
+                    pw.close();
+                    fw.close();
                     System.out.println("[HMDM-INITIALIZER]: Created a signal file for application " +
                             "initialization completion: " + signalFile.getAbsolutePath());
                 } catch (IOException e) {
