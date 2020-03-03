@@ -39,5 +39,5 @@
     <Parameter name="aapt.command" value="aapt"/>
 
     <!-- MQTT notification service parameters -->
-    <Parameter name="mqtt.server.uri" value="_BASE_HOST_:31000"/>
+    <Parameter name="mqtt.server.uri" value="_BASE_DOMAIN_:31000"/>
 </Context>

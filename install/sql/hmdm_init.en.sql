@@ -5,6 +5,8 @@ UPDATE userroles SET name='Observer', description='Read-only access to the contr
 
 UPDATE users SET email='info@h-mdm.com' WHERE id=1;
 
+UPDATE groups SET name='General' WHERE id=1;
+
 UPDATE permissions SET description='Super-administrator functions for the whole system' WHERE id=1;
 UPDATE permissions SET description='Access to system settings' WHERE id=2;
 UPDATE permissions SET description='Access to configurations, applications and files' WHERE id=3;

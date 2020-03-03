@@ -1,22 +1,21 @@
 #!/bin/bash
 #
 # Headwind MDM installer script
-# Tested on Ubuntu Linux 18.04 LTS
+# Tested on Ubuntu Linux 18.04 LTS, 19.10
 #
-TOMCAT_BASE=/var/lib/tomcat8
 REPOSITORY_BASE=https://h-mdm.com/files
-CLIENT_VERSION=2.36
+CLIENT_VERSION=3.12
 DEFAULT_SQL_HOST=localhost
 DEFAULT_SQL_PORT=5432
 DEFAULT_SQL_BASE=hmdm
 DEFAULT_SQL_USER=hmdm
 DEFAULT_SQL_PASS=
 DEFAULT_LOCATION="/opt/hmdm"
-TOMCAT_HOME="/var/lib/tomcat8"
+TOMCAT_HOME=$(ls -d /var/lib/tomcat* | tail -n1)
 TOMCAT_ENGINE="Catalina"
 TOMCAT_HOST="localhost"
 DEFAULT_PROTOCOL=http
-DEFAULT_BASE_HOST=
+DEFAULT_BASE_DOMAIN=
 DEFAULT_BASE_PATH="/hmdm"
 DEFAULT_PORT="8080"
 TEMP_DIRECTORY="/tmp"
@@ -71,7 +70,7 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # Search for the WAR
-SERVER_WAR=./server/target/launcher.war
+SERVER_WAR=./server/target/server-0.1.0.war
 if [ ! -f $SERVER_WAR ]; then
     SERVER_WAR=$(ls hmdm*.war | tail -1)
 fi
@@ -79,6 +78,16 @@ if [ ! -f $SERVER_WAR ]; then
     echo "FAILED to find the WAR file of Headwind MDM!"
     echo "Did you compile the project?"
     exit 1
+fi
+
+# Check the Tomcat base folder
+if [ ! -d "$TOMCAT_HOME" ]; then
+    read -e -p "Enter the Tomcat base directory: " TOMCAT_HOME
+    if [ ! -d "$TOMCAT_HOME" ]; then
+        echo "The directory $TOMCAT_HOME does not exist."
+        echo "Headwind MDM installer requires this directory to install the WAR file!"
+        exit 1
+    fi
 fi
 
 #read -p "Are you installing an open-source version? (Y/n)? " -n 1 -r
@@ -155,7 +164,7 @@ echo "Please assign a public domain name to this server"
 echo
 
 read -e -p "Protocol (http|https) [$DEFAULT_PROTOCOL]: " -i "$DEFAULT_PROTOCOL" PROTOCOL
-read -e -p "Domain name or public IP (e.g. example.com): " -i "$DEFAULT_BASE_HOST" BASE_HOST
+read -e -p "Domain name or public IP (e.g. example.com): " -i "$DEFAULT_BASE_DOMAIN" BASE_DOMAIN
 read -e -p "Port (leave empty for default ports 80 or 443): " -i "$DEFAULT_PORT" PORT
 read -e -p "Project path on server or ROOT [$DEFAULT_BASE_PATH]: " -i "$DEFAULT_BASE_PATH" BASE_PATH
 read -e -p "Tomcat virtual host [$TOMCAT_HOST]: " -i "$TOMCAT_HOST" TOMCAT_HOST
@@ -166,7 +175,9 @@ if [ "$BASE_PATH" == "ROOT" ]; then
 fi 
 
 if [[ ! -z "$PORT" ]]; then
-    BASE_HOST="$BASE_HOST:$PORT"
+    BASE_HOST="$BASE_DOMAIN:$PORT"
+else
+    BASE_HOST="$BASE_DOMAIN"
 fi
 
 echo
@@ -192,8 +203,12 @@ rm -rf $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH > /dev/null 2>&1
 rm -f $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war > /dev/null 2>&1
 
 TOMCAT_CONFIG_PATH=$TOMCAT_HOME/conf/$TOMCAT_ENGINE/$TOMCAT_HOST
-mkdir -p $TOMCAT_CONFIG_PATH || exit 1
-cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
+if [ ! -d $TOMCAT_CONFIG_PATH ]; then
+    mkdir -p $TOMCAT_CONFIG_PATH || exit 1
+    chown root:$TOMCAT_USER $TOMCAT_CONFIG_PATH
+    chmod 755 $TOMCAT_CONFIG_PATH
+fi
+cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_DOMAIN_|$BASE_DOMAIN|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 if [ "$?" -ne 0 ]; then
     echo "Failed to create a Tomcat config file $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml!"
     exit 1
