@@ -20,8 +20,7 @@ DEFAULT_BASE_PATH="/hmdm"
 DEFAULT_PORT="8080"
 TEMP_DIRECTORY="/tmp"
 TEMP_SQL_FILE="$TEMP_DIRECTORY/hmdm_init.sql"
-INSTALL_FLAG_FILE="$TEMP_DIRECTORY/hmdm_install_flag"
-TOMCAT_USER="tomcat"
+TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
 
 # Check if we are root
 CURRENTUSER=$(whoami)
@@ -131,6 +130,7 @@ echo "File storage setup"
 echo "=================="
 echo "Please choose where the files uploaded to Headwind MDM will be stored"
 echo "If the directory doesn't exist, it will be created"
+echo "##### FOR TOMCAT 9, USE SANDBOXED DIR: /var/lib/tomcat9/work #####"
 echo
 
 read -e -p "Headwind MDM directory [$DEFAULT_LOCATION]: " -i "$DEFAULT_LOCATION" LOCATION
@@ -138,6 +138,7 @@ read -e -p "Headwind MDM directory [$DEFAULT_LOCATION]: " -i "$DEFAULT_LOCATION"
 # Create directories
 if [ ! -d $LOCATION ]; then
     mkdir -p $LOCATION || exit 1
+    chown $TOMCAT_USER:$TOMCAT_USER $LOCATION || exit 1
 fi
 if [ ! -d $LOCATION/files ]; then
     mkdir $LOCATION/files
@@ -151,6 +152,8 @@ if [ ! -d $LOCATION/logs ]; then
     mkdir $LOCATION/logs
     chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/logs || exit 1
 fi
+
+INSTALL_FLAG_FILE="$LOCATION/hmdm_install_flag"
 
 # Logger configuration
 cat ./install/log4j_template.xml | sed "s|_BASE_DIRECTORY_|$LOCATION|g" > $LOCATION/log4j-hmdm.xml

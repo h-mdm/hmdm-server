@@ -24,10 +24,7 @@ package com.hmdm.util;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Customer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * <p>An utility class for managing the files on local file system.</p>
@@ -53,7 +50,7 @@ public final class FileUtil {
             }
 
             out.flush();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,7 +92,18 @@ public final class FileUtil {
         if (success) {
             return file;
         } else {
-            return null;
+            // Try to copy and delete because rename can fail due to different file systems
+            // For example, on Tomcat 9 renaming from /tmp to /var/lib/tomcat9/work will fail due to sandbox restrictions
+            try {
+                FileInputStream inputStream = new FileInputStream(localFile);
+                writeToFile(inputStream, file.getAbsolutePath());
+                inputStream.close();
+                localFile.delete();
+                return file;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
     }
