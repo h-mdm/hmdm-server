@@ -44,8 +44,14 @@
                             class='btn btn-default' ng-click='showApps( file )'>
                         <span class='glyphicon glyphicon-list'></span>
                     </button>
-                    <button type='button' localized-title="button.delete"
+                    <button type='button' ng-if="!file.removalDisabled" localized-title="button.delete"
                             class='btn btn-default' ng-click='removeFile( file )'>
+                        <span class='glyphicon glyphicon-trash'></span>
+                    </button>
+                    <button type='button' ng-if="file.removalDisabled"
+                            disabled="disabled"
+                            title="{{file.removeButtonTooltip}}"
+                            class='btn btn-default'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
                 </div>

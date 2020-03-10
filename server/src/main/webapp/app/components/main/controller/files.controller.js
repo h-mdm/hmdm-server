@@ -27,6 +27,37 @@ angular.module('headwind-kiosk')
         $scope.search = function () {
             fileService.getAllFiles({value: $scope.search.searchValue},
                 function (response) {
+                    response.data.forEach(function (file) {
+                        file.removeButtonTooltip = '';
+                        if (file.usedByConfigurations && file.usedByConfigurations.length > 0) {
+                            file.removalDisabled = true;
+                            var s = localization.localize("tooltip.usage.byconfigurations");
+                            file.usedByConfigurations.forEach(function (item) {
+                                s += "\n";
+                                s += item;
+                            });
+                            file.removeButtonTooltip += s;
+                        }
+                        if (file.usedByApps && file.usedByApps.length > 0) {
+                            file.removalDisabled = true;
+                            var s = localization.localize("tooltip.usage.byapps");
+                            file.usedByApps.forEach(function (item) {
+                                s += "\n";
+                                s += item;
+                            });
+                            file.removeButtonTooltip += s;
+                        }
+                        if (file.usedByIcons && file.usedByIcons.length > 0) {
+                            file.removalDisabled = true;
+                            var s = localization.localize("tooltip.usage.byicons");
+                            file.usedByIcons.forEach(function (item) {
+                                s += "\n";
+                                s += item;
+                            });
+                            file.removeButtonTooltip += s;
+                        }
+                    });
+
                     $scope.files = response.data;
                 });
         };

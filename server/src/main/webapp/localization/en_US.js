@@ -27,6 +27,9 @@ document.localization ['en_US'] = {
     'devices.app.needs.removal': '${applicationVersion}, removal is required',
     'devices.no.data': 'The device has not transmitted data',
     'devices.settings.conformance.broken': 'Mismatch with settings: (${serverData})',
+    'devices.file.installed': '- ${file}: installed',
+    'devices.file.not.installed': '- ${file}: not installed.',
+    'devices.file.lastUpdate.differs': '- ${file}: difference in modification time ${diff} min',
 
     'button.apply': 'Apply',
     'button.gps.on': 'Enable GPS',
@@ -119,6 +122,11 @@ document.localization ['en_US'] = {
     'error.configuration.device.use': 'Cannot delete this configuration, it is used on devices. First go to "Devices", find the devices using this configuration and change their settings.',
     'error.invalid.system.update.time': 'Invalid installation interval',
 
+    'error.configuration.file.empty.name': 'Enter a file name',
+    'error.configuration.file.empty.desc': 'Specify a file description',
+    'error.configuration.file.empty.path': 'Specify the path on the device',
+    'error.configuration.file.empty.file': 'Enter a URL or upload a file',
+    
     'error.notfound.device': 'Device not found',
     'error.duplicate.login': 'Such a login is already in use',
     'error.duplicate.group': 'A group with the same name already exists',
@@ -128,6 +136,7 @@ document.localization ['en_US'] = {
     'error.application.config.reference.exists': 'The application is used in configurations and cannot be deleted',
     'error.application.version.deletion.prohibited': 'The version is either unique or used in configurations and cannot be deleted',
     'error.duplicate.file': 'A file with the same name already exists',
+    'error.used.file': 'This file is used',
     'error.version.exists': 'The same version of this app already exists',
     'error.duplicate.configuration': 'A configuration with this name already exists',
     'error.notfound.customer.admin': 'Administrator account not found',
@@ -258,6 +267,20 @@ document.localization ['en_US'] = {
     'form.configuration.settings.push.options.mqtt.worker' : 'MQTT protocol (save battery)',
     'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT protocol (instant delivery)',
     'form.configuration.settings.push.options.polling' : 'HTTP polling',
+    'form.configuration.files.search.label': 'Search:',
+    'form.configuration.files.action.upload': 'Upload',
+    'form.configuration.files.action.remove': 'Remove',
+
+    'form.configuration.file.name': 'File name',
+    'form.configuration.file.description': 'File description',
+    'form.configuration.file.path': 'Path on device',
+    'form.configuration.file.url': 'URL',
+    'form.configuration.file.file': 'File',
+    'form.configuration.file.action': 'Action',
+    'form.configuration.file.action.prompt.1': 'Upload',
+    'form.configuration.file.action.prompt.2': 'Remove',
+    'form.configuration.file.remove.prompt.1': 'This file will not be synchronized with devices any more',
+    'form.configuration.file.remove.prompt.2': 'Remove file from the server',
 
     'form.password.title': 'Change Password',
     'form.password.label.user': 'User',
@@ -424,6 +447,7 @@ document.localization ['en_US'] = {
     'tab.configeditor.applications': 'Applications',
     'tab.configeditor.mdm.settings': 'MDM Settings',
     'tab.configeditor.app.settings': 'Applications Settings',
+    'tab.configeditor.files': 'Files',
 
     'search.placeholder.file': 'search file',
     'search.placeholder.configuration': 'Search for configuration',
@@ -455,6 +479,12 @@ document.localization ['en_US'] = {
     'table.heading.application.setting.comment': 'Comment',
     'table.heading.application.setting.lastUpdate': 'Last Modified Date',
 
+    'table.heading.file.url': 'URL',
+    'table.heading.file.devicepath': 'Path on device',
+    'table.heading.file.description': 'File description',
+    'table.heading.file.action': 'Action',
+    'table.heading.file.lastUpdate': 'Last modified date',
+    
     'table.heading.application.pkg': 'Package ID',
     'table.heading.application.name': 'Application Name',
     'table.heading.application.version': 'Version',
@@ -470,6 +500,7 @@ document.localization ['en_US'] = {
     'table.heading.device.phone.model': 'Phone Model',
     'table.heading.device.status.permissions': 'Permission Status',
     'table.heading.device.status.installation': 'Installation Status',
+    'table.heading.device.status.files': 'Files status',
     'table.heading.device.configuration': 'Configuration',
     'table.heading.device.desc': 'Description',
     'table.heading.device.group': 'Group',
@@ -571,5 +602,8 @@ document.localization ['en_US'] = {
     'form.resolved.duplicate.pkg.text1': 'Package ID "${pkg}" is already used by the applications listed below.',
     'form.resolved.duplicate.pkg.text2': 'Do you want to add a new application or a new version of an existing application?',
     'form.resolved.duplicate.pkg.text3': 'New version for',
-
+    
+    'tooltip.usage.byconfigurations': 'Used by configurations',
+    'tooltip.usage.byapps': 'Used by applications',
+    'tooltip.usage.byicons': 'Used by icons'
 };

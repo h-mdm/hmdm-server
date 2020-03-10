@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -38,7 +37,7 @@ import com.hmdm.persistence.domain.Application;
         "to MDM server")
 public class DeviceInfo implements Serializable {
 
-    private static final long serialVersionUID = 9140079707834803040L;
+    private static final long serialVersionUID = -3973746261808927823L;
 
     @ApiModelProperty("A name of the device model")
     private String model;
@@ -48,6 +47,9 @@ public class DeviceInfo implements Serializable {
 
     @ApiModelProperty("A list of applications installed on device")
     private List<Application> applications = new LinkedList<>();
+
+    @ApiModelProperty("A list of configuraiton files installed on device")
+    private List<DeviceConfigurationFile> files = new LinkedList<>();
 
     @ApiModelProperty("An identifier of device within MDM server")
     private String deviceId;
@@ -175,12 +177,21 @@ public class DeviceInfo implements Serializable {
         this.launcherType = launcherType;
     }
 
+    public List<DeviceConfigurationFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<DeviceConfigurationFile> files) {
+        this.files = files;
+    }
+
     @Override
     public String toString() {
         return "DeviceInfo{" +
                 "model='" + model + '\'' +
                 ", permissions=" + permissions +
                 ", applications=" + applications +
+                ", files=" + files +
                 ", deviceId='" + deviceId + '\'' +
                 ", imei='" + imei + '\'' +
                 ", phone='" + phone + '\'' +

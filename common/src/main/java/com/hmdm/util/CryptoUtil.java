@@ -23,8 +23,14 @@ package com.hmdm.util;
 
 import com.google.common.io.BaseEncoding;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class CryptoUtil {
 
@@ -65,5 +71,35 @@ public class CryptoUtil {
     public static String getBase64String(byte[] digest) {
         String hashString = BaseEncoding.base64Url().encode(digest);
         return hashString;
+    }
+
+    public static String calculateChecksum(InputStream fileContent) throws NoSuchAlgorithmException, IOException {
+        // Calculate checksum
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        try (InputStream is = new BufferedInputStream(fileContent);
+             DigestInputStream dis = new DigestInputStream(is, md)) {
+            /* Read decorated stream (dis) to EOF as normal... */
+            int b;
+            while ((b = dis.read()) != -1) {
+                // digest will consume the content when read() called
+            }
+        }
+
+        // to calculate message digest of the input string
+        // returned as array of byte
+        byte[] digest = md.digest();
+
+        // Convert byte array into signum representation
+        BigInteger no = new BigInteger(1, digest);
+
+        // Convert message digest into hex value
+        String hashtext = no.toString(16);
+
+        // Add preceding 0s to make it 32 bit
+        while (hashtext.length() < 32) {
+            hashtext = "0" + hashtext;
+        }
+
+        return hashtext;
     }
 }

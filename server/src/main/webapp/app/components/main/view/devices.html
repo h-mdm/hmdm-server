@@ -75,6 +75,7 @@
             <th ng-if="settings.columnDisplayedDeviceModel" localized>table.heading.device.phone.model</th>
             <th ng-if="settings.columnDisplayedDevicePermissionsStatus" localized>table.heading.device.status.permissions</th>
             <th ng-if="settings.columnDisplayedDeviceAppInstallStatus" localized>table.heading.device.status.installation</th>
+            <th ng-if="settings.columnDisplayedDeviceAppInstallStatus" localized>table.heading.device.status.files</th>
             <th ng-if="settings.columnDisplayedDeviceConfiguration" localized>table.heading.device.configuration</th>
             <th ng-if="settings.columnDisplayedDeviceDesc" localized>table.heading.device.desc</th>
             <th ng-if="settings.columnDisplayedDeviceGroup" localized>table.heading.device.group</th>
@@ -115,6 +116,11 @@
                 <img class='device-indicator'
                      ng-src='{{getDeviceApplicationsIndicatorImage(device)}}'
                      title='{{getDeviceApplicationsTitle(device)}}'>
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceAppInstallStatus">
+                <img class='device-indicator'
+                     ng-src='{{getDeviceFilesIndicatorImage(device)}}'
+                     title='{{getDeviceFilesTitle(device)}}'>
             </td>
             <td ng-if="settings.columnDisplayedDeviceConfiguration">
                 {{device.configuration.name}}

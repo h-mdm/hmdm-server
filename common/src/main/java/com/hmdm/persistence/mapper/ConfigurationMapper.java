@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ConfigurationApplicationParameters;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -154,4 +155,10 @@ public interface ConfigurationMapper {
 
     @Select("SELECT COUNT(*) FROM devices WHERE configurationId = #{id}")
     long countDevices(@Param("id") Integer id);
+
+    void insertConfigurationFiles(@Param("id") Integer configurationId,
+                                  @Param("files") List<ConfigurationFile> files);
+
+    @Delete({"DELETE FROM configurationFiles WHERE configurationId = #{id}"})
+    void removeConfigurationFilesById(@Param("id") Integer configurationId);
 }

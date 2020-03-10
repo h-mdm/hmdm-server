@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -40,7 +41,7 @@ import com.hmdm.util.CryptoUtil;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SyncResponse implements Serializable, SyncResponseInt {
 
-    private static final long serialVersionUID = 515981796541187811L;
+    private static final long serialVersionUID = 7961923794459303328L;
 
     @ApiModelProperty("A background color to use when running MDM application")
     private String backgroundColor;
@@ -134,6 +135,10 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty(value = "A list of application settings to apply on device")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<SyncApplicationSettingInt> applicationSettings;
+
+    @ApiModelProperty(value = "A list of files to apply on device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<SyncConfigurationFileInt> files;
 
     public SyncResponse() {
     }
@@ -420,5 +425,14 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setLockVolume(Boolean lockVolume) {
         this.lockVolume = lockVolume;
+    }
+
+    @Override
+    public List<SyncConfigurationFileInt> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<SyncConfigurationFileInt> files) {
+        this.files = files;
     }
 }

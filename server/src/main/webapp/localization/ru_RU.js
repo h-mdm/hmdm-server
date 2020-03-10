@@ -27,6 +27,9 @@ document.localization[ 'ru_RU' ] = {
     'devices.app.needs.removal': '${applicationVersion}, требуется удаление',
     'devices.no.data': 'Устройство не передало данных',
     'devices.settings.conformance.broken': 'Несоответствие настройкам: (${serverData})',
+    'devices.file.installed': '- ${file}: установл.',
+    'devices.file.not.installed': '- ${file}: не установл.',
+    'devices.file.lastUpdate.differs': '- ${file}: различие во врмени модификации ${diff} мин',
 
     'button.apply': 'Применить',
     'button.gps.on': 'Включить GPS',
@@ -119,6 +122,11 @@ document.localization[ 'ru_RU' ] = {
     'error.configuration.device.use': 'Невозможно удалить эту конфигурацию, она используется на устройствах. Сначала перейдите в "Устройства", найдите устройства, использующие эту конфигурацию, и измените их настройки.',
     'error.invalid.system.update.time': 'Неверный интервал врмение установки',
 
+    'error.configuration.file.empty.name': 'Укажите название файла',
+    'error.configuration.file.empty.desc': 'Укажите описание файла',
+    'error.configuration.file.empty.path': 'Укажить путь на устройстве',
+    'error.configuration.file.empty.file': 'Укажите URL или загрузите файл',
+
     'error.notfound.device': 'Устройство не найдено',
     'error.duplicate.login': 'Такой login уже используется',
     'error.duplicate.group': 'Группа с таким именем уже существует',
@@ -128,6 +136,7 @@ document.localization[ 'ru_RU' ] = {
     'error.application.config.reference.exists': 'Приложение используется в конфигурациях и не может быть удалено',
     'error.application.version.deletion.prohibited': 'Версия либо явялется единственной, либо используется в конфигурациях и не может быть удалена',
     'error.duplicate.file': 'Файл с таким именем уже существует',
+    'error.used.file': 'Этот файл используется',
     'error.version.exists': 'Такая версия этого приложения уже существует',
     'error.duplicate.configuration': 'Конфигурация с таким именем уже существует',
     'error.notfound.customer.admin': 'Не найдена учетная запись администратора',
@@ -259,6 +268,20 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.push.options.mqtt.worker' : 'MQTT протокол (энергосбережение)',
     'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT протокол (доставка в спящем режиме)',
     'form.configuration.settings.push.options.polling' : 'Опрос URL по HTTP',
+    'form.configuration.files.search.label': 'Поиск:',
+    'form.configuration.files.action.upload': 'Загрузить',
+    'form.configuration.files.action.remove': 'Удалить',
+
+    'form.configuration.file.name': 'Имя файла',
+    'form.configuration.file.description': 'Описание файла',
+    'form.configuration.file.path': 'Путь на устройстве',
+    'form.configuration.file.url': 'URL',
+    'form.configuration.file.file': 'Файл',
+    'form.configuration.file.action': 'Действие',
+    'form.configuration.file.action.prompt.1': 'Загрузить',
+    'form.configuration.file.action.prompt.2': 'Удалить',
+    'form.configuration.file.remove.prompt.1': 'Этот файл больше не будет синхронизироваться с устройствами',
+    'form.configuration.file.remove.prompt.2': 'Удалить файл с сервера',
 
     'form.password.title': 'Сменить пароль',
     'form.password.label.user': 'Пользователь',
@@ -425,6 +448,7 @@ document.localization[ 'ru_RU' ] = {
     'tab.configeditor.applications': 'Приложения',
     'tab.configeditor.mdm.settings': 'Настройки MDM',
     'tab.configeditor.app.settings': 'Настройки приложений',
+    'tab.configeditor.files': 'Файлы',
 
     'search.placeholder.file': 'Поиск файла',
     'search.placeholder.configuration': 'Поиск конфигурации',
@@ -438,6 +462,7 @@ document.localization[ 'ru_RU' ] = {
     'search.placeholder': 'Поиск ...',
     'search.placeholder.from': 'С...',
     'search.placeholder.to': 'По...',
+
 
     'table.heading.customer.name': 'Название',
     'table.heading.customer.desc': 'Описание',
@@ -456,6 +481,12 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.application.setting.comment': 'Комментарий',
     'table.heading.application.setting.lastUpdate': 'Дата последнего изменения',
 
+    'table.heading.file.url': 'URL',
+    'table.heading.file.devicepath': 'Путь на устройстве',
+    'table.heading.file.description': 'Описание файла',
+    'table.heading.file.action': 'Действие',
+    'table.heading.file.lastUpdate': 'Дата последнего изменения',
+
     'table.heading.application.pkg': 'ID пакета',
     'table.heading.application.name': 'Название приложения',
     'table.heading.application.version': 'Версия',
@@ -471,6 +502,7 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.device.phone.model': 'Модель телефона',
     'table.heading.device.status.permissions': 'Статус разрешений',
     'table.heading.device.status.installation': 'Статус установки',
+    'table.heading.device.status.files': 'Статус файлов',
     'table.heading.device.configuration': 'Конфигурация',
     'table.heading.device.desc': 'Описание',
     'table.heading.device.group': 'Группа',
@@ -576,4 +608,7 @@ document.localization[ 'ru_RU' ] = {
     'form.resolved.duplicate.pkg.text4': 'Package ID "${pkg}" уже используется приложениями ${apps}',
     'form.resolved.duplicate.pkg.text5': 'Вы уверены, что хотите изменить package ID?',
 
+    'tooltip.usage.byconfigurations': 'Используется конфигурациями',
+    'tooltip.usage.byapps': 'Используется приложениями',
+    'tooltip.usage.byicons': 'Используется иконками'
 };

@@ -26,12 +26,13 @@ import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.List;
 
 @ApiModel(description = "A single file maintained by the MDM server")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HFile implements Comparable<HFile>, Serializable {
 
-    private static final long serialVersionUID = -7997985282055128383L;
+    private static final long serialVersionUID = 7570897379289300175L;
     
     @ApiModelProperty("A path to a file")
     private String path;
@@ -39,6 +40,10 @@ public class HFile implements Comparable<HFile>, Serializable {
     private String name;
     @ApiModelProperty("An URL of file")
     private String url;
+
+    private List<String> usedByApps;
+    private List<String> usedByIcons;
+    private List<String> usedByConfigurations;
 
     public HFile() {
     }
@@ -76,6 +81,30 @@ public class HFile implements Comparable<HFile>, Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public List<String> getUsedByApps() {
+        return usedByApps;
+    }
+
+    public void setUsedByApps(List<String> usedByApps) {
+        this.usedByApps = usedByApps;
+    }
+
+    public List<String> getUsedByIcons() {
+        return usedByIcons;
+    }
+
+    public void setUsedByIcons(List<String> usedByIcons) {
+        this.usedByIcons = usedByIcons;
+    }
+
+    public List<String> getUsedByConfigurations() {
+        return usedByConfigurations;
+    }
+
+    public void setUsedByConfigurations(List<String> usedByConfigurations) {
+        this.usedByConfigurations = usedByConfigurations;
     }
 
     /**

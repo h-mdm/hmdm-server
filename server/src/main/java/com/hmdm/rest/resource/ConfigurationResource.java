@@ -22,18 +22,18 @@
 package com.hmdm.rest.resource;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import javax.inject.Named;
-
 import com.hmdm.notification.PushService;
-import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.ConfigurationReferenceExistsException;
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.domain.ConfigurationFile;
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.UpgradeConfigurationApplicationRequest;
-import com.sun.org.apache.bcel.internal.generic.PUSH;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,6 +59,8 @@ public class ConfigurationResource {
     private ConfigurationDAO configurationDAO;
     private ApplicationDAO applicationDAO;
     private PushService pushService;
+    private CustomerDAO customerDAO;
+    private String baseUrl;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -69,10 +71,14 @@ public class ConfigurationResource {
     @Inject
     public ConfigurationResource(ConfigurationDAO configurationDAO,
                                  ApplicationDAO applicationDAO,
-                                 PushService pushService) {
+                                 PushService pushService,
+                                 CustomerDAO customerDAO,
+                                 @Named("base.url") String baseUrl) {
         this.configurationDAO = configurationDAO;
         this.applicationDAO = applicationDAO;
         this.pushService = pushService;
+        this.customerDAO = customerDAO;
+        this.baseUrl = baseUrl;
     }
     // =================================================================================================================
     @ApiOperation(
@@ -297,6 +303,25 @@ public class ConfigurationResource {
         Configuration configuration = this.configurationDAO.getConfigurationByIdFull(id);
         if (configuration != null) {
             configuration.setBaseUrl(this.configurationDAO.getBaseUrl());
+            final List<ConfigurationFile> files = configuration.getFiles();
+            if (files != null && !files.isEmpty()) {
+                final Customer customer = this.customerDAO.findById(configuration.getCustomerId());
+
+                files.forEach(file -> {
+                    if (file.getExternalUrl() != null) {
+                        file.setUrl(file.getExternalUrl());
+                    } else if (file.getFilePath() != null) {
+                        final String url;
+                        if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
+                            url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + file.getFilePath();
+                        } else {
+                            url = this.baseUrl + "/files/" + file.getFilePath();
+                        }
+                        file.setUrl(url);
+                    }
+                });
+            }
+
         }
         return configuration;
     }

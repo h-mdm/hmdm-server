@@ -45,4 +45,17 @@ public interface IconMapper {
 
     @Select("SELECT icons.* FROM icons WHERE icons.customerId = #{customerId} ORDER BY icons.name")
     List<Icon> getAllIcons(@Param("customerId") int customerId);
+
+    @Select("SELECT COUNT(*) AS cnt " +
+            "FROM icons ic " +
+            "INNER JOIN uploadedFiles uf ON uf.id = ic.fileId " +
+            "WHERE uf.filePath = #{fileName}")
+    long countFileUsedAsIcon(@Param("fileName") String fileName);
+
+    @Select("SELECT ic.name " +
+            "FROM icons ic " +
+            "INNER JOIN uploadedFiles uf ON uf.id = ic.fileId " +
+            "WHERE ic.customerId = #{customerId} " +
+            "AND uf.filePath = #{fileName}")
+    List<String> getUsingIcons(@Param("customerId") int customerId, @Param("fileName") String fileName);
 }

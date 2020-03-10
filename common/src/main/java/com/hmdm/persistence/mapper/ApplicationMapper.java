@@ -514,4 +514,21 @@ public interface ApplicationMapper {
             ")")
     int deleteApplicationConfigurationLinksForSamePkg(@Param("applicationId") int applicationId,
                                                       @Param("configurationId") int configurationId);
+
+
+    @Select({"SELECT COUNT(*) AS cnt " +
+            "FROM applications " +
+            "INNER JOIN customers ON customers.id = applications.customerId " +
+            "INNER JOIN applicationVersions ON applicationVersions.id = applications.latestVersion " +
+            "WHERE (applications.customerId = #{customerId})" +
+            "AND (applicationVersions.url=#{url}) "})
+    long countAllApplicationsByUrl(@Param("customerId") int customerId, @Param("url") String url);
+
+    @Select({"SELECT applications.name || ' ' || applicationVersions.version AS name " +
+            "FROM applications " +
+            "INNER JOIN customers ON customers.id = applications.customerId " +
+            "INNER JOIN applicationVersions ON applicationVersions.id = applications.latestVersion " +
+            "WHERE (applications.customerId = #{customerId})" +
+            "AND (applicationVersions.url=#{url}) "})
+    List<String> getUsingApps(@Param("customerId") int customerId, @Param("url") String url);
 }

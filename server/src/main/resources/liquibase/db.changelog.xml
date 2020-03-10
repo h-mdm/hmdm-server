@@ -1580,4 +1580,55 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="29.02.20-15:24" author="isv" context="common">
+        <comment>Table, new: configurationFiles</comment>
+        <sql>
+            CREATE TABLE configurationFiles (
+              id SERIAL NOT NULL CONSTRAINT configurationFiles_pr_key PRIMARY KEY,
+              configurationId INT NOT NULL REFERENCES configurations( id ) ON DELETE CASCADE,
+              name TEXT NOT NULL,
+              description TEXT NOT NULL,
+              devicePath TEXT NOT NULL,
+              externalUrl TEXT,
+              filePath TEXT,
+              checksum TEXT NOT NULL,
+              remove BOOLEAN NOT NULL DEFAULT FALSE,
+              lastUpdate BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW()) * 1000,
+              fileId INT REFERENCES uploadedFiles( id ) ON DELETE CASCADE
+            );
+            CREATE INDEX configurationFiles_configurationId_idx ON configurationFiles (configurationId);
+        </sql>
+        <rollback>
+            DROP TABLE configurationFiles;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="03.03.20-22:59" author="isv" context="common">
+        <comment>Dropping not-null constraint for configurationFiles.description</comment>
+        <sql>
+            ALTER TABLE configurationFiles ALTER COLUMN description DROP NOT NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationFiles ALTER COLUMN description SET NOT NULL;
+        </rollback>
+    </changeSet>
+    <changeSet id="03.03.20-23:00" author="isv" context="common">
+        <comment>Column,delete: configurationFiles#name</comment>
+        <sql>
+            ALTER TABLE configurationFiles DROP COLUMN name;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationFiles ADD COLUMN name TEXT NOT NULL;
+        </rollback>
+    </changeSet>
+    <changeSet id="04.03.20-18:18" author="isv" context="common">
+        <comment>Dropping not-null constraint for configurationFiles.checksum</comment>
+        <sql>
+            ALTER TABLE configurationFiles ALTER COLUMN checksum DROP NOT NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationFiles ALTER COLUMN checksum SET NOT NULL;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

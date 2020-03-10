@@ -22,6 +22,7 @@
 package com.hmdm.persistence.mapper;
 
 import com.hmdm.persistence.domain.UploadedFile;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -40,4 +41,7 @@ public interface UploadedFileMapper {
 
     @Select("SELECT * FROM uploadedFiles WHERE id = #{id}")
     UploadedFile getFileById(@Param("id") Integer id);
+
+    @Delete("DELETE FROM uploadedFiles WHERE id = #{id}")
+    void deleteFile(@Param("id") int fileId);
 }

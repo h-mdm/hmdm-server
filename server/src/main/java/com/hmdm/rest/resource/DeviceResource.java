@@ -41,7 +41,9 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.name.Named;
 import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.NotificationDAO;
+import com.hmdm.persistence.ConfigurationFileDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.rest.json.view.devicelist.DeviceListView;
 import com.hmdm.rest.json.view.devicelist.DeviceView;
@@ -72,6 +74,7 @@ public class DeviceResource {
     private DeviceDAO deviceDAO;
     private ConfigurationDAO configurationDAO;
     private PushService pushService;
+    private ConfigurationFileDAO configurationFileDAO;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -82,10 +85,12 @@ public class DeviceResource {
     @Inject
     public DeviceResource(DeviceDAO deviceDAO,
                           ConfigurationDAO configurationDAO,
-                          PushService pushService) {
+                          PushService pushService,
+                          ConfigurationFileDAO configurationFileDAO) {
         this.deviceDAO = deviceDAO;
         this.configurationDAO = configurationDAO;
         this.pushService = pushService;
+        this.configurationFileDAO = configurationFileDAO;
     }
 
     // =================================================================================================================
@@ -100,12 +105,16 @@ public class DeviceResource {
     public Response getAllDevices(DeviceSearchRequest request) {
         PaginatedData<Device> devices = this.deviceDAO.getAllDevices(request);
         Map<Integer, List<Application>> configIdToApplicationsMap = new HashMap<>();
+        Map<Integer, List<ConfigurationFile>> configIdToFilesMap = new HashMap<>();
         Map<Integer, Configuration> configIdToConfigurationsMap = new HashMap<>();
         for (Device device : devices.getItems()) {
             final Integer deviceConfigurationId = device.getConfigurationId();
 
             if (!configIdToApplicationsMap.containsKey(deviceConfigurationId)) {
                 configIdToApplicationsMap.put(deviceConfigurationId, this.configurationDAO.getConfigurationApplications(deviceConfigurationId));
+            }
+            if (!configIdToFilesMap.containsKey(deviceConfigurationId)) {
+                configIdToFilesMap.put(deviceConfigurationId, this.configurationFileDAO.getConfigurationFiles(deviceConfigurationId));
             }
 
             if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
@@ -121,6 +130,8 @@ public class DeviceResource {
                     configuration.setBaseUrl(this.configurationDAO.getBaseUrl());
                 }
                 configuration.setApplications(configIdToApplicationsMap.get(deviceConfigurationId));
+                configuration.setFiles(configIdToFilesMap.get(deviceConfigurationId));
+                
                 configIdToConfigurationsMap.put(deviceConfigurationId, configuration);
             }
 

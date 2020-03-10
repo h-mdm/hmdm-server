@@ -27,11 +27,13 @@ import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.mapper.CommonMapper;
+import com.hmdm.persistence.mapper.ConfigurationFileMapper;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.persistence.mapper.UserMapper;
@@ -67,14 +69,20 @@ public class UnsecureDAO {
     private final ApplicationMapper applicationMapper;
     private final ApplicationDAO applicationDAO;
     private final ApplicationSettingDAO applicationSettingDAO;
+    private final ConfigurationFileMapper configurationFileMapper;
 
     /**
      * <p>Constructs new <code>UnsecureDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public UnsecureDAO(DeviceMapper deviceMapper, UserMapper userMapper, ConfigurationMapper configurationMapper,
-                       CommonMapper settingsMapper, ApplicationMapper applicationMapper,
-                       ApplicationDAO applicationDAO, ApplicationSettingDAO applicationSettingDAO) {
+    public UnsecureDAO(DeviceMapper deviceMapper,
+                       UserMapper userMapper,
+                       ConfigurationMapper configurationMapper,
+                       CommonMapper settingsMapper,
+                       ApplicationMapper applicationMapper,
+                       ApplicationDAO applicationDAO,
+                       ApplicationSettingDAO applicationSettingDAO,
+                       ConfigurationFileMapper configurationFileMapper) {
         this.deviceMapper = deviceMapper;
         this.userMapper = userMapper;
         this.configurationMapper = configurationMapper;
@@ -82,6 +90,7 @@ public class UnsecureDAO {
         this.applicationMapper = applicationMapper;
         this.applicationDAO = applicationDAO;
         this.applicationSettingDAO = applicationSettingDAO;
+        this.configurationFileMapper = configurationFileMapper;
     }
 
     public User findByLoginOrEmail(String login) {
@@ -261,6 +270,15 @@ public class UnsecureDAO {
         return this.deviceMapper.getDeviceById(id);
     }
 
+    /**
+     * <p>Gets the list of configuration files to be used on device.</p>
+     *
+     * @param device a device to get the configuration files for.
+     * @return a list of configuration files to be used on device.
+     */
+    public List<ConfigurationFile> getConfigurationFiles(Device device) {
+        return this.configurationFileMapper.getConfigurationFiles(device.getConfigurationId());
+    }
 
 //    /**
 //     * <p>Gets the settings for the customer account mapped to specified device.</p>

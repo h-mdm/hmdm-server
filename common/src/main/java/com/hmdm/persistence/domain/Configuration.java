@@ -38,7 +38,7 @@ import static com.hmdm.persistence.domain.IconSize.SMALL;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Configuration implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = -6406186910959907259L;
+    private static final long serialVersionUID = -7028146375054564719L;
     
     // This group of settings corresponds to common settings
     @ApiModelProperty("A configuration ID")
@@ -127,6 +127,9 @@ public class Configuration implements CustomerData, Serializable {
     @ApiModelProperty("A list of settings for applications set for configuration")
     private List<ApplicationSetting> applicationSettings;
 
+    @ApiModelProperty("A list of files to be used on devices")
+    private List<ConfigurationFile> files;
+
     @ApiModelProperty("The parameters for using applications set for configuration")
     private List<ConfigurationApplicationParameters> applicationUsageParameters;
 
@@ -134,6 +137,8 @@ public class Configuration implements CustomerData, Serializable {
     private boolean selected;
     @ApiModelProperty(hidden = true)
     private String baseUrl;
+    @ApiModelProperty(hidden = true)
+    private List<Integer> filesToRemove;
 
     public Configuration() {
     }
@@ -476,6 +481,22 @@ public class Configuration implements CustomerData, Serializable {
         this.lockVolume = lockVolume;
     }
 
+    public List<ConfigurationFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<ConfigurationFile> files) {
+        this.files = files;
+    }
+
+    public List<Integer> getFilesToRemove() {
+        return filesToRemove;
+    }
+
+    public void setFilesToRemove(List<Integer> filesToRemove) {
+        this.filesToRemove = filesToRemove;
+    }
+
     public Configuration newCopy() {
         Configuration copy = new Configuration();
 
@@ -484,6 +505,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setApplications(getApplications());
         copy.setApplicationSettings(getApplicationSettings());
         copy.setApplicationUsageParameters(getApplicationUsageParameters());
+        copy.setFiles(getFiles());
         copy.setPassword(getPassword());
         copy.setType(getType());
         copy.setCustomerId(getCustomerId());

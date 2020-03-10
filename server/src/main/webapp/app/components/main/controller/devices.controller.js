@@ -405,6 +405,116 @@ angular.module('headwind-kiosk')
             return 'inherit';
         };
 
+        $scope.getDeviceFilesStatus = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                var configFiles = device.configuration.files;
+
+                for (var j = 0; j < configFiles.length; j++) {
+                    configFiles[j].status = 3; // Good
+
+                    let deviceFiles = (info.files || []);
+                    let foundOnDevice = false;
+                    for (var i = 0; i < deviceFiles.length; i++) {
+                        if (deviceFiles[i].path === configFiles[j].path) {
+                            foundOnDevice = true;
+                            // if (configFiles[j].remove !== deviceFiles[i].remove) {
+                            //     configFiles[j].status = 4; // Remove flag mismatches
+                            // } else
+                            if (configFiles[j].lastUpdate !== deviceFiles[i].lastUpdate
+                                && Math.abs(configFiles[j].lastUpdate - deviceFiles[i].lastUpdate) > 1 * 60 * 60 * 1000) {
+                                configFiles[j].status = 2; // lastUpdate mismatches
+                                configFiles[j].lastUpdateDiff = Math.abs(configFiles[j].lastUpdate - deviceFiles[i].lastUpdate);
+                            }
+                            break;
+                        }
+                    }
+                    if (!foundOnDevice && configFiles[j].remove === false) {
+                        configFiles[j].status = 1; // Not installed
+                    }
+                }
+
+                return configFiles;
+            } else {
+                return null;
+            }
+        };
+
+        $scope.getDeviceFilesIndicatorImage = function (device) {
+            var files = $scope.getDeviceFilesStatus(device);
+            if (files) {
+
+                var correctCount = 0;
+                var incorrectCount = 0;
+                var notInstalledCount = 0;
+                var removedCount = 0;
+                var length = 0;
+                for (var i = 0; i < files.length; i++) {
+                    if (files[i].status !== undefined) {
+                        length++;
+                        if (files[i].status === 2) {
+                            incorrectCount++;
+                        }
+                        if (files[i].status === 3) {
+                            correctCount++;
+                        }
+                        if (files[i].status === 1) {
+                            notInstalledCount++;
+                        }
+                        if (files[i].status === 4) {
+                            removedCount++;
+                        }
+                    }
+                }
+
+                if (correctCount === length) {
+                    return 'images/online.png';
+                } else if (notInstalledCount > 0) {
+                    return 'images/offline.png';
+                } else {
+                    return 'images/away.png';
+                }
+            } else {
+                return 'images/offline.png';
+            }
+        };
+
+        $scope.getDeviceFilesTitle = function (device) {
+            var files = $scope.getDeviceFilesStatus(device);
+            if (files) {
+                var title = '';
+
+                for (var j = 0; j < files.length; j++) {
+                    if (files[j].status === 1) {
+                        let localizedText = localization.localize('devices.file.not.installed').replace('${file}', files[j].path);
+                        title = title + localizedText;
+                        title += '\n';
+                    // } else if (files[j].status === 4) {
+                    //     let localizedText = localization.localize('devices.app.installed').replace('${applicationName}', files[j].name);
+                    //     let localizedText2 = localization.localize('devices.app.needs.removal').replace('${applicationVersion}', (files[j].installedVersion ? ' ' + files[j].installedVersion : ""));
+                    //     title = title + localizedText + localizedText2;
+                    //     title += '\n';
+                    } else if (files[j].status === 2) {
+                        let localizedText = localization.localize('devices.file.lastUpdate.differs')
+                            .replace('${file}', files[j].path)
+                            .replace('${diff}', parseInt(files[j].lastUpdateDiff / 1000 / 60));
+                        title = title + localizedText;
+                        title += '\n';
+                    }
+                }
+
+                if (title.lastIndexOf('\n') === title.length - 1) {
+                    title = title.substring(0, title.lastIndexOf('\n'));
+                }
+
+                return title;
+            } else {
+                return localization.localize('devices.unknown');
+            }
+
+        };
+
+
         // Gets the status of the configuration applications for the device. Checks which applications are not installed
         // on device (sets status = 1), which are installed but have their version mismatching (sets status = 2) and
         // which are installed and have their versions matching (sets status = 3). If application is installed on device

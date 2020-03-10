@@ -50,8 +50,10 @@ import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationSettingType;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.DeviceLocation;
+import com.hmdm.rest.json.SyncConfigurationFile;
 import com.hmdm.rest.json.SyncResponseHook;
 import com.hmdm.rest.json.SyncApplicationSetting;
 import com.hmdm.rest.json.SyncResponseInt;
@@ -230,6 +232,25 @@ public class SyncResource {
 
                     return syncSetting;
                 }).collect(Collectors.toList()));
+
+                final List<ConfigurationFile> configurationFiles = this.unsecureDAO.getConfigurationFiles(dbDevice);
+                configurationFiles.forEach(
+                        file -> {
+                            if (file.getExternalUrl() != null) {
+                                file.setUrl(file.getExternalUrl());
+                            } else if (file.getFilePath() != null) {
+                                final String url;
+                                if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
+                                    url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + file.getFilePath();
+                                } else {
+                                    url = this.baseUrl + "/files/" + file.getFilePath();
+                                }
+                                file.setUrl(url);
+                            }
+                        }
+                );
+
+                data.setFiles(configurationFiles.stream().map(SyncConfigurationFile::new).collect(Collectors.toList()));
 
                 SyncResponseInt syncResponse = data;
 

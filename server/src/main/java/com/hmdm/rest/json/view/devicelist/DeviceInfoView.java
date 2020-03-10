@@ -23,6 +23,7 @@ package com.hmdm.rest.json.view.devicelist;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hmdm.rest.json.DeviceConfigurationFile;
 import com.hmdm.rest.json.DeviceInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -55,6 +56,8 @@ public class DeviceInfoView implements Serializable {
      */
     private final List<DeviceApplicationView> deviceApplications;
 
+    private final List<DeviceConfigurationFile> files;
+
     /**
      * <p>Constructs new <code>DeviceInfoView</code> instance. This implementation does nothing.</p>
      */
@@ -63,6 +66,7 @@ public class DeviceInfoView implements Serializable {
         this.deviceApplications = Optional.ofNullable(deviceInfo.getApplications())
                 .map(apps -> apps.stream().map(DeviceApplicationView::new).collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
+        this.files = Optional.ofNullable(deviceInfo.getFiles()).orElse(new ArrayList<>());
     }
 
     @ApiModelProperty("A name of the device model")
@@ -101,4 +105,8 @@ public class DeviceInfoView implements Serializable {
         return deviceInfo.getBatteryLevel();
     }
 
+    @ApiModelProperty("A list of configuration files installed on device")
+    public List<DeviceConfigurationFile> getFiles() {
+        return files;
+    }
 }

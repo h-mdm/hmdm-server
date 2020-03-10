@@ -56,6 +56,15 @@
         </foreach>
     </insert>
 
+    <insert id="insertConfigurationFiles">
+        INSERT INTO configurationFiles (configurationId, description, devicePath, externalUrl, filePath, checksum, remove, lastUpdate, fileId)
+        VALUES
+        <foreach item="item" index="index" collection="files"
+                 open="" separator="," close="">
+            (${id}, #{item.description}, #{item.devicePath}, #{item.externalUrl}, #{item.filePath}, #{item.checksum}, #{item.remove}, #{item.lastUpdate},  #{item.fileId})
+        </foreach>
+    </insert>
+
     <insert id="saveConfigurationApplicationUsageParameters">
         INSERT INTO configurationApplicationParameters (configurationId, applicationId, skipVersionCheck)
         VALUES

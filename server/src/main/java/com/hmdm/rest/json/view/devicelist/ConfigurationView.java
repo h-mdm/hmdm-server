@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
 @ApiModel(description = "An MDM configuration used on mobile device")
 public class ConfigurationView implements Serializable {
 
-    private static final long serialVersionUID = -8235295671964569993L;
+    private static final long serialVersionUID = 3343804830704098674L;
     
     /**
      * <p>A wrapped configuration object.</p>
@@ -57,6 +58,8 @@ public class ConfigurationView implements Serializable {
      */
     private final List<ApplicationView> applications;
 
+    private final List<ConfigurationFileView> files;
+
     /**
      * <p>Constructs new <code>ConfigurationView</code> instance. This implementation does nothing.</p>
      */
@@ -66,6 +69,11 @@ public class ConfigurationView implements Serializable {
                 .map(apps -> apps.stream()
                         .filter(app -> app.getType().equals(ApplicationType.app))         // Check only real apps
                         .map(ApplicationView::new)
+                        .collect(Collectors.toList()))
+                .orElse(new ArrayList<>());
+        this.files = Optional.ofNullable(configuration.getFiles())
+                .map(apps -> apps.stream()
+                        .map(ConfigurationFileView::new)
                         .collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
     }
@@ -95,4 +103,8 @@ public class ConfigurationView implements Serializable {
         return this.applications;
     }
 
+    @ApiModelProperty("A list of configrration files to be set on device")
+    public List<ConfigurationFileView> getFiles() {
+        return files;
+    }
 }

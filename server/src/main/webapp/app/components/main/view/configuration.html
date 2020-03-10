@@ -691,6 +691,101 @@
 
                 </tab>
 
+                <!-- FILES -->
+                <tab>
+                    <tab-heading localized>tab.configeditor.files</tab-heading>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="panel panel-default">
+                                <div class="text-center" ng-if="files.length > filesPaging.pageSize">
+                                    <pagination
+                                            boundary-links='true' class='pagination-sm'
+                                            max-size='3'
+                                            ng-model='filesPaging.currentPage'
+                                            total-items='files.length'
+                                            items-per-page='filesPaging.pageSize'
+                                            previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                                            last-text='&raquo;'></pagination>
+                                </div>
+
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-sm-1" localized>form.configuration.files.search.label</div>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control"
+                                                   ng-change="filesFilterChanged()"
+                                                   localized-placeholder="search.placeholder.file"
+                                                   ng-model="filesPaging.filesFilterText"/>
+                                        </div>
+                                        <div class="col-sm-2 text-right">
+                                            <button type="button" class="btn btn-default" ng-click="addFile()"
+                                                    localized>button.add</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <table class='table'>
+                                    <thead>
+                                    <tr>
+                                        <th localized>table.heading.file.url</th>
+                                        <th localized>table.heading.file.devicepath</th>
+                                        <th localized>table.heading.file.description</th>
+                                        <th localized>table.heading.file.lastUpdate</th>
+                                        <th localized>table.heading.file.action</th>
+                                        <th localized class="actions-column-110"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="file in files | orderBy:'name'">
+                                        <td>{{file.url}}</td>
+                                        <td>{{file.path}}</td>
+                                        <td>{{file.description}}</td>
+                                        <td>{{file.lastUpdate | date: 'dd/MM/yyyy'}}</td>
+                                        <td ng-if="!file.remove" localized>form.configuration.files.action.upload</td>
+                                        <td ng-if="file.remove" localized>form.configuration.files.action.remove</td>
+                                        <td>
+                                            <div>
+                                                <button class="btn btn-default" ng-click="editFile(file)">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </button>
+                                                <button class="btn btn-default" ng-click="removeFile(file)">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <div class="text-center" ng-if="files.length > filesPaging.pageSize">
+                                    <pagination
+                                            boundary-links='true' class='pagination-sm'
+                                            max-size='3'
+                                            ng-model='filesPaging.currentPage'
+                                            total-items='files.length'
+                                            items-per-page='filesPaging.pageSize'
+                                            previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                                            last-text='&raquo;'></pagination>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-bottom">&nbsp;</div>
+
+                    <div class='form-group'>
+                        <div class='config-save'>
+                            <button type='submit' class='btn btn-default {{saveButtonClass()}}' ng-click='save(false)' localized>button.save</button>
+                            <button type='submit' class='btn btn-default' ng-click='save(true)' localized>button.save.and.close</button>
+                            <button type='button' class='btn btn-default' ng-click='close()' localized>button.cancel</button>
+                        </div>
+                    </div>
+
+                </tab>
+
             </tabset>
         </form>
     </div>

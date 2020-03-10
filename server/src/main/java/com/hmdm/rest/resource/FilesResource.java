@@ -24,6 +24,9 @@ package com.hmdm.rest.resource;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.inject.Named;
+
+import com.hmdm.persistence.ConfigurationFileDAO;
+import com.hmdm.persistence.IconDAO;
 import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.FileUploadResult;
 import com.hmdm.util.APKFileAnalyzer;
@@ -83,6 +86,8 @@ public class FilesResource {
     private CustomerDAO customerDAO;
     private ApplicationDAO applicationDAO;
     private APKFileAnalyzer apkFileAnalyzer;
+    private ConfigurationFileDAO configurationFileDAO;
+    private IconDAO iconDAO;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -95,11 +100,15 @@ public class FilesResource {
                          @Named("base.url") String baseUrl,
                          CustomerDAO customerDAO,
                          ApplicationDAO applicationDAO,
-                         APKFileAnalyzer apkFileAnalyzer) {
+                         APKFileAnalyzer apkFileAnalyzer,
+                         ConfigurationFileDAO configurationFileDAO,
+                         IconDAO iconDAO) {
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
         this.customerDAO = customerDAO;
         this.applicationDAO = applicationDAO;
+        this.configurationFileDAO = configurationFileDAO;
+        this.iconDAO = iconDAO;
         if (!this.baseDirectory.exists()) {
             this.baseDirectory.mkdirs();
         }
@@ -138,6 +147,17 @@ public class FilesResource {
                 filePath = Paths.get( this.filesDirectory, file.getPath(), file.getName());
             } else {
                 filePath = Paths.get(this.filesDirectory, customer.getFilesDir(), file.getPath(), file.getName());
+            }
+
+            // Check if file is not used
+            final String fileName = file.getName();
+            final String fileDirPath = file.getPath();
+            if (this.configurationFileDAO.isFileUsed(fileName)) {
+                return Response.FILE_USED();
+            } else if (this.iconDAO.isFileUsed(fileName)) {
+                return Response.FILE_USED();
+            } else if (this.applicationDAO.isFileUsed(customer, fileDirPath, fileName)) {
+                return Response.FILE_USED();
             }
 
             try {
@@ -281,7 +301,7 @@ public class FilesResource {
             Customer customer = customerDAO.findById(u.getCustomerId());
 
             List<HFile> result = new LinkedList<>();
-            this.handleFile(new File(this.baseDirectory, customer.getFilesDir()), result, value, customer.getFilesDir());
+            this.handleFile(new File(this.baseDirectory, customer.getFilesDir()), result, value, customer);
             return result;
 
         }).orElse(new LinkedList<>());
@@ -291,7 +311,8 @@ public class FilesResource {
         return files;
     }
 
-    private void handleFile(File file, List<HFile> result, String value, String customerFilesBaseDir) {
+    private void handleFile(File file, List<HFile> result, String value, Customer customer) {
+        final String customerFilesBaseDir = customer.getFilesDir();
         if (file != null && file.exists()) {
             if (file.isDirectory()) {
                 File[] files = file.listFiles();
@@ -300,7 +321,7 @@ public class FilesResource {
 
                 for(int i = 0; i < length; ++i) {
                     File fl = filesArray[i];
-                    this.handleFile(fl, result, value, customerFilesBaseDir);
+                    this.handleFile(fl, result, value, customer);
                 }
             } else if (value == null || file.getName().contains(value)) {
 
@@ -316,7 +337,13 @@ public class FilesResource {
                     url = String.format("%s/files%s", this.baseUrl, path.replace(File.separator, "/") + file.getName());
                 }
 
-                result.add(new HFile(path, file.getName(), url));
+                final HFile fileObj = new HFile(path, file.getName(), url);
+
+                fileObj.setUsedByConfigurations(this.configurationFileDAO.getUsingConfigurations(customer.getId(), fileObj.getName()));
+                fileObj.setUsedByIcons(this.iconDAO.getUsingIcons(customer.getId(), fileObj.getName()));
+                fileObj.setUsedByApps(this.applicationDAO.getUsingApps(customer, fileObj.getPath(), fileObj.getName()));
+
+                result.add(fileObj);
             }
         }
 

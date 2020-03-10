@@ -69,4 +69,12 @@ public class IconDAO extends AbstractDAO<Icon> {
     public List<Icon> getAllIcons() {
         return getList(this.iconMapper::getAllIcons);
     }
+
+    public boolean isFileUsed(String fileName) {
+        return this.iconMapper.countFileUsedAsIcon(fileName) > 0;
+    }
+
+    public List<String> getUsingIcons(Integer customerId, String fileName) {
+        return this.iconMapper.getUsingIcons(customerId, fileName);
+    }
 }

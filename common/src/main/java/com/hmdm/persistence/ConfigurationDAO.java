@@ -22,16 +22,24 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.domain.ConfigurationApplicationParameters;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
+import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityException;
+import com.hmdm.util.CryptoUtil;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,16 +55,19 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
     private final ApplicationMapper applicationMapper;
 
     private final ApplicationSettingDAO applicationSettingDAO;
+    private final ConfigurationFileDAO configurationFileDAO;
     private String baseUrl;
 
     @Inject
     public ConfigurationDAO(ConfigurationMapper mapper,
                             ApplicationMapper applicationMapper,
                             ApplicationSettingDAO applicationSettingDAO,
+                            ConfigurationFileDAO configurationFileDAO,
                             @Named("base.url") String baseUrl) {
         this.mapper = mapper;
         this.applicationMapper = applicationMapper;
         this.applicationSettingDAO = applicationSettingDAO;
+        this.configurationFileDAO = configurationFileDAO;
         this.baseUrl = baseUrl;
         log.info("Base URL: " + baseUrl);
     }
@@ -86,6 +97,23 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
             if (configuration.getApplicationUsageParameters() != null && !configuration.getApplicationUsageParameters().isEmpty()) {
                 this.mapper.saveConfigurationApplicationUsageParameters(configuration.getId(), configuration.getApplicationUsageParameters());
             }
+
+            final List<ConfigurationFile> files = configuration.getFiles();
+            if (files != null && !files.isEmpty()) {
+                files.stream()
+                        .filter(file -> file.getExternalUrl() != null)
+                        .forEach(file -> {
+                            try {
+                                final String checksum = CryptoUtil.calculateChecksum(new URL(file.getExternalUrl()).openStream());
+                                file.setChecksum(checksum);
+                            } catch (NoSuchAlgorithmException | IOException e) {
+                                log.error("Failed to calculate checksum for content URL: {}", file.getExternalUrl(), e);
+                                file.setChecksum("");
+                            }
+                        });
+                files.forEach(file -> file.setLastUpdate(System.currentTimeMillis()));
+                this.mapper.insertConfigurationFiles(configuration.getId(), files);
+            }
         });
     }
 
@@ -114,6 +142,31 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                     }
                     if (configuration.getApplicationUsageParameters() != null && !configuration.getApplicationUsageParameters().isEmpty()) {
                         this.mapper.saveConfigurationApplicationUsageParameters(configuration.getId(), configuration.getApplicationUsageParameters());
+                    }
+
+                    this.mapper.removeConfigurationFilesById(configuration.getId());
+                    final List<ConfigurationFile> files = configuration.getFiles();
+                    if (files != null && !files.isEmpty()) {
+                        files.stream()
+                                .filter(file -> file.getExternalUrl() != null)
+                                .forEach(file -> {
+                                    try {
+                                        final String checksum = CryptoUtil.calculateChecksum(new URL(file.getExternalUrl()).openStream());
+                                        file.setChecksum(checksum);
+                                    } catch (NoSuchAlgorithmException | IOException e) {
+                                        log.error("Failed to calculate checksum for content URL: {}", file.getExternalUrl(), e);
+                                        file.setChecksum("");
+                                    }
+                                });
+                        files.forEach(file -> file.setLastUpdate(System.currentTimeMillis()));
+                        this.mapper.insertConfigurationFiles(configuration.getId(), files);
+                    }
+
+                    final List<Integer> filesToRemove = config.getFilesToRemove();
+                    if (filesToRemove != null) {
+                        filesToRemove.forEach(fileId -> {
+                            this.configurationFileDAO.removeFileFromDisk(fileId);
+                        });
                     }
                 },
                 SecurityException::onConfigurationAccessViolation
@@ -166,6 +219,10 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
 
             final List<ConfigurationApplicationParameters> applicationParameters = this.mapper.getApplicationParameters(id);
             configuration.setApplicationUsageParameters(applicationParameters);
+
+            final List<ConfigurationFile> files = this.configurationFileDAO.getConfigurationFiles(id);
+            configuration.setFiles(files);
+
         }
 
         return configuration;

@@ -931,4 +931,32 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
         return new ArrayList<>();
     }
+
+    public String ddd(Customer customer, String fileName) {
+        return this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileName;
+    }
+
+    public boolean isFileUsed(Customer customer, String fileDirPath, String fileName) {
+        final String appFileUrl;
+        if (fileDirPath == null || fileDirPath.trim().isEmpty()) {
+            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileName;
+        } else {
+            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileDirPath.replace('\\', '/') + fileName;
+        }
+
+        final boolean used = this.mapper.countAllApplicationsByUrl(customer.getId(), appFileUrl) > 0;
+
+        return used;
+    }
+
+    public List<String> getUsingApps(Customer customer, String fileDirPath, String fileName) {
+        final String appFileUrl;
+        if (fileDirPath == null || fileDirPath.trim().isEmpty()) {
+            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileName;
+        } else {
+            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileDirPath.replace('\\', '/') + fileName;
+        }
+
+        return this.mapper.getUsingApps(customer.getId(), appFileUrl);
+    }
 }

@@ -161,6 +161,10 @@ public class Response implements Serializable {
         return ERROR("error.duplicate.file", null);
     }
 
+    public static Response FILE_USED() {
+        return ERROR("error.used.file", null);
+    }
+
     public static Response ERROR() {
         return ERROR(null, null);
     }

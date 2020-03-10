@@ -36,7 +36,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UploadedFile implements Serializable, CustomerData {
 
-    private static final long serialVersionUID = 6747246245021034412L;
+    private static final long serialVersionUID = 963786599631403403L;
 
     @ApiModelProperty("An application ID")
     private Integer id;
@@ -49,6 +49,11 @@ public class UploadedFile implements Serializable, CustomerData {
 
     @ApiModelProperty("A timestamp of file uploading (in milliseconds since epoch time)")
     private Long uploadTime;
+
+    @ApiModelProperty("An optional checksum of the file content")
+    private String checksum;
+
+    private String url;
 
     /**
      * <p>Constructs new <code>UploadedFile</code> instance. This implementation does nothing.</p>
@@ -91,6 +96,22 @@ public class UploadedFile implements Serializable, CustomerData {
         this.uploadTime = uploadTime;
     }
 
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return "UploadedFile{" +
@@ -98,6 +119,8 @@ public class UploadedFile implements Serializable, CustomerData {
                 ", customerId=" + customerId +
                 ", filePath='" + filePath + '\'' +
                 ", uploadTime=" + uploadTime +
+                ", checksum=" + checksum +
+                ", url=" + url +
                 '}';
     }
 }
