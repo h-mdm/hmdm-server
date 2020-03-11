@@ -476,16 +476,16 @@ document.localization[ 'ru_RU' ] = {
 
     'table.heading.application.setting.app.pkg': 'ID пакета',
     'table.heading.application.setting.app.name': 'Название приложения',
-    'table.heading.application.setting.name': 'Название настройки',
+    'table.heading.application.setting.name': 'Атрибут',
     'table.heading.application.setting.value': 'Значение',
     'table.heading.application.setting.comment': 'Комментарий',
-    'table.heading.application.setting.lastUpdate': 'Дата последнего изменения',
+    'table.heading.application.setting.lastUpdate': 'Создан',
 
     'table.heading.file.url': 'URL',
     'table.heading.file.devicepath': 'Путь на устройстве',
     'table.heading.file.description': 'Описание файла',
     'table.heading.file.action': 'Действие',
-    'table.heading.file.lastUpdate': 'Дата последнего изменения',
+    'table.heading.file.lastUpdate': 'Создан',
 
     'table.heading.application.pkg': 'ID пакета',
     'table.heading.application.name': 'Название приложения',

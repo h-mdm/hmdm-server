@@ -297,6 +297,7 @@ public class ConfigurationResource {
      * <p>Gets the configuration referenced by the specified ID from DB.</p>
      *
      * @param id an ID of a configuration to get data for.
+     *
      * @return a configuration referenced by the specified ID or <code>null</code> if there is no such configuration.
      */
     private Configuration getConfiguration(Integer id) {

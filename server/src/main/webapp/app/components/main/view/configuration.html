@@ -649,7 +649,7 @@
                                         <td>{{setting.name}}</td>
                                         <td>{{setting.value}}</td>
                                         <td>{{setting.comment}}</td>
-                                        <td>{{setting.lastUpdate | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{setting.lastUpdate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
                                         <td>
                                             <div>
                                                 <button class="btn btn-default" ng-click="editApplicationSetting(setting)">
@@ -742,7 +742,7 @@
                                         <td>{{file.url}}</td>
                                         <td>{{file.path}}</td>
                                         <td>{{file.description}}</td>
-                                        <td>{{file.lastUpdate | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{file.lastUpdate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
                                         <td ng-if="!file.remove" localized>form.configuration.files.action.upload</td>
                                         <td ng-if="file.remove" localized>form.configuration.files.action.remove</td>
                                         <td>

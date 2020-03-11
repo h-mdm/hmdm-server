@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Application;
@@ -144,6 +146,12 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                         this.mapper.saveConfigurationApplicationUsageParameters(configuration.getId(), configuration.getApplicationUsageParameters());
                     }
 
+                    List<ConfigurationFile> legacyFiles = this.configurationFileDAO.getConfigurationFiles(configuration.getId());
+                    Map<Integer,ConfigurationFile> legacyFilesMap = new HashMap<Integer, ConfigurationFile>();
+                    for (ConfigurationFile file : legacyFiles) {
+                        legacyFilesMap.put(file.getId(), file);
+                    }
+
                     this.mapper.removeConfigurationFilesById(configuration.getId());
                     final List<ConfigurationFile> files = configuration.getFiles();
                     if (files != null && !files.isEmpty()) {
@@ -151,14 +159,18 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                                 .filter(file -> file.getExternalUrl() != null)
                                 .forEach(file -> {
                                     try {
-                                        final String checksum = CryptoUtil.calculateChecksum(new URL(file.getExternalUrl()).openStream());
-                                        file.setChecksum(checksum);
+                                        ConfigurationFile legacyFile = legacyFilesMap.get(file.getId());
+                                        if (legacyFile != null && file.getExternalUrl().equals(legacyFile.getExternalUrl())) {
+                                            file.setChecksum(legacyFile.getChecksum());
+                                        } else {
+                                            final String checksum = CryptoUtil.calculateChecksum(new URL(file.getExternalUrl()).openStream());
+                                            file.setChecksum(checksum);
+                                        }
                                     } catch (NoSuchAlgorithmException | IOException e) {
                                         log.error("Failed to calculate checksum for content URL: {}", file.getExternalUrl(), e);
                                         file.setChecksum("");
                                     }
                                 });
-                        files.forEach(file -> file.setLastUpdate(System.currentTimeMillis()));
                         this.mapper.insertConfigurationFiles(configuration.getId(), files);
                     }
 

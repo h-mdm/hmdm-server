@@ -474,16 +474,16 @@ document.localization ['en_US'] = {
 
     'table.heading.application.setting.app.pkg': 'Package ID',
     'table.heading.application.setting.app.name': 'Application Name',
-    'table.heading.application.setting.name': 'Customization name',
+    'table.heading.application.setting.name': 'Attribute',
     'table.heading.application.setting.value': 'Value',
     'table.heading.application.setting.comment': 'Comment',
-    'table.heading.application.setting.lastUpdate': 'Last Modified Date',
+    'table.heading.application.setting.lastUpdate': 'Creation Date',
 
     'table.heading.file.url': 'URL',
     'table.heading.file.devicepath': 'Path on device',
     'table.heading.file.description': 'File description',
     'table.heading.file.action': 'Action',
-    'table.heading.file.lastUpdate': 'Last modified date',
+    'table.heading.file.lastUpdate': 'Creation date',
     
     'table.heading.application.pkg': 'Package ID',
     'table.heading.application.name': 'Application Name',
