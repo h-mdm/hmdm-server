@@ -206,12 +206,23 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * @throws DuplicateApplicationException if a duplicated application is found.
      */
     private void guardDuplicateAppVersion(Application application, ApplicationVersion version) {
-        final boolean exists = this.mapper.checkForDuplicateVersionForApp(
-                application.getId(), version.getId() == null ? -449939 : version.getId(), version.getVersion()
-        );
-        if (exists) {
+        if (getDuplicateAppVersion(application, version) != 0) {
             throw new DuplicateApplicationException(application.getPkg(), version.getVersion(), application.getCustomerId());
         }
+    }
+
+    /**
+     * <p>Checks if another application version with same version number already exists for specified application or
+     * not.</p>
+     *
+     * @param application an application to check against duplicates.
+     * @param version an application version to check against duplicates.
+     * @return id of a duplicated application if found, otherwise 0
+     */
+    private int getDuplicateAppVersion(Application application, ApplicationVersion version) {
+        return this.mapper.getDuplicateVersionForApp(
+                application.getId(), version.getId() == null ? -1 : version.getId(), version.getVersion()
+        );
     }
 
     /**
@@ -794,7 +805,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             final int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
             Customer customer = customerDAO.findById(customerId);
 
-            File movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
+            File movedFile = null;
+            try {
+                movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
+            } catch (FileExistsException e) {
+                FileUtil.deleteFile(filesDirectory, FileUtil.getNameFromTmpPath(filePath));
+                movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
+            }
             if (movedFile != null) {
                 final String fileName = movedFile.getAbsolutePath();
                 final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(fileName);
@@ -832,11 +849,18 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             }
         }
 
-        guardDuplicateAppVersion(existingApplication, applicationVersion);
 //        guardDowngradeAppVersion(existingApplication, applicationVersion);
 
-        this.mapper.insertApplicationVersion(applicationVersion);
-        this.mapper.recalculateLatestVersion(existingApplication.getId());
+        // The user may wish to add the same application and version when he moves
+        // the application from h-mdm.com to his own server
+        int duplicateVersionId = getDuplicateAppVersion(existingApplication, applicationVersion);
+        if (duplicateVersionId > 0) {
+            applicationVersion.setId(duplicateVersionId);
+            this.mapper.updateApplicationVersion(applicationVersion);
+        } else {
+            this.mapper.insertApplicationVersion(applicationVersion);
+            this.mapper.recalculateLatestVersion(existingApplication.getId());
+        }
 
         // Auto update the configurations if the created application version becomes the latest version for application
         final Application refreshedExistingApplication = findById(applicationVersion.getApplicationId());

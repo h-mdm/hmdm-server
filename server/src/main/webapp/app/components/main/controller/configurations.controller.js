@@ -246,12 +246,6 @@ angular.module('headwind-kiosk')
             {id: false, label: localization.localize('form.configuration.apps.label.not.show')},
         ];
 
-        $scope.isPermitOptionAvailable = function (application) {
-            return application.system || !application.url || application.url.length === 0;
-        };
-        $scope.isProhibitOptionAvailable = function (application) {
-            return true;
-        };
         $scope.isInstallOptionAvailable = function (application) {
             return !(application.system || !application.url || application.url.length === 0);
         };
@@ -406,12 +400,6 @@ angular.module('headwind-kiosk')
                 {id: false, label: localization.localize('form.configuration.apps.label.not.show')},
             ];
 
-            $scope.isPermitOptionAvailable = function (application) {
-                return application.system || !application.url || application.url.length === 0;
-            };
-            $scope.isProhibitOptionAvailable = function (application) {
-                return true;
-            };
             $scope.isInstallOptionAvailable = function (application) {
                 return !(application.system || !application.url || application.url.length === 0);
             };

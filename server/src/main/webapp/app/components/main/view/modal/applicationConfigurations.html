@@ -46,14 +46,17 @@
                                         ng-model="configuration.action" name="action{{configuration.configurationId}}"
                                         class="form-control col-sm-4">
                                     <option ng-value="1" ng-selected="configuration.action == 1"
-                                            ng-if="isPermitOptionAvailable(application)"
+                                            ng-if="!isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.permit</option>
                                     <option ng-value="1" ng-selected="configuration.action == 1"
                                             ng-if="isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.install</option>
                                     <option ng-value="0" ng-selected="configuration.action == 0"
-                                            ng-if="isProhibitOptionAvailable(application)"
+                                            ng-if="!isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.prohibit</option>
+                                    <option ng-value="0" ng-selected="configuration.action == 0"
+                                            ng-if="isInstallOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.not.install</option>
                                     <option ng-value="2" ng-selected="configuration.action == 2"
                                             ng-if="isRemoveOptionAvailable(application)"
                                             localized>form.configuration.apps.action.delete</option>

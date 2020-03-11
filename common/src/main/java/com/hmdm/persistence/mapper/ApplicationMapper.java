@@ -492,13 +492,13 @@ public interface ApplicationMapper {
     @Update("UPDATE applicationVersions SET apkHash = #{hash} WHERE id = #{id}")
     int saveApkFileHash(@Param("id") Integer appVersionId, @Param("hash") String hashValue);
 
-    @Select("SELECT EXISTS " +
-            "(SELECT 1 FROM applicationVersions " +
+    @Select("SELECT COALESCE( " +
+            "(SELECT id FROM applicationVersions " +
             "WHERE applicationId = #{appId} " +
-            "AND version = #{versionNumber} AND id <> #{appVersionId})")
-    boolean checkForDuplicateVersionForApp(@Param("appId") Integer applicationId,
-                                           @Param("appVersionId") Integer appVersionId,
-                                           @Param("versionNumber") String version);
+            "AND version = #{versionNumber} AND id <> #{appVersionId}), 0)")
+    int getDuplicateVersionForApp(@Param("appId") Integer applicationId,
+                                  @Param("appVersionId") Integer appVersionId,
+                                  @Param("versionNumber") String version);
 
     @Delete("DELETE FROM configurationApplications " +
             "WHERE configurationId = #{configurationId} " +
