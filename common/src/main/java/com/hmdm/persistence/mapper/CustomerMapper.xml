@@ -52,4 +52,15 @@
         OFFSET (#{currentPage} - 1) * #{pageSize}
         LIMIT #{pageSize}
     </select>
+
+    <select id="countAllCustomers" parameterType="com.hmdm.rest.json.CustomerSearchRequest" resultType="long">
+        SELECT COUNT(customers.*)
+        FROM customers
+        WHERE customers.master = FALSE
+        <if test="searchValue != null">
+            AND (
+            customers.name ILIKE ('%' || #{searchValue} || '%') OR customers.description ILIKE ('%' || #{searchValue} || '%')
+            )
+        </if>
+    </select>
 </mapper>

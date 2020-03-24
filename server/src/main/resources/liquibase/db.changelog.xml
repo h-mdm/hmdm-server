@@ -1631,4 +1631,161 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="15.03.20-04:40" author="isv" context="common">
+        <comment>Function,new: mdm_device_permissions_index function</comment>
+        <createProcedure>
+            DROP FUNCTION IF EXISTS mdm_device_permissions_index(TEXT);
+
+            CREATE OR REPLACE function mdm_device_permissions_index(device_info text) RETURNS INT
+            language plpgsql
+            as
+            $$
+            DECLARE
+            permissions    json;
+            DECLARE i      INT;
+            DECLARE count  INT;
+            DECLARE result INT;
+            BEGIN
+            IF device_info IS NULL THEN
+            return -1;
+            END IF;
+
+            IF LENGTH(TRIM(device_info)) = 0 THEN
+            return -1;
+            END IF;
+
+            permissions = device_info::json -&gt; 'permissions';
+
+            count = json_array_length(permissions::json);
+
+            result = 0;
+
+            FOR i IN 1 .. count
+            LOOP
+            result = result + (permissions::json -&gt;&gt; (i - 1))::int;
+            END LOOP;
+
+
+            RETURN result;
+            END ;
+            $$;
+
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION IF EXISTS mdm_device_permissions_index(TEXT);
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.03.20-15:42" author="isv" context="common">
+        <comment>Function,new: mdm_resolve_device_property function</comment>
+        <createProcedure>
+            DROP FUNCTION IF EXISTS mdm_resolve_device_property(TEXT, TEXT);
+
+            CREATE OR REPLACE FUNCTION mdm_resolve_device_property (server_data TEXT, device_data TEXT) returns TEXT
+            LANGUAGE plpgsql
+            AS
+            $$
+            BEGIN
+            server_data = COALESCE(server_data, '');
+            device_data = COALESCE(device_data, '');
+
+            IF (server_data = device_data) THEN
+            RETURN server_data;
+            END IF;
+
+            IF LENGTH(device_data) &gt; 0 THEN
+            RETURN device_data;
+            END IF;
+
+            RETURN server_data;
+            END
+            $$;
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION IF EXISTS mdm_resolve_device_property(TEXT, TEXT);
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.03.20-16:06" author="isv" context="common">
+        <comment>Function,new: mdm_device_launcher_version function</comment>
+        <createProcedure>
+            DROP FUNCTION IF EXISTS mdm_device_launcher_version(TEXT, TEXT);
+
+            CREATE OR REPLACE FUNCTION mdm_device_launcher_version (launcherAppPkg text, device_info text) returns TEXT
+            LANGUAGE plpgsql
+            AS
+            $$
+            DECLARE
+            deviceApps    json;
+            DECLARE i      INT;
+            DECLARE count  INT;
+            DECLARE app json;
+            BEGIN
+            IF launcherAppPkg IS NULL THEN
+            RETURN NULL;
+            END IF;
+
+            IF device_info IS NULL THEN
+            RETURN NULL;
+            END IF;
+
+            deviceApps = device_info::json -&gt; 'applications';
+            count = json_array_length(deviceApps);
+
+            FOR i IN 1 .. count
+            LOOP
+            app = deviceApps -&gt;&gt; (i - 1);
+            IF (app -&gt;&gt; 'pkg') = launcherAppPkg THEN
+            RETURN app -&gt;&gt; 'version';
+            END IF;
+            END LOOP;
+
+            RETURN NULL;
+            END
+            $$;
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION IF EXISTS mdm_device_launcher_version(TEXT, TEXT);
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="29.02.20-17:37" author="isv" context="common">
+        <comment>Table, new: deviceStatuses</comment>
+        <sql>
+            CREATE TABLE deviceStatuses (
+                deviceId INT NOT NULL REFERENCES devices( id ) ON DELETE CASCADE CONSTRAINT deviceStatuses_pr_key PRIMARY KEY,
+                configFilesStatus VARCHAR(100),
+                applicationsStatus VARCHAR(100)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE deviceStatuses;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="21.03.20-17:10" author="seva" context="common">
+        <comment>Column,new: configurations#passwordMode</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN passwordMode VARCHAR(50);
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN passwordMode;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="23.03.20-19:10" author="seva" context="common">
+        <comment>Column,new: settings#createNewDevices, #newDeviceGroupId, #newDeviceConfigurationId</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN createNewDevices BOOLEAN NOT NULL DEFAULT false;
+            ALTER TABLE settings ADD COLUMN newDeviceGroupId INT;
+            ALTER TABLE settings ADD COLUMN newDeviceConfigurationId INT;
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN createNewDevices;
+            ALTER TABLE settings DROP COLUMN newDeviceGroupId;
+            ALTER TABLE settings DROP COLUMN newDeviceConfigurationId;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

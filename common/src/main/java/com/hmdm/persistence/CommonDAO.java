@@ -50,6 +50,10 @@ public class CommonDAO extends AbstractDAO<Settings> {
         insertRecord(settings, this.mapper::saveLanguageSettings);
     }
 
+    public void saveMiscSettings(Settings settings) {
+        insertRecord(settings, this.mapper::saveMiscSettings);
+    }
+
     public void saveDefaultDesignSettingsBySuperAdmin(Settings settings) {
         if (SecurityContext.get().getCurrentUser().get().isSuperAdmin()) {
             this.mapper.saveDefaultDesignSettings(settings);

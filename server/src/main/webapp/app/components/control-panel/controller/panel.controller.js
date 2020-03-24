@@ -13,6 +13,7 @@ angular.module('headwind-kiosk')
         $scope.paging = {
             currentPage: 1,
             pageSize: 50,
+            totalItems: 0,
             sortValue: undefined,
             sortDirection: undefined
         };
@@ -45,6 +46,7 @@ angular.module('headwind-kiosk')
         };
 
         $scope.$watch('paging.currentPage', function() {
+            $scope.search();
             $window.scrollTo(0, 0);
         });
 
@@ -55,7 +57,8 @@ angular.module('headwind-kiosk')
 
         $scope.search = function () {
             customerService.getAllCustomers($scope.paging, function (response) {
-                $scope.customers = response.data;
+                $scope.customers = response.data.items;
+                $scope.paging.totalItems = response.data.totalItemsCount;
             });
         };
 

@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.beans.Transient;
 import java.io.Serializable;
 
 /**

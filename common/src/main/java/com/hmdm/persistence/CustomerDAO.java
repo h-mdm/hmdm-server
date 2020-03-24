@@ -25,10 +25,13 @@ import com.google.inject.Inject;
 import javax.inject.Named;
 
 import com.google.inject.Singleton;
+import com.hmdm.event.DeviceInfoUpdatedEvent;
+import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.rest.json.CustomerSearchRequest;
+import com.hmdm.rest.json.PaginatedData;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +81,7 @@ public class CustomerDAO {
     private final UserDAO userDAO;
     private final CommonDAO settingDAO;
     private final int orgAdminRoleId;
+    private final EventService eventService;
 
     @Inject
     public CustomerDAO(CustomerMapper mapper,
@@ -87,7 +91,8 @@ public class CustomerDAO {
                        UserDAO userDAO,
                        CommonDAO settingDAO,
                        @Named("files.directory") String filesDirectory,
-                       @Named("role.orgadmin.id") int orgAdminRoleId) {
+                       @Named("role.orgadmin.id") int orgAdminRoleId,
+                       EventService eventService) {
         this.mapper = mapper;
         this.configurationMapper = configurationMapper;
         this.applicationMapper = applicationMapper;
@@ -96,6 +101,7 @@ public class CustomerDAO {
         this.userDAO = userDAO;
         this.settingDAO = settingDAO;
         this.orgAdminRoleId = orgAdminRoleId;
+        this.eventService = eventService;
     }
 
     public void removeCustomerById(Integer id) {
@@ -229,6 +235,8 @@ public class CustomerDAO {
                 newDevice.setCustomerId(customer.getId());
 
                 this.deviceMapper.insertDevice(newDevice);
+
+                this.eventService.fireEvent(new DeviceInfoUpdatedEvent(newDevice.getId()));
 
                 log.info("Created default device '{}' for new customer account", deviceNumber);
             }
@@ -378,8 +386,14 @@ public class CustomerDAO {
      * @param request the parameters for customers search.
      * @return a list of customer accounts matching the search parameters.
      */
-    public List<Customer> searchCustomers(CustomerSearchRequest request) {
+    public PaginatedData<Customer> searchCustomers(CustomerSearchRequest request) {
         final List<Customer> customers = this.mapper.searchCustomers(request);
-        return customers;
+        final Long totalItemsCount = this.mapper.countAllCustomers(request);
+        return new PaginatedData<>(customers, totalItemsCount);
     }
+
+    public Customer getSingleCustomer() {
+        return mapper.findCustomerById(1);
+    }
+
 }

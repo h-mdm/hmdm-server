@@ -169,8 +169,8 @@ document.localization[ 'ru_RU' ] = {
     'success.file.uploaded': 'Файл успешно загружен.',
     'success.file.uploaded.need.save': 'Файл успешно загружен. Введите относительный путь и нажмите кнопку "Сохранить".',
     'success.settings.design.saved': 'Настройки дизайна сохранены успешно',
-    'success.settings.common.saved': 'Общие настройки сохранены успешно',
-    'success.settings.language.saved': 'Языковые настройки сохранены успешно',
+    'success.settings.common.saved': 'Настройки столбцов сохранены успешно',
+    'success.settings.saved': 'Настройки сохранены успешно',
     'success.settings.apiKey.saved': 'Ключ API сохранен успешно',
     'success.settings.hints.enabled': 'Показ подсказок разрешен',
     'success.settings.hints.disabled': 'Показ подсказок запрещен',
@@ -268,6 +268,12 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.push.options.mqtt.worker' : 'MQTT протокол (энергосбережение)',
     'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT протокол (доставка в спящем режиме)',
     'form.configuration.settings.push.options.polling' : 'Опрос URL по HTTP',
+    'form.configuration.settings.password.mode' : 'Требования к паролю',
+    'form.configuration.settings.password.mode.any' : 'Нет',
+    'form.configuration.settings.password.mode.present' : 'Пароль должен присутствовать',
+    'form.configuration.settings.password.mode.easy' : 'Простой (6 символов или более)',
+    'form.configuration.settings.password.mode.moderate' : 'Средний (8+ символов, буквы и цифры)',
+    'form.configuration.settings.password.mode.strong' : 'Сложный (8+, разный регистр, цифры, знаки)',
     'form.configuration.files.search.label': 'Поиск:',
     'form.configuration.files.action.upload': 'Загрузить',
     'form.configuration.files.action.remove': 'Удалить',
@@ -372,7 +378,7 @@ document.localization[ 'ru_RU' ] = {
 
     'form.settings.plugins.title': 'Используемые Плагины',
 
-    'form.settings.common.title': 'Общие настройки',
+    'form.settings.common.title': 'Таблица "Устройства"',
     'form.settings.common.visible.columns': 'Видимые столбцы в таблице "Устройства"',
     'form.settings.common.status': 'Статус',
     'form.settings.common.role': 'Роль пользователей',
@@ -410,6 +416,11 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.en': 'Английский',
     'form.settings.lang.ru': 'Русский',
 
+    'form.settings.misc.title': 'Прочие настройки',
+    'form.settings.misc.create.new.devices': 'Добавлять устр-во при первом обращении',
+    'form.settings.misc.new.device.config': 'Конфигурация нового устройства',
+    'form.settings.misc.new.device.group': 'Группа нового устройства',
+
     'form.settings.groups.title': 'Группы',
     'form.settings.groups.search.placeholder': 'Поиск группы',
 
@@ -435,15 +446,15 @@ document.localization[ 'ru_RU' ] = {
     'tab.configurations': 'Конфигурации',
     'tab.files': 'Файлы',
     'tab.default.design': 'Дизайн по умолчанию',
-    'tab.common.settings': 'Общие настройки',
+    'tab.common.settings': 'Таблица "Устройства"',
     'tab.users': 'Пользователи',
     'tab.groups': 'Группы',
-    'tab.language': 'Языковые настройки',
+    'tab.language': 'Язык и другие настройки',
     'tab.license': 'Лицензия',
     'tab.hints': 'Подсказки',
     'tab.plugins': 'Плагины',
 
-    'tab.configeditor.common.settings': 'Общие настройки',
+    'tab.configeditor.common.settings': 'Таблица "Устройства"',
     'tab.configeditor.design.settings': 'Настройки дизайна',
     'tab.configeditor.applications': 'Приложения',
     'tab.configeditor.mdm.settings': 'Настройки MDM',
@@ -560,9 +571,9 @@ document.localization[ 'ru_RU' ] = {
     'breadcrumb.applications': 'Приложения',
     'breadcrumb.configurations': 'Конфигурации',
     'breadcrumb.files': 'Файлы',
-    'breadcrumb.default.design': 'Дизайн по умолачнию',
-    'breadcrumb.common.settings': 'Общие настройки',
-    'breadcrumb.language.settings': 'Языковые настройки',
+    'breadcrumb.default.design': 'Дизайн по умолчанию',
+    'breadcrumb.common.settings': 'Таблица "Устройства"',
+    'breadcrumb.language.settings': 'Язык и другие настройки',
     'breadcrumb.license.settings': 'Лицензия',
     'breadcrumb.users': 'Пользователи',
     'breadcrumb.groups': 'Группы',
@@ -571,7 +582,9 @@ document.localization[ 'ru_RU' ] = {
     'breadcrumb.config.details': 'Детали',
     'breadcrumb.application.versions': 'Версии',
 
-    'app.title': 'Headwind MDM сервер',
+    'app.name': 'Headwind MDM',
+    'app.description': '- система управления мобильными устройствами с открытым кодом',
+    'app.title': 'Headwind MDM - панель управления',
 
     'box.show.my.apps.only': 'Показать только мои приложения',
     'configuration.app.version.upgrade.message': 'Установлена версия ${installedVersion}, доступна версия ${latestVersion}',
@@ -610,5 +623,21 @@ document.localization[ 'ru_RU' ] = {
 
     'tooltip.usage.byconfigurations': 'Используется конфигурациями',
     'tooltip.usage.byapps': 'Используется приложениями',
-    'tooltip.usage.byicons': 'Используется иконками'
+    'tooltip.usage.byicons': 'Используется иконками',
+
+    'form.devices.label.params.more': 'Дополнительные параметры',
+    'form.devices.label.params.less': 'Меньше параметров',
+    'form.devices.label.installation.status': 'Статус установки',
+    "format.devices.date.createTime": "dd/MM/yyyy HH:mm:ss",
+    "format.devices.date.datePicker": "dd-MM-yyyy",
+
+    'form.devices.selection.install.status.default': 'Статус установки ...',
+    'form.devices.selection.install.status.all': 'Все',
+    'form.devices.selection.install.status.success': 'Успешно',
+    'form.devices.selection.install.status.version.mismatch': 'Неверные версии',
+    'form.devices.selection.install.status.failure': 'Ошибка',
+
+    'search.placeholder.launcher.version': 'Версия лаунчера',
+    'error.date.range.invalid': 'Неверный интервал дат'
+
 };

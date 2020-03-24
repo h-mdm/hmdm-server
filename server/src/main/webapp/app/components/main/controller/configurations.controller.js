@@ -641,6 +641,10 @@ angular.module('headwind-kiosk')
                         request.systemUpdateTo = pad($scope.dates.systemUpdateTo.getHours(), 2) + ':' + pad($scope.dates.systemUpdateTo.getMinutes(), 2);
                     }
 
+                    if ($scope.configuration.passwordMode == 'any') {
+                        request.passwordMode = null;
+                    }
+
                     configurationService.updateConfiguration(request, function (response) {
                         if (response.status === 'OK') {
                             $scope.saved = true;

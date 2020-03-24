@@ -21,17 +21,19 @@
 
 package com.hmdm.persistence.domain;
 
+import com.hmdm.service.DeviceApplicationsStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @ApiModel(description = "A request for searching the devices")
 @JsonIgnoreProperties(value = {"customerId", "userId"}, ignoreUnknown = true)
 public class DeviceSearchRequest implements Serializable {
 
-    private static final long serialVersionUID = -131621879714920126L;
+    private static final long serialVersionUID = -8435796711101758494L;
     @ApiModelProperty("A filter to search devices")
     private String value;
 
@@ -58,6 +60,42 @@ public class DeviceSearchRequest implements Serializable {
      */
     @ApiModelProperty("A number of page of data to be retrieved (1-based)")
     private int pageNum = 1;
+
+    /**
+     * <p>A column to sort results by.</p>
+     */
+    @ApiModelProperty("A column to sort devices list by")
+    private DeviceListSortBy sortBy;
+
+    /**
+     * <p>A direction to sort results by.</p>
+     */
+    @ApiModelProperty("A direction to sort devices list by")
+    private String sortDir = "ASC";
+
+    /**
+     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
+     */
+    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by dates")
+    private Date dateFrom;
+
+    /**
+     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
+     */
+    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by dates")
+    private Date dateTo;
+
+    /**
+     * <p>A filter for launcher version.</p>
+     */
+    @ApiModelProperty("A filter for launcher version")
+    private String launcherVersion;
+
+    /**
+     * <p>A filter for launcher version.</p>
+     */
+    @ApiModelProperty("A filter for application installation status")
+    private DeviceApplicationsStatus installationStatus;
 
     public DeviceSearchRequest() {
     }
@@ -118,6 +156,70 @@ public class DeviceSearchRequest implements Serializable {
         this.configurationId = configurationId;
     }
 
+    public DeviceListSortBy getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(DeviceListSortBy sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortDir() {
+        return sortDir;
+    }
+
+    public void setSortDir(String sortDir) {
+        this.sortDir = sortDir;
+    }
+
+    public Date getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(Date dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public Date getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(Date dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    public String getLauncherVersion() {
+        return launcherVersion;
+    }
+
+    public void setLauncherVersion(String launcherVersion) {
+        this.launcherVersion = launcherVersion;
+    }
+
+    public DeviceApplicationsStatus getInstallationStatus() {
+        return installationStatus;
+    }
+
+    public void setInstallationStatus(DeviceApplicationsStatus installationStatus) {
+        this.installationStatus = installationStatus;
+    }
+
+    public long getDateFromMillis() {
+        if (dateFrom != null) {
+            return dateFrom.getTime();
+        } else {
+            return 0;
+        }
+    }
+
+    public long getDateToMillis() {
+        if (dateTo != null) {
+            return dateTo.getTime();
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public String toString() {
         return "DeviceSearchRequest{" +
@@ -128,6 +230,12 @@ public class DeviceSearchRequest implements Serializable {
                 ", userId=" + userId +
                 ", pageSize=" + pageSize +
                 ", pageNum=" + pageNum +
+                ", sortBy=" + sortBy +
+                ", sortDir=" + sortDir +
+                ", dateFrom=" + dateFrom +
+                ", dateTo=" + dateTo +
+                ", launcherVersion=" + launcherVersion +
+                ", installationStatus=" + installationStatus +
                 '}';
     }
 }

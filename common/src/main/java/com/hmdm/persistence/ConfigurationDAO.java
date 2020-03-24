@@ -25,13 +25,15 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.inject.Singleton;
+import com.hmdm.event.ConfigurationUpdatedEvent;
+import com.hmdm.event.DeviceInfoUpdatedEvent;
+import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.Configuration;
@@ -39,7 +41,6 @@ import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.domain.ConfigurationApplicationParameters;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
-import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityException;
 import com.hmdm.util.CryptoUtil;
 import org.mybatis.guice.transactional.Transactional;
@@ -59,18 +60,22 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
     private final ApplicationSettingDAO applicationSettingDAO;
     private final ConfigurationFileDAO configurationFileDAO;
     private String baseUrl;
+    private final EventService eventService;
+
 
     @Inject
     public ConfigurationDAO(ConfigurationMapper mapper,
                             ApplicationMapper applicationMapper,
                             ApplicationSettingDAO applicationSettingDAO,
                             ConfigurationFileDAO configurationFileDAO,
-                            @Named("base.url") String baseUrl) {
+                            @Named("base.url") String baseUrl,
+                            EventService eventService) {
         this.mapper = mapper;
         this.applicationMapper = applicationMapper;
         this.applicationSettingDAO = applicationSettingDAO;
         this.configurationFileDAO = configurationFileDAO;
         this.baseUrl = baseUrl;
+        this.eventService = eventService;
         log.info("Base URL: " + baseUrl);
     }
 
@@ -180,6 +185,8 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                             this.configurationFileDAO.removeFileFromDisk(fileId);
                         });
                     }
+
+                    this.eventService.fireEvent(new ConfigurationUpdatedEvent(configuration.getId()));
                 },
                 SecurityException::onConfigurationAccessViolation
         );

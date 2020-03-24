@@ -65,7 +65,7 @@ public class PostgresDeviceLogPluginSettingsDAO extends AbstractDAO<PostgresDevi
     @Override
     public DeviceLogPluginSettings getPluginSettings() {
         final PostgresDeviceLogPluginSettings settings = getSingleRecord(this.mapper::findPluginSettingsByCustomerId);
-        if (settings.getRules() != null && settings.getRules().size() == 1 && settings.getRules().get(0).getIdentifier() == null) {
+        if (settings != null && settings.getRules() != null && settings.getRules().size() == 1 && settings.getRules().get(0).getIdentifier() == null) {
             settings.setRules(new ArrayList<>());
         }
         return settings;

@@ -21,6 +21,7 @@
 
 package com.hmdm.persistence.mapper;
 
+import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.rest.json.CustomerSearchRequest;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -85,8 +86,13 @@ public interface CustomerMapper {
     @Select("SELECT EXISTS (SELECT 1 FROM customers WHERE LOWER(prefix) = LOWER(#{prefix}))")
     boolean isPrefixUsed(@Param("prefix") String prefix);
 
+    @Select("SELECT EXISTS (SELECT 1 FROM customers WHERE id > 1 LIMIT 1)")
+    boolean isMultiTenant();
+
     @Update("UPDATE customers SET lastLoginTime = #{time} WHERE id = #{id}")
     int recordLastLoginTime(@Param("id") int customerId, @Param("time") long time);
 
     List<Customer> searchCustomers(CustomerSearchRequest request);
+
+    Long countAllCustomers(CustomerSearchRequest request);
 }

@@ -26,11 +26,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
@@ -44,19 +40,17 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.hmdm.event.DeviceBatteryLevelUpdatedEvent;
+import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.DeviceLocationUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationSettingType;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Customer;
-import com.hmdm.rest.json.DeviceLocation;
-import com.hmdm.rest.json.SyncConfigurationFile;
-import com.hmdm.rest.json.SyncResponseHook;
-import com.hmdm.rest.json.SyncApplicationSetting;
-import com.hmdm.rest.json.SyncResponseInt;
+import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,9 +61,6 @@ import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.Settings;
-import com.hmdm.rest.json.DeviceInfo;
-import com.hmdm.rest.json.Response;
-import com.hmdm.rest.json.SyncResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,9 +76,13 @@ public class SyncResource {
     private static final Logger logger = LoggerFactory.getLogger(SyncResource.class);
 
     /**
-     * <p>A</p>
+     * <p>DAO objects</p>
      */
     private UnsecureDAO unsecureDAO;
+
+    private DeviceDAO deviceDAO;
+
+    private CustomerDAO customerDAO;
 
     /**
      * <p>A service used for sending notifications on battery level update for device</p>
@@ -99,8 +94,6 @@ public class SyncResource {
      */
     private Set<SyncResponseHook> syncResponseHooks;
 
-    private CustomerDAO customerDAO;
-    
     private String baseUrl;
 
     /**
@@ -117,10 +110,12 @@ public class SyncResource {
                         EventService eventService,
                         Injector injector,
                         CustomerDAO customerDAO,
+                        DeviceDAO deviceDAO,
                         @Named("base.url") String baseUrl) {
         this.unsecureDAO = unsecureDAO;
         this.eventService = eventService;
         this.customerDAO = customerDAO;
+        this.deviceDAO = deviceDAO;
         this.baseUrl = baseUrl;
 
         Set<SyncResponseHook> allYourInterfaces = new HashSet<>();
@@ -202,6 +197,7 @@ public class SyncResource {
                     data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
                     data.setSystemUpdateTo(configuration.getSystemUpdateTo());
                 }
+                data.setPasswordMode(configuration.getPasswordMode());
 
                 data.setKioskMode(configuration.isKioskMode());
                 if (data.isKioskMode()) {
@@ -291,6 +287,30 @@ public class SyncResource {
 
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceInfo.getDeviceId());
+
+            // Device creation on demand
+            if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
+                Settings settings = this.unsecureDAO.getSingleCustomerSettings();
+                if (settings.isCreateNewDevices()) {
+                    Device newDevice = new Device();
+                    newDevice.setCustomerId(settings.getCustomerId());
+                    newDevice.setConfigurationId(settings.getNewDeviceConfigurationId());
+                    Integer groupId = settings.getNewDeviceGroupId();
+                    if (groupId != null) {
+                        List<LookupItem> groups = new LinkedList<>();
+                        groups.add(new LookupItem(groupId, ""));
+                        newDevice.setGroups(groups);
+                    }
+                    newDevice.setNumber(deviceInfo.getDeviceId());
+                    newDevice.setImei(deviceInfo.getImei());
+                    newDevice.setPhone(deviceInfo.getPhone());
+                    newDevice.setLastUpdate(0L);
+                    this.unsecureDAO.insertDevice(newDevice);
+
+                    dbDevice = this.unsecureDAO.getDeviceByNumber(deviceInfo.getDeviceId());
+                }
+            }
+
             if (dbDevice != null) {
 
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -308,6 +328,8 @@ public class SyncResource {
                             )
                     );
                 }
+
+                this.eventService.fireEvent(new DeviceInfoUpdatedEvent(dbDevice.getId()));
 
                 return Response.OK();
             } else {

@@ -1,0 +1,205 @@
+/*
+ *
+ * Headwind MDM: Open Source Android MDM Software
+ * https://h-mdm.com
+ *
+ * Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hmdm.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.ConfigurationFile;
+import com.hmdm.persistence.domain.Device;
+import com.hmdm.persistence.mapper.ConfigurationFileMapper;
+import com.hmdm.persistence.mapper.ConfigurationMapper;
+import com.hmdm.persistence.mapper.DeviceMapper;
+import com.hmdm.rest.json.DeviceConfigurationFile;
+import com.hmdm.rest.json.DeviceInfo;
+import com.hmdm.util.ApplicationUtil;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiPredicate;
+
+
+/**
+ * <p>$</p>
+ */
+@Singleton
+public class DeviceStatusService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DeviceStatusService.class);
+
+    private final DeviceMapper deviceMapper;
+    private final ConfigurationMapper configurationMapper;
+    private final ConfigurationFileMapper configurationFileMapper;
+
+    /**
+     * <p>Constructs new <code>DeviceStatusService</code> instance. This implementation does nothing.</p>
+     */
+    @Inject
+    public DeviceStatusService(DeviceMapper deviceMapper,
+                               ConfigurationMapper configurationMapper,
+                               ConfigurationFileMapper configurationFileMapper) {
+        this.deviceMapper = deviceMapper;
+        this.configurationMapper = configurationMapper;
+        this.configurationFileMapper = configurationFileMapper;
+    }
+
+    @Transactional
+    public void recalcDeviceStatuses(int deviceId) {
+        final Device dbDevice = this.deviceMapper.getDeviceById(deviceId);
+        if (dbDevice != null) {
+            try {
+                DeviceConfigFilesStatus deviceConfigFilesStatus = DeviceConfigFilesStatus.OTHER;
+                DeviceApplicationsStatus deviceApplicatiosStatus = DeviceApplicationsStatus.FAILURE;
+
+                if (dbDevice.getInfo() != null) {
+                    if (!dbDevice.getInfo().trim().isEmpty()) {
+                        final String deviceInfoString = dbDevice.getInfo();
+                        ObjectMapper jsonMapper = new ObjectMapper();
+                        DeviceInfo info = jsonMapper.readValue(deviceInfoString, DeviceInfo.class);
+
+                        deviceConfigFilesStatus = evaluateDeviceConfigurationFilesStatus(dbDevice, info);
+                        deviceApplicatiosStatus = evaluateDeviceApplicationsStatus(dbDevice, info);
+                    }
+                }
+
+                this.deviceMapper.updateDeviceStatuses(dbDevice.getId(), deviceConfigFilesStatus, deviceApplicatiosStatus);
+                
+            } catch (IOException e) {
+                logger.error("Failed to parse JSON data from info property", e);
+            }
+
+        }
+    }
+
+    private DeviceApplicationsStatus evaluateDeviceApplicationsStatus(Device dbDevice, DeviceInfo info) {
+        AtomicInteger correctCount = new AtomicInteger();
+        AtomicInteger notInstalledCount = new AtomicInteger();
+
+        final List<Application> configApplications = this.configurationMapper.getPlainConfigurationSoleApplications(dbDevice.getConfigurationId());
+
+        if (dbDevice.getId() == 61) {
+            System.out.println();
+        }
+
+        configApplications.forEach(configApp -> {
+            // Приложения без URL - это системные приложения, их не проверяем
+            if (configApp.getUrl() == null) {
+                return;
+            }
+
+            final List<Application> deviceApps = info.getApplications();
+            boolean foundOnDevice = false;
+            boolean skip = false;
+            for (int i = 0; i < deviceApps.size(); i++) {
+                final Application deviceApp = deviceApps.get(i);
+                if (deviceApp.getPkg().equals(configApp.getPkg())) {
+                    foundOnDevice = true;
+
+                    if (configApp.getAction() == 2) {
+                        if (configApp.getVersion().equals(deviceApp.getVersion())) {
+                            skip = true; // Needs to be removed
+                        }
+                    } else if (!configApp.getVersion().equals("0")
+                            && Boolean.FALSE.equals(configApp.isSkipVersion())
+                            && !areVersionsEqual.test(deviceApp.getVersion(), configApp.getVersion())) {
+                        skip = true; // Version mismatch
+                    }
+
+                    break;
+                }
+            }
+
+            if (!foundOnDevice && configApp.getAction() != 2) {
+                notInstalledCount.incrementAndGet();
+            } else if (foundOnDevice && !skip) {
+                correctCount.incrementAndGet();
+            }
+        });
+
+        if (correctCount.get() == configApplications.size()) {
+            return DeviceApplicationsStatus.SUCCESS;
+        } else if (notInstalledCount.get() > 0) {
+            return DeviceApplicationsStatus.FAILURE;
+        } else {
+            return DeviceApplicationsStatus.VERSION_MISMATCH;
+        }
+    }
+
+    private DeviceConfigFilesStatus evaluateDeviceConfigurationFilesStatus(Device dbDevice, DeviceInfo info) {
+        final List<ConfigurationFile> configurationFiles
+                = this.configurationFileMapper.getConfigurationFiles(dbDevice.getConfigurationId());
+
+        AtomicInteger correctCount = new AtomicInteger();
+        AtomicInteger notInstalledCount = new AtomicInteger();
+        AtomicInteger lastUpdateMismatchCount = new AtomicInteger();
+
+        configurationFiles.forEach(configFile -> {
+            final List<DeviceConfigurationFile> deviceFiles = info.getFiles();
+            boolean foundOnDevice = false;
+            boolean skip = false;
+            for (int i = 0; i < deviceFiles.size(); i++) {
+                final DeviceConfigurationFile deviceFile = deviceFiles.get(i);
+                if (deviceFile.getPath().equals(configFile.getDevicePath())) {
+                    foundOnDevice = true;
+                    if (!configFile.getLastUpdate().equals(deviceFile.getLastUpdate())
+                            && Math.abs(configFile.getLastUpdate() - deviceFile.getLastUpdate()) > 1 * 60 * 60 * 1000) {
+                        lastUpdateMismatchCount.incrementAndGet();
+                        skip = true;
+                    }
+                    break;
+                }
+            }
+
+            if (!foundOnDevice && !configFile.isRemove()) {
+                notInstalledCount.incrementAndGet();
+            } else if (foundOnDevice && !skip) {
+                correctCount.incrementAndGet();
+            }
+        });
+
+        if (correctCount.get() == configurationFiles.size()) {
+            return DeviceConfigFilesStatus.UP_TO_DATE;
+        } else if (notInstalledCount.get() > 0) {
+            return DeviceConfigFilesStatus.MISSING;
+        } else {
+            return DeviceConfigFilesStatus.OTHER;
+        }
+    }
+
+
+    /**
+     * <p>Checks if specified application versions are equal. Removes all non-digit characters from version numbers when
+     * analyzing.</p>
+     */
+    BiPredicate<String, String> areVersionsEqual = (v1, v2) -> {
+        String v1d = ApplicationUtil.normalizeVersion(v1);
+        String v2d = ApplicationUtil.normalizeVersion(v2);
+        return v1d.equals(v2d);
+
+    };
+}

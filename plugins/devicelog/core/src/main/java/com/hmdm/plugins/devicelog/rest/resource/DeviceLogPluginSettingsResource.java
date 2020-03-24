@@ -105,11 +105,20 @@ public class DeviceLogPluginSettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings() {
         try {
-            final DeviceLogPluginSettings pluginSettings = this.settingsDAO.getPluginSettings();
-            return Response.OK(
-                    Optional.ofNullable(pluginSettings)
-                            .orElse(this.settingsDAO.getDefaultSettings())
-            );
+            DeviceLogPluginSettings pluginSettings = this.settingsDAO.getPluginSettings();
+            if (pluginSettings != null) {
+                return Response.OK(pluginSettings);
+            } else {
+                DeviceLogPluginSettings defaultPluginSettings = this.settingsDAO.getDefaultSettings();
+                this.settingsDAO.insertPluginSettings(defaultPluginSettings);
+                pluginSettings = this.settingsDAO.getPluginSettings();
+                if (pluginSettings != null) {
+                    return Response.OK(pluginSettings);
+                } else {
+                    log.error("Failed to save default device log plugin settings");
+                    return Response.INTERNAL_ERROR();
+                }
+            }
         } catch (Exception e) {
             log.error("Failed to retrieve device log plugin settings", e);
             return Response.INTERNAL_ERROR();

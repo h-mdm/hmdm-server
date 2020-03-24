@@ -32,7 +32,6 @@ import com.hmdm.plugins.messaging.persistence.MessagingDAO;
 import com.hmdm.plugins.messaging.persistence.domain.Message;
 import com.hmdm.plugins.messaging.rest.json.MessageFilter;
 import com.hmdm.plugins.messaging.rest.json.SendRequest;
-import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
@@ -48,11 +47,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import static com.hmdm.plugins.messaging.MessagingPluginConfigurationImpl.PLUGIN_ID;
 
 /**
  * <p>A resource to be used for managing the <code>Messaging</code> plugin data for customer account associated

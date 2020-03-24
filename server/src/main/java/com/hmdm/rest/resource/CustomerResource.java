@@ -28,6 +28,7 @@ import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.CustomerSearchRequest;
+import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import org.slf4j.Logger;
@@ -111,7 +112,7 @@ public class CustomerResource {
     @Deprecated
     public Response searchCustomers(CustomerSearchRequest request) {
         try {
-            List<Customer> customers = this.customerDAO.searchCustomers(request);
+            PaginatedData<Customer> customers = this.customerDAO.searchCustomers(request);
             return Response.OK(customers);
         } catch (Exception e) {
             log.error("Unexpected error when searching for customer accounts matching: {}", request, e);

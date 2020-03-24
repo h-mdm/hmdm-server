@@ -81,6 +81,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean lockVolume;
 
+    @ApiModelProperty("Password requirements for the mobile device")
+    private String passwordMode;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -425,6 +428,14 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setLockVolume(Boolean lockVolume) {
         this.lockVolume = lockVolume;
+    }
+
+    public String getPasswordMode() {
+        return passwordMode;
+    }
+
+    public void setPasswordMode(String passwordMode) {
+        this.passwordMode = passwordMode;
     }
 
     @Override

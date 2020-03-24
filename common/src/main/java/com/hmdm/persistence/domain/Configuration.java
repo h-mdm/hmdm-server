@@ -90,6 +90,8 @@ public class Configuration implements CustomerData, Serializable {
     private Integer timeout;
     @ApiModelProperty("A flag indicating if volume is locked on device")
     private Boolean lockVolume;
+    @ApiModelProperty("Password requirements for the mobile device")
+    private String passwordMode;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -479,6 +481,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setLockVolume(Boolean lockVolume) {
         this.lockVolume = lockVolume;
+    }
+
+    public String getPasswordMode() {
+        return passwordMode;
+    }
+
+    public void setPasswordMode(String passwordMode) {
+        this.passwordMode = passwordMode;
     }
 
     public List<ConfigurationFile> getFiles() {

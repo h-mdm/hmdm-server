@@ -2,7 +2,6 @@ package com.hmdm.plugins.messaging.rest.json;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * <p>A DTO object for the message sending command.</p>

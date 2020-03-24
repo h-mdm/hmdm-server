@@ -70,6 +70,7 @@ public interface ConfigurationMapper {
             "manageTimeout=#{manageTimeout}, " +
             "timeout=#{timeout}, " +
             "lockVolume=#{lockVolume}, " +
+            "passwordMode=#{passwordMode}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
@@ -133,6 +134,14 @@ public interface ConfigurationMapper {
      * @return a list of all existing applications with set parameters of usage by specified configuration.
      */
     List<Application> getPlainConfigurationApplications(@Param("customerId") Integer customerId, @Param("id") Integer id);
+
+    /**
+     * <p>Gets the list of applications used by specified configuration.</p>
+     *
+     * @param id an ID of a configuration.
+     * @return a list of all existing applications with set parameters of usage by specified configuration.
+     */
+    List<Application> getPlainConfigurationSoleApplications(@Param("id") Integer id);
 
     @Select("SELECT * FROM configurationApplicationParameters WHERE configurationId = #{id}")
     List<ConfigurationApplicationParameters> getApplicationParameters(@Param("id") Integer configurationId);

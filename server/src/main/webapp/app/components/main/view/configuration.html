@@ -221,6 +221,27 @@
                         </div>
                     </div>
 
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' for="passwordMode-c"
+                               localized>form.configuration.settings.password.mode</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="passwordMode-c" name="passwordMode"
+                                    ng-model='configuration.passwordMode'>
+                                <option ng-value="'any'" ng-selected="configuration.passwordMode === null"
+                                        localized>form.configuration.settings.password.mode.any</option>
+                                <option ng-value="'present'" ng-selected="configuration.passwordMode === 'present'"
+                                        localized>form.configuration.settings.password.mode.present</option>
+                                <option ng-value="'easy'" ng-selected="configuration.passwordMode === 'easy'"
+                                        localized>form.configuration.settings.password.mode.easy</option>
+                                <option ng-value="'moderate'" ng-selected="configuration.passwordMode === 'moderate'"
+                                        localized>form.configuration.settings.password.mode.moderate</option>
+                                <option ng-value="'strong'" ng-selected="configuration.passwordMode === 'strong'"
+                                        localized>form.configuration.settings.password.mode.strong</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
                         <div class='config-save'>

@@ -13,10 +13,67 @@ angular.module('headwind-kiosk')
         $scope.localization = localization;
         $scope.dateFormat = localization.localize('devices.date.format');
 
+        $scope.additionalParams = {
+            enabled: false,
+            dateFrom: null,
+            dateTo: null,
+            launcherVersion: '',
+            installationStatus: null
+        };
+
+        $scope.toggleAdditionalParams = function () {
+            $scope.additionalParams.enabled = !$scope.additionalParams.enabled;
+            if (!$scope.additionalParams.enabled) {
+                $scope.additionalParams.dateFrom = null;
+                $scope.additionalParams.dateTo = null;
+                $scope.additionalParams.launcherVersion = '';
+                $scope.additionalParams.installationStatus = '';
+                $scope.search();
+            }
+        };
+
+        $scope.dateFormat = localization.localize('format.devices.date.datePicker');
+        $scope.createTimeFormat = localization.localize('format.devices.date.createTime');
+        $scope.datePickerOptions = { 'show-weeks': false };
+        $scope.openDatePickers = {
+            'dateFrom': false,
+            'dateTo': false
+        };
+
+        $scope.openDateCalendar = function( $event, isStartDate ) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            if ( isStartDate ) {
+                $scope.openDatePickers.dateFrom = true;
+            } else {
+                $scope.openDatePickers.dateTo = true;
+            }
+        };
+
+        $scope.installStatusOptions = [
+            {id: 'ALL', name: localization.localize('form.devices.selection.install.status.all')},
+            {id: 'SUCCESS', name: localization.localize('form.devices.selection.install.status.success')},
+            {id: 'VERSION_MISMATCH', name: localization.localize('form.devices.selection.install.status.version.mismatch')},
+            {id: 'FAILURE', name: localization.localize('form.devices.selection.install.status.failure')}
+        ];
+
         $scope.paging = {
             pageNum: 1,
             pageSize: 50,
-            totalItems: 0
+            totalItems: 0,
+            sortBy: null,
+            sortAsc: true
+        };
+
+        $scope.sortData = function (sortBy) {
+            if ($scope.paging.sortBy !== sortBy) {
+                $scope.paging.sortBy = sortBy;
+                $scope.paging.sortAsc = true;
+            } else {
+                $scope.paging.sortAsc = !$scope.paging.sortAsc;
+            }
+            $scope.search();
         };
 
         $scope.$watch('paging.pageNum', function () {
@@ -108,6 +165,17 @@ angular.module('headwind-kiosk')
                 return;
             }
 
+            $scope.errorMessage = undefined;
+
+            if ($scope.additionalParams.enabled) {
+                if ($scope.additionalParams.dateFrom && $scope.additionalParams.dateTo) {
+                    if ($scope.additionalParams.dateFrom > $scope.additionalParams.dateTo) {
+                        $scope.errorMessage = localization.localize('error.date.range.invalid');
+                        return;
+                    }
+                }
+            }
+
             searchIsRunning = true;
             $scope.showSpinner = !spinnerHidden;
             if ($scope.showSpinner) {
@@ -119,8 +187,23 @@ angular.module('headwind-kiosk')
                 groupId: $scope.selection.groupId,
                 configurationId: $scope.selection.configurationId,
                 pageNum: $scope.paging.pageNum,
-                pageSize: $scope.paging.pageSize
+                pageSize: $scope.paging.pageSize,
+                sortBy: $scope.paging.sortBy,
+                sortDir: $scope.paging.sortAsc ? "ASC" : "DESC"
             };
+
+            if ($scope.additionalParams.enabled) {
+                request["dateFrom"] = $scope.additionalParams.dateFrom;
+                request["dateTo"] = $scope.additionalParams.dateTo;
+                if ($scope.additionalParams.launcherVersion && $scope.additionalParams.launcherVersion.trim().length > 0) {
+                    request["launcherVersion"] = $scope.additionalParams.launcherVersion;
+                }
+                if ($scope.additionalParams.installationStatus !== 'ALL'
+                    && $scope.additionalParams.installationStatus
+                    && $scope.additionalParams.installationStatus.length > 0) {
+                    request["installationStatus"] = $scope.additionalParams.installationStatus;
+                }
+            }
 
             deviceService.getAllDevices(request, function (response) {
                 $scope.selection.all = false;

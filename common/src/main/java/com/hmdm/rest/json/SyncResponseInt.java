@@ -73,5 +73,23 @@ public interface SyncResponseInt {
 
     List<SyncApplicationSettingInt> getApplicationSettings();
 
+    Boolean getUsbStorage();
+
+    String getRequestUpdates();
+
+    String getPushOptions();
+
+    Boolean getAutoBrightness();
+
+    Integer getBrightness();
+
+    Boolean getManageTimeout();
+
+    Integer getTimeout();
+
+    Boolean getLockVolume();
+
+    String getPasswordMode();
+
     List<SyncConfigurationFileInt> getFiles();
 }

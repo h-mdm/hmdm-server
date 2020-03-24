@@ -45,6 +45,7 @@ angular.module('headwind-kiosk')
             getUserRoleSettings: {url: 'rest/private/settings/userRole/:roleId', method: 'GET'},
             updateDefaultDesignSettings: {url: 'rest/private/settings/design', method: 'POST'},
             updateUserRolesCommonSettings: {url: 'rest/private/settings/userRoles/common', method: 'POST'},
+            updateMiscSettings: {url: 'rest/private/settings/misc', method: 'POST'},
             updateLanguageSettings: {url: 'rest/private/settings/lang', method: 'POST'},
         })
     })

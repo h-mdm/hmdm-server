@@ -21,12 +21,12 @@
                     </div>
                 </div>
 
-                <div class="text-center" ng-if="customers.length > paging.pageSize">
+                <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
                     <pagination
                             boundary-links='true' class='pagination-sm'
                             max-size='3'
                             ng-model='paging.currentPage'
-                            total-items='customers.length'
+                            total-items='paging.totalItems'
                             items-per-page='paging.pageSize'
                             previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                             last-text='&raquo;'></pagination>
@@ -86,12 +86,12 @@
 
                 <div ng-if='customers && customers.length == 0' class='center' localized>notfound.customers</div>
 
-                <div class="text-center" ng-if="customers.length > paging.pageSize">
+                <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
                     <pagination
                             boundary-links='true' class='pagination-sm'
                             max-size='3'
                             ng-model='paging.currentPage'
-                            total-items='customers.length'
+                            total-items='paging.totalItems'
                             items-per-page='paging.pageSize'
                             previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                             last-text='&raquo;'></pagination>

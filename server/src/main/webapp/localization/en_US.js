@@ -169,8 +169,8 @@ document.localization ['en_US'] = {
     'success.file.uploaded': 'File uploaded successfully.',
     'success.file.uploaded.need.save': 'File uploaded successfully. Enter the relative path and click "Save".',
     'success.settings.design.saved': 'Design settings saved successfully',
-    'success.settings.common.saved': 'General settings saved successfully',
-    'success.settings.language.saved': 'Language settings saved successfully',
+    'success.settings.common.saved': 'Device table settings saved successfully',
+    'success.settings.saved': 'Settings saved successfully',
     'success.settings.apiKey.saved': 'API key saved successfully',
     'success.settings.hints.enabled': 'Hints enabled',
     'success.settings.hints.disabled': 'Hints disabled',
@@ -267,6 +267,12 @@ document.localization ['en_US'] = {
     'form.configuration.settings.push.options.mqtt.worker' : 'MQTT protocol (save battery)',
     'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT protocol (instant delivery)',
     'form.configuration.settings.push.options.polling' : 'HTTP polling',
+    'form.configuration.settings.password.mode' : 'Password requirements',
+    'form.configuration.settings.password.mode.any' : 'None',
+    'form.configuration.settings.password.mode.present' : 'Password presents',
+    'form.configuration.settings.password.mode.easy' : 'Easy (at least 6 symbols)',
+    'form.configuration.settings.password.mode.moderate' : 'Moderate (8+ symbols, letters and digits)',
+    'form.configuration.settings.password.mode.strong' : 'Strong (8+, upper & lowercase, digits, signs)',
     'form.configuration.files.search.label': 'Search:',
     'form.configuration.files.action.upload': 'Upload',
     'form.configuration.files.action.remove': 'Remove',
@@ -371,7 +377,7 @@ document.localization ['en_US'] = {
 
     'form.settings.plugins.title': 'Used Plugins',
 
-    'form.settings.common.title': 'General Settings',
+    'form.settings.common.title': 'Device Table View',
     'form.settings.common.visible.columns': 'Visible columns in the "Devices" table',
     'form.settings.common.status': 'Status',
     'form.settings.common.role': 'Users role',
@@ -403,11 +409,16 @@ document.localization ['en_US'] = {
     'form.settings.design.desktop.header.no': 'No',
     'form.settings.design.desktop.header.device.id': 'Device ID',
 
-    'form.settings.lang.title': 'Language Settings',
+    'form.settings.lang.title': 'Language settings',
     'form.settings.lang.use.default': 'Use default language',
     'form.settings.lang.use': 'Use language',
     'form.settings.lang.en': 'English',
     'form.settings.lang.ru': 'Russian',
+
+    'form.settings.misc.title': 'Miscellaneous settings',
+    'form.settings.misc.create.new.devices': 'Add device on first access',
+    'form.settings.misc.new.device.config': 'New device configuration',
+    'form.settings.misc.new.device.group': 'New device group',
 
     'form.settings.groups.title': 'Groups',
     'form.settings.groups.search.placeholder': 'Group search',
@@ -434,15 +445,15 @@ document.localization ['en_US'] = {
     'tab.configurations': 'Configurations',
     'tab.files': 'Files',
     'tab.default.design': 'Default Design',
-    'tab.common.settings': 'General Settings',
+    'tab.common.settings': 'Device Table View',
     'tab.users': 'Users',
     'tab.groups': 'Groups',
-    'tab.language': 'Language Settings',
+    'tab.language': 'Language and other settings',
     'tab.license': 'License',
     'tab.hints': 'Hints',
     'tab.plugins': 'Plugins',
     
-    'tab.configeditor.common.settings': 'General Settings',
+    'tab.configeditor.common.settings': 'Device Table View',
     'tab.configeditor.design.settings': 'Design Settings',
     'tab.configeditor.applications': 'Applications',
     'tab.configeditor.mdm.settings': 'MDM Settings',
@@ -558,8 +569,8 @@ document.localization ['en_US'] = {
     'breadcrumb.configurations': 'Configurations',
     'breadcrumb.files': 'Files',
     'breadcrumb.default.design': 'Design by default',
-    'breadcrumb.common.settings': 'General Settings',
-    'breadcrumb.language.settings': 'Language Settings',
+    'breadcrumb.common.settings': 'Device Table View',
+    'breadcrumb.language.settings': 'Language and Other Settings',
     'breadcrumb.license.settings': 'License',
     'breadcrumb.users': 'Users',
     'breadcrumb.groups': 'Groups',
@@ -568,7 +579,9 @@ document.localization ['en_US'] = {
     'breadcrumb.config.details': 'Details',
     'breadcrumb.application.versions': 'Versions',
 
-    'app.title': 'Headwind MDM Server',
+    'app.name': 'Headwind MDM',
+    'app.description': 'is the open source mobile device management system',
+    'app.title': 'Headwind MDM Web Panel',
 
     'box.show.my.apps.only': 'Display my applications only',
     'configuration.app.version.upgrade.message': 'Installed version ${installedVersion}, available version ${latestVersion}',
@@ -605,5 +618,20 @@ document.localization ['en_US'] = {
     
     'tooltip.usage.byconfigurations': 'Used by configurations',
     'tooltip.usage.byapps': 'Used by applications',
-    'tooltip.usage.byicons': 'Used by icons'
+    'tooltip.usage.byicons': 'Used by icons',
+
+    'form.devices.label.params.more': 'More parameters',
+    'form.devices.label.params.less': 'Less parameters',
+    'form.devices.label.installation.status': 'Installation status',
+    "format.devices.date.createTime": "dd/MM/yyyy HH:mm:ss",
+    "format.devices.date.datePicker": "dd-MM-yyyy",
+
+    'form.devices.selection.install.status.default': 'Installation status ...',
+    'form.devices.selection.install.status.all': 'All',
+    'form.devices.selection.install.status.success': 'Success',
+    'form.devices.selection.install.status.version.mismatch': 'Version Mismatch',
+    'form.devices.selection.install.status.failure': 'Failure',
+
+    'search.placeholder.launcher.version': 'Launcher Version',
+    'error.date.range.invalid': 'Invalid date interval'
 };

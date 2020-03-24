@@ -58,6 +58,16 @@ public class Settings implements CustomerData, Serializable {
     private boolean useDefaultLanguage = true;
     @ApiModelProperty("A combination of language and country codes used for content localization (e.g. 'en_US')")
     private String language;
+    @ApiModelProperty("Flag indicating if the new devices must be created on first access")
+    private boolean createNewDevices = false;
+    @ApiModelProperty("Default group for the new devices")
+    private Integer newDeviceGroupId;
+    @ApiModelProperty("Default configuration for the new devices")
+    private Integer newDeviceConfigurationId;
+
+    // This property is not stored in the database, it is a transient field used by the Settings resource
+    @ApiModelProperty(hidden = true)
+    private boolean singleCustomer;
 
     public Settings() {
     }
@@ -134,6 +144,37 @@ public class Settings implements CustomerData, Serializable {
         this.useDefaultLanguage = useDefaultLanguage;
     }
 
+    public boolean isCreateNewDevices() {
+        return createNewDevices;
+    }
+
+    public void setCreateNewDevices(boolean createNewDevices) {
+        this.createNewDevices = createNewDevices;
+    }
+
+    public Integer getNewDeviceGroupId() {
+        return newDeviceGroupId;
+    }
+
+    public void setNewDeviceGroupId(Integer newDeviceGroupId) {
+        this.newDeviceGroupId = newDeviceGroupId;
+    }
+
+    public Integer getNewDeviceConfigurationId() {
+        return newDeviceConfigurationId;
+    }
+
+    public void setNewDeviceConfigurationId(Integer newDeviceConfigurationId) {
+        this.newDeviceConfigurationId = newDeviceConfigurationId;
+    }
+
+    public boolean isSingleCustomer() {
+        return singleCustomer;
+    }
+
+    public void setSingleCustomer(boolean singleCustomer) {
+        this.singleCustomer = singleCustomer;
+    }
 
     @Override
     public String toString() {
@@ -147,6 +188,10 @@ public class Settings implements CustomerData, Serializable {
                 ", customerId=" + customerId +
                 ", useDefaultLanguage=" + useDefaultLanguage +
                 ", language='" + language + '\'' +
+                ", createNewDevices=" + createNewDevices +
+                ", newDeviceGroupId=" + newDeviceGroupId +
+                ", newDeviceConfigurationId=" + newDeviceConfigurationId +
+                ", singleCustomer=" + singleCustomer +
                 '}';
     }
 }

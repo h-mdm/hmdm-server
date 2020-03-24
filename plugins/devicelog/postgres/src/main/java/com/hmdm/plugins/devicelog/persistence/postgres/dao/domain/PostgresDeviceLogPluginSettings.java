@@ -24,6 +24,8 @@ package com.hmdm.plugins.devicelog.persistence.postgres.dao.domain;
 import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 
+import java.util.ArrayList;
+
 /**
  * <p>A device log settings record stored in <code>Postgres</code> database.</p>
  *
@@ -47,6 +49,7 @@ public class PostgresDeviceLogPluginSettings extends DeviceLogPluginSettings imp
      * <p>Constructs new <code>PostgresDeviceLogPluginSettings</code> instance. This implementation does nothing.</p>
      */
     public PostgresDeviceLogPluginSettings() {
+        setRules(new ArrayList<>());
     }
 
     @Override

@@ -38,9 +38,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.google.inject.name.Named;
 import com.hmdm.notification.PushService;
-import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.persistence.ConfigurationFileDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ConfigurationFile;
@@ -194,7 +192,12 @@ public class DeviceResource {
                 dbDevice = this.deviceDAO.getDeviceById(device.getId());
                 if (device.getId() != null) {
                     if (dbDevice != null) {
+                        boolean notify = dbDevice.getConfigurationId() != null &&
+                                !dbDevice.getConfigurationId().equals(device.getConfigurationId());
                         this.deviceDAO.updateDevice(device);
+                        if (notify) {
+                            this.pushService.notifyDeviceOnApplicationSettingUpdate(device.getId());
+                        }
                     }
                 } else if (device.getIds() != null) {
                     // This is a bulk request to update configurations for selected devices
@@ -205,6 +208,7 @@ public class DeviceResource {
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
                             this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
+                            this.pushService.notifyDeviceOnApplicationSettingUpdate(device.getId());
                         }
                     }
                 } else {

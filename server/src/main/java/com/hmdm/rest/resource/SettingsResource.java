@@ -31,6 +31,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.UserRoleSettingsDAO;
 import com.hmdm.persistence.domain.UserRoleSettings;
 import com.hmdm.security.SecurityContext;
@@ -55,6 +57,7 @@ public class SettingsResource {
 
     private CommonDAO commonDAO;
     private UserRoleSettingsDAO userRoleSettingsDAO;
+    private UnsecureDAO unsecureDAO;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -63,9 +66,10 @@ public class SettingsResource {
     }
 
     @Inject
-    public SettingsResource(CommonDAO commonDAO, UserRoleSettingsDAO userRoleSettingsDAO) {
+    public SettingsResource(CommonDAO commonDAO, UserRoleSettingsDAO userRoleSettingsDAO, UnsecureDAO unsecureDAO) {
         this.commonDAO = commonDAO;
         this.userRoleSettingsDAO = userRoleSettingsDAO;
+        this.unsecureDAO = unsecureDAO;
     }
 
     // =================================================================================================================
@@ -79,6 +83,7 @@ public class SettingsResource {
     public Response getSettings() {
         try {
             Settings settings = Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
+            settings.setSingleCustomer(unsecureDAO.isSingleCustomer());
             return Response.OK(settings);
         } catch (Exception e) {
             log.error("Unexpected error when getting the settings for customer", e);
@@ -167,6 +172,32 @@ public class SettingsResource {
             return Response.OK();
         } catch (Exception e) {
             log.error("Unexpected error when saving language settings", e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Save misc settings",
+            notes = "Save the misc settings for MDM web application",
+            response = Settings.class
+    )
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/misc")
+    public Response updateMiscSettings(Settings settings) {
+        try {
+            if (!unsecureDAO.isSingleCustomer()) {
+                // These settings are not allowed to setup in multi-tenant mode
+                settings.setCreateNewDevices(false);
+                settings.setNewDeviceGroupId(null);
+                settings.setNewDeviceConfigurationId(null);
+            }
+            this.commonDAO.saveMiscSettings(settings);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Unexpected error when saving misc settings", e);
             return Response.INTERNAL_ERROR();
         }
     }

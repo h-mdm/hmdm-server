@@ -38,6 +38,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import com.hmdm.guice.module.ConfigureModule;
+import com.hmdm.guice.module.EventListenerModule;
 import com.hmdm.guice.module.LiquibaseModule;
 import com.hmdm.guice.module.MainRestModule;
 import com.hmdm.guice.module.PersistenceModule;
@@ -175,5 +176,9 @@ public final class Initializer extends GuiceServletContextListener {
                 }
             });
         }
+
+        final EventListenerModule eventListenerModule = this.injector.getInstance(EventListenerModule.class);
+        eventListenerModule.init();
+
     }
 }

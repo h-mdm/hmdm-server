@@ -25,6 +25,8 @@ import java.util.List;
 
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.DeviceApplication;
+import com.hmdm.service.DeviceApplicationsStatus;
+import com.hmdm.service.DeviceConfigFilesStatus;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -125,6 +127,9 @@ public interface DeviceMapper {
     List<Device> getDeviceIdsByConfigurationId(@Param("customerId") Integer customerId,
                                                @Param("configurationId") int configurationId);
 
+    @Select("SELECT devices.id FROM devices WHERE configurationId = #{configurationId}")
+    List<Device> getDeviceIdsBySoleConfigurationId(@Param("configurationId") int configurationId);
+
     void insertDeviceApplicationSettings(@Param("id") Integer deviceId,
                                          @Param("appSettings") List<ApplicationSetting> applicationSettings);
 
@@ -141,4 +146,15 @@ public interface DeviceMapper {
             "    WHERE id = #{deviceId}" +
             ") deviceApps")
     List<DeviceApplication> getDeviceInstalledApplications(@Param("deviceId") int deviceId);
+
+    @Update("INSERT INTO deviceStatuses (deviceId, configFilesStatus, applicationsStatus) " +
+            "VALUES (#{deviceId}, #{filesStatus}, #{appsStatus})" +
+            "ON CONFLICT ON CONSTRAINT deviceStatuses_pr_key DO " +
+            "UPDATE SET configFilesStatus = EXCLUDED.configFilesStatus, applicationsStatus = EXCLUDED.applicationsStatus")
+    int updateDeviceStatuses(@Param("deviceId") Integer deviceId,
+                             @Param("filesStatus") DeviceConfigFilesStatus deviceConfigFilesStatus,
+                             @Param("appsStatus") DeviceApplicationsStatus deviceApplicatiosStatus);
+
+    @Select("SELECT id FROM devices")
+    List<Integer> getAllDeviceIds();
 }

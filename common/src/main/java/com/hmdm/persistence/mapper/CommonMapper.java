@@ -84,4 +84,23 @@ public interface CommonMapper {
     })
     void saveLanguageSettings(Settings settings);
 
+    @Insert({
+            "INSERT INTO settings (" +
+                    "createNewDevices, " +
+                    "newDeviceGroupId, " +
+                    "newDeviceConfigurationId, " +
+                    "customerId" +
+                    ") VALUES (" +
+                    "#{createNewDevices}, " +
+                    "#{newDeviceGroupId}, " +
+                    "#{newDeviceConfigurationId}, " +
+                    "#{customerId}" +
+                    ") " +
+                    "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
+                    "UPDATE SET " +
+                    "createNewDevices = EXCLUDED.createNewDevices, " +
+                    "newDeviceGroupId = EXCLUDED.newDeviceGroupId, " +
+                    "newDeviceConfigurationId = EXCLUDED.newDeviceConfigurationId"
+    })
+    void saveMiscSettings(Settings settings);
 }

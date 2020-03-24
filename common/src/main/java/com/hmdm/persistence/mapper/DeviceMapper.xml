@@ -66,20 +66,49 @@
     </update>
 
     <sql id="allowedDevicesSelect">
-        SELECT DISTINCT deviceId AS deviceId, LOWER(deviceNumber) AS deviceNumber, searchPriority
+        SELECT DISTINCT deviceId AS deviceId, LOWER(deviceNumber) AS deviceNumber, searchPriority, sortingValue
         FROM
         (
-        SELECT devices.id AS deviceId, devices.number AS deviceNumber,
+        SELECT
+               devices.id AS deviceId,
+               devices.number AS deviceNumber,
         (
             COALESCE(CASE WHEN devices.number ILIKE #{value} THEN 16 END, 0) +
             COALESCE(CASE WHEN devices.imei ILIKE #{value} THEN 8 END, 0) +
             COALESCE(CASE WHEN devices.phone ILIKE #{value} THEN 4 END, 0) +
             COALESCE(CASE WHEN devices.description ILIKE #{value} THEN 2 END, 0) +
             COALESCE(CASE WHEN devices.info ILIKE #{value} THEN 1 END, 0)
-        )          AS searchPriority
+        )          AS searchPriority,
+        (
+            CASE
+                WHEN 'STATUS' = #{sortBy} THEN
+                    (CASE
+                        WHEN (EXTRACT(EPOCH FROM NOW()) * 1000 - devices.lastupdate) &lt; (2 * 3600 * 1000) THEN '1_green'
+                        WHEN (EXTRACT(EPOCH FROM NOW()) * 1000 - devices.lastupdate) &lt; (4 * 3600 * 1000) THEN '2_yellow'
+                        ELSE '3_red'
+                    END)::VARCHAR(100)
+                WHEN 'LAST_UPDATE' = #{sortBy} THEN devices.lastUpdate::VARCHAR(100)
+                WHEN 'NUMBER' = #{sortBy} THEN LOWER(devices.number)::VARCHAR(100)
+                WHEN 'IMEI' = #{sortBy} THEN mdm_resolve_device_property(devices.imei, devices.info::json -&gt;&gt; 'imei')::VARCHAR(100)
+                WHEN 'PHONE' = #{sortBy} THEN mdm_resolve_device_property(devices.phone, devices.info::json -&gt;&gt; 'phone')::VARCHAR(100)
+                WHEN 'MODEL' = #{sortBy} THEN LOWER(devices.info::json -&gt;&gt; 'model')::VARCHAR(100)
+                WHEN 'PERMISSIONS' = #{sortBy} THEN mdm_device_permissions_index(devices.info)::VARCHAR(100)
+                WHEN 'INSTALLATIONS' = #{sortBy} THEN COALESCE(deviceStatuses.applicationsStatus, 'FAILURE')::VARCHAR(100)
+                WHEN 'FILES' = #{sortBy} THEN COALESCE(deviceStatuses.configFilesStatus, 'OTHER')::VARCHAR(100)
+                WHEN 'CONFIGURATION' = #{sortBy} THEN LOWER(configurations.name)::VARCHAR(100)
+                WHEN 'DESCRIPTION' = #{sortBy} THEN LOWER(COALESCE(devices.description, ''))::VARCHAR(100)
+                WHEN 'GROUP' = #{sortBy} THEN COALESCE(LOWER(groups.name), '')::VARCHAR(100)
+                WHEN 'LAUNCHER_VERSION' = #{sortBy} THEN mdm_device_launcher_version(applications.pkg, devices.info)::VARCHAR(100)
+                WHEN 'BATTERY_LEVEL' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'batteryLevel', '-1')::VARCHAR(100)
+                ELSE ''
+            END
+        ) AS sortingValue
         FROM devices
         INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN deviceStatuses ON devices.id = deviceStatuses.deviceId
         LEFT JOIN configurations ON devices.configurationId = configurations.id
+        LEFT JOIN applicationVersions ON configurations.mainAppId = applicationVersions.id
+        LEFT JOIN applications ON applications.id = applicationVersions.applicationid
         LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
         LEFT JOIN groups ON deviceGroups.groupId = groups.id
         LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
@@ -106,8 +135,29 @@
             configurations.id = #{configurationId}
             )
         </if>
+        <if test="dateFrom != null">
+            AND (
+            devices.lastUpdate &gt;= #{dateFromMillis}
+            )
+        </if>
+        <if test="dateTo != null">
+            AND (
+            devices.lastUpdate &lt;= #{dateToMillis}
+            )
+        </if>
+        <if test="launcherVersion != null">
+            AND (
+            mdm_device_launcher_version(applications.pkg, devices.info) = #{launcherVersion}
+            )
+        </if>
+        <if test="installationStatus != null">
+            AND (
+            deviceStatuses.applicationsStatus = #{installationStatus}
+            )
+        </if>
         ) allowedDevicesInner
-        ORDER BY searchPriority, LOWER(deviceNumber)
+        ORDER BY sortingValue <if test="sortDir.equalsIgnoreCase(&quot;desc&quot;)">DESC</if>,
+                 searchPriority, LOWER(deviceNumber)
         OFFSET (#{pageNum} - 1) * #{pageSize}
         LIMIT #{pageSize}
     </sql>
@@ -131,14 +181,18 @@
         LEFT JOIN groups ON deviceGroups.groupId = groups.id
         LEFT JOIN applicationVersions ON configurations.mainAppId = applicationVersions.id
         LEFT JOIN applications ON applications.id = applicationVersions.applicationid
-        ORDER BY allowedDevices.searchPriority DESC, LOWER(devices.number), LOWER(groups.name);
+        ORDER BY allowedDevices.sortingValue <if test="sortDir.equalsIgnoreCase(&quot;desc&quot;)">DESC</if>,
+                 allowedDevices.searchPriority DESC, LOWER(devices.number), LOWER(groups.name);
     </select>
 
     <select id="countAllDevices" parameterType="DeviceSearchRequest" resultType="long">
         SELECT COUNT(DISTINCT devices.id) AS counter
         FROM devices
         INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN deviceStatuses ON devices.id = deviceStatuses.deviceId
         LEFT JOIN configurations ON devices.configurationId = configurations.id
+        LEFT JOIN applicationVersions ON configurations.mainAppId = applicationVersions.id
+        LEFT JOIN applications ON applications.id = applicationVersions.applicationid
         LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
         LEFT JOIN groups ON deviceGroups.groupId = groups.id
         LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
@@ -163,6 +217,26 @@
         <if test="configurationId != null &amp;&amp; configurationId > 0">
             AND (
             configurations.id = #{configurationId}
+            )
+        </if>
+        <if test="dateFrom != null">
+            AND (
+            devices.lastUpdate &gt;= #{dateFromMillis}
+            )
+        </if>
+        <if test="dateTo != null">
+            AND (
+            devices.lastUpdate &lt;= #{dateToMillis}
+            )
+        </if>
+        <if test="launcherVersion != null">
+            AND (
+            mdm_device_launcher_version(applications.pkg, devices.info) = #{launcherVersion}
+            )
+        </if>
+        <if test="installationStatus != null">
+            AND (
+            deviceStatuses.applicationsStatus = #{installationStatus}
             )
         </if>
     </select>

@@ -23,8 +23,6 @@ package com.hmdm.plugins.devicelog.rest.resource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.plugin.service.PluginStatusCache;
@@ -34,8 +32,6 @@ import com.hmdm.plugins.devicelog.rest.json.AppliedDeviceLogRule;
 import com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter;
 import com.hmdm.plugins.devicelog.rest.json.UploadedDeviceLogRecord;
 import com.hmdm.plugins.devicelog.task.InsertDeviceLogRecordsTask;
-import com.hmdm.rest.json.DeviceLookupItem;
-import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
@@ -101,6 +97,7 @@ public class DeviceLogResource {
      * <p>A constructor required by Swagger.</p>
      */
     public DeviceLogResource() {
+        // Empty
     }
 
     /**

@@ -1,12 +1,13 @@
 <div ng-controller="SettingsTabController">
-    <div class="text-center">
-        <h4 localized-change-tracking>form.settings.lang.title</h4>
-    </div>
-
     <div>
         <form class='form-horizontal'>
             <div class='form-group'>
+                <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
                 <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+            </div>
+
+            <div class="text-center">
+                <h4 localized-change-tracking>form.settings.lang.title</h4>
             </div>
 
             <div class='form-group'>
@@ -31,6 +32,42 @@
                            class='form-control' ng-value="'ru_RU'"/>
                 </div>
             </div>
+
+            <div ng-if="settings.singleCustomer" style="margin-top: 50px">
+                <div class="text-center">
+                    <h4 localized-change-tracking>form.settings.misc.title</h4>
+                </div>
+
+                <div class='form-group'>
+                    <label class='col-sm-6 control-label' for="c2_createNewDevices" localized-change-tracking>form.settings.misc.create.new.devices</label>
+                    <div class='col-sm-1'>
+                        <input id="c2_createNewDevices" ng-model='settings.createNewDevices' type='checkbox' name="c_createNewDevices"
+                               class='form-control'/>
+                    </div>
+                </div>
+
+                <div class='form-group'>
+                    <label class='col-sm-6 control-label' localized-change-tracking>form.settings.misc.new.device.config</label>
+                    <div class='col-sm-4'>
+                        <select class='form-control'
+                                ng-model='settings.newDeviceConfigurationId'
+                                ng-options="configuration.id as configuration.name for configuration in configurations">
+                        </select>
+                    </div>
+                </div>
+
+                <div class='form-group'>
+                    <label class='col-sm-6 control-label' localized-change-tracking>form.settings.misc.new.device.group</label>
+                    <div class='col-sm-4'>
+                        <select class='form-control'
+                                ng-model='settings.newDeviceGroupId'
+                                ng-options="group.id as group.name for group in groups">
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
 
             <div class='form-group'>
                 <div class='col-sm-offset-6 col-sm-9 padding-left'>

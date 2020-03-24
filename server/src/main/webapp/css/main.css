@@ -69,15 +69,55 @@
 
 .header {
     height: 50px;
-    background-color: #212322;
+    background-color: #7a9ab9;
+}
+
+.login-logo {
+    margin: 50px auto 0 auto;
+}
+
+.login-logo img {
+    margin-bottom: 10px;
+}
+
+.login-logo .logo {
+    font-size: 30px;
+    color: #4c788c;
+}
+
+.login-footer {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #cccccc;
+    padding-top: 10px;
+}
+
+.header .logo-text {
+    margin-top: 10px;
+    padding-left: 15px;
+    color: #afd0df;
+    font-size: 20px;
+}
+
+.header .logo-text a, .header .logo-text a:active {
+    text-decoration: none;
+    color: #afd0df !important;
+    font-size: 20px !important;
+}
+
+.header .logo-text a:hover {
+    text-decoration: none;
+    color: #d0e3eb !important;
 }
 
 .header a {
-    color: #97b8c1 !important;
+    color: #ffffff !important;
 }
 
 .header .open a, .header .open .dropdown-menu {
-    background-color: #212322 !important;
+    background-color: #7a9ab9 !important;
 }
 
 .header .open .dropdown-menu {
@@ -1438,6 +1478,10 @@
 
 .center {
     text-align: center;
+}
+
+.align-right {
+    text-align: right;
 }
 
 .report-devices .panel-body,

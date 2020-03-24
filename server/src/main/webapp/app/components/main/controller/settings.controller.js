@@ -1,7 +1,8 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .controller('SettingsTabController', function ($scope, $rootScope, $timeout, hintService, settingsService,
-                                                   localization, authService, userService) {
+                                                   localization, authService, userService,
+                                                   groupService, configurationService) {
         $scope.settings = {};
         $scope.userRoleSettings = {};
         $scope.loading = false;
@@ -29,12 +30,22 @@ angular.module('headwind-kiosk')
             clearMessages();
 
             $scope.loading = true;
-            settingsService.getSettings(function (response) {
-                if (response.data) {
-                    $scope.settings = response.data;
-                }
-                $scope.loading = false;
+
+            groupService.getAllGroups(function (response) {
+                $scope.groups = response.data;
+
+                configurationService.getAllConfigurations(function (response) {
+                    $scope.configurations = response.data;
+
+                    settingsService.getSettings(function (response) {
+                        if (response.data) {
+                            $scope.settings = response.data;
+                        }
+                        $scope.loading = false;
+                    }, onRequestFailure);
+                }, onRequestFailure);
             }, onRequestFailure);
+
         };
 
         $scope.initCommonSettings = function () {
@@ -117,13 +128,23 @@ angular.module('headwind-kiosk')
 
         $scope.saveLanguageSettings = function () {
             clearMessages();
-            settingsService.updateLanguageSettings($scope.settings, function (response) {
+
+            if ($scope.settings.createNewDevices && !$scope.settings.newDeviceConfigurationId) {
+                $scope.errorMessage = localization.localize('error.empty.configuration');
+                return;
+            }
+
+            settingsService.updateMiscSettings($scope.settings, function (response) {
                 if (response.status === 'OK') {
-                    $rootScope.$broadcast('aero_LANGUAGE_SETTINGS_UPDATED', $scope.settings);
-                    $scope.successMessage = localization.localize('success.settings.language.saved');
-                    $timeout(function () {
-                        $scope.successMessage = '';
-                    }, 2000);
+                    settingsService.updateLanguageSettings($scope.settings, function (response) {
+                        if (response.status === 'OK') {
+                            $rootScope.$broadcast('aero_LANGUAGE_SETTINGS_UPDATED', $scope.settings);
+                            $scope.successMessage = localization.localize('success.settings.saved');
+                            $timeout(function () {
+                                $scope.successMessage = '';
+                            }, 2000);
+                        }
+                    });
                 }
             });
         };

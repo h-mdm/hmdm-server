@@ -23,6 +23,7 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationVersion;
@@ -31,12 +32,7 @@ import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.mapper.ApplicationMapper;
-import com.hmdm.persistence.mapper.CommonMapper;
-import com.hmdm.persistence.mapper.ConfigurationFileMapper;
-import com.hmdm.persistence.mapper.ConfigurationMapper;
-import com.hmdm.persistence.mapper.DeviceMapper;
-import com.hmdm.persistence.mapper.UserMapper;
+import com.hmdm.persistence.mapper.*;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
 import org.mybatis.guice.transactional.Transactional;
@@ -70,6 +66,7 @@ public class UnsecureDAO {
     private final ApplicationDAO applicationDAO;
     private final ApplicationSettingDAO applicationSettingDAO;
     private final ConfigurationFileMapper configurationFileMapper;
+    private final CustomerMapper customerMapper;
 
     /**
      * <p>Constructs new <code>UnsecureDAO</code> instance. This implementation does nothing.</p>
@@ -82,7 +79,8 @@ public class UnsecureDAO {
                        ApplicationMapper applicationMapper,
                        ApplicationDAO applicationDAO,
                        ApplicationSettingDAO applicationSettingDAO,
-                       ConfigurationFileMapper configurationFileMapper) {
+                       ConfigurationFileMapper configurationFileMapper,
+                       CustomerMapper customerMapper) {
         this.deviceMapper = deviceMapper;
         this.userMapper = userMapper;
         this.configurationMapper = configurationMapper;
@@ -91,6 +89,7 @@ public class UnsecureDAO {
         this.applicationDAO = applicationDAO;
         this.applicationSettingDAO = applicationSettingDAO;
         this.configurationFileMapper = configurationFileMapper;
+        this.customerMapper = customerMapper;
     }
 
     public User findByLoginOrEmail(String login) {
@@ -111,6 +110,18 @@ public class UnsecureDAO {
         this.deviceMapper.updateDeviceInfo(id, info);
     }
 
+    // This method should be called in a single-tenant mode only
+    // and the device customer ID should be set
+    @Transactional
+    public void insertDevice(Device device) {
+        this.deviceMapper.insertDevice(device);
+        if (device.getGroups() != null && !device.getGroups().isEmpty()) {
+            this.deviceMapper.insertDeviceGroups(
+                    device.getId(), device.getGroups().stream().map(LookupItem::getId).collect(Collectors.toList())
+            );
+        }
+    }
+
     public List<Application> getPlainConfigurationApplications(Integer customerId, Integer id) {
         return this.configurationMapper.getPlainConfigurationApplications(customerId, id);
     }
@@ -128,6 +139,10 @@ public class UnsecureDAO {
 
     public Settings getSettings(int customerId) {
         return this.settingsMapper.getSettings(customerId);
+    }
+
+    public Settings getSingleCustomerSettings() {
+        return this.settingsMapper.getSettings(1);
     }
 
     public List<Application> findByPackageIdAndVersion(Integer customerId, String pkg, String version) {
@@ -290,4 +305,12 @@ public class UnsecureDAO {
 //        return this.settingsMapper.getSettingsByDeviceId(deviceId);
 //    }
 
+    /**
+     * <p>Tests if the current installation is single-customer</p>
+     *
+     * @return true if single-customer, false otherwise
+     */
+    public boolean isSingleCustomer() {
+        return !customerMapper.isMultiTenant();
+    }
 }
