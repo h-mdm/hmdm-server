@@ -50,6 +50,8 @@ public interface DeviceLogPluginSettingsDAO {
 
     Class<? extends DeviceLogRule> getSettingsRuleClass();
 
+    DeviceLogRule getPluginSettingsRuleById(int id);
+
     void deletePluginSettingRule(int id);
 
 }

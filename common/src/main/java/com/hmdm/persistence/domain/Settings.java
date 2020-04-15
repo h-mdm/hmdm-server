@@ -64,6 +64,8 @@ public class Settings implements CustomerData, Serializable {
     private Integer newDeviceGroupId;
     @ApiModelProperty("Default configuration for the new devices")
     private Integer newDeviceConfigurationId;
+    @ApiModelProperty("Phone number format")
+    private String phoneNumberFormat;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
@@ -166,6 +168,14 @@ public class Settings implements CustomerData, Serializable {
 
     public void setNewDeviceConfigurationId(Integer newDeviceConfigurationId) {
         this.newDeviceConfigurationId = newDeviceConfigurationId;
+    }
+
+    public String getPhoneNumberFormat() {
+        return phoneNumberFormat;
+    }
+
+    public void setPhoneNumberFormat(String phoneNumberFormat) {
+        this.phoneNumberFormat = phoneNumberFormat;
     }
 
     public boolean isSingleCustomer() {

@@ -75,6 +75,17 @@ public class DeviceDAO extends AbstractDAO<Device> {
         this.deviceListHooks = hooks;
     }
 
+    public List<Device> getAllDevices() {
+        DeviceSearchRequest request = new DeviceSearchRequest();
+        List<Device> devices = getListWithCurrentUser(currentUser -> {
+            request.setCustomerId(currentUser.getCustomerId());
+            request.setUserId(currentUser.getId());
+            request.setPageSize(1000000);
+            return this.mapper.getAllDevices(request);
+        });
+        return devices;
+    }
+
     public PaginatedData<Device> getAllDevices(DeviceSearchRequest request) {
         List<Device> devices = getListWithCurrentUser(currentUser -> {
             request.setCustomerId(currentUser.getCustomerId());

@@ -23,11 +23,14 @@ Escape character is '^]'.
 # git clone https://gitlab.com/h-mdm/hmdm-server
 # cd hmdm-server
 
-4. Build the source code
+4. If you are planning to run or debug Headwind MDM in IDE, update the contents
+of the server/build.properties file.
+
+5. Build the source code
 
 # mvn install
 
-5. Create the PostgreSQL database and user
+6. Create the PostgreSQL database and user
 
 # sudo su postgres
 # psql
@@ -35,9 +38,9 @@ postgres=# CREATE USER hmdm WITH PASSWORD 'topsecret';
 postgres=# CREATE DATABASE hmdm WITH OWNER=hmdm;
 postgres=# \q
 
-6. Run the installer script (as root)
+7. Run the installer script (as root)
 
 sudo ./hmdm_install.sh
 
-7. On success, the installer script provides you with the URL. Open Headwind MDM in browser.
+8. On success, the installer script provides you with the URL. Open Headwind MDM in browser.
 

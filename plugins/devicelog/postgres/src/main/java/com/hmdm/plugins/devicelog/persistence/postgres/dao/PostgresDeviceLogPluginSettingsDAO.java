@@ -124,6 +124,11 @@ public class PostgresDeviceLogPluginSettingsDAO extends AbstractDAO<PostgresDevi
     }
 
     @Transactional
+    public DeviceLogRule getPluginSettingsRuleById(int id) {
+        return mapper.getPluginSettingsRule(id);
+    }
+
+    @Transactional
     public void deletePluginSettingRule(int id) {
         final PostgresDeviceLogPluginSettings settings = getSingleRecord(
                 () -> this.mapper.getPluginSettingsByRuleIdForAuthorization(id),

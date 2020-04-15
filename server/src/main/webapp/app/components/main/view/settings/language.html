@@ -33,12 +33,20 @@
                 </div>
             </div>
 
-            <div ng-if="settings.singleCustomer" style="margin-top: 50px">
+            <div style="margin-top: 50px">
                 <div class="text-center">
                     <h4 localized-change-tracking>form.settings.misc.title</h4>
                 </div>
 
                 <div class='form-group'>
+                    <label class='col-sm-3 control-label' localized>form.settings.misc.phone.format</label>
+                    <div class='col-sm-9'>
+                        <input ng-model='settings.phoneNumberFormat' type='text' class='form-control'
+                               localized-placeholder='form.settings.misc.phone.format.placeholder'/>
+                    </div>
+                </div>
+
+                <div ng-if="settings.singleCustomer" class='form-group'>
                     <label class='col-sm-6 control-label' for="c2_createNewDevices" localized-change-tracking>form.settings.misc.create.new.devices</label>
                     <div class='col-sm-1'>
                         <input id="c2_createNewDevices" ng-model='settings.createNewDevices' type='checkbox' name="c_createNewDevices"
@@ -46,7 +54,7 @@
                     </div>
                 </div>
 
-                <div class='form-group'>
+                <div ng-if="settings.singleCustomer" class='form-group'>
                     <label class='col-sm-6 control-label' localized-change-tracking>form.settings.misc.new.device.config</label>
                     <div class='col-sm-4'>
                         <select class='form-control'
@@ -56,7 +64,7 @@
                     </div>
                 </div>
 
-                <div class='form-group'>
+                <div ng-if="settings.singleCustomer" class='form-group'>
                     <label class='col-sm-6 control-label' localized-change-tracking>form.settings.misc.new.device.group</label>
                     <div class='col-sm-4'>
                         <select class='form-control'

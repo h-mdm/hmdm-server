@@ -23,15 +23,20 @@ package com.hmdm.plugins.devicelog.rest.resource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.hmdm.notification.PushService;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.GroupDAO;
+import com.hmdm.persistence.domain.Device;
+import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPluginSettingsDAO;
 import com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +55,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,6 +80,10 @@ public class DeviceLogPluginSettingsResource {
      */
     private DeviceLogPluginSettingsDAO settingsDAO;
 
+    private DeviceDAO deviceDAO;
+
+    private PushService pushService;
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -84,8 +94,12 @@ public class DeviceLogPluginSettingsResource {
      * <p>Constructs new <code>PhotoPluginSettingsResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceLogPluginSettingsResource(DeviceLogPluginSettingsDAO settingsDAO) {
+    public DeviceLogPluginSettingsResource(DeviceLogPluginSettingsDAO settingsDAO,
+                                           DeviceDAO deviceDAO,
+                                           PushService pushService) {
         this.settingsDAO = settingsDAO;
+        this.deviceDAO = deviceDAO;
+        this.pushService = pushService;
     }
 
     /**
@@ -166,6 +180,7 @@ public class DeviceLogPluginSettingsResource {
             DeviceLogRule rule = mapper.readValue(ruleJSON, this.settingsDAO.getSettingsRuleClass());
 
             this.settingsDAO.savePluginSettingsRule(rule);
+            notifyRuleDevices(rule);
 
             return Response.OK();
         } catch (Exception e) {
@@ -181,9 +196,13 @@ public class DeviceLogPluginSettingsResource {
     @DELETE
     @Path("/private/rule/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeApplication(@PathParam("id") @ApiParam("Rule ID") Integer id) {
+    public Response removeRule(@PathParam("id") @ApiParam("Rule ID") Integer id) {
         try {
-            this.settingsDAO.deletePluginSettingRule(id);
+            DeviceLogRule rule = this.settingsDAO.getPluginSettingsRuleById(id);
+            if (rule != null) {
+                this.settingsDAO.deletePluginSettingRule(id);
+                notifyRuleDevices(rule);
+            }
             return Response.OK();
         } catch (SecurityException e) {
             log.error("Prohibited to delete device log plugin settings rule #{} by current user", id, e);
@@ -192,5 +211,34 @@ public class DeviceLogPluginSettingsResource {
             log.error("Failed to delete device log plugin settings rule #{} due to unexpected error", id, e);
             return Response.INTERNAL_ERROR();
         }
+    }
+
+    private void notifyRuleDevices(DeviceLogRule rule) {
+        if (rule.getDevices() != null && rule.getDevices().size() > 0) {
+            for (LookupItem item : rule.getDevices()) {
+                pushService.notifyDeviceOnSettingUpdate(item.getId());
+            }
+        } else {
+            List<Device> devices = getDevicesByRule(rule);
+            for (Device device : devices) {
+                pushService.notifyDeviceOnSettingUpdate(device.getId());
+            }
+        }
+    }
+
+
+    // Applicable only to rules which do not contain explicit list of devices!
+    private List<Device> getDevicesByRule(DeviceLogRule rule) {
+        DeviceSearchRequest dsr = new DeviceSearchRequest();
+        dsr.setPageSize(1000000); // No page limitations
+        dsr.setCustomerId(SecurityContext.get().getCurrentCustomerId().get());
+        dsr.setUserId(SecurityContext.get().getCurrentUser().get().getId());
+        if (rule.getConfigurationId() != null) {
+            dsr.setConfigurationId(rule.getConfigurationId());
+        }
+        if (rule.getGroupId() != null) {
+            dsr.setGroupId(rule.getGroupId());
+        }
+        return deviceDAO.getAllDevices(dsr).getItems();
     }
 }

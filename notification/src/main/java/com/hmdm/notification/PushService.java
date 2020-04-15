@@ -63,12 +63,32 @@ public class PushService {
      * @param deviceId an ID of device to be notified.
      */
     @Transactional
+    public void notifyDeviceOnSettingUpdate(Integer deviceId) {
+        sendSimpleMessage(deviceId, PushMessage.TYPE_CONFIG_UPDATED);
+    }
+
+    /**
+     * <p>Sends the message on application settings update to specified device.</p>
+     *
+     * @param deviceId an ID of device to be notified.
+     */
+    @Transactional
     public void notifyDeviceOnApplicationSettingUpdate(Integer deviceId) {
+        sendSimpleMessage(deviceId, PushMessage.TYPE_APP_CONFIG_UPDATED);
+    }
+
+    /**
+     * <p>Sends the simple message of a certain type to specified device.</p>
+     *
+     * @param deviceId an ID of device to be notified.
+     * @param messageType Message type
+     */
+    public void sendSimpleMessage(Integer deviceId, String messageType) {
         final Device dbDevice = this.deviceDAO.getDeviceById(deviceId);
         if (dbDevice != null) {
             PushMessage message = new PushMessage();
             message.setDeviceId(dbDevice.getId());
-            message.setMessageType(PushMessage.TYPE_APP_CONFIG_UPDATED);
+            message.setMessageType(messageType);
 
             this.send(message);
         }

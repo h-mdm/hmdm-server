@@ -1788,4 +1788,29 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="31.03.20-09:50" author="seva" context="common">
+        <comment>Table,new: trialkey</comment>
+        <sql>
+            CREATE TABLE trialkey(
+                id serial NOT NULL CONSTRAINT trialkey_pr_key PRIMARY KEY,
+                keycode VARCHAR(50) NOT NULL,
+                created TIMESTAMP NOT NULL DEFAULT NOW()
+            );
+        </sql>
+        <rollback>
+            DROP TABLE trialkey;
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="14.04.20-17:45" author="seva" context="common">
+        <comment>Column,new: settings#phoneNumberFormat</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN phoneNumberFormat VARCHAR(50) DEFAULT '+9 (999) 999-99-99';
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN phoneNumberFormat;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -416,6 +416,8 @@ document.localization ['en_US'] = {
     'form.settings.lang.ru': 'Russian',
 
     'form.settings.misc.title': 'Miscellaneous settings',
+    'form.settings.misc.phone.format': 'Phone number format',
+    'form.settings.misc.phone.format.placeholder': '+9 (999) 999-99-99',
     'form.settings.misc.create.new.devices': 'Add device on first access',
     'form.settings.misc.new.device.config': 'New device configuration',
     'form.settings.misc.new.device.group': 'New device group',
@@ -453,7 +455,7 @@ document.localization ['en_US'] = {
     'tab.hints': 'Hints',
     'tab.plugins': 'Plugins',
     
-    'tab.configeditor.common.settings': 'Device Table View',
+    'tab.configeditor.common.settings': 'Common settings',
     'tab.configeditor.design.settings': 'Design Settings',
     'tab.configeditor.applications': 'Applications',
     'tab.configeditor.mdm.settings': 'MDM Settings',

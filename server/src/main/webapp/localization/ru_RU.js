@@ -417,6 +417,8 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.ru': 'Русский',
 
     'form.settings.misc.title': 'Прочие настройки',
+    'form.settings.misc.phone.format': 'Формат номера телефона',
+    'form.settings.misc.phone.format.placeholder': '+9 (999) 999-99-99',
     'form.settings.misc.create.new.devices': 'Добавлять устр-во при первом обращении',
     'form.settings.misc.new.device.config': 'Конфигурация нового устройства',
     'form.settings.misc.new.device.group': 'Группа нового устройства',
@@ -454,7 +456,7 @@ document.localization[ 'ru_RU' ] = {
     'tab.hints': 'Подсказки',
     'tab.plugins': 'Плагины',
 
-    'tab.configeditor.common.settings': 'Таблица "Устройства"',
+    'tab.configeditor.common.settings': 'Общие настройки',
     'tab.configeditor.design.settings': 'Настройки дизайна',
     'tab.configeditor.applications': 'Приложения',
     'tab.configeditor.mdm.settings': 'Настройки MDM',

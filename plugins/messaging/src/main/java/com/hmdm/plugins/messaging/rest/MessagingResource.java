@@ -179,6 +179,7 @@ public class MessagingResource {
                 DeviceSearchRequest dsr = new DeviceSearchRequest();
                 dsr.setPageSize(1000000); // No page limitations
                 dsr.setCustomerId(SecurityContext.get().getCurrentCustomerId().get());
+                dsr.setUserId(SecurityContext.get().getCurrentUser().get().getId());
                 if (sendRequest.getScope().equals("group")) {
                     if (sendRequest.getGroupId() == null || sendRequest.getGroupId() == 0) {
                         String error = "Empty group id while trying to send a message to group!";

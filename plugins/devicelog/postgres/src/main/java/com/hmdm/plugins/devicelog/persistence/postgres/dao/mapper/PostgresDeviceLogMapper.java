@@ -106,6 +106,9 @@ public interface PostgresDeviceLogMapper {
             "WHERE rules.id = #{id}")
     PostgresDeviceLogPluginSettings getPluginSettingsByRuleIdForAuthorization(@Param("id") int id);
 
+    @Select("SELECT * FROM plugin_devicelog_settings_rules WHERE id = #{id}")
+    PostgresDeviceLogRule getPluginSettingsRule(@Param("id") int id);
+
     @Delete("DELETE FROM plugin_devicelog_setting_rule_devices WHERE ruleId = #{id}")
     void deletePluginSettingsRuleDevices(@Param("id") int ruleId);
 

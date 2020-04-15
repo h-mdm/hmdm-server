@@ -196,7 +196,7 @@ public class DeviceResource {
                                 !dbDevice.getConfigurationId().equals(device.getConfigurationId());
                         this.deviceDAO.updateDevice(device);
                         if (notify) {
-                            this.pushService.notifyDeviceOnApplicationSettingUpdate(device.getId());
+                            this.pushService.notifyDeviceOnSettingUpdate(device.getId());
                         }
                     }
                 } else if (device.getIds() != null) {
@@ -208,7 +208,7 @@ public class DeviceResource {
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
                             this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
-                            this.pushService.notifyDeviceOnApplicationSettingUpdate(device.getId());
+                            this.pushService.notifyDeviceOnSettingUpdate(device.getId());
                         }
                     }
                 } else {

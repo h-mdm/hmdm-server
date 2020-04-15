@@ -125,9 +125,16 @@ angular.module('headwind-kiosk')
         var loadSettings = function () {
             settingsService.getUserRoleSettings({roleId: authService.getUser().userRole.id}, function (response) {
                 if (response.data) {
+                    // Display settings
                     $scope.settings = response.data;
                 }
             });
+            settingsService.getSettings({}, function(response) {
+                if (response.data) {
+                    // Common settings
+                    $scope.commonSettings = response.data;
+                }
+            })
         };
 
         var resolveDeviceField = function (serverData, deviceInfoData) {
@@ -665,6 +672,9 @@ angular.module('headwind-kiosk')
                 resolve: {
                     device: function () {
                         return device;
+                    },
+                    settings: function() {
+                        return $scope.commonSettings;
                     }
                 }
             });
@@ -745,7 +755,7 @@ angular.module('headwind-kiosk')
         }
     })
     .controller('DeviceModalController',
-        function ($scope, $modalInstance, deviceService, configurationService, groupService, device, localization, authService) {
+        function ($scope, $modalInstance, deviceService, configurationService, groupService, device, settings, localization, authService) {
 
             $scope.canEditDevice = authService.hasPermission('edit_devices');
 
@@ -778,6 +788,8 @@ angular.module('headwind-kiosk')
                     }
                 }
             }
+
+            $scope.settings = settings;
 
             $scope.loading = false;
 

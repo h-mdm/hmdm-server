@@ -29,12 +29,15 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Injector;
@@ -96,6 +99,8 @@ public class SyncResource {
 
     private String baseUrl;
 
+    private static final String HEADER_IP_ADDRESS = "X-IP-Address";
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -138,8 +143,10 @@ public class SyncResource {
     @Path("/configuration/{deviceId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeviceSetting(@PathParam("deviceId")
-                                         @ApiParam("An identifier of device within MDM server")
-                                                 String number) {
+                                     @ApiParam("An identifier of device within MDM server")
+                                     String number,
+                                     @Context HttpServletRequest request,
+                                     @Context HttpServletResponse response) {
         logger.debug("/public/sync/configuration/{}", number);
         
         try {
@@ -261,6 +268,7 @@ public class SyncResource {
                     SecurityContext.release();
                 }
 
+                response.setHeader(HEADER_IP_ADDRESS, request.getRemoteAddr());
                 return Response.OK(syncResponse);
             } else {
                 logger.warn("Requested device {} was not found", number);
@@ -282,7 +290,9 @@ public class SyncResource {
     @Path("/info")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateDeviceInfo(DeviceInfo deviceInfo) {
+    public Response updateDeviceInfo(DeviceInfo deviceInfo,
+                                     @Context HttpServletRequest request,
+                                     @Context HttpServletResponse response) {
         logger.debug("/public/sync/info --> {}", deviceInfo);
 
         try {
@@ -331,6 +341,7 @@ public class SyncResource {
 
                 this.eventService.fireEvent(new DeviceInfoUpdatedEvent(dbDevice.getId()));
 
+                response.setHeader(HEADER_IP_ADDRESS, request.getRemoteAddr());
                 return Response.OK();
             } else {
                 logger.warn("Requested device {} was not found", deviceInfo.getDeviceId());
