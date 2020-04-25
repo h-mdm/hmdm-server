@@ -47,6 +47,7 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedDeviceModel, " +
                     "columnDisplayedDevicePermissionsStatus, " +
                     "columnDisplayedDeviceAppInstallStatus, " +
+                    "columnDisplayedDeviceFilesStatus, " +
                     "columnDisplayedDeviceConfiguration," +
                     "columnDisplayedDeviceImei," +
                     "columnDisplayedDevicePhone," +
@@ -63,6 +64,7 @@ public interface UserRoleSettingsMapper {
                     "#{columnDisplayedDeviceModel}, " +
                     "#{columnDisplayedDevicePermissionsStatus}, " +
                     "#{columnDisplayedDeviceAppInstallStatus}, " +
+                    "#{columnDisplayedDeviceFilesStatus}, " +
                     "#{columnDisplayedDeviceConfiguration}, " +
                     "#{columnDisplayedDeviceImei}, " +
                     "#{columnDisplayedDevicePhone}," +
@@ -81,6 +83,7 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedDeviceModel = EXCLUDED.columnDisplayedDeviceModel, " +
                     "columnDisplayedDevicePermissionsStatus = EXCLUDED.columnDisplayedDevicePermissionsStatus, " +
                     "columnDisplayedDeviceAppInstallStatus = EXCLUDED.columnDisplayedDeviceAppInstallStatus, " +
+                    "columnDisplayedDeviceFilesStatus = EXCLUDED.columnDisplayedDeviceFilesStatus, " +
                     "columnDisplayedDeviceConfiguration = EXCLUDED.columnDisplayedDeviceConfiguration, " +
                     "columnDisplayedDeviceImei = EXCLUDED.columnDisplayedDeviceImei, " +
                     "columnDisplayedDevicePhone = EXCLUDED.columnDisplayedDevicePhone, " +

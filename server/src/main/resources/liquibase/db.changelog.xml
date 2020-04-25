@@ -1813,4 +1813,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="19.04.20-16:56" author="seva" context="common">
+        <comment>Add settings for device file status column displayed</comment>
+        <sql>
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedDeviceFilesStatus BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedDeviceFilesStatus;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

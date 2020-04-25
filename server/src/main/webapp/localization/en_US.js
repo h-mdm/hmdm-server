@@ -388,6 +388,7 @@ document.localization ['en_US'] = {
     'form.settings.common.phone.model': 'Phone Model',
     'form.settings.common.status.permissions': 'Permission Status',
     'form.settings.common.status.installation': 'Installation Status',
+    'form.settings.common.status.files': 'Files Status',
     'form.settings.common.config': 'Configuration',
     'form.settings.common.desc': 'Description',
     'form.settings.common.group': 'Group',

@@ -389,6 +389,7 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.common.phone.model': 'Модель телефона',
     'form.settings.common.status.permissions': 'Статус разрешений',
     'form.settings.common.status.installation': 'Статус установки',
+    'form.settings.common.status.files': 'Статус файлов',
     'form.settings.common.config': 'Конфигурация',
     'form.settings.common.desc': 'Описание',
     'form.settings.common.group': 'Группа',

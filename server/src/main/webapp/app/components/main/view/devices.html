@@ -172,7 +172,7 @@
                 <span ng-if='paging.sortBy === "INSTALLATIONS"' class="glyphicon"
                       ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
             </th>
-            <th ng-if="settings.columnDisplayedDeviceAppInstallStatus" ng-click="sortData('FILES')" class="pointer">
+            <th ng-if="settings.columnDisplayedDeviceFilesStatus" ng-click="sortData('FILES')" class="pointer">
                 <span localized>table.heading.device.status.files</span>
                 <span ng-if='paging.sortBy === "FILES"' class="glyphicon"
                       ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
@@ -239,7 +239,7 @@
                      ng-src='{{getDeviceApplicationsIndicatorImage(device)}}'
                      title='{{getDeviceApplicationsTitle(device)}}'>
             </td>
-            <td ng-if="settings.columnDisplayedDeviceAppInstallStatus">
+            <td ng-if="settings.columnDisplayedDeviceFilesStatus">
                 <img class='device-indicator'
                      ng-src='{{getDeviceFilesIndicatorImage(device)}}'
                      title='{{getDeviceFilesTitle(device)}}'>

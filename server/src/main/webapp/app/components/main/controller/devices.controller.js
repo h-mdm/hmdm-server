@@ -32,7 +32,6 @@ angular.module('headwind-kiosk')
             }
         };
 
-        $scope.dateFormat = localization.localize('format.devices.date.datePicker');
         $scope.createTimeFormat = localization.localize('format.devices.date.createTime');
         $scope.datePickerOptions = { 'show-weeks': false };
         $scope.openDatePickers = {

@@ -56,6 +56,8 @@ public class UserRoleSettings implements CustomerData, Serializable {
     private Boolean columnDisplayedDevicePermissionsStatus = Boolean.TRUE;
     @ApiModelProperty("A flag indicating if Device Apps column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceAppInstallStatus = Boolean.TRUE;
+    @ApiModelProperty("A flag indicating if Device Files column to be displayed in MDM web application")
+    private Boolean columnDisplayedDeviceFilesStatus = Boolean.TRUE;
     @ApiModelProperty("A flag indicating if Device Configuration column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceConfiguration = Boolean.TRUE;
     @ApiModelProperty("A flag indicating if Device IMEI column to be displayed in MDM web application")
@@ -141,6 +143,14 @@ public class UserRoleSettings implements CustomerData, Serializable {
         this.columnDisplayedDeviceAppInstallStatus = columnDisplayedDeviceAppInstallStatus;
     }
 
+    public Boolean getColumnDisplayedDeviceFilesStatus() {
+        return columnDisplayedDeviceFilesStatus;
+    }
+
+    public void setColumnDisplayedDeviceFilesStatus(Boolean columnDisplayedDeviceFilesStatus) {
+        this.columnDisplayedDeviceFilesStatus = columnDisplayedDeviceFilesStatus;
+    }
+
     public Boolean getColumnDisplayedDeviceConfiguration() {
         return columnDisplayedDeviceConfiguration;
     }
@@ -218,6 +228,7 @@ public class UserRoleSettings implements CustomerData, Serializable {
                 ", columnDisplayedDeviceModel=" + columnDisplayedDeviceModel +
                 ", columnDisplayedDevicePermissionsStatus=" + columnDisplayedDevicePermissionsStatus +
                 ", columnDisplayedDeviceAppInstallStatus=" + columnDisplayedDeviceAppInstallStatus +
+                ", columnDisplayedDeviceFilesStatus=" + columnDisplayedDeviceFilesStatus +
                 ", columnDisplayedDeviceConfiguration=" + columnDisplayedDeviceConfiguration +
                 ", columnDisplayedDeviceImei=" + columnDisplayedDeviceImei +
                 ", columnDisplayedDevicePhone=" + columnDisplayedDevicePhone +

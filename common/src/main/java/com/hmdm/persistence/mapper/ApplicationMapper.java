@@ -502,15 +502,13 @@ public interface ApplicationMapper {
 
     @Delete("DELETE FROM configurationApplications " +
             "WHERE configurationId = #{configurationId} " +
-            "AND EXISTS (SELECT 1 " +
-            "            FROM applications " +
-            "            WHERE applications.id = configurationApplications.applicationId " +
-            "            AND EXISTS (" +
-            "                SELECT 1 " +
-            "                FROM applications apps2 " +
-            "                WHERE apps2.id = #{applicationId} " +
-            "                AND apps2.pkg = applications.pkg " +
-            "            )" +
+            "AND applicationId IN ( " +
+            "            SELECT id FROM applications " +
+            "            WHERE pkg = (" +
+            "                SELECT pkg " +
+            "                FROM applications " +
+            "                WHERE id=#{applicationId} " +
+            "            ) AND id != #{applicationId} " +
             ")")
     int deleteApplicationConfigurationLinksForSamePkg(@Param("applicationId") int applicationId,
                                                       @Param("configurationId") int configurationId);
