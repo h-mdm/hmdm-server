@@ -128,6 +128,7 @@ document.localization ['en_US'] = {
     'error.configuration.file.empty.file': 'Enter a URL or upload a file',
     
     'error.notfound.device': 'Device not found',
+    'error.duplicate.device': 'A device with the same number already exists',
     'error.duplicate.login': 'Such a login is already in use',
     'error.duplicate.group': 'A group with the same name already exists',
     'error.duplicate.application': 'An application with this package ID and version already exists',
@@ -304,6 +305,7 @@ document.localization ['en_US'] = {
     'form.application.version': 'Version',
     'form.application.system': 'System',
     'form.application.run.after.install': 'Run after installation',
+    'form.application.run.at.boot': 'Run at boot',
     'form.application.url': 'URL',
     'form.application.file': 'File',
     'form.application.showLabel': 'Show Icon',
@@ -544,7 +546,7 @@ document.localization ['en_US'] = {
     'table.heading.common.apps.actions': 'Actions',
 
     'notfound.devices': 'There are no devices to display.',
-    'notfound.files':' The file list is empty. Use the "Add" button to upload a new file.',
+    'notfound.files':' The file list is empty.',
     'notfound.configurations': 'No configurations were found.',
     'notfound.customers': 'Organizations not found.',
     'notfound.common.apps': 'There are no applications to display.',

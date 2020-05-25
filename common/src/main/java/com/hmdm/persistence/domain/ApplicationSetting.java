@@ -110,6 +110,14 @@ public class ApplicationSetting implements Serializable {
         this.value = value;
     }
 
+    public String getValueForDevice(Device device) {
+        return value
+                .replaceAll("%NUMBER%", device.getNumber())
+                .replaceAll("%IMEI%", device.getImei())
+                .replaceAll("%PHONE%", device.getPhone())
+                .replaceAll("%DESCRIPTION%", device.getDescription());
+    }
+
     public String getComment() {
         return comment;
     }

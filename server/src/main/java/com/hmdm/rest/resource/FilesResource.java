@@ -256,6 +256,7 @@ public class FilesResource {
                 dbAppCopy.setId(dbApp.getId());
                 dbAppCopy.setShowIcon(dbApp.getShowIcon());
                 dbAppCopy.setRunAfterInstall(dbApp.isRunAfterInstall());
+                dbAppCopy.setRunAtBoot(dbApp.isRunAtBoot());
                 dbAppCopy.setSystem(dbApp.isSystem());
                 dbAppCopy.setName(dbApp.getName());
 

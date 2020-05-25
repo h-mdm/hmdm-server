@@ -187,7 +187,7 @@ public class DeviceResource {
             Device dbDevice = this.deviceDAO.getDeviceByNumber(device.getNumber());
             if (dbDevice != null && !dbDevice.getId().equals(device.getId())) {
                 log.error("A different device with same number exists: {}", dbDevice);
-                return Response.ERROR();
+                return Response.DEVICE_EXISTS();
             } else {
                 dbDevice = this.deviceDAO.getDeviceById(device.getId());
                 if (device.getId() != null) {

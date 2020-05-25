@@ -132,8 +132,16 @@
 .content-wrapper {
     padding: 70px 0px 0px 0px;
     height: 100%;
+}
+
+.width-1000 {
     max-width: 1000px;
     margin: 0px auto;
+}
+
+.fullscreen {
+    height: 100%;
+    margin: 0px 20px;
 }
 
 .administration {
@@ -681,6 +689,10 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: 12px !important;
+}
+
+.dropdown-menu-devices {
+    margin-left: -150px !important;
 }
 
 .time-period-select {
@@ -2059,6 +2071,10 @@ td.deviceActions span.btn-group button.dropdown-toggle {
     padding-left: 6px;
 }
 
+tr:hover {
+    background-color: #fafafa;
+}
+
 div.form-group div.photo-label {
     padding-right: 0;
     text-align: right;
@@ -2072,6 +2088,11 @@ div.form-group div.three-state label {
 
 div.form-group input.common-checkbox {
     margin-left: 20px;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    border: none;
 }
 
 .audit-info {

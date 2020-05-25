@@ -103,6 +103,11 @@ public class SyncApplication implements SyncApplicationInt {
     }
 
     @Override
+    public boolean isRunAtBoot() {
+        return wrapped.isRunAtBoot();
+    }
+
+    @Override
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean isSkipVersion() {
         return wrapped.isSkipVersion();

@@ -9,9 +9,9 @@
     <form class='form-horizontal'>
 
         <div class='form-group'>
-            <label class='col-sm-4 control-label' for="kjdfkkfj" localized>form.application.type</label>
+            <label class='col-sm-4 control-label' for="applicationType" localized>form.application.type</label>
             <div class='col-sm-8'>
-                <select class="form-control" ng-model='application.type' id="kjdfkkfj" ng-disabled="!isNewApp">
+                <select class="form-control" ng-model='application.type' id="applicationType" ng-disabled="!isNewApp">
                     <option ng-value="'app'" ng-selected="application.type === 'app'"
                             localized>form.application.type.option.app</option>
                     <option ng-value="'web'" ng-selected="application.type === 'web'"
@@ -21,63 +21,72 @@
         </div>
 
         <div class='form-group' ng-if="!fileSelected && application.type !== 'web'">
-            <label class='col-sm-4 control-label' for="lasdkjd" localized>form.application.pkg</label>
+            <label class='col-sm-4 control-label' for="applicationPkg" localized>form.application.pkg</label>
             <div class='col-sm-8'>
-                <input ng-model='application.pkg' type='text' class='form-control' id="lasdkjd"/>
+                <input ng-model='application.pkg' type='text' class='form-control' id="applicationPkg"/>
             </div>
         </div>
 
         <div class='form-group' ng-if="fileSelected && application.type !== 'web'">
-            <label class='col-sm-4 control-label' for="djhsfksfhj" localized>form.application.pkg</label>
+            <label class='col-sm-4 control-label' for="applicationPkg2" localized>form.application.pkg</label>
             <div class='col-sm-8'>
                 <input disabled localized-placeholder="form.application.from.file" type='text' class='form-control'
-                       id="djhsfksfhj"/>
+                       id="applicationPkg2"/>
             </div>
         </div>
 
         <div class='form-group'>
-            <label class='col-sm-4 control-label' for="griurkfsbfkj" localized>form.application.name</label>
+            <label class='col-sm-4 control-label' for="applicationName" localized>form.application.name</label>
             <div class='col-sm-8'>
-                <input ng-model='application.name' type='text' class='form-control' id="griurkfsbfkj"/>
+                <input ng-model='application.name' type='text' class='form-control' id="applicationName"/>
             </div>
         </div>
 
         <div class='form-group' ng-if="!fileSelected && application.type !== 'web'">
-            <label class='col-sm-4 control-label' for="kjsdkfskfjhskfjh" localized>form.application.version</label>
+            <label class='col-sm-4 control-label' for="applicationVersion" localized>form.application.version</label>
             <div class='col-sm-8'>
                 <input ng-model='application.version' type='text' class='form-control'
-                       ng-disabled="application.id" id="kjsdkfskfjhskfjh"/>
+                       ng-disabled="application.id" id="applicationVersion"/>
             </div>
         </div>
 
         <div class='form-group' ng-if="fileSelected && application.type !== 'web'">
-            <label class='col-sm-4 control-label' for="kjrfkfhwk" localized>form.application.version</label>
+            <label class='col-sm-4 control-label' for="applicationVersion2" localized>form.application.version</label>
             <div class='col-sm-8'>
-                <input disabled type='text' class='form-control' id="kjrfkfhwk"
+                <input disabled type='text' class='form-control' id="applicationVersion2"
                        localized-placeholder="form.application.from.file"/>
             </div>
         </div>
 
         <div class='form-group' ng-if="application.type !== 'web'">
-            <label class='col-sm-4 control-label' for="sfjshfsjkf" localized>form.application.system</label>
+            <label class='col-sm-4 control-label' for="applicationSystem" localized>form.application.system</label>
             <div class='col-sm-8'>
-                <input ng-model='application.system' type='checkbox' class='form-control' id="sfjshfsjkf"/>
+                <input ng-model='application.system' type='checkbox' class='form-control' id="applicationSystem"/>
             </div>
         </div>
 
         <div class='form-group' ng-if="application.type !== 'web'">
-            <label class='col-sm-4 control-label' for="kjdfjejbwerfjwefij"
+            <label class='col-sm-4 control-label' for="applicationRunAfterInstall"
                    localized>form.application.run.after.install</label>
             <div class='col-sm-8'>
                 <input ng-model='application.runAfterInstall' ng-disabled="application.system"
-                       type='checkbox' class='form-control' id="kjdfjejbwerfjwefij"/>
+                       type='checkbox' class='form-control' id="applicationRunAfterInstall"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="application.type !== 'web'">
+            <label class='col-sm-4 control-label' for="applicationRunAtBoot"
+                   localized>form.application.run.at.boot</label>
+            <div class='col-sm-8'>
+                <input ng-model='application.runAtBoot' ng-disabled="application.system"
+                       type='checkbox' class='form-control' id="applicationRunAtBoot"/>
             </div>
         </div>
 
         <div class='form-group'>
-            <label class='col-sm-4 control-label' for="kajdfhakjdkj" localized>form.application.url</label>
+            <label class='col-sm-4 control-label' for="applicationUrl" localized>form.application.url</label>
             <div class='col-sm-8'>
-                <input ng-model='application.url' type='text' class='form-control' id="kajdfhakjdkj"
+                <input ng-model='application.url' type='text' class='form-control' id="applicationUrl"
                        ng-disabled="(application.system || application.id)">
             </div>
         </div>

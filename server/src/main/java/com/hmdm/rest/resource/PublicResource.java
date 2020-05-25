@@ -202,6 +202,7 @@ public class PublicResource {
             application.setPkg(request.getPkg());
             application.setShowIcon(request.isShowIcon());
             application.setRunAfterInstall(request.isRunAfterInstall());
+            application.setRunAtBoot(request.isRunAtBoot());
             application.setSystem(request.isSystem());
             application.setVersion(request.getVersion());
             application.setCustomerId(dbDevice.getCustomerId());

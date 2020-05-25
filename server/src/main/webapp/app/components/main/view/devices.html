@@ -279,7 +279,7 @@
                             class="btn btn-default dropdown-toggle">
                         <span class='glyphicon glyphicon-list'></span> <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="single-button-{{device.id}}">
+                    <ul class="dropdown-menu dropdown-menu-devices" role="menu" aria-labelledby="single-button-{{device.id}}">
                         <li role="menuitem" ng-if="hasPermission('edit_device_app_settings')">
                             <a ng-click="manageApplicationSettings(device)" localized>button.app.settings</a>
                         </li>

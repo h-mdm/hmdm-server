@@ -128,6 +128,7 @@ document.localization[ 'ru_RU' ] = {
     'error.configuration.file.empty.file': 'Укажите URL или загрузите файл',
 
     'error.notfound.device': 'Устройство не найдено',
+    'error.duplicate.device': 'Группа с таким номером уже существует',
     'error.duplicate.login': 'Такой login уже используется',
     'error.duplicate.group': 'Группа с таким именем уже существует',
     'error.duplicate.application': 'Приложение c таким ID пакета и версией уже существует',
@@ -305,6 +306,7 @@ document.localization[ 'ru_RU' ] = {
     'form.application.version': 'Версия',
     'form.application.system': 'Системное',
     'form.application.run.after.install': 'Запуск после установки',
+    'form.application.run.at.boot': 'Запуск при загрузке',
     'form.application.url': 'URL',
     'form.application.file': 'Файл',
     'form.application.showLabel': 'Показать ярлык',
@@ -546,7 +548,7 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.common.apps.actions': 'Действия',
 
     'notfound.devices': 'Нет устройств для отображения.',
-    'notfound.files': 'Список файлов пуст. Воспользуйтесь кнопкой "Добавить", чтобы загрузить новый файл.',
+    'notfound.files': 'Список файлов пуст.',
     'notfound.configurations': 'Конфигурации не найдены.',
     'notfound.customers': 'Организации не найдены.',
     'notfound.common.apps': 'Нет приложений для отображения.',

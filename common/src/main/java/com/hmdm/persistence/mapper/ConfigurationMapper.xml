@@ -76,7 +76,8 @@
     </insert>
 
     <select id="getConfigurationApplications" resultType="Application">
-        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.type, applications.iconText, applications.iconId,
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
+               applications.type, applications.iconText, applications.iconId,
                applicationVersions.version, applicationVersions.url,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
@@ -113,7 +114,8 @@
     </select>
 
     <select id="getPlainConfigurationApplications" resultType="Application">
-        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
+               applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
                applicationVersions.version, applicationVersions.url,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
@@ -150,7 +152,8 @@
     </select>
 
     <select id="getPlainConfigurationSoleApplications" resultType="Application">
-        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
+        SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
+               applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
                applicationVersions.version, applicationVersions.url,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,

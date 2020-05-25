@@ -195,6 +195,7 @@ angular.module('headwind-kiosk')
                         $scope.application.name = app.name;
                         $scope.application.showIcon = app.showIcon;
                         $scope.application.runAfterInstall = app.runAfterInstall;
+                        $scope.application.runAtBoot = app.runAtBoot;
                         $scope.application.system = app.system;
                     }
                     if (response.data.data.fileDetails) {
@@ -711,6 +712,7 @@ angular.module('headwind-kiosk')
                         $scope.application.name = app.name;
                         $scope.application.showIcon = app.showIcon;
                         $scope.application.runAfterInstall = app.runAfterInstall;
+                        $scope.application.runAtBoot = app.runAtBoot;
                         $scope.application.system = app.system;
                     }
                     if (response.data.data.fileDetails) {

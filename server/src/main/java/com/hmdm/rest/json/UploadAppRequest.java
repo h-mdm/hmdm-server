@@ -40,6 +40,7 @@ public class UploadAppRequest implements Serializable {
     private String pkg;
     private boolean showIcon;
     private boolean runAfterInstall;
+    private boolean runAtBoot;
     private boolean system;
 
     // Request related data
@@ -124,6 +125,14 @@ public class UploadAppRequest implements Serializable {
         this.runAfterInstall = runAfterInstall;
     }
 
+    public boolean isRunAtBoot() {
+        return runAtBoot;
+    }
+
+    public void setRunAtBoot(boolean runAtBoot) {
+        this.runAtBoot = runAtBoot;
+    }
+
     public boolean isSystem() {
         return system;
     }
@@ -142,6 +151,7 @@ public class UploadAppRequest implements Serializable {
                 ", pkg='" + pkg + '\'' +
                 ", showIcon=" + showIcon +
                 ", runAfterInstall=" + runAfterInstall +
+                ", runAtBoot=" + runAtBoot +
                 ", system=" + system +
                 ", deviceId='" + deviceId + '\'' +
                 ", hash='" + hash + '\'' +

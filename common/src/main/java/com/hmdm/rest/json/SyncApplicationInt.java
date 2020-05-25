@@ -54,6 +54,8 @@ public interface SyncApplicationInt {
 
     boolean isRunAfterInstall();
 
+    boolean isRunAtBoot();
+
     Boolean isSkipVersion();
 
     String getIconText();

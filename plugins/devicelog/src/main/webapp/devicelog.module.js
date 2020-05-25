@@ -265,7 +265,13 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
 
         loadData();
 
-        var autoUpdateInterval = $interval(loadData, 15000);
+        var reloadData = function() {
+            if ($scope.paging.pageNum == 1) {
+                loadData();
+            }
+        }
+
+        var autoUpdateInterval = $interval(reloadData, 15000);
         $scope.$on('$destroy', function () {
             if (autoUpdateInterval) $interval.cancel(autoUpdateInterval);
         });

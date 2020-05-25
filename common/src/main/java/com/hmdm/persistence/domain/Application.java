@@ -56,6 +56,8 @@ public class Application implements CustomerData, Serializable {
     private Integer latestVersion;
     @ApiModelProperty("A flag indicating if application must be run after installation")
     private boolean runAfterInstall;
+    @ApiModelProperty("A flag indicating if application must be run at device boot")
+    private boolean runAtBoot;
     @ApiModelProperty("A flag indicating if version check must be skipped for application")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean skipVersion;
@@ -290,6 +292,14 @@ public class Application implements CustomerData, Serializable {
 
     public void setRunAfterInstall(boolean runAfterInstall) {
         this.runAfterInstall = runAfterInstall;
+    }
+
+    public boolean isRunAtBoot() {
+        return runAtBoot;
+    }
+
+    public void setRunAtBoot(boolean runAtBoot) {
+        this.runAtBoot = runAtBoot;
     }
 
     public Boolean isSkipVersion() {

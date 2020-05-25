@@ -1823,4 +1823,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="28.04.20-17:25" author="seva" context="common">
+        <comment>Adding runAtBoot column to configurationApplications</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN runAtBoot BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN runAtBoot;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

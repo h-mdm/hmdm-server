@@ -77,4 +77,19 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="plugin-devicelog-22.05.2020-12:47" author="seva" context="common">
+        <comment>Fix user role permissions assuming admin and super-admin have fixed ids</comment>
+        <sql>
+            DELETE FROM userRolePermissions WHERE roleId=1 AND permissionId=(SELECT id FROM permissions WHERE name='plugin_devicelog_access');
+            INSERT INTO userRolePermissions VALUES (1, (SELECT id FROM permissions WHERE name='plugin_devicelog_access'));
+            DELETE FROM userRolePermissions WHERE roleId=2 AND permissionId=(SELECT id FROM permissions WHERE name='plugin_devicelog_access');
+            INSERT INTO userRolePermissions VALUES (2, (SELECT id FROM permissions WHERE name='plugin_devicelog_access'));
+
+        </sql>
+        <rollback>
+            DELETE FROM userRolePermissions WHERE roleId=1 AND permissionId=(SELECT id FROM permissions WHERE name='plugin_devicelog_access');
+            DELETE FROM userRolePermissions WHERE roleId=2 AND permissionId=(SELECT id FROM permissions WHERE name='plugin_devicelog_access');
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

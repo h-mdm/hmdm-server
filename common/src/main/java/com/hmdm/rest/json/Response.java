@@ -157,6 +157,10 @@ public class Response implements Serializable {
         return ERROR("error.common.application.access.prohibited", null);
     }
 
+    public static Response DEVICE_EXISTS() {
+        return ERROR("error.duplicate.device", null);
+    }
+
     public static Response FILE_EXISTS() {
         return ERROR("error.duplicate.file", null);
     }

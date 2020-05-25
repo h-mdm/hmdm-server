@@ -125,8 +125,8 @@ public interface ApplicationMapper {
             "ORDER BY applications.name"})
     List<Application> getAllApplicationsByUrl(@Param("customerId") int customerId, @Param("url") String url);
 
-    @Insert({"INSERT INTO applications (name, pkg, showIcon, system, customerId, runAfterInstall, type, iconText, iconId) " +
-            "VALUES (#{name}, #{pkg}, #{showIcon}, #{system}, #{customerId}, #{runAfterInstall}, #{type}, #{iconText}, #{iconId})"})
+    @Insert({"INSERT INTO applications (name, pkg, showIcon, system, customerId, runAfterInstall, runAtBoot, type, iconText, iconId) " +
+            "VALUES (#{name}, #{pkg}, #{showIcon}, #{system}, #{customerId}, #{runAfterInstall}, #{runAtBoot}, #{type}, #{iconText}, #{iconId})"})
     @SelectKey( statement = "SELECT currval('applications_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertApplication(Application application);
 
@@ -140,7 +140,7 @@ public interface ApplicationMapper {
 //                                        @Param("applicationVersionId") int applicationVersionId);
 
     @Update({"UPDATE applications SET name=#{name}, pkg=#{pkg}, " +
-            "showIcon=#{showIcon}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall}, " +
+            "showIcon=#{showIcon}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall}, runAtBoot = #{runAtBoot}, " +
             "type = #{type}, iconText = #{iconText}, iconId = #{iconId} " +
             "WHERE id=#{id}"})
     void updateApplication(Application application);
