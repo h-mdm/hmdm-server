@@ -2,7 +2,7 @@
 
 Headwind MDM is a Mobile Device Management platform for Android devices, designed for corporate app developers and IT managers.
 
-(c) 2019 Headwind Solutions Ltd.
+(c) 2020 h-mdm.com
 
 [https://h-mdm.com](https://h-mdm.com)
 
