@@ -4,7 +4,7 @@
 # Tested on Ubuntu Linux 18.04 LTS, 19.10
 #
 REPOSITORY_BASE=https://h-mdm.com/files
-CLIENT_VERSION=3.16
+CLIENT_VERSION=3.25
 DEFAULT_SQL_HOST=localhost
 DEFAULT_SQL_PORT=5432
 DEFAULT_SQL_BASE=hmdm
@@ -205,6 +205,9 @@ fi
 rm -rf $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH > /dev/null 2>&1
 rm -f $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war > /dev/null 2>&1
 
+# Waiting for undeploy
+sleep 5
+
 TOMCAT_CONFIG_PATH=$TOMCAT_HOME/conf/$TOMCAT_ENGINE/$TOMCAT_HOST
 if [ ! -d $TOMCAT_CONFIG_PATH ]; then
     mkdir -p $TOMCAT_CONFIG_PATH || exit 1
@@ -217,14 +220,16 @@ if [ "$?" -ne 0 ]; then
     exit 1
 fi 
 echo "Tomcat config file created: $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml"
+chmod 644 $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 
 echo "Deploying $SERVER_WAR to Tomcat: $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war"
 rm -f $INSTALL_FLAG_FILE > /dev/null 2>&1
 cp $SERVER_WAR $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war
+chmod 644 $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war
 
 # Waiting until the end of deployment
 SUCCESSFUL_DEPLOY=0
-for i in {1..60}; do
+for i in {1..120}; do
     if [ -f $INSTALL_FLAG_FILE ]; then
         if [[ $(< $INSTALL_FLAG_FILE) == "OK" ]]; then
             SUCCESSFUL_DEPLOY=1
@@ -261,3 +266,4 @@ echo "Headwind MDM has been installed!"
 echo "To continue, open in your web browser:"
 echo "$PROTOCOL://$BASE_HOST$BASE_PATH"
 echo "Login: admin:admin"
+
