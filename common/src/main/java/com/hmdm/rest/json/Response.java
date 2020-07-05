@@ -149,6 +149,10 @@ public class Response implements Serializable {
         return ERROR("error.application.config.reference.exists", null);
     }
 
+    public static Response APPLICATION_NOT_FOUND_ERROR() {
+        return ERROR("error.application.not.found", null);
+    }
+
     public static Response CONFIGURATION_DEVICE_REFERENCE_EXISTS() {
         return ERROR("error.configuration.device.use", null);
     }

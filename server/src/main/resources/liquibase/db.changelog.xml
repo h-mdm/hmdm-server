@@ -1833,4 +1833,52 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="04.07.20-10:50" author="seva" context="common">
+        <comment>Adding imeiUpdateTs column to devices table</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN imeiUpdateTs BIGINT;
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP COLUMN imeiUpdateTs;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.07.20-13:20" author="seva" context="common">
+        <comment>Adding kiosk mode options columns to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN kioskHome BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN kioskRecents BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN kioskNotifications BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN kioskSystemInfo BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN kioskKeyguard BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN kioskKeyguard;
+            ALTER TABLE configurations DROP COLUMN kioskSystemInfo;
+            ALTER TABLE configurations DROP COLUMN kioskNotifications;
+            ALTER TABLE configurations DROP COLUMN kioskRecents;
+            ALTER TABLE configurations DROP COLUMN kioskHome;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.07.20-14:10" author="seva" context="common">
+        <comment>Adding orientation column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN orientation INT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN orientation;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.07.20-15:20" author="seva" context="common">
+        <comment>Adding order column to configurationapplications table</comment>
+        <sql>
+            ALTER TABLE configurationapplications ADD COLUMN screenOrder INT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications DROP COLUMN screenOrder;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

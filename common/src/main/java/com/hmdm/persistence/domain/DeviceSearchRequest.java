@@ -97,6 +97,12 @@ public class DeviceSearchRequest implements Serializable {
     @ApiModelProperty("A filter for application installation status")
     private DeviceApplicationsStatus installationStatus;
 
+    /**
+     * <p>A filter for recent IMEI change.</p>
+     */
+    @ApiModelProperty("A filter for recent IMEI change")
+    private boolean imeiChanged;
+
     public DeviceSearchRequest() {
     }
 
@@ -202,6 +208,14 @@ public class DeviceSearchRequest implements Serializable {
 
     public void setInstallationStatus(DeviceApplicationsStatus installationStatus) {
         this.installationStatus = installationStatus;
+    }
+
+    public boolean isImeiChanged() {
+        return imeiChanged;
+    }
+
+    public void setImeiChanged(boolean imeiChanged) {
+        this.imeiChanged = imeiChanged;
     }
 
     public long getDateFromMillis() {

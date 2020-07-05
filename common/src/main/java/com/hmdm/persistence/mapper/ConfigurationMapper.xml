@@ -27,23 +27,25 @@
         INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
                                     iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates,
                                     pushOptions, autoBrightness, brightness, manageTimeout, timeout, lockVolume,
-                                    passwordMode, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
-                                    wifiSSID, wifiPassword, wifiSecurityType, autoUpdate,
+                                    passwordMode, orientation, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
+                                    wifiSSID, wifiPassword, wifiSecurityType, kioskHome, kioskRecents,
+                                    kioskNotifications, kioskSystemInfo, kioskKeyguard, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
                 #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
                 #{pushOptions}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout}, #{lockVolume},
-                #{passwordMode}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
-                #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{autoUpdate},
+                #{passwordMode}, #{orientation}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
+                #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{kioskHome}, #{kioskRecents},
+                                    #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})
     </insert>
 
     <insert id="insertConfigurationApplications">
-        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action)
+        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action, screenOrder)
         VALUES
         <foreach item="item" index="index" collection="apps"
                  open="" separator="," close="">
-            (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon}, #{item.action})
+            (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon}, #{item.action}, #{item.screenOrder})
         </foreach>
     </insert>
 
@@ -92,6 +94,7 @@
                    ELSE applications.showIcon
                END AS showIcon,
                configurationApplications.action AS action,
+               configurationApplications.screenOrder AS screenOrder,
                cap.skipVersionCheck AS skipVersion
         FROM applications
         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
@@ -126,6 +129,7 @@
                COALESCE(configurationApplications.remove, FALSE) AS remove,
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
                configurationApplications.action AS action,
+               configurationApplications.screenOrder AS screenOrder,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL
@@ -164,6 +168,7 @@
                COALESCE(configurationApplications.remove, FALSE) AS remove,
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
                configurationApplications.action AS action,
+               configurationApplications.screenOrder AS screenOrder,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL

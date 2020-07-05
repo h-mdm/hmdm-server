@@ -106,8 +106,8 @@ public class UnsecureDAO {
         return appSettings;
     }
 
-    public void updateDeviceInfo(Integer id, String info) {
-        this.deviceMapper.updateDeviceInfo(id, info);
+    public void updateDeviceInfo(Integer id, String info, Long imeiUpdateTs) {
+        this.deviceMapper.updateDeviceInfo(id, info, imeiUpdateTs);
     }
 
     // This method should be called in a single-tenant mode only

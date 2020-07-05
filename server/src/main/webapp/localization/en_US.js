@@ -207,6 +207,11 @@ document.localization ['en_US'] = {
     'form.configuration.settings.mdm.component.wifi.password.placeholder': 'Enrollment WiFi pass - leave empty to enter manually',
     'form.configuration.settings.mdm.component.wifi.security': 'WiFi security type',
     'form.configuration.settings.mdm.app.content': 'Content Application',
+    'form.configuration.settings.mdm.kiosk.home': 'Enable Home button',
+    'form.configuration.settings.mdm.kiosk.recents': 'Enable Recents button',
+    'form.configuration.settings.mdm.kiosk.notifications': 'Enable notifications',
+    'form.configuration.settings.mdm.kiosk.system.info': 'Enable status bar info',
+    'form.configuration.settings.mdm.kiosk.keyguard': 'Enable screen lock',
     'form.configuration.settings.mdm.qrcode.url': 'QR code URL',
     'form.configuration.settings.mdm.hint': 'Select the main application and component',
     'form.configuration.apps.search.label': 'Search for:',
@@ -274,6 +279,10 @@ document.localization ['en_US'] = {
     'form.configuration.settings.password.mode.easy' : 'Easy (at least 6 symbols)',
     'form.configuration.settings.password.mode.moderate' : 'Moderate (8+ symbols, letters and digits)',
     'form.configuration.settings.password.mode.strong' : 'Strong (8+, upper & lowercase, digits, signs)',
+    'form.configuration.settings.orientation': 'Lock orientation',
+    'form.configuration.settings.orientation.none': 'Do not lock',
+    'form.configuration.settings.orientation.portrait': 'Portrait',
+    'form.configuration.settings.orientation.landscape': 'Landscape',
     'form.configuration.files.search.label': 'Search:',
     'form.configuration.files.action.upload': 'Upload',
     'form.configuration.files.action.remove': 'Remove',
@@ -343,6 +352,7 @@ document.localization ['en_US'] = {
     'form.customer.copy.design': 'Copy design',
 
     'form.device.number': 'Number',
+    'form.device.number.hint': 'Don\'t use special characters',
     'form.device.desc': 'Description',
     'form.device.groups': 'Groups',
     'form.device.config': 'Configuration',
@@ -507,6 +517,7 @@ document.localization ['en_US'] = {
     'table.heading.application.url': 'URL',
     'table.heading.application.label': 'Icon',
     'table.heading.application.actions': 'Actions',
+    'table.heading.application.order': 'Order',
 
     'table.heading.device.status': 'Status',
     'table.heading.device.date': 'Date',
@@ -636,6 +647,7 @@ document.localization ['en_US'] = {
     'form.devices.selection.install.status.success': 'Success',
     'form.devices.selection.install.status.version.mismatch': 'Version Mismatch',
     'form.devices.selection.install.status.failure': 'Failure',
+    'form.devices.selection.imei.changed': 'IMEI recently changed',
 
     'search.placeholder.launcher.version': 'Launcher Version',
     'error.date.range.invalid': 'Invalid date interval'

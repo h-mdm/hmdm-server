@@ -211,6 +211,7 @@ public class SyncResource {
                     data.setSystemUpdateTo(configuration.getSystemUpdateTo());
                 }
                 data.setPasswordMode(configuration.getPasswordMode());
+                data.setOrientation(configuration.getOrientation());
 
                 data.setKioskMode(configuration.isKioskMode());
                 if (data.isKioskMode()) {
@@ -223,6 +224,12 @@ public class SyncResource {
                         }
                     }
                 }
+
+                data.setKioskHome(configuration.getKioskHome());
+                data.setKioskRecents(configuration.getKioskRecents());
+                data.setKioskNotifications(configuration.getKioskNotifications());
+                data.setKioskSystemInfo(configuration.getKioskSystemInfo());
+                data.setKioskKeyguard(configuration.getKioskKeyguard());
 
                 // Evaluate the application settings
                 final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
@@ -313,7 +320,18 @@ public class SyncResource {
             if (dbDevice != null) {
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                this.unsecureDAO.updateDeviceInfo(dbDevice.getId(), objectMapper.writeValueAsString(deviceInfo));
+                DeviceInfo prevInfo = null;
+                try {
+                    prevInfo = objectMapper.readValue(dbDevice.getInfo(), DeviceInfo.class);
+                } catch (Exception e) {
+                }
+                if (prevInfo != null & prevInfo.getImei() != null && deviceInfo.getImei() != null &&
+                        !prevInfo.getImei().equals(deviceInfo.getImei())) {
+                    dbDevice.setImeiUpdateTs(System.currentTimeMillis());
+                }
+                this.unsecureDAO.updateDeviceInfo(dbDevice.getId(),
+                        objectMapper.writeValueAsString(deviceInfo),
+                        dbDevice.getImeiUpdateTs());
 
                 if (deviceInfo.getBatteryLevel() != null) {
                     this.eventService.fireEvent(new DeviceBatteryLevelUpdatedEvent(dbDevice.getId(), deviceInfo.getBatteryLevel()));

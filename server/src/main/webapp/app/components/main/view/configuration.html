@@ -325,6 +325,22 @@
                         </div>
                     </div>
 
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' for="orientation-c"
+                               localized>form.configuration.settings.orientation</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="orientation-c" name="orientation"
+                                    ng-model='configuration.orientation'>
+                                <option ng-value="0" ng-selected="configuration.orientation === null || configuration.orientation === 0"
+                                        localized>form.configuration.settings.orientation.none</option>
+                                <option ng-value="1" ng-selected="configuration.orientation === 1"
+                                        localized>form.configuration.settings.orientation.portrait</option>
+                                <option ng-value="2" ng-selected="configuration.orientation === 2"
+                                        localized>form.configuration.settings.orientation.landscape</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
                         <div class='config-save'>
@@ -404,7 +420,7 @@
                                                 <th localized>table.heading.application.version</th>
                                                 <th localized>table.heading.application.actions</th>
                                                 <th localized>table.heading.application.label</th>
-                                                <th localized></th>
+                                                <th localized>table.heading.application.order</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -415,6 +431,10 @@
                                                     <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
                                                         {{application.version}}
                                                     </a>
+
+                                                    <span ng-if="application.outdated && application.action == 1"><br>
+                                                    <a class="version-management-link version-upgrade-link" ng-click="upgradeApp(application)" localized>button.upgrade</a></span>
+
                                                     <span ng-if="application.action != 1">{{application.version}}</span>
                                                 </td>
                                                 <td ng-if="!pkgInfoVisible(application)"></td>
@@ -446,10 +466,8 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button ng-if="application.outdated && application.action == 1" class="btn btn-default"
-                                                            ng-click="upgradeApp(application)"
-                                                            title="{{localizeRenewVersionTitle(application)}}"
-                                                            localized>button.upgrade</button>
+                                                    <input class="form-control" style="width: 80px" ng-if="application.action == 1 && application.showIcon == 1"
+                                                           ng-model="application.screenOrder" type="number">
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -548,6 +566,40 @@
                                    typeahead-on-select="onContentAppSelected($item)"
                                    typeahead-no-results="noResults2">
                             <span>{{trackContentApp(contentApp.id > 0)}}</span>
+                        </div>
+                    </div>
+
+
+                    <div ng-if="configuration.kioskMode">
+                        <div class='form-group'>
+                            <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.home</label>
+                            <div class='col-sm-1'>
+                                <input ng-model='configuration.kioskHome' name="kioskHome" type='checkbox' class='form-control'/>
+                            </div>
+                        </div>
+                        <div class='form-group'>
+                            <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.recents</label>
+                            <div class='col-sm-1'>
+                                <input ng-model='configuration.kioskRecents' name="kioskRecents" type='checkbox' class='form-control'/>
+                            </div>
+                        </div>
+                        <div class='form-group'>
+                            <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.notifications</label>
+                            <div class='col-sm-1'>
+                                <input ng-model='configuration.kioskNotifications' name="kioskNotifications" type='checkbox' class='form-control'/>
+                            </div>
+                        </div>
+                        <div class='form-group'>
+                            <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.system.info</label>
+                            <div class='col-sm-1'>
+                                <input ng-model='configuration.kioskSystemInfo' name="kioskSystemInfo" type='checkbox' class='form-control'/>
+                            </div>
+                        </div>
+                        <div class='form-group'>
+                            <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.keyguard</label>
+                            <div class='col-sm-1'>
+                                <input ng-model='configuration.kioskKeyguard' name="kioskKeyguard" type='checkbox' class='form-control'/>
+                            </div>
                         </div>
                     </div>
 

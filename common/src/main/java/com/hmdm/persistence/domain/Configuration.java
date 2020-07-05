@@ -92,6 +92,8 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean lockVolume;
     @ApiModelProperty("Password requirements for the mobile device")
     private String passwordMode;
+    @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
+    private Integer orientation;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -108,6 +110,16 @@ public class Configuration implements CustomerData, Serializable {
     private String wifiPassword;
     @ApiModelProperty("WiFi security type for provisioning: NONE/WPA/WEP/EAP")
     private String wifiSecurityType;
+    @ApiModelProperty("Flag enabling Home button in kiosk mode")
+    private Boolean kioskHome;
+    @ApiModelProperty("Flag enabling Recents button in kiosk mode")
+    private Boolean kioskRecents;
+    @ApiModelProperty("Flag enabling notifications in kiosk mode")
+    private Boolean kioskNotifications;
+    @ApiModelProperty("Flag enabling system info in kiosk mode")
+    private Boolean kioskSystemInfo;
+    @ApiModelProperty("Flag enabling lock screen in kiosk mode")
+    private Boolean kioskKeyguard;
 
     // This group of settings corresponds to Design settings
     private boolean useDefaultDesignSettings;
@@ -355,6 +367,46 @@ public class Configuration implements CustomerData, Serializable {
         this.wifiSecurityType = wifiSecurityType;
     }
 
+    public Boolean getKioskHome() {
+        return kioskHome;
+    }
+
+    public void setKioskHome(Boolean kioskHome) {
+        this.kioskHome = kioskHome;
+    }
+
+    public Boolean getKioskRecents() {
+        return kioskRecents;
+    }
+
+    public void setKioskRecents(Boolean kioskRecents) {
+        this.kioskRecents = kioskRecents;
+    }
+
+    public Boolean getKioskNotifications() {
+        return kioskNotifications;
+    }
+
+    public void setKioskNotifications(Boolean kioskNotifications) {
+        this.kioskNotifications = kioskNotifications;
+    }
+
+    public Boolean getKioskSystemInfo() {
+        return kioskSystemInfo;
+    }
+
+    public void setKioskSystemInfo(Boolean kioskSystemInfo) {
+        this.kioskSystemInfo = kioskSystemInfo;
+    }
+
+    public Boolean getKioskKeyguard() {
+        return kioskKeyguard;
+    }
+
+    public void setKioskKeyguard(Boolean kioskKeyguard) {
+        this.kioskKeyguard = kioskKeyguard;
+    }
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -489,6 +541,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setPasswordMode(String passwordMode) {
         this.passwordMode = passwordMode;
+    }
+
+    public Integer getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Integer orientation) {
+        this.orientation = orientation;
     }
 
     public List<ConfigurationFile> getFiles() {

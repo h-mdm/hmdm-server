@@ -208,6 +208,11 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.mdm.component.wifi.password.placeholder': 'WiFi пароль - оставьте пустым для ручного ввода',
     'form.configuration.settings.mdm.component.wifi.security': 'Тип защиты WiFi',
     'form.configuration.settings.mdm.app.content': 'Контентное приложение',
+    'form.configuration.settings.mdm.kiosk.home': 'Разрешить кнопку Home',
+    'form.configuration.settings.mdm.kiosk.recents': 'Разрешить кнопку Recents',
+    'form.configuration.settings.mdm.kiosk.notifications': 'Разрешить уведомления',
+    'form.configuration.settings.mdm.kiosk.system.info': 'Разрешить информацию в статус-баре',
+    'form.configuration.settings.mdm.kiosk.keyguard': 'Разрешить блокировку экрана',
     'form.configuration.settings.mdm.qrcode.url': 'URL QR-кода',
     'form.configuration.settings.mdm.hint': 'Выберите главное приложение и компонент',
     'form.configuration.apps.search.label': 'Поиск:',
@@ -275,6 +280,10 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.password.mode.easy' : 'Простой (6 символов или более)',
     'form.configuration.settings.password.mode.moderate' : 'Средний (8+ символов, буквы и цифры)',
     'form.configuration.settings.password.mode.strong' : 'Сложный (8+, разный регистр, цифры, знаки)',
+    'form.configuration.settings.orientation': 'Ориентация',
+    'form.configuration.settings.orientation.none': 'Не фиксировать',
+    'form.configuration.settings.orientation.portrait': 'Портретная',
+    'form.configuration.settings.orientation.landscape': 'Альбомная',
     'form.configuration.files.search.label': 'Поиск:',
     'form.configuration.files.action.upload': 'Загрузить',
     'form.configuration.files.action.remove': 'Удалить',
@@ -344,6 +353,7 @@ document.localization[ 'ru_RU' ] = {
     'form.customer.copy.design': 'Копировать дизайн',
 
     'form.device.number': 'Номер',
+    'form.device.number.hint': 'Латинские буквы, цифры, знаки',
     'form.device.desc': 'Описание',
     'form.device.groups': 'Группы',
     'form.device.config': 'Конфигурация',
@@ -509,6 +519,7 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.application.url': 'URL',
     'table.heading.application.label': 'Ярлык',
     'table.heading.application.actions': 'Действия',
+    'table.heading.application.order': 'Порядок',
 
     'table.heading.device.status': 'Статус',
     'table.heading.device.date': 'Дата',
@@ -641,6 +652,7 @@ document.localization[ 'ru_RU' ] = {
     'form.devices.selection.install.status.success': 'Успешно',
     'form.devices.selection.install.status.version.mismatch': 'Неверные версии',
     'form.devices.selection.install.status.failure': 'Ошибка',
+    'form.devices.selection.imei.changed': 'IMEI недавно менялся',
 
     'search.placeholder.launcher.version': 'Версия лаунчера',
     'error.date.range.invalid': 'Неверный интервал дат'

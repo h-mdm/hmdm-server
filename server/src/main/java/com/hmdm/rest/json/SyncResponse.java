@@ -84,6 +84,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Password requirements for the mobile device")
     private String passwordMode;
 
+    @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
+    private Integer orientation;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -100,22 +103,47 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     private List<SyncApplicationInt> applications;
 
     @ApiModelProperty("A flag indicating if GPS is enabled on device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean gps;
 
     @ApiModelProperty("A flag indicating if Bluetooth is enabled on device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean bluetooth;
 
     @ApiModelProperty("A flag indicating if Wi-Fi is enabled on device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean wifi;
 
     @ApiModelProperty("A flag indicating if Mobile Data is enabled on device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean mobileData;
 
     @ApiModelProperty("A flag indicating if USB storage is enabled on device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean usbStorage;
 
     @ApiModelProperty("A flag indicating if MDM is operating in kiosk mode")
     private boolean kioskMode;
+
+    @ApiModelProperty("Flag enabling Home button in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskHome;
+
+    @ApiModelProperty("Flag enabling Recents button in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskRecents;
+
+    @ApiModelProperty("Flag enabling notifications in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskNotifications;
+
+    @ApiModelProperty("Flag enabling system info in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskSystemInfo;
+
+    @ApiModelProperty("Flag enabling lock screen in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskKeyguard;
 
     @ApiModelProperty("A flag indicating if status bar is locked")
     private boolean lockStatusBar;
@@ -313,6 +341,51 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     }
 
     @Override
+    public Boolean getKioskHome() {
+        return kioskHome;
+    }
+
+    public void setKioskHome(Boolean kioskHome) {
+        this.kioskHome = kioskHome;
+    }
+
+    @Override
+    public Boolean getKioskRecents() {
+        return kioskRecents;
+    }
+
+    public void setKioskRecents(Boolean kioskRecents) {
+        this.kioskRecents = kioskRecents;
+    }
+
+    @Override
+    public Boolean getKioskNotifications() {
+        return kioskNotifications;
+    }
+
+    public void setKioskNotifications(Boolean kioskNotifications) {
+        this.kioskNotifications = kioskNotifications;
+    }
+
+    @Override
+    public Boolean getKioskSystemInfo() {
+        return kioskSystemInfo;
+    }
+
+    public void setKioskSystemInfo(Boolean kioskSystemInfo) {
+        this.kioskSystemInfo = kioskSystemInfo;
+    }
+
+    @Override
+    public Boolean getKioskKeyguard() {
+        return kioskKeyguard;
+    }
+
+    public void setKioskKeyguard(Boolean kioskKeyguard) {
+        this.kioskKeyguard = kioskKeyguard;
+    }
+
+    @Override
     public String getMainApp() {
         return mainApp;
     }
@@ -436,6 +509,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setPasswordMode(String passwordMode) {
         this.passwordMode = passwordMode;
+    }
+
+    @Override
+    public Integer getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Integer orientation) {
+        this.orientation = orientation;
     }
 
     @Override

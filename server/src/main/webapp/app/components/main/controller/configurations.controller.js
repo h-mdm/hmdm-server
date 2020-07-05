@@ -645,6 +645,10 @@ angular.module('headwind-kiosk')
                         request.passwordMode = null;
                     }
 
+                    if ($scope.configuration.orientation == 0) {
+                        request.orientation = null;
+                    }
+
                     configurationService.updateConfiguration(request, function (response) {
                         if (response.status === 'OK') {
                             $scope.saved = true;

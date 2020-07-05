@@ -2238,6 +2238,11 @@ a.version-management-link {
     cursor: pointer;
 }
 
+a.version-upgrade-link {
+    font-size: 12px;
+    color: #f80;
+}
+
 th.sortable {
     cursor: pointer;
 }

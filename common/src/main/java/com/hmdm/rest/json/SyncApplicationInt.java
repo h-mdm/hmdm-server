@@ -61,4 +61,6 @@ public interface SyncApplicationInt {
     String getIconText();
 
     ApplicationType getType();
+
+    Integer getScreenOrder();
 }

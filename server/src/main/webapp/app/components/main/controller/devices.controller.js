@@ -209,6 +209,9 @@ angular.module('headwind-kiosk')
                     && $scope.additionalParams.installationStatus.length > 0) {
                     request["installationStatus"] = $scope.additionalParams.installationStatus;
                 }
+                if ($scope.additionalParams.imeiChanged) {
+                    request["imeiChanged"] = true;
+                }
             }
 
             deviceService.getAllDevices(request, function (response) {
@@ -259,7 +262,9 @@ angular.module('headwind-kiosk')
         };
 
         $scope.showQrCode = function (device) {
-            var url = device.configuration.baseUrl + "/#/qr/" + device.configuration.qrCodeKey + "/" + device.number;
+            // Workaround against AngularJS bug!
+            var number = device.number.replace("/", "~2F");
+            var url = device.configuration.baseUrl + "/#/qr/" + device.configuration.qrCodeKey + "/" + number;
             $window.open(url, "_blank");
         };
 

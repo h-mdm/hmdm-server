@@ -22,6 +22,8 @@
 package com.hmdm.persistence.mapper;
 
 import com.hmdm.persistence.domain.ApplicationSetting;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -44,4 +46,13 @@ public interface ApplicationSettingMapper {
             "INNER JOIN applications ON applications.id = appSettings.applicationID " +
             "WHERE appSettings.extRefId = #{id}")
     List<ApplicationSetting> getApplicationSettingsByDeviceId(@Param("id") int deviceId);
+
+    @Delete("DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId} AND name=#{name}")
+    void deleteApplicationSettingByName(@Param("configurationId") int configurationId,
+                                        @Param("applicationId") int applicationId,
+                                        @Param("name") String name);
+
+    @Insert("INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate) " +
+            "        VALUES (#{configurationId}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})")
+    void insertApplicationSetting(@Param("configurationId") int configurationId, @Param("item") ApplicationSetting setting);
 }

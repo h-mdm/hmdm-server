@@ -245,22 +245,24 @@ public class FilesResource {
             FileUploadResult result = new FileUploadResult();
             result.setServerPath(uploadFile.getAbsolutePath());
 
-            final APKFileDetails apkFileDetails;
-            apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
-            result.setFileDetails(apkFileDetails);
+            if (fileDetail.getFileName().endsWith("apk")) {
+                final APKFileDetails apkFileDetails;
+                apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
+                result.setFileDetails(apkFileDetails);
 
-            final List<Application> dbAppsByPkg = this.applicationDAO.findByPackageId(apkFileDetails.getPkg());
-            if (!dbAppsByPkg.isEmpty()) {
-                final Application dbApp = dbAppsByPkg.get(0);
-                final Application dbAppCopy = new Application();
-                dbAppCopy.setId(dbApp.getId());
-                dbAppCopy.setShowIcon(dbApp.getShowIcon());
-                dbAppCopy.setRunAfterInstall(dbApp.isRunAfterInstall());
-                dbAppCopy.setRunAtBoot(dbApp.isRunAtBoot());
-                dbAppCopy.setSystem(dbApp.isSystem());
-                dbAppCopy.setName(dbApp.getName());
+                final List<Application> dbAppsByPkg = this.applicationDAO.findByPackageId(apkFileDetails.getPkg());
+                if (!dbAppsByPkg.isEmpty()) {
+                    final Application dbApp = dbAppsByPkg.get(0);
+                    final Application dbAppCopy = new Application();
+                    dbAppCopy.setId(dbApp.getId());
+                    dbAppCopy.setShowIcon(dbApp.getShowIcon());
+                    dbAppCopy.setRunAfterInstall(dbApp.isRunAfterInstall());
+                    dbAppCopy.setRunAtBoot(dbApp.isRunAtBoot());
+                    dbAppCopy.setSystem(dbApp.isSystem());
+                    dbAppCopy.setName(dbApp.getName());
 
-                result.setApplication(dbAppCopy);
+                    result.setApplication(dbAppCopy);
+                }
             }
 
 

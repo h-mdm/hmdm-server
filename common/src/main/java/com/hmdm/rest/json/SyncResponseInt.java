@@ -61,6 +61,16 @@ public interface SyncResponseInt {
 
     boolean isKioskMode();
 
+    Boolean getKioskHome();
+
+    Boolean getKioskRecents();
+
+    Boolean getKioskNotifications();
+
+    Boolean getKioskSystemInfo();
+
+    Boolean getKioskKeyguard();
+
     String getMainApp();
 
     boolean isLockStatusBar();
@@ -90,6 +100,8 @@ public interface SyncResponseInt {
     Boolean getLockVolume();
 
     String getPasswordMode();
+
+    Integer getOrientation();
 
     List<SyncConfigurationFileInt> getFiles();
 }

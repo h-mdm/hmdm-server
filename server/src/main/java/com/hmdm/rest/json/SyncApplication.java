@@ -123,4 +123,10 @@ public class SyncApplication implements SyncApplicationInt {
     public ApplicationType getType() {
         return wrapped.getType();
     }
+
+    @Override
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Integer getScreenOrder() {
+        return wrapped.getScreenOrder();
+    }
 }

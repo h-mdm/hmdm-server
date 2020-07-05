@@ -45,7 +45,7 @@
 
 
         <div  class="form-group" ng-if="additionalParams.enabled">
-            <div class='col-sm-3  margin-bottom'>
+            <div class='col-sm-2  margin-bottom'>
                 <div class='min-padding date-picker date-picker-input'>
                     <input class='form-control' datepicker-popup='{{dateFormat}}'
                            localized-placeholder="search.placeholder.from"
@@ -59,7 +59,7 @@
                     </button>
                 </div>
             </div>
-            <div class='col-sm-3  margin-bottom'>
+            <div class='col-sm-2  margin-bottom'>
                 <div class='min-padding date-picker date-picker-input'>
                     <input class='form-control' datepicker-popup='{{dateFormat}}'
                            localized-placeholder="search.placeholder.to"
@@ -74,7 +74,12 @@
                 </div>
             </div>
 
-            <div class="col-sm-3  margin-bottom">
+            <div class="col-sm-3  margin-bottom" style="margin-top: 5px">
+                <input type="checkbox" id="addParamsImeiChanged"
+                       ng-model='additionalParams.imeiChanged'> <span localized>form.devices.selection.imei.changed</span>
+            </div>
+
+            <div class="col-sm-2  margin-bottom">
                 <select class='form-control' id="kweiufwieu"
                         ng-model='additionalParams.installationStatus'
                         ng-options="opt.id as opt.name for opt in installStatusOptions">

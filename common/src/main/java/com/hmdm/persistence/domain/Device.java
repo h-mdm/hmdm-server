@@ -56,6 +56,8 @@ public class Device implements CustomerData, Serializable {
     private String phone;
     @ApiModelProperty(hidden = true)
     private int customerId;
+    @ApiModelProperty("A date of last IMEI change")
+    private Long imeiUpdateTs;
 
     // Many-to-many relations
     @ApiModelProperty("A list of groups assigned to device")
@@ -207,6 +209,14 @@ public class Device implements CustomerData, Serializable {
     @Override
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
+    }
+
+    public Long getImeiUpdateTs() {
+        return imeiUpdateTs;
+    }
+
+    public void setImeiUpdateTs(Long imeiChangeTs) {
+        this.imeiUpdateTs = imeiChangeTs;
     }
 
     public List<LookupItem> getGroups() {

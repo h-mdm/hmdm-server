@@ -75,10 +75,12 @@ public interface DeviceMapper {
 
     @Update({"UPDATE devices SET " +
             "  info = #{info}, " +
-            "  lastUpdate = CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT) " +
+            "  lastUpdate = CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT), " +
+            "  imeiUpdateTs = #{imeiUpdateTs} " +
             "WHERE id = #{deviceId}"})
     void updateDeviceInfo(@Param("deviceId") Integer deviceId,
-                          @Param("info") String info);
+                          @Param("info") String info,
+                          @Param("imeiUpdateTs") Long imeiUpdateTs);
 
     List<DeviceLookupItem> lookupDevices(@Param("userId") int userId,
                                          @Param("customerId") int customerId,

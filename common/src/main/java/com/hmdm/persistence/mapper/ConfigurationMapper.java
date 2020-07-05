@@ -71,6 +71,7 @@ public interface ConfigurationMapper {
             "timeout=#{timeout}, " +
             "lockVolume=#{lockVolume}, " +
             "passwordMode=#{passwordMode}, " +
+            "orientation=#{orientation}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
@@ -84,6 +85,11 @@ public interface ConfigurationMapper {
             "wifiSSID=#{wifiSSID}, " +
             "wifiPassword=#{wifiPassword}, " +
             "wifiSecurityType=#{wifiSecurityType}, " +
+            "kioskHome=#{kioskHome}, " +
+            "kioskRecents=#{kioskRecents}, " +
+            "kioskNotifications=#{kioskNotifications}, " +
+            "kioskSystemInfo=#{kioskSystemInfo}, " +
+            "kioskKeyguard=#{kioskKeyguard}, " +
             "autoUpdate=#{autoUpdate}, " +
             "blockStatusBar=#{blockStatusBar}, " +
             "systemUpdateType=#{systemUpdateType}, " +
