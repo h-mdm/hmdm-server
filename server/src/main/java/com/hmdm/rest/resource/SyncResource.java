@@ -325,7 +325,7 @@ public class SyncResource {
                     prevInfo = objectMapper.readValue(dbDevice.getInfo(), DeviceInfo.class);
                 } catch (Exception e) {
                 }
-                if (prevInfo != null & prevInfo.getImei() != null && deviceInfo.getImei() != null &&
+                if (prevInfo != null && prevInfo.getImei() != null && deviceInfo.getImei() != null &&
                         !prevInfo.getImei().equals(deviceInfo.getImei())) {
                     dbDevice.setImeiUpdateTs(System.currentTimeMillis());
                 }
