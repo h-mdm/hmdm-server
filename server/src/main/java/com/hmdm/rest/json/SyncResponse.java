@@ -87,6 +87,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
     private Integer orientation;
 
+    @ApiModelProperty("Set to true if Headwind MDM need to work together with a third-party launcher")
+    private Boolean runDefaultLauncher;
+
+    @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
+    private String timeZone;
+
+    @ApiModelProperty("Allowed classes, separated by comma")
+    private String allowedClasses;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -518,6 +527,33 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setOrientation(Integer orientation) {
         this.orientation = orientation;
+    }
+
+    @Override
+    public Boolean getRunDefaultLauncher() {
+        return runDefaultLauncher;
+    }
+
+    public void setRunDefaultLauncher(Boolean runDefaultLauncher) {
+        this.runDefaultLauncher = runDefaultLauncher;
+    }
+
+    @Override
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    @Override
+    public String getAllowedClasses() {
+        return allowedClasses;
+    }
+
+    public void setAllowedClasses(String allowedClasses) {
+        this.allowedClasses = allowedClasses;
     }
 
     @Override

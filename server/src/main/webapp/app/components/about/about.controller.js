@@ -9,6 +9,7 @@ angular.module('headwind-kiosk')
                 $scope.plugins = response.data.map(function (plugin) {
                     return localization.localize(plugin.nameLocalizationKey)
                 }).sort();
+                $scope.pluginList = $scope.plugins.join(', ');
             }
         });
 

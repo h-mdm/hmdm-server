@@ -213,6 +213,8 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.mdm.kiosk.notifications': 'Разрешить уведомления',
     'form.configuration.settings.mdm.kiosk.system.info': 'Разрешить информацию в статус-баре',
     'form.configuration.settings.mdm.kiosk.keyguard': 'Разрешить блокировку экрана',
+    'form.configuration.settings.mdm.allowed.classes': 'Разрешенные активити',
+    'form.configuration.settings.mdm.allowed.classes.placeholder': 'Классы через запятую, например: com.android.settings.homepage.SettingsHomepageActivity',
     'form.configuration.settings.mdm.qrcode.url': 'URL QR-кода',
     'form.configuration.settings.mdm.hint': 'Выберите главное приложение и компонент',
     'form.configuration.apps.search.label': 'Поиск:',
@@ -264,6 +266,13 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.common.timeout': 'Управление таймаутом экрана',
     'form.configuration.settings.common.timeout.value': 'Таймаут экрана (с)',
     'form.configuration.settings.common.volume.block': 'Блокировка громкости',
+    'form.configuration.settings.common.timezone.mode': 'Управление временной зоной',
+    'form.configuration.settings.common.timezone.mode.default': 'Не управлять',
+    'form.configuration.settings.common.timezone.mode.auto': 'Автоматически',
+    'form.configuration.settings.common.timezone.mode.manual': 'Вручную',
+    'form.configuration.settings.common.timezone': 'Временная зона',
+    'form.configuration.settings.common.timezone.placeholder': 'Например, Europe/Moscow',
+    'form.configuration.settings.common.timezone.link': 'Список временных зон',
     'form.configuration.settings.request.updates': 'Отслеживать координаты',
     'form.configuration.settings.request.updates.donottrack': 'Не отслеживать',
     'form.configuration.settings.request.updates.gps': 'По GPS',
@@ -280,6 +289,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.password.mode.easy' : 'Простой (6 символов или более)',
     'form.configuration.settings.password.mode.moderate' : 'Средний (8+ символов, буквы и цифры)',
     'form.configuration.settings.password.mode.strong' : 'Сложный (8+, разный регистр, цифры, знаки)',
+    'form.configuration.settings.use.default.launcher': 'Запускать с другим лаунчером',
     'form.configuration.settings.orientation': 'Ориентация',
     'form.configuration.settings.orientation.none': 'Не фиксировать',
     'form.configuration.settings.orientation.portrait': 'Портретная',
@@ -407,6 +417,7 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.common.group': 'Группа',
     'form.settings.common.launcher.version': 'Версия лаунчера',
     'form.settings.common.battery.level': 'Заряд батареи',
+    'form.settings.common.default.launcher': 'Лаунчер по умолчанию',
 
     'form.settings.design.title': 'Дизайн по умолчанию',
     'form.settings.design.color.font': 'Цвет фона',
@@ -535,6 +546,7 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.device.group': 'Группа',
     'table.heading.device.launcher.version': 'Версия лаунчера',
     'table.heading.device.battery.level': 'Заряд батареи',
+    'table.heading.device.default.launcher': 'По умолч.',
     'table.heading.device.actions': 'Действия',
 
     'table.heading.group.name': 'Название',
@@ -655,6 +667,8 @@ document.localization[ 'ru_RU' ] = {
     'form.devices.selection.imei.changed': 'IMEI недавно менялся',
 
     'search.placeholder.launcher.version': 'Версия лаунчера',
-    'error.date.range.invalid': 'Неверный интервал дат'
+    'error.date.range.invalid': 'Неверный интервал дат',
 
+    'yes': 'да',
+    'no': 'нет'
 };

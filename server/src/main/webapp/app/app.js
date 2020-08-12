@@ -12,7 +12,7 @@ angular.module('headwind-kiosk',
         'ru_RU': "ru_RU",
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU'])
-    .constant("APP_VERSION", "3.21.2") // Update this value on each commit
+    .constant("APP_VERSION", "3.23.3") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -261,25 +261,25 @@ angular.module('headwind-kiosk',
         {
             name: 'leaflet',
             files: [
-                'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js',
+                'ext/leaflet-1.5.1/leaflet.js'
             ],
             styles: [
-                'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css'
+                'ext/leaflet-1.5.1/leaflet.css'
             ]
         },
         {
             name: 'leaflet.markercluster',
             files: [
-                'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js',
+                'ext/leaflet.markercluster-1.4.1/leaflet.markercluster.js'
             ],
             styles: [
-                'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css'
+                'ext/leaflet.markercluster-1.4.1/MarkerCluster.css'
             ]
         },
         {
             name: 'leaflet.markercluster.layersupport',
             files: [
-                'https://cdn.jsdelivr.net/npm/leaflet.markercluster.layersupport@2.0.1/dist/leaflet.markercluster.layersupport.js'
+                'ext/leaflet.markercluster-1.4.1/leaflet.markercluster.layersupport.js'
             ]
         }
     ])

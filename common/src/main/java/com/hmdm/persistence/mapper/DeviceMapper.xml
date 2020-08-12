@@ -99,7 +99,8 @@
                 WHEN 'DESCRIPTION' = #{sortBy} THEN LOWER(COALESCE(devices.description, ''))::VARCHAR(100)
                 WHEN 'GROUP' = #{sortBy} THEN COALESCE(LOWER(groups.name), '')::VARCHAR(100)
                 WHEN 'LAUNCHER_VERSION' = #{sortBy} THEN mdm_device_launcher_version(applications.pkg, devices.info)::VARCHAR(100)
-                WHEN 'BATTERY_LEVEL' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'batteryLevel', '-1')::VARCHAR(100)
+                WHEN 'BATTERY_LEVEL' = #{sortBy} THEN LPAD(COALESCE(devices.info::json -&gt;&gt; 'batteryLevel', '0'), 3, '0')::VARCHAR(100)
+                WHEN 'DEFAULT_LAUNCHER' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'defaultLauncher', 'unknown')::VARCHAR(100)
                 ELSE ''
             END
         ) AS sortingValue

@@ -103,5 +103,11 @@ public interface SyncResponseInt {
 
     Integer getOrientation();
 
+    Boolean getRunDefaultLauncher();
+
+    String getTimeZone();
+
+    String getAllowedClasses();
+
     List<SyncConfigurationFileInt> getFiles();
 }

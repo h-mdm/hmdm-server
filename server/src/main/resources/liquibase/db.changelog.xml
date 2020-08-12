@@ -1881,4 +1881,36 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="13.07.20-16:21" author="seva" context="common">
+        <comment>Adding runDefaultLauncher column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN runDefaultLauncher BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN runDefaultLauncher;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1707.20-18:44" author="seva" context="common">
+        <comment>Column,new: userRoleSettings#columnDisplayedDefaultLauncher</comment>
+        <sql>
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedDefaultLauncher BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedDefaultLauncher;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="29.07.20-18:37" author="seva" context="common">
+        <comment>Adding timeZone and allowedClasses column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN timeZone VARCHAR(200);
+            ALTER TABLE configurations ADD COLUMN allowedClasses TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN timeZone;
+            ALTER TABLE configurations DROP COLUMN allowedClasses;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

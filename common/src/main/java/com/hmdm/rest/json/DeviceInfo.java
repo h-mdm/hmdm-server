@@ -78,6 +78,12 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty(value = "Headwind MDM launcher build variant")
     private String launcherType;
 
+    @ApiModelProperty(value = "Package of default launcher on the device")
+    private String launcherPackage;
+
+    @ApiModelProperty(value = "Is Headwind MDM a default launcher")
+    private Boolean defaultLauncher;
+
     public DeviceInfo() {
     }
 
@@ -177,6 +183,22 @@ public class DeviceInfo implements Serializable {
         this.launcherType = launcherType;
     }
 
+    public String getLauncherPackage() {
+        return launcherPackage;
+    }
+
+    public void setLauncherPackage(String launcherPackage) {
+        this.launcherPackage = launcherPackage;
+    }
+
+    public Boolean getDefaultLauncher() {
+        return defaultLauncher;
+    }
+
+    public void setDefaultLauncher(Boolean defaultLauncher) {
+        this.defaultLauncher = defaultLauncher;
+    }
+
     public List<DeviceConfigurationFile> getFiles() {
         return files;
     }
@@ -201,6 +223,8 @@ public class DeviceInfo implements Serializable {
                 ", mdmMode='" + mdmMode + '\'' +
                 ", location='" + location + '\'' +
                 ", launcherType='" + launcherType + '\'' +
+                ", launcherPackage='" + launcherPackage + '\'' +
+                ", defaultLauncher='" + defaultLauncher + '\'' +
                 '}';
     }
 }

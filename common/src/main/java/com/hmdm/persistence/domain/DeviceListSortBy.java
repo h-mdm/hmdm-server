@@ -38,5 +38,6 @@ public enum DeviceListSortBy {
     DESCRIPTION,
     GROUP,
     LAUNCHER_VERSION,
-    BATTERY_LEVEL;
+    BATTERY_LEVEL,
+    DEFAULT_LAUNCHER;
 }

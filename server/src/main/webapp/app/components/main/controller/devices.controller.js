@@ -483,6 +483,19 @@ angular.module('headwind-kiosk')
             return null;
         };
 
+        $scope.getIsDefaultLauncher = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                if (info.defaultLauncher === true) {
+                    return localization.localize('yes');
+                } else if (info.defaultLauncher === false) {
+                    return localization.localize('no');
+                }
+            }
+
+            return null;
+        };
+
         $scope.getDeviceLauncherVersionColor = function (device) {
             var info = $scope.getDeviceInfo(device);
             if (info) {

@@ -72,6 +72,8 @@ public class UserRoleSettings implements CustomerData, Serializable {
     private Boolean columnDisplayedLauncherVersion;
     @ApiModelProperty("A flag indicating if Battery Level column to be displayed in MDM web application")
     private Boolean columnDisplayedBatteryLevel;
+    @ApiModelProperty("A flag indicating if Headwind MDM is set as default launcher")
+    private Boolean columnDisplayedDefaultLauncher;
 
     /**
      * <p>Constructs new <code>UserRoleSettings</code> instance. This implementation does nothing.</p>
@@ -207,6 +209,14 @@ public class UserRoleSettings implements CustomerData, Serializable {
         this.columnDisplayedBatteryLevel = columnDisplayedBatteryLevel;
     }
 
+    public Boolean getColumnDisplayedDefaultLauncher() {
+        return columnDisplayedDefaultLauncher;
+    }
+
+    public void setColumnDisplayedDefaultLauncher(Boolean columnDisplayedDefaultLauncher) {
+        this.columnDisplayedDefaultLauncher = columnDisplayedDefaultLauncher;
+    }
+
     @Override
     public Integer getId() {
         return id;
@@ -236,6 +246,7 @@ public class UserRoleSettings implements CustomerData, Serializable {
                 ", columnDisplayedDeviceGroup=" + columnDisplayedDeviceGroup +
                 ", columnDisplayedLauncherVersion=" + columnDisplayedLauncherVersion +
                 ", columnDisplayedBatteryLevel=" + columnDisplayedBatteryLevel +
+                ", columnDisplayedDefaultLauncher=" + columnDisplayedDefaultLauncher +
                 '}';
     }
 }

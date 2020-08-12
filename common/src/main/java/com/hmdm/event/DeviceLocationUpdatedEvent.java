@@ -21,7 +21,10 @@
 
 package com.hmdm.event;
 
+import com.hmdm.rest.json.DeviceLocation;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>$</p>
@@ -30,41 +33,31 @@ import java.io.Serializable;
  */
 public class DeviceLocationUpdatedEvent implements Event, Serializable {
 
-    /**
-     * <p>An unique identifier of the device.</p>
-     */
     private final int deviceId;
 
-    private final long ts;
+    private List<DeviceLocation> locations;
 
-    private final double lat;
-
-    private final double lon;
+    private boolean fromDetailedInfo;
 
     /**
      * <p>Constructs new <code>DeviceLocationUpdatedEvent</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLocationUpdatedEvent(int deviceId, long ts, double lat, double lon) {
+    public DeviceLocationUpdatedEvent(int deviceId, List<DeviceLocation> locations, boolean fromDetailedInfo) {
         this.deviceId = deviceId;
-        this.ts = ts;
-        this.lat = lat;
-        this.lon = lon;
+        this.locations = locations;
+        this.fromDetailedInfo = fromDetailedInfo;
     }
 
     public int getDeviceId() {
         return deviceId;
     }
 
-    public long getTs() {
-        return ts;
+    public List<DeviceLocation> getLocations() {
+        return locations;
     }
 
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLon() {
-        return lon;
+    public boolean isFromDetailedInfo() {
+        return fromDetailedInfo;
     }
 
     @Override

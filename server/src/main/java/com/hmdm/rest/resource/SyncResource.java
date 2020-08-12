@@ -212,6 +212,9 @@ public class SyncResource {
                 }
                 data.setPasswordMode(configuration.getPasswordMode());
                 data.setOrientation(configuration.getOrientation());
+                data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
+                data.setTimeZone(configuration.getTimeZone());
+                data.setAllowedClasses(configuration.getAllowedClasses());
 
                 data.setKioskMode(configuration.isKioskMode());
                 if (data.isKioskMode()) {
@@ -339,10 +342,10 @@ public class SyncResource {
 
                 final DeviceLocation location = deviceInfo.getLocation();
                 if (location != null) {
+                    List<DeviceLocation> locations = new LinkedList<>();
+                    locations.add(deviceInfo.getLocation());
                     this.eventService.fireEvent(
-                            new DeviceLocationUpdatedEvent(
-                                    dbDevice.getId(), location.getTs(), location.getLat(), location.getLon()
-                            )
+                            new DeviceLocationUpdatedEvent(dbDevice.getId(), locations, false)
                     );
                 }
 

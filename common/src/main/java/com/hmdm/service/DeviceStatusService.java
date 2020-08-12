@@ -24,10 +24,7 @@ package com.hmdm.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.ConfigurationFile;
-import com.hmdm.persistence.domain.Device;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.ConfigurationFileMapper;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
@@ -97,24 +94,20 @@ public class DeviceStatusService {
     }
 
     private DeviceApplicationsStatus evaluateDeviceApplicationsStatus(Device dbDevice, DeviceInfo info) {
-        AtomicInteger correctCount = new AtomicInteger();
+        AtomicInteger versionMismatchCount = new AtomicInteger();
+        AtomicInteger notRemovedCount = new AtomicInteger();
         AtomicInteger notInstalledCount = new AtomicInteger();
 
         final List<Application> configApplications = this.configurationMapper.getPlainConfigurationSoleApplications(dbDevice.getConfigurationId());
 
-        if (dbDevice.getId() == 61) {
-            System.out.println();
-        }
-
         configApplications.forEach(configApp -> {
-            // Приложения без URL - это системные приложения, их не проверяем
-            if (configApp.getUrl() == null) {
+            // Do not test apps without URL (they are mostly system apps) as well as web pages
+            if (configApp.getUrl() == null || configApp.getType() != ApplicationType.app) {
                 return;
             }
 
             final List<Application> deviceApps = info.getApplications();
             boolean foundOnDevice = false;
-            boolean skip = false;
             for (int i = 0; i < deviceApps.size(); i++) {
                 final Application deviceApp = deviceApps.get(i);
                 if (deviceApp.getPkg().equals(configApp.getPkg())) {
@@ -122,31 +115,30 @@ public class DeviceStatusService {
 
                     if (configApp.getAction() == 2) {
                         if (configApp.getVersion().equals(deviceApp.getVersion())) {
-                            skip = true; // Needs to be removed
+                            // Needs to be removed but not removed
+                            notRemovedCount.incrementAndGet();
                         }
                     } else if (!configApp.getVersion().equals("0")
-                            && Boolean.FALSE.equals(configApp.isSkipVersion())
+                            && (configApp.isSkipVersion() == null || !configApp.isSkipVersion())
                             && !areVersionsEqual.test(deviceApp.getVersion(), configApp.getVersion())) {
-                        skip = true; // Version mismatch
+                        // Version mismatch
+                        versionMismatchCount.incrementAndGet();
                     }
-
                     break;
                 }
             }
 
-            if (!foundOnDevice && configApp.getAction() != 2) {
+            if (!foundOnDevice && configApp.getAction() == 1) {
                 notInstalledCount.incrementAndGet();
-            } else if (foundOnDevice && !skip) {
-                correctCount.incrementAndGet();
             }
         });
 
-        if (correctCount.get() == configApplications.size()) {
-            return DeviceApplicationsStatus.SUCCESS;
-        } else if (notInstalledCount.get() > 0) {
+        if (notInstalledCount.get() > 0) {
             return DeviceApplicationsStatus.FAILURE;
-        } else {
+        } else if (versionMismatchCount.get() > 0 || notRemovedCount.get() > 0) {
             return DeviceApplicationsStatus.VERSION_MISMATCH;
+        } else {
+            return DeviceApplicationsStatus.SUCCESS;
         }
     }
 

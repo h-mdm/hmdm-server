@@ -72,7 +72,10 @@ public interface ConfigurationMapper {
             "lockVolume=#{lockVolume}, " +
             "passwordMode=#{passwordMode}, " +
             "orientation=#{orientation}, " +
+            "runDefaultLauncher=#{runDefaultLauncher}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
+            "timeZone=#{timeZone}, " +
+            "allowedClasses=#{allowedClasses}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
             "wifi=#{wifi}, " +

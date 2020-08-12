@@ -94,6 +94,12 @@ public class Configuration implements CustomerData, Serializable {
     private String passwordMode;
     @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
     private Integer orientation;
+    @ApiModelProperty("Flag enabling usage with default launcher")
+    private Boolean runDefaultLauncher;
+    @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
+    private String timeZone;
+    @ApiModelProperty("Allowed classes, separated by comma")
+    private String allowedClasses;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -551,6 +557,30 @@ public class Configuration implements CustomerData, Serializable {
         this.orientation = orientation;
     }
 
+    public Boolean getRunDefaultLauncher() {
+        return runDefaultLauncher;
+    }
+
+    public void setRunDefaultLauncher(Boolean runDefaultLauncher) {
+        this.runDefaultLauncher = runDefaultLauncher;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public String getAllowedClasses() {
+        return allowedClasses;
+    }
+
+    public void setAllowedClasses(String allowedClasses) {
+        this.allowedClasses = allowedClasses;
+    }
+
     public List<ConfigurationFile> getFiles() {
         return files;
     }
@@ -592,6 +622,11 @@ public class Configuration implements CustomerData, Serializable {
         copy.setWifiSSID(getWifiSSID());
         copy.setWifiPassword(getWifiPassword());
         copy.setWifiSecurityType(getWifiSecurityType());
+        copy.setKioskHome(getKioskHome());
+        copy.setKioskRecents(getKioskRecents());
+        copy.setKioskNotifications(getKioskNotifications());
+        copy.setKioskSystemInfo(getKioskSystemInfo());
+        copy.setKioskKeyguard(getKioskKeyguard());
 
         copy.setGps(getGps());
         copy.setBluetooth(getBluetooth());
@@ -605,6 +640,11 @@ public class Configuration implements CustomerData, Serializable {
         copy.setManageTimeout(getManageTimeout());
         copy.setTimeout(getTimeout());
         copy.setLockVolume(getLockVolume());
+        copy.setPasswordMode(getPasswordMode());
+        copy.setOrientation(getOrientation());
+        copy.setRunDefaultLauncher(getRunDefaultLauncher());
+        copy.setTimeZone(getTimeZone());
+        copy.setAllowedClasses(getAllowedClasses());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());

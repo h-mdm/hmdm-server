@@ -645,6 +645,16 @@ angular.module('headwind-kiosk')
                         request.passwordMode = null;
                     }
 
+                    if ($scope.configuration.timeZoneMode == 'default') {
+                        request.timeZone = null;
+                    } else if ($scope.configuration.timeZoneMode == 'auto') {
+                        request.timeZone = 'auto';
+                    }
+
+                    if ($scope.configuration.allowedClasses == '') {
+                        request.allowedClasses = null;
+                    }
+
                     if ($scope.configuration.orientation == 0) {
                         request.orientation = null;
                     }
@@ -658,6 +668,14 @@ angular.module('headwind-kiosk')
                             } else {
                                 $scope.successMessage = localization.localize('success.configuration.saved');
                                 $scope.configuration = response.data;
+
+                                if ($scope.configuration.timeZone === null) {
+                                    $scope.configuration.timeZoneMode = 'default';
+                                } else if ($scope.configuration.timeZone === 'auto') {
+                                    $scope.configuration.timeZoneMode = 'auto';
+                                } else {
+                                    $scope.configuration.timeZoneMode = 'manual';
+                                }
 
                                 $scope.loadApps($scope.configuration.id);
                                 $scope.configurationForm.$dirty = false;
@@ -1174,6 +1192,14 @@ angular.module('headwind-kiosk')
 
                         $scope.dates.systemUpdateFrom = d1;
                         $scope.dates.systemUpdateTo = d2;
+
+                        if ($scope.configuration.timeZone === null) {
+                            $scope.configuration.timeZoneMode = 'default';
+                        } else if ($scope.configuration.timeZone === 'auto') {
+                            $scope.configuration.timeZoneMode = 'auto';
+                        } else {
+                            $scope.configuration.timeZoneMode = 'manual';
+                        }
                     }
                 });
             } else {

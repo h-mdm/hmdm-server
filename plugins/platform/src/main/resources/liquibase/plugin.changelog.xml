@@ -106,4 +106,14 @@
             DELETE FROM permissions WHERE name = 'plugins_customer_access_management';
         </rollback>
     </changeSet>
+
+    <changeSet id="plugin-platform-16.06.2020-16:08" author="seva" context="common">
+        <comment>Update name column type</comment>
+        <sql>
+            ALTER TABLE plugins ALTER COLUMN name TYPE text;
+        </sql>
+        <rollback>
+            ALTER TABLE plugins ALTER COLUMN name TYPE VARCHAR(50);
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

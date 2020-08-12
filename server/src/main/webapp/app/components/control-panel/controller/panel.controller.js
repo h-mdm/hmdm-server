@@ -109,7 +109,7 @@ angular.module('headwind-kiosk')
         $scope.changePassword = function (customer) {
             var modalInstance = $modal.open({
                 templateUrl: 'app/components/control-panel/view/modal/password.html',
-                controller: 'PasswordModalController',
+                controller: 'CustomerPasswordModalController',
                 resolve: {
                     customer: function () {
                         return customer;
@@ -122,7 +122,7 @@ angular.module('headwind-kiosk')
             });
         }
     })
-    .controller("PasswordModalController", function ($scope, customer, alertService, userService, $modalInstance,
+    .controller("CustomerPasswordModalController", function ($scope, customer, alertService, userService, $modalInstance,
                                                      localization) {
         var resetMessages = function () {
             $scope.errorMessage = '';

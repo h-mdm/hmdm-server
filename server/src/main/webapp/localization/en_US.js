@@ -212,6 +212,8 @@ document.localization ['en_US'] = {
     'form.configuration.settings.mdm.kiosk.notifications': 'Enable notifications',
     'form.configuration.settings.mdm.kiosk.system.info': 'Enable status bar info',
     'form.configuration.settings.mdm.kiosk.keyguard': 'Enable screen lock',
+    'form.configuration.settings.mdm.allowed.classes': 'Allowed activities',
+    'form.configuration.settings.mdm.allowed.classes.placeholder': 'Comma-separated classes, e.g.: com.android.settings.homepage.SettingsHomepageActivity',
     'form.configuration.settings.mdm.qrcode.url': 'QR code URL',
     'form.configuration.settings.mdm.hint': 'Select the main application and component',
     'form.configuration.apps.search.label': 'Search for:',
@@ -263,6 +265,13 @@ document.localization ['en_US'] = {
     'form.configuration.settings.common.timeout': 'Manage screen timeout',
     'form.configuration.settings.common.timeout.value': 'Screen timeout (s)',
     'form.configuration.settings.common.volume.block': 'Lock volume',
+    'form.configuration.settings.common.timezone.mode': 'Manage time zone',
+    'form.configuration.settings.common.timezone.mode.default': 'Do not manage',
+    'form.configuration.settings.common.timezone.mode.auto': 'Auto',
+    'form.configuration.settings.common.timezone.mode.manual': 'Manual',
+    'form.configuration.settings.common.timezone': 'Time zone',
+    'form.configuration.settings.common.timezone.placeholder': 'e.g. America/Los_Angeles',
+    'form.configuration.settings.common.timezone.link': 'List of time zones',
     'form.configuration.settings.request.updates': 'Update Location',
     'form.configuration.settings.request.updates.donottrack': 'Do Not Track',
     'form.configuration.settings.request.updates.gps': 'By GPS',
@@ -279,6 +288,7 @@ document.localization ['en_US'] = {
     'form.configuration.settings.password.mode.easy' : 'Easy (at least 6 symbols)',
     'form.configuration.settings.password.mode.moderate' : 'Moderate (8+ symbols, letters and digits)',
     'form.configuration.settings.password.mode.strong' : 'Strong (8+, upper & lowercase, digits, signs)',
+    'form.configuration.settings.use.default.launcher': 'Use with default launcher',
     'form.configuration.settings.orientation': 'Lock orientation',
     'form.configuration.settings.orientation.none': 'Do not lock',
     'form.configuration.settings.orientation.portrait': 'Portrait',
@@ -406,6 +416,7 @@ document.localization ['en_US'] = {
     'form.settings.common.group': 'Group',
     'form.settings.common.launcher.version': 'Launcher version',
     'form.settings.common.battery.level': 'Battery level',
+    'form.settings.common.default.launcher': 'Default launcher',
 
     'form.settings.design.title': 'Default Design',
     'form.settings.design.color.font': 'Background Color',
@@ -533,6 +544,7 @@ document.localization ['en_US'] = {
     'table.heading.device.group': 'Group',
     'table.heading.device.launcher.version': 'Launcher version',
     'table.heading.device.battery.level': 'Battery level',
+    'table.heading.device.default.launcher': 'Set as default',
     'table.heading.device.actions': 'Actions',
 
     'table.heading.group.name': 'Name',
@@ -650,5 +662,8 @@ document.localization ['en_US'] = {
     'form.devices.selection.imei.changed': 'IMEI recently changed',
 
     'search.placeholder.launcher.version': 'Launcher Version',
-    'error.date.range.invalid': 'Invalid date interval'
+    'error.date.range.invalid': 'Invalid date interval',
+
+    'yes': 'yes',
+    'no': 'no'
 };

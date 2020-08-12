@@ -207,6 +207,11 @@
                 <span ng-if='paging.sortBy === "BATTERY_LEVEL"' class="glyphicon"
                       ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
             </th>
+            <th ng-if="settings.columnDisplayedDefaultLauncher" ng-click="sortData('DEFAULT_LAUNCHER')" class="pointer">
+                <span localized>table.heading.device.default.launcher</span>
+                <span ng-if='paging.sortBy === "DEFAULT_LAUNCHER"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
 
             <th ng-if="hasPermission('edit_devices')" class='actions-column' localized>table.heading.device.actions</th>
         </tr>
@@ -263,6 +268,9 @@
             </td>
             <td ng-if="settings.columnDisplayedBatteryLevel">
                 <span>{{getDeviceBatteryLevel(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedDefaultLauncher">
+                <span ng-class="{'device-data-mismatch': device.info.defaultLauncher === false}">{{getIsDefaultLauncher(device)}}</span>
             </td>
 
             <td class="deviceActions">

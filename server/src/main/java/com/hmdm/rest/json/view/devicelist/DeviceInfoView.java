@@ -105,6 +105,11 @@ public class DeviceInfoView implements Serializable {
         return deviceInfo.getBatteryLevel();
     }
 
+    @ApiModelProperty("A flag showing if Headwind MDM is set as default launcher on a device")
+    public Boolean getDefaultLauncher() {
+        return deviceInfo.getDefaultLauncher();
+    }
+
     @ApiModelProperty("A list of configuration files installed on device")
     public List<DeviceConfigurationFile> getFiles() {
         return files;

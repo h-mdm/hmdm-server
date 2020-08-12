@@ -196,6 +196,35 @@
                     </div>
 
                     <div class='form-group'>
+                        <label class='col-sm-3 control-label' for="timeZoneMode-c"
+                               localized>form.configuration.settings.common.timezone.mode</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="timeZoneMode-c" name="timeZoneMode"
+                                    ng-model='configuration.timeZoneMode'>
+                                <option ng-value="'default'" ng-selected="configuration.timeZoneMode === 'default'"
+                                        localized>form.configuration.settings.common.timezone.mode.default</option>
+                                <option ng-value="'auto'" ng-selected="configuration.timeZoneMode === 'auto'"
+                                        localized>form.configuration.settings.common.timezone.mode.auto</option>
+                                <option ng-value="'manual'" ng-selected="configuration.timeZoneMode === 'manual'"
+                                        localized>form.configuration.settings.common.timezone.mode.manual</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class='form-group' ng-if="configuration.timeZoneMode === 'manual'">
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.timezone</label>
+                        <div class='col-sm-6'>
+                            <input ng-model='configuration.timeZone' name="timeZone-c"
+                                   type='text' class='form-control'
+                                   localized-placeholder='form.configuration.settings.common.timezone.placeholder'/>
+                        </div>
+                        <div class='col-sm-3'>
+                            <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank" localized>form.configuration.settings.common.timezone.link</a>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.system.update</label>
                         <div class='col-sm-9 three-state'>
                             <label><span localized>form.configuration.settings.system.update.default</span>
@@ -239,6 +268,13 @@
                                 <option ng-value="'strong'" ng-selected="configuration.passwordMode === 'strong'"
                                         localized>form.configuration.settings.password.mode.strong</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.use.default.launcher</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.runDefaultLauncher' name="runDefaultLauncher" type='checkbox' class='form-control common-checkbox'/>
                         </div>
                     </div>
 
@@ -631,6 +667,16 @@
                                 <option ng-value="'EAP'" ng-selected="configuration.wifiSecurityType === 'EAP'">EAP</option>
                                 <option ng-value="'NONE'" ng-selected="configuration.wifiSecurityType === 'NONE'">NONE</option>
                             </select>
+                        </div>
+                    </div>
+
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.allowed.classes</label>
+                        <div class='col-sm-9'>
+                          <textarea ng-model='configuration.allowedClasses' name="allowedClasses-c"
+                                    class='form-control'
+                                    localized-placeholder='form.configuration.settings.mdm.allowed.classes.placeholder'></textarea>
                         </div>
                     </div>
 
