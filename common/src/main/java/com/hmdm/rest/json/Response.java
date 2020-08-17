@@ -21,11 +21,13 @@
 
 package com.hmdm.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @ApiModel(description = "A response from the application to request from client. The actual type of 'data' is specific to request.")
 public class Response implements Serializable {
 

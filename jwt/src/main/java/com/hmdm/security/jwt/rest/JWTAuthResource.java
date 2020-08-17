@@ -96,7 +96,8 @@ public class JWTAuthResource {
     @ApiOperation(
             value = "Authenticate client",
             notes = "Authenticates the client using provided credentials and responds with JWT token in case of " +
-                    "success. The returned JWT token must be included into 'Authorization' header for all " +
+                    "success. The password field should contain the MD5 hash of the actual password. " +
+                    "The returned JWT token must be included into 'Authorization' header for all " +
                     "sub-sequent requests from the same client.",
             response = JWTToken.class,
             responseHeaders = {@ResponseHeader(name = AUTHORIZATION_HEADER)}

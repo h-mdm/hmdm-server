@@ -28,7 +28,7 @@
 
     <Parameter name="plugin.photo.enable.places" value="${plugin.photo.enable.places}"/>
 
-    <!-- MQTT notification service parameters -->
+    <!-- A local address to which the server binds to listen on port 31000 (MQTT for Push notifications), for example, demo.h-mdm.com:31000 -->    
     <Parameter name="mqtt.server.uri" value="${mqtt.server.uri}"/>
 
 </Context>
