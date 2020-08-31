@@ -63,4 +63,6 @@ public interface SyncApplicationInt {
     ApplicationType getType();
 
     Integer getScreenOrder();
+
+    Integer getKeyCode();
 }

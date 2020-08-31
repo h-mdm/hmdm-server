@@ -1913,4 +1913,25 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="17.08.20-14:35" author="seva" context="common">
+        <comment>Adding newServerUrl column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN newServerUrl TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN newServerUrl;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="30.08.20-11:40" author="seva" context="common">
+        <comment>Adding keycode column to configurationapplications table</comment>
+        <sql>
+            ALTER TABLE configurationapplications ADD COLUMN keyCode INT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationapplications DROP COLUMN keyCode;
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

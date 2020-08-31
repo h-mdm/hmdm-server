@@ -129,4 +129,10 @@ public class SyncApplication implements SyncApplicationInt {
     public Integer getScreenOrder() {
         return wrapped.getScreenOrder();
     }
+
+    @Override
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Integer getKeyCode() {
+        return wrapped.getKeyCode();
+    }
 }

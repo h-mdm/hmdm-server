@@ -74,6 +74,9 @@ public class Application implements CustomerData, Serializable {
     @ApiModelProperty("Order of applications on the screen")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer screenOrder;
+    @ApiModelProperty("Key code for fast app start")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer keyCode;
 
     // A flag indicating that application is to be removed from the application
     // This field is going to be removed as now action field is stored in DB and encodes the removed apps with
@@ -343,6 +346,14 @@ public class Application implements CustomerData, Serializable {
 
     public void setScreenOrder(Integer screenOrder) {
         this.screenOrder = screenOrder;
+    }
+
+    public Integer getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(Integer keyCode) {
+        this.keyCode = keyCode;
     }
 
     @Override

@@ -380,7 +380,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         final int userCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
 
         if (application.isCommon() || application.getCustomerId() == userCustomerId) {
-            return this.mapper.getApplicationVersionConfigurationsWithCandidates(userCustomerId, versionId);
+            return this.mapper.getApplicationVersionConfigurationsWithCandidates(userCustomerId, application.getId(), versionId);
         } else {
             throw SecurityException.onApplicationAccessViolation(application);
         }

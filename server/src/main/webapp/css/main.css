@@ -30,6 +30,10 @@
     display: inline-block;
 }
 
+.configuration-hint {
+    color: #a0a0a0;
+}
+
 .device-indicator {
     width: 15px;
     margin-top: 3px;

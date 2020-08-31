@@ -14,7 +14,12 @@
     <Parameter name="base.url" value="${base.url}"/>
 
     <Parameter name="usage.scenario" value="${usage.scenario}"/>
+
+    <!-- If set to 1, the device configuration request must be signed by a shared secret (setup in hash.secret and in the Android app) 
+         0 or empty value does not require request signature which is less secure -->
+    <Parameter name="secure.enrollment" value="${secure.enrollment}"/>
     <Parameter name="hash.secret" value="${hash.secret}"/>
+
     <Parameter name="role.orgadmin.id" value="${role.orgadmin.id}"/>
 
     <!-- A path to a file to be created by the application initializer to signal on initialization completion -->

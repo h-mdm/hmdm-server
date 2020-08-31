@@ -100,6 +100,8 @@ public class Configuration implements CustomerData, Serializable {
     private String timeZone;
     @ApiModelProperty("Allowed classes, separated by comma")
     private String allowedClasses;
+    @ApiModelProperty("New server URL used to migrate to another server")
+    private String newServerUrl;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -581,6 +583,14 @@ public class Configuration implements CustomerData, Serializable {
         this.allowedClasses = allowedClasses;
     }
 
+    public String getNewServerUrl() {
+        return newServerUrl;
+    }
+
+    public void setNewServerUrl(String newServerUrl) {
+        this.newServerUrl = newServerUrl;
+    }
+
     public List<ConfigurationFile> getFiles() {
         return files;
     }
@@ -645,6 +655,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setRunDefaultLauncher(getRunDefaultLauncher());
         copy.setTimeZone(getTimeZone());
         copy.setAllowedClasses(getAllowedClasses());
+        copy.setNewServerUrl(getNewServerUrl());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());

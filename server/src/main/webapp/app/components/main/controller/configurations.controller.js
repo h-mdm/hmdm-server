@@ -655,6 +655,10 @@ angular.module('headwind-kiosk')
                         request.allowedClasses = null;
                     }
 
+                    if ($scope.configuration.newServerUrl == '') {
+                        request.newServerUrl = null;
+                    }
+
                     if ($scope.configuration.orientation == 0) {
                         request.orientation = null;
                     }
@@ -899,6 +903,18 @@ angular.module('headwind-kiosk')
                         });
                     } else {
                         mergeApplicationUsageParameters(data.applicationParameters);
+                    }
+                });
+            };
+
+            $scope.editDetails = function (application) {
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/components/main/view/modal/configurationAppDetails.html',
+                    controller: 'ConfigurationAppDetailsController',
+                    resolve: {
+                        application: function () {
+                            return application;
+                        }
                     }
                 });
             };
@@ -1304,6 +1320,16 @@ angular.module('headwind-kiosk')
                 availableVersions: $scope.versions,
                 applicationParameters: $scope.applicationParameters
             });
+        };
+    })
+    .controller('ConfigurationAppDetailsController', function ($scope, $modalInstance, applicationService,
+                                                                     localization, application) {
+
+        $scope.errorMessage = undefined;
+        $scope.application = application;
+
+        $scope.closeModal = function () {
+            $modalInstance.dismiss();
         };
     })
     .controller('FileEditorController', function ($scope, $modalInstance, localization, file) {

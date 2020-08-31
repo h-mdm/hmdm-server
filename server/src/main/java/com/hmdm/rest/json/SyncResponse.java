@@ -96,6 +96,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Allowed classes, separated by comma")
     private String allowedClasses;
 
+    @ApiModelProperty("New server URL used to migrate to another server")
+    private String newServerUrl;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -554,6 +557,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setAllowedClasses(String allowedClasses) {
         this.allowedClasses = allowedClasses;
+    }
+
+    @Override
+    public String getNewServerUrl() {
+        return newServerUrl;
+    }
+
+    public void setNewServerUrl(String newServerUrl) {
+        this.newServerUrl = newServerUrl;
     }
 
     @Override

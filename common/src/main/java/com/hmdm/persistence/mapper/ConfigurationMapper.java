@@ -76,6 +76,7 @@ public interface ConfigurationMapper {
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "timeZone=#{timeZone}, " +
             "allowedClasses=#{allowedClasses}, " +
+            "newServerUrl=#{newServerUrl}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
             "wifi=#{wifi}, " +

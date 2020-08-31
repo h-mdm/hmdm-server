@@ -39,6 +39,10 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(baseUrl)).to(this.context.getInitParameter(baseUrl));
         this.bindConstant().annotatedWith(Names.named("plugins.files.directory")).to(this.context.getInitParameter("plugins.files.directory"));
         this.bindConstant().annotatedWith(Names.named("usage.scenario")).to(this.context.getInitParameter("usage.scenario"));
+        String secureEnrollment = this.context.getInitParameter("secure.enrollment");
+        this.bindConstant().annotatedWith(Names.named("secure.enrollment")).to(
+                secureEnrollment != null && (secureEnrollment.equals("1") || secureEnrollment.equalsIgnoreCase("true"))
+        );
         this.bindConstant().annotatedWith(Names.named("hash.secret")).to(this.context.getInitParameter("hash.secret"));
         this.bindConstant().annotatedWith(Names.named("aapt.command")).to(this.context.getInitParameter("aapt.command"));
         this.bindConstant().annotatedWith(Names.named("role.orgadmin.id")).to(

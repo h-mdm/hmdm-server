@@ -21,6 +21,7 @@
 
 package com.hmdm.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -54,6 +55,11 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
     private int versionText;
     @ApiModelProperty("A flag indicating if icon is to be shown on mobile device")
     private Boolean showIcon;
+    @ApiModelProperty("Order of applications on the screen")
+    private Integer screenOrder;
+    @ApiModelProperty("Key code for fast app start")
+    private Integer keyCode;
+
     // A helper property to indicate the action required to be performed by mobile device
     // in regard to application installation
     // 0 - do not install and hide if installed
@@ -166,6 +172,22 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
         this.showIcon = showIcon;
     }
 
+    public Integer getScreenOrder() {
+        return screenOrder;
+    }
+
+    public void setScreenOrder(Integer screenOrder) {
+        this.screenOrder = screenOrder;
+    }
+
+    public Integer getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(Integer keyCode) {
+        this.keyCode = keyCode;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersionConfigurationLink{" +
@@ -180,6 +202,8 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
                 ", action=" + action +
                 ", remove=" + remove +
                 ", showIcon=" + showIcon +
+                ", screenOrder=" + screenOrder +
+                ", keyCode=" + keyCode +
                 '}';
     }
 }

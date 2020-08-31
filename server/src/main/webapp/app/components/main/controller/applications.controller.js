@@ -205,6 +205,8 @@ angular.module('headwind-kiosk')
                     }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
+                } else {
+                    $scope.errorMessage = localization.localize('error.apk.parse');
                 }
             } else {
                 $scope.errorMessage = localization.localize('error.apk.file.required');

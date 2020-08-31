@@ -102,4 +102,22 @@ public class CryptoUtil {
 
         return hashtext;
     }
+
+    public static String getSHA1String(String value) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            md.update( value.getBytes());
+            byte[] digest = md.digest();
+
+            char[] hexChars = new char[digest.length * 2];
+            for (int i = 0; i < digest.length; i++) {
+                int v = digest[i] & 0xFF;
+                hexChars[i * 2] = hexArray[v >>> 4];
+                hexChars[i * 2 + 1] = hexArray[v & 0x0F];
+            }
+            return new String(hexChars).toUpperCase();
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+    }
 }

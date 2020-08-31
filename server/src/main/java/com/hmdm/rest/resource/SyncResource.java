@@ -55,6 +55,7 @@ import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
+import com.hmdm.util.CryptoUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -99,7 +100,11 @@ public class SyncResource {
 
     private String baseUrl;
 
+    private boolean secureEnrollment;
+    private String hashSecret;
+
     private static final String HEADER_IP_ADDRESS = "X-IP-Address";
+    private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -116,12 +121,16 @@ public class SyncResource {
                         Injector injector,
                         CustomerDAO customerDAO,
                         DeviceDAO deviceDAO,
-                        @Named("base.url") String baseUrl) {
+                        @Named("base.url") String baseUrl,
+                        @Named("secure.enrollment") boolean secureEnrollment,
+                        @Named("hash.secret") String hashSecret) {
         this.unsecureDAO = unsecureDAO;
         this.eventService = eventService;
         this.customerDAO = customerDAO;
         this.deviceDAO = deviceDAO;
         this.baseUrl = baseUrl;
+        this.secureEnrollment = secureEnrollment;
+        this.hashSecret = hashSecret;
 
         Set<SyncResponseHook> allYourInterfaces = new HashSet<>();
         for (Key<?> key : injector.getAllBindings().keySet()) {
@@ -148,7 +157,21 @@ public class SyncResource {
                                      @Context HttpServletRequest request,
                                      @Context HttpServletResponse response) {
         logger.debug("/public/sync/configuration/{}", number);
-        
+
+        if (secureEnrollment) {
+            String signature = request.getHeader(HEADER_ENROLLMENT_SIGNATURE);
+            if (signature == null) {
+                return Response.PERMISSION_DENIED();
+            }
+            try {
+                String goodSignature = CryptoUtil.getSHA1String(hashSecret + number);
+                if (!signature.equalsIgnoreCase(goodSignature)) {
+                    return Response.PERMISSION_DENIED();
+                }
+            } catch (Exception e) {
+            }
+        }
+
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
 
@@ -215,6 +238,7 @@ public class SyncResource {
                 data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
                 data.setTimeZone(configuration.getTimeZone());
                 data.setAllowedClasses(configuration.getAllowedClasses());
+                data.setNewServerUrl(configuration.getNewServerUrl());
 
                 data.setKioskMode(configuration.isKioskMode());
                 if (data.isKioskMode()) {

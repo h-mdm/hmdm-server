@@ -205,7 +205,9 @@ public interface ApplicationMapper {
             "       configurations.customerId          AS customerId, " +
             "       applications.id                    AS applicationId, " +
             "       applications.name                  AS applicationName, " +
-            "       COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon, " +
+            "       COALESCE(configurationApplications.showIcon, caPrev.showIcon, applications.showIcon) AS showIcon, " +
+            "       COALESCE(configurationApplications.screenOrder, caPrev.screenOrder) AS screenOrder, " +
+            "       COALESCE(configurationApplications.screenOrder, caPrev.keyCode) AS keyCode, " +
             "       applications.id                    AS applicationVersionId, " +
             "       applications.id                    AS versionText, " +
             "       configurationApplications.remove   AS remove, " +
@@ -214,10 +216,11 @@ public interface ApplicationMapper {
             "INNER JOIN applicationVersions ON applicationVersions.id = #{id} " +
             "INNER JOIN applications ON applications.id = applicationVersions.applicationId " +
             "LEFT JOIN configurationApplications ON configurations.id = configurationApplications.configurationId AND configurationApplications.applicationVersionId = applicationVersions.id " +
+            "LEFT JOIN configurationApplications caPrev ON configurations.id = caPrev.configurationId AND caPrev.applicationId = #{appId} AND caPrev.action=1 " +
             "WHERE configurations.customerId = #{customerId} " +
             "ORDER BY LOWER(configurations.name)"})
     List<ApplicationVersionConfigurationLink> getApplicationVersionConfigurationsWithCandidates(
-            @Param("customerId") Integer customerId, @Param("id") Integer applicationVersionId
+            @Param("customerId") Integer customerId, @Param("appId") Integer applicationId, @Param("id") Integer applicationVersionId
     );
 
 

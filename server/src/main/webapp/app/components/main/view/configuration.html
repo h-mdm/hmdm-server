@@ -457,6 +457,7 @@
                                                 <th localized>table.heading.application.actions</th>
                                                 <th localized>table.heading.application.label</th>
                                                 <th localized>table.heading.application.order</th>
+                                                <th>&nbsp;</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -505,6 +506,13 @@
                                                     <input class="form-control" style="width: 80px" ng-if="application.action == 1 && application.showIcon == 1"
                                                            ng-model="application.screenOrder" type="number">
                                                 </td>
+                                                <td>
+                                                    <button style="margin-top: 3px" ng-if="application.action == 1 && application.showIcon == 1"
+                                                            localized-title="form.configuration.apps.edit.details"
+                                                            type='button' class='btn btn-default' ng-click='editDetails(application)'>
+                                                        <span class='glyphicon glyphicon-option-horizontal'></span>
+                                                    </button>
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -534,6 +542,10 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="configuration-hint" localized>form.configuration.apps.hint</div>
+
 
                     <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
@@ -677,6 +689,15 @@
                           <textarea ng-model='configuration.allowedClasses' name="allowedClasses-c"
                                     class='form-control'
                                     localized-placeholder='form.configuration.settings.mdm.allowed.classes.placeholder'></textarea>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.component.server.url</label>
+                        <div class='col-sm-9'>
+                            <input ng-model='configuration.newServerUrl'
+                                   name="c_newServerUrl" type='text' class='form-control' maxlength="512"
+                                   localized-placeholder='form.configuration.settings.mdm.component.server.url.placeholder'/>
                         </div>
                     </div>
 

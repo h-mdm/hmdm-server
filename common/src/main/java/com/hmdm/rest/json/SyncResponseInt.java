@@ -109,5 +109,7 @@ public interface SyncResponseInt {
 
     String getAllowedClasses();
 
+    String getNewServerUrl();
+
     List<SyncConfigurationFileInt> getFiles();
 }

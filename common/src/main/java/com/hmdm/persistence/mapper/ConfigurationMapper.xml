@@ -28,7 +28,7 @@
                                     iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth,
                                     wifi, mobileData, usbStorage, requestUpdates,
                                     pushOptions, autoBrightness, brightness, manageTimeout, timeout, lockVolume,
-                                    passwordMode, orientation, runDefaultLauncher, timeZone, allowedClasses, mainAppId,
+                                    passwordMode, orientation, runDefaultLauncher, timeZone, allowedClasses, newServerUrl, mainAppId,
                                     eventReceivingComponent, kioskMode, contentAppId,
                                     wifiSSID, wifiPassword, wifiSecurityType, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, autoUpdate,
@@ -37,7 +37,7 @@
                 #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth},
                 #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
                 #{pushOptions}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout}, #{lockVolume},
-                #{passwordMode}, #{orientation}, #{runDefaultLauncher}, #{timeZone}, #{allowedClasses}, #{mainAppId},
+                #{passwordMode}, #{orientation}, #{runDefaultLauncher}, #{timeZone}, #{allowedClasses}, #{newServerUrl}, #{mainAppId},
                 #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
                 #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{kioskHome}, #{kioskRecents},
                                     #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{autoUpdate},
@@ -45,11 +45,11 @@
     </insert>
 
     <insert id="insertConfigurationApplications">
-        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action, screenOrder)
+        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, action, screenOrder, keyCode)
         VALUES
         <foreach item="item" index="index" collection="apps"
                  open="" separator="," close="">
-            (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon}, #{item.action}, #{item.screenOrder})
+            (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon}, #{item.action}, #{item.screenOrder}, #{item.keyCode})
         </foreach>
     </insert>
 
@@ -99,6 +99,7 @@
                END AS showIcon,
                configurationApplications.action AS action,
                configurationApplications.screenOrder AS screenOrder,
+               configurationApplications.keyCode AS keyCode,
                cap.skipVersionCheck AS skipVersion
         FROM applications
         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
@@ -134,6 +135,7 @@
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
                configurationApplications.action AS action,
                configurationApplications.screenOrder AS screenOrder,
+               configurationApplications.keyCode AS keyCode,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL
@@ -173,6 +175,7 @@
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
                configurationApplications.action AS action,
                configurationApplications.screenOrder AS screenOrder,
+               configurationApplications.keyCode AS keyCode,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL
