@@ -111,5 +111,7 @@ public interface SyncResponseInt {
 
     String getNewServerUrl();
 
+    Boolean getLockSafeSettings();
+
     List<SyncConfigurationFileInt> getFiles();
 }

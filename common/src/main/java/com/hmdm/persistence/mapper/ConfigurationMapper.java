@@ -77,6 +77,7 @@ public interface ConfigurationMapper {
             "timeZone=#{timeZone}, " +
             "allowedClasses=#{allowedClasses}, " +
             "newServerUrl=#{newServerUrl}, " +
+            "lockSafeSettings=#{lockSafeSettings}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +
             "wifi=#{wifi}, " +

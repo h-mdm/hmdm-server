@@ -215,6 +215,7 @@ document.localization ['en_US'] = {
     'form.configuration.settings.mdm.kiosk.notifications': 'Enable notifications',
     'form.configuration.settings.mdm.kiosk.system.info': 'Enable status bar info',
     'form.configuration.settings.mdm.kiosk.keyguard': 'Enable screen lock',
+    'form.configuration.settings.mdm.lock.safe.settings': 'Lock safe settings (WiFi, GPS, etc)',
     'form.configuration.settings.mdm.allowed.classes': 'Allowed activities',
     'form.configuration.settings.mdm.allowed.classes.placeholder': 'Comma-separated classes, e.g.: com.android.settings.homepage.SettingsHomepageActivity',
     'form.configuration.settings.mdm.qrcode.url': 'QR code URL',
@@ -444,6 +445,7 @@ document.localization ['en_US'] = {
     'form.settings.lang.use': 'Use language',
     'form.settings.lang.en': 'English',
     'form.settings.lang.ru': 'Russian',
+    'form.settings.lang.fr': 'French',
 
     'form.settings.misc.title': 'Miscellaneous settings',
     'form.settings.misc.phone.format': 'Phone number format',

@@ -239,6 +239,7 @@ public class SyncResource {
                 data.setTimeZone(configuration.getTimeZone());
                 data.setAllowedClasses(configuration.getAllowedClasses());
                 data.setNewServerUrl(configuration.getNewServerUrl());
+                data.setLockSafeSettings(configuration.getLockSafeSettings());
 
                 data.setKioskMode(configuration.isKioskMode());
                 if (data.isKioskMode()) {

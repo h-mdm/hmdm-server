@@ -99,6 +99,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("New server URL used to migrate to another server")
     private String newServerUrl;
 
+    @ApiModelProperty("Flag disabling safe settings")
+    private Boolean lockSafeSettings;
+
     @ApiModelProperty("A password for administrator of MDM application used on device")
     private String password;
 
@@ -566,6 +569,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setNewServerUrl(String newServerUrl) {
         this.newServerUrl = newServerUrl;
+    }
+
+    @Override
+    public Boolean getLockSafeSettings() {
+        return lockSafeSettings;
+    }
+
+    public void setLockSafeSettings(Boolean lockSafeSettings) {
+        this.lockSafeSettings = lockSafeSettings;
     }
 
     @Override

@@ -28,8 +28,8 @@
                                     iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth,
                                     wifi, mobileData, usbStorage, requestUpdates,
                                     pushOptions, autoBrightness, brightness, manageTimeout, timeout, lockVolume,
-                                    passwordMode, orientation, runDefaultLauncher, timeZone, allowedClasses, newServerUrl, mainAppId,
-                                    eventReceivingComponent, kioskMode, contentAppId,
+                                    passwordMode, orientation, runDefaultLauncher, timeZone, allowedClasses, newServerUrl,
+                                    lockSafeSettings, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
                                     wifiSSID, wifiPassword, wifiSecurityType, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
@@ -37,8 +37,8 @@
                 #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth},
                 #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
                 #{pushOptions}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout}, #{lockVolume},
-                #{passwordMode}, #{orientation}, #{runDefaultLauncher}, #{timeZone}, #{allowedClasses}, #{newServerUrl}, #{mainAppId},
-                #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
+                #{passwordMode}, #{orientation}, #{runDefaultLauncher}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
+                #{lockSafeSettings}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
                 #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{kioskHome}, #{kioskRecents},
                                     #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})

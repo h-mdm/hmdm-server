@@ -216,6 +216,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.mdm.kiosk.notifications': 'Разрешить уведомления',
     'form.configuration.settings.mdm.kiosk.system.info': 'Разрешить информацию в статус-баре',
     'form.configuration.settings.mdm.kiosk.keyguard': 'Разрешить блокировку экрана',
+    'form.configuration.settings.mdm.lock.safe.settings': 'Блокировать безопасные настройки',
     'form.configuration.settings.mdm.allowed.classes': 'Разрешенные активити',
     'form.configuration.settings.mdm.allowed.classes.placeholder': 'Классы через запятую, например: com.android.settings.homepage.SettingsHomepageActivity',
     'form.configuration.settings.mdm.qrcode.url': 'URL QR-кода',
@@ -445,6 +446,7 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.use': 'Исполльзовать язык',
     'form.settings.lang.en': 'Английский',
     'form.settings.lang.ru': 'Русский',
+    'form.settings.lang.fr': 'Французский',
 
     'form.settings.misc.title': 'Прочие настройки',
     'form.settings.misc.phone.format': 'Формат номера телефона',

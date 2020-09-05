@@ -102,6 +102,8 @@ public class Configuration implements CustomerData, Serializable {
     private String allowedClasses;
     @ApiModelProperty("New server URL used to migrate to another server")
     private String newServerUrl;
+    @ApiModelProperty("Flag disabling safe settings")
+    private Boolean lockSafeSettings;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -591,6 +593,14 @@ public class Configuration implements CustomerData, Serializable {
         this.newServerUrl = newServerUrl;
     }
 
+    public Boolean getLockSafeSettings() {
+        return lockSafeSettings;
+    }
+
+    public void setLockSafeSettings(Boolean lockSafeSettings) {
+        this.lockSafeSettings = lockSafeSettings;
+    }
+
     public List<ConfigurationFile> getFiles() {
         return files;
     }
@@ -656,6 +666,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setTimeZone(getTimeZone());
         copy.setAllowedClasses(getAllowedClasses());
         copy.setNewServerUrl(getNewServerUrl());
+        copy.setLockSafeSettings(getLockSafeSettings());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());
