@@ -13,7 +13,7 @@
   "plugin.messaging.option.status.all": "Tous les messages",
   "plugin.messaging.option.status.sent": "Envoyé",
   "plugin.messaging.option.status.delivered": "Livré",
-  "plugin.messaging.option.status.read": "Lire",
+  "plugin.messaging.option.status.read": "Lu",
   "table.heading.plugin.messaging.dateTime": "Heure",
   "table.heading.plugin.messaging.deviceNumber": "Appareil",
   "table.heading.plugin.messaging.status": "Statut",

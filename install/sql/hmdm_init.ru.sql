@@ -17,7 +17,6 @@ INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestver
     (2, 'com.android.bluetooth', 'Сервис Bluetooth', false, 1, true, 10001, false),
     (3, 'com.google.android.gms', 'Сервисы Google', false, 1, true, 10002, false),
     (34, 'com.android.email', 'Email клиент', true, 1, true, 10033, false),
-    (7, 'org.kman.WifiManager', 'WiFi Менеджер', true, 1, false, 10006, false),
     (9, 'com.android.chrome', 'Браузер Chrome', true, 1, true, 10008, false),
     (10, 'com.sec.android.app.browser', 'Браузер (Samsung)', true, 1, true, 10009, false),
     (11, 'com.samsung.android.video', 'Samsung Video', false, 1, true, 10010, false),
@@ -78,7 +77,6 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10003, 4, '0', NULL),
     (10004, 5, '0', NULL),
     (10005, 6, '0', NULL),
-    (10006, 7, '4.2.7-220', 'https://h-mdm.com/files/wifi-manager-4-2-7-220.apk'),
     (10007, 8, '0', NULL),
     (10008, 9, '0', NULL),
     (10009, 10, '0', NULL),
@@ -140,7 +138,6 @@ INSERT INTO configurations (id, name, description, type, password, backgroundcol
 SELECT pg_catalog.setval('public.configurations_id_seq', 2, true);
 
 INSERT INTO configurationapplications (id, configurationid, applicationid, remove, showicon, applicationversionid) VALUES 
-    (1, 1, 7, false, true, 10006),
     (2, 1, 8, false, true, 10007),
     (3, 1, 37, false, false, 10036),
     (4, 1, 2, false, false, 10001),
@@ -186,7 +183,6 @@ INSERT INTO configurationapplications (id, configurationid, applicationid, remov
     (44, 1, 47, false, false, 10046),
     (45, 1, 48, false, true, 10047),
     (46, 1, 50, false, false, 10049),
-    (47, 2, 7, false, true, 10006),
     (48, 2, 8, false, true, 10007),
     (49, 2, 37, false, false, 10036),
     (50, 2, 2, false, false, 10001),
@@ -227,3 +223,9 @@ SELECT pg_catalog.setval('public.configurationapplications_id_seq', 81, true);
 INSERT INTO devices (id, number, description, lastupdate, configurationid, oldconfigurationid, info, imei, phone, customerid) VALUES (1, 'h0001', 'Мое первое Android-устройство', 0, 1, NULL, NULL, NULL, NULL, 1);
 
 SELECT pg_catalog.setval('public.devices_id_seq', 1, true);
+
+INSERT INTO plugin_devicelog_settings (id, customerid, logspreserveperiod) VALUES (1, 1, 30);
+SELECT pg_catalog.setval('public.plugin_devicelog_settings_id_seq', 1, true);
+
+INSERT INTO plugin_devicelog_settings_rules (id, settingid, name, active, applicationid, severity) VALUES (1, 1, 'Headwind MDM', true, 46, 'VERBOSE');
+SELECT pg_catalog.setval('public.plugin_devicelog_settings_rules_id_seq', 1, true);

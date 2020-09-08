@@ -447,6 +447,7 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.en': 'Английский',
     'form.settings.lang.ru': 'Русский',
     'form.settings.lang.fr': 'Французский',
+    'form.settings.lang.ar': 'Арабский',
 
     'form.settings.misc.title': 'Прочие настройки',
     'form.settings.misc.phone.format': 'Формат номера телефона',

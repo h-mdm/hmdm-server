@@ -18,10 +18,26 @@
             </div>
 
             <div class='form-group' ng-if="!settings.useDefaultLanguage">
+                <label class='col-sm-6 control-label' for="c2_ar" localized-change-tracking>form.settings.lang.ar</label>
+                <div class='col-sm-1'>
+                    <input id="c2_ar" ng-model='settings.language' type='radio' name="c_lang"
+                           class='form-control' ng-value="'ar_AE'"/>
+                </div>
+            </div>
+
+            <div class='form-group' ng-if="!settings.useDefaultLanguage">
                 <label class='col-sm-6 control-label' for="c2_en" localized-change-tracking>form.settings.lang.en</label>
                 <div class='col-sm-1'>
                     <input id="c2_en" ng-model='settings.language' type='radio' name="c_lang"
                            class='form-control' ng-value="'en_US'"/>
+                </div>
+            </div>
+
+            <div class='form-group' ng-if="!settings.useDefaultLanguage">
+                <label class='col-sm-6 control-label' for="c2_fr" localized-change-tracking>form.settings.lang.fr</label>
+                <div class='col-sm-1'>
+                    <input id="c2_fr" ng-model='settings.language' type='radio' name="c_lang"
+                           class='form-control' ng-value="'fr_FR'"/>
                 </div>
             </div>
 
@@ -33,13 +49,6 @@
                 </div>
             </div>
 
-            <div class='form-group' ng-if="!settings.useDefaultLanguage">
-                <label class='col-sm-6 control-label' for="c2_fr" localized-change-tracking>form.settings.lang.fr</label>
-                <div class='col-sm-1'>
-                    <input id="c2_fr" ng-model='settings.language' type='radio' name="c_lang"
-                           class='form-control' ng-value="'fr_FR'"/>
-                </div>
-            </div>
 
             <div style="margin-top: 50px">
                 <div class="text-center">

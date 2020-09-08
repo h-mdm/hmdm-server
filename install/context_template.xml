@@ -15,7 +15,10 @@
     <!-- private / shared; shared can be used only in Enterprise solution -->
     <Parameter name="usage.scenario" value="private" />
 
-    <!-- A shared secret between mobile app and control panel. 
+   <!-- If set to 1, the device configuration request must be signed by a shared secret (setup in hash.secret and in the Android app) 
+         0 or empty value does not require request signature which is less secure -->
+    <Parameter name="secure.enrollment" value="0"/>
+     <!-- A shared secret between mobile app and control panel. 
          Don't change this unless you know what you're doing -->
     <Parameter name="hash.secret" value="12345"/>
 

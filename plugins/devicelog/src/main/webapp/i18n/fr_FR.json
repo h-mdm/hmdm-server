@@ -3,7 +3,7 @@
 
   "plugin.devicelog.localization.key.name": "Journaux",
   "plugin.devicelog.tab.title": "Journaux",
-  "plugin.devicelog.settings.title": "\"Journaux\" paramètres du plugin",
+  "plugin.devicelog.settings.title": "Paramètres du plugin \"Journaux\"",
   "plugin.devicelog.option.severyty.default": "Recherche de gravité ...",
   "plugin.devicelog.settings.log.preserve.period": "Durée de stockage du journal (jours)",
   "plugin.devicelog.setting.rules.title": "Règles",

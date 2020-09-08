@@ -31,13 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 /**
  * <p>An analyzer for uploaded APK-files.</p>
@@ -104,23 +102,7 @@ public class APKFileAnalyzer {
             // Process the output by analyzing the line starting with "package:"
             StreamGobbler outputGobbler = new StreamGobbler(exec.getInputStream(), "APK-file DUMP", line -> {
                 if (line.startsWith("package:")) {
-                    Scanner scanner = new Scanner(line).useDelimiter(" ");
-                    while (scanner.hasNext()) {
-                        final String token = scanner.next();
-                        if (token.startsWith("name=")) {
-                            String appPkgLocal = token.substring("name=".length());
-                            if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
-                                appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
-                            }
-                            appPkg.set(appPkgLocal);
-                        } else if (token.startsWith("versionName=")) {
-                            String appVersionLocal = token.substring("versionName=".length());
-                            if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
-                                appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
-                            }
-                            appVersion.set(appVersionLocal);
-                        }
-                    }
+                    parseInfoLine(line, appPkg, appVersion);
                 }
             });
 
@@ -150,6 +132,65 @@ public class APKFileAnalyzer {
         } catch (IOException | InterruptedException e) {
             log.error("Unexpected error while analyzing APK-file: {}", filePath, e);
             throw new APKFileAnalyzerException("Unexpected error while analyzing APK-file", e);
+        }
+    }
+
+    // This function deals with an issue when the version name contains a space
+    // It presumes the following format of the line:
+    // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx' compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
+    private void parseInfoLine(final String line, final AtomicReference<String> appPkg, final AtomicReference<String> appVersion) {
+        String l = line;
+        final String namePrefix = "package: name='";
+        final String versionCodePrefix = "' versionCode='";
+        final String versionNamePrefix = "' versionName='";
+        final String sdkVersionPrefix = "' compileSdkVersion='";
+        int pos;
+
+        pos = l.indexOf(namePrefix);
+        if (pos == -1) {
+            return;
+        }
+        l = l.substring(pos + namePrefix.length());
+
+        pos = l.indexOf(versionCodePrefix);
+        if (pos == -1) {
+            return;
+        }
+        appPkg.set(l.substring(0, pos));
+        l = l.substring(pos + versionCodePrefix.length());
+
+        pos = l.indexOf(versionNamePrefix);
+        if (pos == -1) {
+            return;
+        }
+        // Here we get the version code but it is not currently used
+        // appCode.set(l.substring(0, pos));
+        l = l.substring(pos + versionNamePrefix.length());
+
+        pos = l.indexOf(sdkVersionPrefix);
+        if (pos == -1) {
+            return;
+        }
+        appVersion.set(l.substring(0, pos));
+    }
+
+    private void parseInfoLineLegacy(final String line, final AtomicReference<String> appPkg, final AtomicReference<String> appVersion) {
+        Scanner scanner = new Scanner(line).useDelimiter(" ");
+        while (scanner.hasNext()) {
+            final String token = scanner.next();
+            if (token.startsWith("name=")) {
+                String appPkgLocal = token.substring("name=".length());
+                if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
+                    appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
+                }
+                appPkg.set(appPkgLocal);
+            } else if (token.startsWith("versionName=")) {
+                String appVersionLocal = token.substring("versionName=".length());
+                if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
+                    appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
+                }
+                appVersion.set(appVersionLocal);
+            }
         }
     }
 
