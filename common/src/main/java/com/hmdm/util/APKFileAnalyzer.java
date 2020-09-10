@@ -103,6 +103,11 @@ public class APKFileAnalyzer {
             StreamGobbler outputGobbler = new StreamGobbler(exec.getInputStream(), "APK-file DUMP", line -> {
                 if (line.startsWith("package:")) {
                     parseInfoLine(line, appPkg, appVersion);
+                    if (appPkg.get() == null || appVersion.get() == null) {
+                        // AAPT output is wrong!
+                        log.warn("Failed to parse aapt output: '" + line + "', trying legacy parser");
+                        parseInfoLineLegacy(line, appPkg, appVersion);
+                    }
                 }
             });
 
@@ -144,6 +149,7 @@ public class APKFileAnalyzer {
         final String versionCodePrefix = "' versionCode='";
         final String versionNamePrefix = "' versionName='";
         final String sdkVersionPrefix = "' compileSdkVersion='";
+        final String platformBuildPrefix = "' platformBuildVersionName='";
         int pos;
 
         pos = l.indexOf(namePrefix);
@@ -168,6 +174,10 @@ public class APKFileAnalyzer {
         l = l.substring(pos + versionNamePrefix.length());
 
         pos = l.indexOf(sdkVersionPrefix);
+        if (pos == -1) {
+            // Different versions of aapt may give different output
+            pos = l.indexOf(platformBuildPrefix);
+        }
         if (pos == -1) {
             return;
         }
