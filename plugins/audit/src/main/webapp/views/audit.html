@@ -32,12 +32,25 @@
 
         <div class="form-group">
             <div class="col-sm-3">
+                <input type="text"
+                       ng-model="paging.userFilter"
+                       ng-enter='search()'
+                       localized-placeholder="search.placeholder.user"
+                       autocomplete="off"
+                       class="form-control"
+                       typeahead="user for user in getUsers($viewValue)"
+                       typeahead-loading="loadingUsers"
+                       typeahead-wait-ms="300"
+                       typeahead-focus-first="false"
+                       typeahead-no-results="noResults">
+            </div>
+            <div class="col-sm-3">
                 <select class='form-control'
                         ng-model='paging.messageFilter'
                         ng-options="filter.item as filter.localized for filter in filters">
                 </select>
             </div>
-            <div class='col-sm-3'>
+            <div class='col-sm-2'>
                 <div class='min-padding date-picker date-picker-input'>
                     <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.from"
                            ng-model='paging.dateFrom' is-open='openDatePickers.dateFrom' show-button-bar='false'
@@ -49,7 +62,7 @@
                     </button>
                 </div>
             </div>
-            <div class='col-sm-3'>
+            <div class='col-sm-2'>
                 <div class='min-padding date-picker date-picker-input'>
                     <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.to"
                            ng-model='paging.dateTo' is-open='openDatePickers.dateTo' show-button-bar='false'
@@ -62,7 +75,7 @@
                 </div>
             </div>
 
-            <div class='col-sm-3 text-right'>
+            <div class='col-sm-2 text-right'>
                 <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
             </div>
         </div>

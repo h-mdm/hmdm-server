@@ -51,10 +51,16 @@ public class AuditLogFilter implements Serializable {
     private int pageNum = 1;
 
     /**
-     * <p>A filter used for filtering the data records by device.</p>
+     * <p>A filter used for filtering the data records by message.</p>
      */
     @ApiModelProperty("A filter used for filtering the data records by message")
     private String messageFilter;
+
+    /**
+     * <p>A filter used for filtering the data records by user.</p>
+     */
+    @ApiModelProperty("A filter used for filtering the data records by user")
+    private String userFilter;
 
     /**
      * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
@@ -126,6 +132,14 @@ public class AuditLogFilter implements Serializable {
         this.messageFilter = messageFilter;
     }
 
+    public String getUserFilter() {
+        return userFilter;
+    }
+
+    public void setUserFilter(String userFilter) {
+        this.userFilter = userFilter;
+    }
+
     public int getCustomerId() {
         return customerId;
     }
@@ -164,6 +178,7 @@ public class AuditLogFilter implements Serializable {
                 "pageSize=" + pageSize +
                 ", pageNum=" + pageNum +
                 ", messageFilter='" + messageFilter + '\'' +
+                ", userFilter='" + userFilter + '\'' +
                 ", dateFrom=" + dateFrom +
                 ", dateTo=" + dateTo +
                 ", customerId=" + customerId +

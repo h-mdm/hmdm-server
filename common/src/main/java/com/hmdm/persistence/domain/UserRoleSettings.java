@@ -74,6 +74,12 @@ public class UserRoleSettings implements CustomerData, Serializable {
     private Boolean columnDisplayedBatteryLevel;
     @ApiModelProperty("A flag indicating if Headwind MDM is set as default launcher")
     private Boolean columnDisplayedDefaultLauncher;
+    @ApiModelProperty("A flag indicating if custom property #1 column must be displayed in the Devices table")
+    private Boolean columnDisplayedCustom1;
+    @ApiModelProperty("A flag indicating if custom property #2 column must be displayed in the Devices table")
+    private Boolean columnDisplayedCustom2;
+    @ApiModelProperty("A flag indicating if custom property #3 column must be displayed in the Devices table")
+    private Boolean columnDisplayedCustom3;
 
     /**
      * <p>Constructs new <code>UserRoleSettings</code> instance. This implementation does nothing.</p>
@@ -217,6 +223,30 @@ public class UserRoleSettings implements CustomerData, Serializable {
         this.columnDisplayedDefaultLauncher = columnDisplayedDefaultLauncher;
     }
 
+    public Boolean getColumnDisplayedCustom1() {
+        return columnDisplayedCustom1;
+    }
+
+    public void setColumnDisplayedCustom1(Boolean columnDisplayedCustom1) {
+        this.columnDisplayedCustom1 = columnDisplayedCustom1;
+    }
+
+    public Boolean getColumnDisplayedCustom2() {
+        return columnDisplayedCustom2;
+    }
+
+    public void setColumnDisplayedCustom2(Boolean columnDisplayedCustom2) {
+        this.columnDisplayedCustom2 = columnDisplayedCustom2;
+    }
+
+    public Boolean getColumnDisplayedCustom3() {
+        return columnDisplayedCustom3;
+    }
+
+    public void setColumnDisplayedCustom3(Boolean columnDisplayedCustom3) {
+        this.columnDisplayedCustom3 = columnDisplayedCustom3;
+    }
+
     @Override
     public Integer getId() {
         return id;
@@ -247,6 +277,9 @@ public class UserRoleSettings implements CustomerData, Serializable {
                 ", columnDisplayedLauncherVersion=" + columnDisplayedLauncherVersion +
                 ", columnDisplayedBatteryLevel=" + columnDisplayedBatteryLevel +
                 ", columnDisplayedDefaultLauncher=" + columnDisplayedDefaultLauncher +
+                ", columnDisplayedCustom1=" + columnDisplayedCustom1 +
+                ", columnDisplayedCustom2=" + columnDisplayedCustom2 +
+                ", columnDisplayedCustom3=" + columnDisplayedCustom3 +
                 '}';
     }
 }

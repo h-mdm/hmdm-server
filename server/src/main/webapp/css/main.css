@@ -76,6 +76,11 @@
     background-color: #7a9ab9;
 }
 
+.navbar-nav .expiry-warning {
+    font-weight: bold !important;
+    color: yellow !important;
+}
+
 .login-logo {
     margin: 50px auto 0 auto;
 }
@@ -239,6 +244,18 @@
     cursor: w-resize;
     position: absolute;
     z-index: 200;
+}
+
+.expired-device-opacity1 {
+    opacity: 0.3;
+}
+
+.expired-device-opacity2 {
+    opacity: 0.1;
+}
+
+.expired-device-hidden {
+    visibility: hidden;
 }
 
 .notification-delimiter {
@@ -2045,7 +2062,7 @@
     color: lightgrey;
 }
 
-.device-data-mismatch {
+.device-data-mismatch, .warning-font {
     color: red;
 }
 
@@ -2238,7 +2255,7 @@ div.row.device-app-settings-wrapper{
     overflow-y: auto;
 }
 
-a.version-management-link {
+a.action-link {
     cursor: pointer;
 }
 

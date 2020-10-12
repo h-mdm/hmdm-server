@@ -90,12 +90,18 @@ public interface CommonMapper {
                     "newDeviceGroupId, " +
                     "newDeviceConfigurationId, " +
                     "phoneNumberFormat, " +
+                    "customPropertyName1, " +
+                    "customPropertyName2, " +
+                    "customPropertyName3, " +
                     "customerId" +
                     ") VALUES (" +
                     "#{createNewDevices}, " +
                     "#{newDeviceGroupId}, " +
                     "#{newDeviceConfigurationId}, " +
                     "#{phoneNumberFormat}, " +
+                    "#{customPropertyName1}, " +
+                    "#{customPropertyName2}, " +
+                    "#{customPropertyName3}, " +
                     "#{customerId}" +
                     ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
@@ -103,7 +109,10 @@ public interface CommonMapper {
                     "createNewDevices = EXCLUDED.createNewDevices, " +
                     "newDeviceGroupId = EXCLUDED.newDeviceGroupId, " +
                     "newDeviceConfigurationId = EXCLUDED.newDeviceConfigurationId, " +
-                    "phoneNumberFormat = EXCLUDED.phoneNumberFormat"
+                    "phoneNumberFormat = EXCLUDED.phoneNumberFormat, " +
+                    "customPropertyName1 = EXCLUDED.customPropertyName1, " +
+                    "customPropertyName2 = EXCLUDED.customPropertyName2, " +
+                    "customPropertyName3 = EXCLUDED.customPropertyName3"
     })
     void saveMiscSettings(Settings settings);
 }

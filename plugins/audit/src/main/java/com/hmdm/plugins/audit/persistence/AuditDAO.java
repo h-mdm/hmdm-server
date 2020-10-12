@@ -111,5 +111,12 @@ public class AuditDAO extends AbstractDAO<AuditLogRecord> {
                 filter.setMessageFilter('%' + filter.getMessageFilter().trim() + '%');
             }
         }
+        if (filter.getUserFilter() != null) {
+            if (filter.getUserFilter().trim().isEmpty()) {
+                filter.setUserFilter(null);
+            } else {
+                filter.setUserFilter(filter.getUserFilter().trim());
+            }
+        }
     }
 }

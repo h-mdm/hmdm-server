@@ -23,8 +23,10 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hmdm.persistence.domain.Settings;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.CommonMapper;
+import com.hmdm.persistence.mapper.CustomerMapper;
+import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 
@@ -32,14 +34,38 @@ import com.hmdm.security.SecurityException;
 public class CommonDAO extends AbstractDAO<Settings> {
     
     private final CommonMapper mapper;
+    private final CustomerMapper customerMapper;
+    private final DeviceMapper deviceMapper;
 
     @Inject
-    public CommonDAO(CommonMapper mapper) {
+    public CommonDAO(CommonMapper mapper, CustomerMapper customerMapper, DeviceMapper deviceMapper) {
         this.mapper = mapper;
+        this.customerMapper = customerMapper;
+        this.deviceMapper = deviceMapper;
     }
 
     public Settings getSettings() {
         return getSingleRecord(this.mapper::getSettings);
+    }
+
+    public void loadCustomerSettings(Settings settings) {
+        User currentUser = SecurityContext.get()
+                .getCurrentUser()
+                .get();
+        if (currentUser != null) {
+            Customer customer = customerMapper.findCustomerById(currentUser.getCustomerId());
+            if (!customer.isMaster()) {
+                settings.setAccountType(customer.getAccountType());
+                settings.setExpiryTime(customer.getExpiryTime());
+                settings.setDeviceLimit(customer.getDeviceLimit());
+            } else {
+                settings.setAccountType(Customer.Primary);
+            }
+            Long deviceCount = deviceMapper.countAllDevicesForCustomer(currentUser.getCustomerId());
+            if (deviceCount != null) {
+                settings.setDeviceCount(deviceCount.intValue());
+            }
+        }
     }
 
     public void saveDefaultDesignSettings(Settings settings) {

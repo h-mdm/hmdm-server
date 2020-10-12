@@ -56,6 +56,9 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedLauncherVersion," +
                     "columnDisplayedBatteryLevel," +
                     "columnDisplayedDefaultLauncher," +
+                    "columnDisplayedCustom1," +
+                    "columnDisplayedCustom2," +
+                    "columnDisplayedCustom3," +
                     "roleId," +
                     "customerId" +
                     ") VALUES (" +
@@ -74,6 +77,9 @@ public interface UserRoleSettingsMapper {
                     "#{columnDisplayedLauncherVersion}," +
                     "#{columnDisplayedBatteryLevel}," +
                     "#{columnDisplayedDefaultLauncher}," +
+                    "#{columnDisplayedCustom1}," +
+                    "#{columnDisplayedCustom2}," +
+                    "#{columnDisplayedCustom3}," +
                     "#{roleId}," +
                     "#{customerId}" +
                     ") " +
@@ -93,7 +99,10 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedDeviceGroup = EXCLUDED.columnDisplayedDeviceGroup, " +
                     "columnDisplayedLauncherVersion = EXCLUDED.columnDisplayedLauncherVersion, " +
                     "columnDisplayedBatteryLevel = EXCLUDED.columnDisplayedBatteryLevel, " +
-                    "columnDisplayedDefaultLauncher = EXCLUDED.columnDisplayedDefaultLauncher"
+                    "columnDisplayedDefaultLauncher = EXCLUDED.columnDisplayedDefaultLauncher, " +
+                    "columnDisplayedCustom1 = EXCLUDED.columnDisplayedCustom1, " +
+                    "columnDisplayedCustom2 = EXCLUDED.columnDisplayedCustom2, " +
+                    "columnDisplayedCustom3 = EXCLUDED.columnDisplayedCustom3"
     })
     void saveUserRoleCommonSettings(UserRoleSettings settings);
 }

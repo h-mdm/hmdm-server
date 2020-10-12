@@ -1153,8 +1153,26 @@ angular.module('headwind-kiosk')
             // Entry point
             var configId = $stateParams.id;
             setTimeout(function () {
-                angular.element(document.querySelector('#djsedfujh')).attr('type', 'password');
+                angular.element(document.querySelector('#password-c')).attr('type', 'password');
             }, 300);
+
+            $scope.togglePassword = function() {
+                var passwordElement = angular.element(document.querySelector('#password-c'));
+                var passwordButton = angular.element(document.querySelector('#button-show-password'));
+                var passwordIcon = angular.element(document.querySelector('#span-show-password'));
+                var type = passwordElement.attr('type');
+                if (type == 'text') {
+                    passwordElement.attr('type', 'password');
+                    passwordButton.attr('title', localization.localize('button.show.password'));
+                    passwordIcon.removeClass('glyphicon-eye-close');
+                    passwordIcon.addClass('glyphicon-eye-open');
+                } else {
+                    passwordElement.attr('type', 'text');
+                    passwordButton.attr('title', localization.localize('button.hide.password'));
+                    passwordIcon.removeClass('glyphicon-eye-open');
+                    passwordIcon.addClass('glyphicon-eye-close');
+                }
+            };
 
             var mainAppSelected = false;
             var contentAppSelected = false;

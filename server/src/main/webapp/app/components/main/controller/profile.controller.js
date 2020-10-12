@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('ProfileController', function ($scope, authService, userService, localization) {
+    .controller('ProfileController', function ($scope, authService, userService, settingsService, localization) {
         var resetMessages = function () {
             $scope.errorMessage = '';
             $scope.completeMessage = '';
@@ -10,6 +10,19 @@ angular.module('headwind-kiosk')
 
         $scope.errorMessage = '';
         $scope.completeMessage = '';
+
+        $scope.now = (new Date()) * 1;
+        $scope.accountType = function(type) {
+            switch (type) {
+                case 0:
+                    return localization.localize('customer.type.demo');
+                case 1:
+                    return localization.localize('customer.type.small');
+                case 2:
+                    return localization.localize('customer.type.corporate');
+            }
+            return '';
+        };
 
         $scope.saveProfile = function () {
             if ($scope.user.newPassword !== $scope.user.confirm) {
@@ -40,6 +53,13 @@ angular.module('headwind-kiosk')
                 }
             });
         }
+
+        settingsService.getSettings(function (response) {
+            if (response.data) {
+                $scope.settings = response.data;
+            }
+        });
+
     });
 
 

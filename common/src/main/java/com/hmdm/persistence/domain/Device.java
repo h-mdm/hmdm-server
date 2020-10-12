@@ -58,6 +58,12 @@ public class Device implements CustomerData, Serializable {
     private int customerId;
     @ApiModelProperty("A date of last IMEI change")
     private Long imeiUpdateTs;
+    @ApiModelProperty("Custom property #1")
+    private String custom1;
+    @ApiModelProperty("Custom property #2")
+    private String custom2;
+    @ApiModelProperty("Custom property #3")
+    private String custom3;
 
     // Many-to-many relations
     @ApiModelProperty("A list of groups assigned to device")
@@ -219,6 +225,30 @@ public class Device implements CustomerData, Serializable {
         this.imeiUpdateTs = imeiChangeTs;
     }
 
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
+    }
+
     public List<LookupItem> getGroups() {
         return groups;
     }
@@ -264,6 +294,10 @@ public class Device implements CustomerData, Serializable {
                 ", imei='" + imei + '\'' +
                 ", phone='" + phone + '\'' +
                 ", customerId=" + customerId +
+                ", imeiUpdateTs=" + imeiUpdateTs +
+                ", custom1=" + custom1 +
+                ", custom2=" + custom2 +
+                ", custom3=" + custom3 +
                 ", groups=" + groups +
                 ", ids=" + ids +
                 ", configuration=" + configuration +

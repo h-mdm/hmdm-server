@@ -34,12 +34,9 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
-import com.hmdm.persistence.domain.ApplicationSetting;
-import com.hmdm.persistence.domain.DeviceApplication;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.DeviceListHook;
 import org.mybatis.guice.transactional.Transactional;
-import com.hmdm.persistence.domain.Device;
-import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.rest.json.LookupItem;
@@ -73,6 +70,19 @@ public class DeviceDAO extends AbstractDAO<Device> {
         }
 
         this.deviceListHooks = hooks;
+    }
+
+    public int getTotalDevicesCount() {
+        User user = SecurityContext.get()
+                .getCurrentUser().get();
+        if (user == null) {
+            return 0;
+        }
+        Long count = this.mapper.countAllDevicesForCustomer(user.getCustomerId());
+        if (count == null) {
+            return 0;
+        }
+        return count.intValue();
     }
 
     public List<Device> getAllDevices() {

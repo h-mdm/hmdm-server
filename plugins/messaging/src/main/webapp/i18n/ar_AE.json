@@ -1,8 +1,8 @@
 {
 "plugin.messaging.localization.key.name": "المراسلة" ,
   "breadcrumb.plugin.messaging.main": "الرسائل",
-  "plugin.messaging.settings.title": "إعدادات\"المراسلة\"المكون الإضافي",
-  "plugin.messaging.settings.message.purge.period": "مسح الرسائل الأقدم من (أيام)",
+  "plugin.messaging.settings.title": "إعدادات \"المراسلة\" المكون الإضافي",
+  "plugin.messaging.settings.message.purge.period": "(مسح الرسائل الأقدم من (أيام",
   "plugin.messaging.settings.message.purge.button": "تطهير",
   "plugin.messaging.settings.message.purge.success": "تم حذف الرسائل القديمة",
   "format.date.plugin.messaging.createTime": "dd/MM/yyyy HH:mm:ss",

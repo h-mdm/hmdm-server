@@ -72,6 +72,8 @@ document.localization ['en_US'] = {
     'button.turn.common.app': 'Make Common',
     'button.hints.enable': 'Show tooltips',
     'button.hints.disable': 'Hide tooltips',
+    'button.show.password': 'Show password',
+    'button.hide.password': 'Hide password',
 
     'question.impersonate.user': 'Log in to the application as the administrator of the organization "${customerName}"?',
     'question.delete.file': 'Delete file "${fileName}"?',
@@ -367,6 +369,9 @@ document.localization ['en_US'] = {
     'form.customer.desc.placeholder': 'Enter a description of the organization',
     'form.customer.copy.configuration': 'Copy configurations',
     'form.customer.copy.design': 'Copy design',
+    'form.customer.type': 'Customer type',
+    'form.customer.expiry.time': 'Expiry date',
+    'form.customer.device.limit': 'Device limit',
 
     'form.device.number': 'Number',
     'form.device.number.hint': 'Don\'t use special characters',
@@ -444,13 +449,18 @@ document.localization ['en_US'] = {
     'form.settings.lang.use.default': 'Use default language',
     'form.settings.lang.use': 'Use language',
     'form.settings.lang.en': 'English',
-    'form.settings.lang.ru': 'Russian',
-    'form.settings.lang.fr': 'French',
-    'form.settings.lang.ar': 'Arabic',
+    'form.settings.lang.ru': 'Русский',
+    'form.settings.lang.fr': 'Français',
+    'form.settings.lang.ar': 'عربي',
+    'form.settings.lang.es': 'Español',
 
     'form.settings.misc.title': 'Miscellaneous settings',
     'form.settings.misc.phone.format': 'Phone number format',
     'form.settings.misc.phone.format.placeholder': '+9 (999) 999-99-99',
+    'form.settings.misc.custom.property.name.1': 'Custom property #1',
+    'form.settings.misc.custom.property.name.2': 'Custom property #2',
+    'form.settings.misc.custom.property.name.3': 'Custom property #3',
+    'form.settings.misc.custom.property.name.placeholder': 'Enter name for a custom property',
     'form.settings.misc.create.new.devices': 'Add device on first access',
     'form.settings.misc.new.device.config': 'New device configuration',
     'form.settings.misc.new.device.group': 'New device group',
@@ -507,12 +517,16 @@ document.localization ['en_US'] = {
     'search.placeholder': 'Search ...',
     'search.placeholder.from': 'From ...',
     'search.placeholder.to': 'To ...',
+    'search.placeholder.user': 'Type the user name',
 
     'table.heading.customer.name': 'Name',
     'table.heading.customer.desc': 'Description',
     'table.heading.customer.registration.time': 'Registered',
     'table.heading.customer.last.login.time': 'Last login',
     'table.heading.customer.actions': 'Actions',
+    'table.heading.customer.type': 'Type',
+    'table.heading.customer.expiry.time': 'Expires',
+    'table.heading.customer.device.limit': 'Limit',
 
     'table.heading.configuration.name': 'Name',
     'table.heading.configuration.desc': 'Description',
@@ -672,6 +686,16 @@ document.localization ['en_US'] = {
 
     'search.placeholder.launcher.version': 'Launcher Version',
     'error.date.range.invalid': 'Invalid date interval',
+
+    'customer.type.demo': 'Demo',
+    'customer.type.small': 'Professional',
+    'customer.type.corporate': 'Enterprise',
+    'customer.type.master': 'Primary',
+
+    'account.expiring': 'Your account will be expired in ${days} days. Please contact the seller to renew your account.',
+    'account.expired.short': 'Your account has been expired!',
+    'account.expired': 'Your account has been expired. Please contact the seller to renew your account.',
+    'device.limit.achieved': 'Cannot add a device because you have reached your limit. Please remove some devices or contact the seller to extend your device limit.',
 
     'yes': 'yes',
     'no': 'no'

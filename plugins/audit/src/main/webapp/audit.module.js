@@ -42,6 +42,7 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
     })
     .factory('pluginAuditService', function ($resource) {
         return $resource('', {}, {
+            lookupUsers: {url: 'rest/private/users/all', method: 'GET'},
             getLogs: {url: 'rest/plugins/audit/private/log/search', method: 'POST'},
         });
     })
@@ -83,6 +84,7 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
             pageNum: 1,
             pageSize: 50,
             totalItems: 0,
+            userFilter: null,
             messageFilter: '',
             dateFrom: null,
             dateTo: null,
@@ -143,6 +145,18 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
         $scope.$watch('paging.pageNum', function () {
             loadData();
         });
+
+        $scope.getUsers = function(val) {
+            return pluginAuditService.lookupUsers({filter: val}).$promise.then(function(response){
+                if (response.status === 'OK') {
+                    return response.data.map(function (user) {
+                        return user.name;
+                    });
+                } else {
+                    return [];
+                }
+            });
+        };
 
         var loading = false;
         var loadData = function () {

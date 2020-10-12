@@ -29,6 +29,10 @@ angular.module( 'headwind-kiosk' )
         $scope.dataLoadingWait = false;
     } );
 
+    $rootScope.$on( 'SHOW_EXPIRY_WARNING', function() {
+        $scope.expiryWarning = true;
+    } );
+
     updateDateTime = function() {
         $scope.dateTime = $filter( 'date' )( new Date(), localization.localize('format.date.header') );
     };

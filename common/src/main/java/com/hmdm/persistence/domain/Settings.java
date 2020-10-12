@@ -66,10 +66,26 @@ public class Settings implements CustomerData, Serializable {
     private Integer newDeviceConfigurationId;
     @ApiModelProperty("Phone number format")
     private String phoneNumberFormat;
+    @ApiModelProperty("Custom property name 1")
+    private String customPropertyName1;
+    @ApiModelProperty("Custom property name 2")
+    private String customPropertyName2;
+    @ApiModelProperty("Custom property name 3")
+    private String customPropertyName3;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
     private boolean singleCustomer;
+
+    // Customer settings stored in the customers table (default for single customer)
+    @ApiModelProperty(hidden = true)
+    private int accountType;
+    @ApiModelProperty(hidden = true)
+    private Long expiryTime;
+    @ApiModelProperty(hidden = true)
+    private int deviceLimit;
+    @ApiModelProperty(hidden = true)
+    private int deviceCount;
 
     public Settings() {
     }
@@ -178,12 +194,68 @@ public class Settings implements CustomerData, Serializable {
         this.phoneNumberFormat = phoneNumberFormat;
     }
 
+    public String getCustomPropertyName1() {
+        return customPropertyName1;
+    }
+
+    public void setCustomPropertyName1(String customPropertyName1) {
+        this.customPropertyName1 = customPropertyName1;
+    }
+
+    public String getCustomPropertyName2() {
+        return customPropertyName2;
+    }
+
+    public void setCustomPropertyName2(String customPropertyName2) {
+        this.customPropertyName2 = customPropertyName2;
+    }
+
+    public String getCustomPropertyName3() {
+        return customPropertyName3;
+    }
+
+    public void setCustomPropertyName3(String customPropertyName3) {
+        this.customPropertyName3 = customPropertyName3;
+    }
+
     public boolean isSingleCustomer() {
         return singleCustomer;
     }
 
     public void setSingleCustomer(boolean singleCustomer) {
         this.singleCustomer = singleCustomer;
+    }
+
+    public int getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(int accountType) {
+        this.accountType = accountType;
+    }
+
+    public Long getExpiryTime() {
+        return expiryTime;
+    }
+
+    public void setExpiryTime(Long expiryTime) {
+        this.expiryTime = expiryTime;
+    }
+
+    public int getDeviceLimit() {
+        return deviceLimit;
+    }
+
+    public void setDeviceLimit(int deviceLimit) {
+        this.deviceLimit = deviceLimit;
+    }
+
+    public int getDeviceCount() {
+        return deviceCount;
+    }
+
+    public void setDeviceCount(int deviceCount) {
+        this.deviceCount = deviceCount;
     }
 
     @Override
@@ -198,10 +270,18 @@ public class Settings implements CustomerData, Serializable {
                 ", customerId=" + customerId +
                 ", useDefaultLanguage=" + useDefaultLanguage +
                 ", language='" + language + '\'' +
+                ", phoneNumberFormat='" + phoneNumberFormat + '\'' +
+                ", customPropertyName1='" + customPropertyName1 + '\'' +
+                ", customPropertyName2='" + customPropertyName2 + '\'' +
+                ", customPropertyName3='" + customPropertyName3 + '\'' +
                 ", createNewDevices=" + createNewDevices +
                 ", newDeviceGroupId=" + newDeviceGroupId +
                 ", newDeviceConfigurationId=" + newDeviceConfigurationId +
                 ", singleCustomer=" + singleCustomer +
+                ", accountType=" + accountType +
+                ", expiryTime=" + expiryTime +
+                ", deviceLimit=" + deviceLimit +
+                ", deviceCount=" + deviceCount +
                 '}';
     }
 }

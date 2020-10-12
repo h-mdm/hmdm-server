@@ -151,6 +151,7 @@ angular.module('headwind-kiosk')
                 if ($scope.user.allDevicesAvailable) {
                     request.groups = null;
                 } else {
+                    request["allDevicesAvailable"] = false;
                     request.groups = $scope.groupsSelection;
                 }
 

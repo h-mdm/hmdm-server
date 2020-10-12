@@ -22,10 +22,15 @@ angular.module('headwind-kiosk',
         'ar_KW': 'ar_AE',
         'ar_PS': 'ar_AE',
         'ar_QA': 'ar_AE',
-        'ar_SA': 'ar_AE'
+        'ar_SA': 'ar_AE',
+        'es': 'es_ES',
+        'es_US': 'es_ES',
+        'es_MX': 'es_ES',
+        'es_AR': 'es_ES',
+        'es_419': 'es_ES'
     })
-    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'ar_AE'])
-    .constant("APP_VERSION", "3.26.3") // Update this value on each commit
+    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'ar_AE', 'es_ES'])
+    .constant("APP_VERSION", "3.28.4") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {

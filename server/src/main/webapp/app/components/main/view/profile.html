@@ -4,30 +4,45 @@
         <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
         <div ng-show='completeMessage' class='success'><span>{{completeMessage}}</span></div>
 
+        <div class='form-group' ng-if="settings.accountType != 3 && !settings.singleCustomer">
+            <div class="col-sm-3 align-right" localized>form.customer.type</div>
+            <div class="col-sm-9 bold">{{accountType(settings.accountType)}}</div>
+        </div>
+
+        <div class='form-group' ng-if="settings.expiryTime > 0">
+            <div class="col-sm-3 align-right" localized>form.customer.expiry.time</div>
+            <div class="col-sm-9 bold"><span ng-class="{'warning-font': settings.expiryTime && settings.expiryTime < now + 86400000*3}">{{settings.expiryTime | date:'dd/MM/yyyy'}}</span></div>
+        </div>
+
+        <div class='form-group' ng-if="settings.deviceLimit > 0">
+            <div class="col-sm-3 align-right" localized>form.customer.device.limit</div>
+            <div class="col-sm-9 bold"><span ng-class="{'warning-font': settings.deviceCount > settings.deviceLimit}">{{settings.deviceCount}} / {{settings.deviceLimit}}</span></div>
+        </div>
+
         <div class='form-group change-title'>
-            <label class='col-sm-2 control-label' localized>&nbsp;</label>
-            <div class='col-sm-10' localized>form.profile.title</div>
+            <label class='col-sm-3 control-label' localized>&nbsp;</label>
+            <div class='col-sm-9'><h3 localized>form.profile.title</h3></div>
         </div>
 
         <div class='form-group'>
-            <label for='oldPassword' class='col-sm-2 control-label' localized>form.profile.password.old</label>
-            <div class='col-sm-10'>
+            <label for='oldPassword' class='col-sm-3 control-label' style="font-weight: normal" localized>form.profile.password.old</label>
+            <div class='col-sm-9'>
                 <input ng-model='user.oldPassword' type='password' class='form-control' id='oldPassword'
                        localized-placeholder='form.profile.password.old.placeholder'>
             </div>
         </div>
 
         <div class='form-group'>
-            <label for='newPassword' class='col-sm-2 control-label' localized>form.profile.password.new</label>
-            <div class='col-sm-10'>
+            <label for='newPassword' class='col-sm-3 control-label' style="font-weight: normal" localized>form.profile.password.new</label>
+            <div class='col-sm-9'>
                 <input ng-model='user.newPassword' type='password' class='form-control' id='newPassword'
                        localized-placeholder='form.profile.password.new.placeholder'>
             </div>
         </div>
 
         <div class='form-group'>
-            <label for='confirm' class='col-sm-2 control-label' localized>form.profile.password.confirm</label>
-            <div class='col-sm-10'>
+            <label for='confirm' class='col-sm-3 control-label' style="font-weight: normal" localized>form.profile.password.confirm</label>
+            <div class='col-sm-9'>
                 <input ng-model='user.confirm' type='password' class='form-control' id='confirm'
                        localized-placeholder='form.profile.password.confirm.placeholder'>
             </div>

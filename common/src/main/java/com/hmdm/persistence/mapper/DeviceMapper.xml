@@ -26,6 +26,7 @@
     <sql id="deviceWithGroupsSelect">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
+               devices.custom1, devices.custom2, devices.custom3,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName
         FROM devices
@@ -48,6 +49,9 @@
         <result property="launcherPkg" column="launcherPkg"/>
         <result property="launcherVersion" column="launcherVersion"/>
         <result property="statusCode" column="statusCode"/>
+        <result property="custom1" column="custom1"/>
+        <result property="custom2" column="custom2"/>
+        <result property="custom3" column="custom3"/>
 
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>
@@ -56,13 +60,16 @@
     </resultMap>
 
     <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO devices(number, description, lastUpdate, configurationId, imei, phone, customerId)
-        VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId}, #{imei}, #{phone}, #{customerId});
+        INSERT INTO devices(number, description, lastUpdate, configurationId,
+            imei, phone, customerId, custom1, custom2, custom3)
+        VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId},
+            #{imei}, #{phone}, #{customerId}, #{custom1}, #{custom2}, #{custom3});
     </insert>
 
     <update id="updateDevice" parameterType="Device">
         UPDATE devices SET number = #{number}, description = #{description},
-                           configurationId = #{configurationId}, imei = #{imei}, phone = #{phone} WHERE id = #{id}
+                           configurationId = #{configurationId}, imei = #{imei}, phone = #{phone},
+                           custom1=#{custom1}, custom2=#{custom2}, custom3=#{custom3} WHERE id = #{id}
     </update>
 
     <sql id="allowedDevicesSelect">
@@ -76,8 +83,7 @@
             COALESCE(CASE WHEN devices.number ILIKE #{value} THEN 16 END, 0) +
             COALESCE(CASE WHEN devices.imei ILIKE #{value} THEN 8 END, 0) +
             COALESCE(CASE WHEN devices.phone ILIKE #{value} THEN 4 END, 0) +
-            COALESCE(CASE WHEN devices.description ILIKE #{value} THEN 2 END, 0) +
-            COALESCE(CASE WHEN devices.info ILIKE #{value} THEN 1 END, 0)
+            COALESCE(CASE WHEN devices.description ILIKE #{value} THEN 2 END, 0)
         )          AS searchPriority,
         (
             CASE
@@ -101,6 +107,9 @@
                 WHEN 'LAUNCHER_VERSION' = #{sortBy} THEN mdm_device_launcher_version(applications.pkg, devices.info)::VARCHAR(100)
                 WHEN 'BATTERY_LEVEL' = #{sortBy} THEN LPAD(COALESCE(devices.info::json -&gt;&gt; 'batteryLevel', '0'), 3, '0')::VARCHAR(100)
                 WHEN 'DEFAULT_LAUNCHER' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'defaultLauncher', 'unknown')::VARCHAR(100)
+                WHEN 'CUSTOM1' = #{sortBy} THEN LOWER(devices.custom1)::VARCHAR(100)
+                WHEN 'CUSTOM2' = #{sortBy} THEN LOWER(devices.custom2)::VARCHAR(100)
+                WHEN 'CUSTOM3' = #{sortBy} THEN LOWER(devices.custom3)::VARCHAR(100)
                 ELSE ''
             END
         ) AS sortingValue
@@ -121,7 +130,12 @@
             OR devices.description ILIKE #{value}
             OR devices.imei ILIKE #{value}
             OR devices.phone ILIKE #{value}
-            OR devices.info ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'imei' ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'phone' ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'model' ILIKE #{value}
+            OR devices.custom1 ILIKE #{value}
+            OR devices.custom2 ILIKE #{value}
+            OR devices.custom3 ILIKE #{value}
             OR configurations.name ILIKE #{value}
             OR groups.name ILIKE #{value}
             )
@@ -169,6 +183,7 @@
     <select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
+               devices.custom1, devices.custom2, devices.custom3,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName,
                applications.pkg AS launcherPkg,
@@ -208,9 +223,14 @@
             OR devices.description ILIKE #{value}
             OR devices.imei ILIKE #{value}
             OR devices.phone ILIKE #{value}
-            OR devices.info ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'imei' ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'phone' ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'model' ILIKE #{value}
             OR configurations.name ILIKE #{value}
             OR groups.name ILIKE #{value}
+            OR devices.custom1 ILIKE #{value}
+            OR devices.custom2 ILIKE #{value}
+            OR devices.custom3 ILIKE #{value}
             )
         </if>
         <if test="imeiChanged">

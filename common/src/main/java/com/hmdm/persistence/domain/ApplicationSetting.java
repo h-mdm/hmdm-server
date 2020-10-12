@@ -115,7 +115,10 @@ public class ApplicationSetting implements Serializable {
                 .replaceAll("%NUMBER%", device.getNumber())
                 .replaceAll("%IMEI%", device.getImei())
                 .replaceAll("%PHONE%", device.getPhone())
-                .replaceAll("%DESCRIPTION%", device.getDescription());
+                .replaceAll("%DESCRIPTION%", device.getDescription())
+                .replaceAll("%CUSTOM1%", device.getCustom1())
+                .replaceAll("%CUSTOM2%", device.getCustom2())
+                .replaceAll("%CUSTOM3%", device.getCustom3());
     }
 
     public String getComment() {

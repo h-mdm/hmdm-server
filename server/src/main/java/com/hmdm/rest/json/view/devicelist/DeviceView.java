@@ -120,6 +120,21 @@ public class DeviceView {
         return device.getPhone();
     }
 
+    @ApiModelProperty("Custom property #1")
+    public String getCustom1() {
+        return device.getCustom1();
+    }
+
+    @ApiModelProperty("Custom property #2")
+    public String getCustom2() {
+        return device.getCustom2();
+    }
+
+    @ApiModelProperty("Custom property #3")
+    public String getCustom3() {
+        return device.getCustom3();
+    }
+
     @ApiModelProperty("A list of groups assigned to device")
     public List<LookupItem> getGroups() {
         return device.getGroups();

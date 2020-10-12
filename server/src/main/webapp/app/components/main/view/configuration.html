@@ -45,13 +45,18 @@
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label'
-                               for="djsedfujh"
+                               for="password-c"
                                style='padding-top: 0px;' localized>form.configuration.settings.common.admin.pwd</label>
                         <div class='col-sm-9'>
-                            <input ng-model='configuration.password' name="n3" id="djsedfujh"
+                            <input ng-model='configuration.password' name="n3" id="password-c"
                                    type="text" required
                                    class='form-control'
+                                   style="width:90%; display:inline"
                                    localized-placeholder='form.configuration.settings.common.admin.pwd.placeholder'>
+                            <button type='button' id="button-show-password" class='btn btn-default' localized-title="button.show.password"
+                                    ng-click='togglePassword()'>
+                                <span id="span-show-password" class='glyphicon glyphicon-eye-open'></span>
+                            </button>
                         </div>
                     </div>
 
@@ -465,7 +470,7 @@
                                                 <td ng-if="pkgInfoVisible(application)">{{application.pkg}}</td><td ng-if="!pkgInfoVisible(application)"></td>
                                                 <td>{{application.name}}</td>
                                                 <td ng-if="pkgInfoVisible(application)">
-                                                    <a ng-if="application.action == 1" class="version-management-link" ng-click="selectVersion(application)">
+                                                    <a ng-if="application.action == 1" class="action-link" ng-click="selectVersion(application)">
                                                         {{application.version}}
                                                     </a>
 

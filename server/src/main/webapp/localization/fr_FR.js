@@ -72,6 +72,8 @@ document.localization ['fr_FR'] = {
     'button.turn.common.app': 'Rendre commun',
     'button.hints.enable': 'Afficher les info-bulles',
     'button.hints.disable': 'Masquer les info-bulles',
+    'button.show.password': 'Afficher le mot de passe',
+    'button.hide.password': 'Masquer le mot de passe',
 
 	'question.impersonate.user': 'Connectez-vous à l\'application comme administrateur de l\'organisation "${customerName}"?',
     'question.delete.file': 'Supprimer le fichier "${fileName}"?',
@@ -356,7 +358,7 @@ document.localization ['fr_FR'] = {
      'form.configuration.copy.new.name': 'Nouveau nom',
      'form.configuration.copy.new.name.placeholder': 'Entrez le nouveau nom de configuration',
 
-'form.customer.name': 'Nom',
+    'form.customer.name': 'Nom',
     'form.customer.name.placeholder': 'Entrez le nom de l\'organisation',
     'form.customer.apiKey': 'Clé API',
     'form.customer.apiKey.placeholder': 'Entrez la clé API',
@@ -367,6 +369,9 @@ document.localization ['fr_FR'] = {
     'form.customer.desc.placeholder': 'Entrez une description de l\'organisation',
     'form.customer.copy.configuration': 'Copier les configurations',
     'form.customer.copy.design': 'Copier la conception',
+    'form.customer.type': 'Type de client',
+    'form.customer.expiry.time': 'Date d\'expiration',
+    'form.customer.device.limit': 'Limite d\'appareils',
 
     'form.device.number': 'Numéro',
     'form.device.number.hint': 'N\'utilisez pas de caractères spéciaux',
@@ -443,14 +448,19 @@ document.localization ['fr_FR'] = {
     'form.settings.lang.title': 'Paramètres de langue',
     'form.settings.lang.use.default': 'Utiliser la langue par défaut',
     'form.settings.lang.use': 'Utiliser la langue',
-    'form.settings.lang.en': 'Anglais',
-    'form.settings.lang.ru': 'Russe',
+    'form.settings.lang.en': 'English',
+    'form.settings.lang.ru': 'Русский',
     'form.settings.lang.fr': 'Français',
-    'form.settings.lang.ar': 'Arabe',
+    'form.settings.lang.ar': 'عربي',
+    'form.settings.lang.es': 'Español',
 
     'form.settings.misc.title': 'Paramètres divers',
     'form.settings.misc.phone.format': 'Format du numéro de téléphone',
     'form.settings.misc.phone.format.placeholder': '+9 (999) 999-99-99',
+    'form.settings.misc.custom.property.name.1': 'Propriété personnalisée #1',
+    'form.settings.misc.custom.property.name.2': 'Propriété personnalisée #2',
+    'form.settings.misc.custom.property.name.3': 'Propriété personnalisée #3',
+    'form.settings.misc.custom.property.name.placeholder': 'Entrez le nom d\'une propriété personnalisée',
     'form.settings.misc.create.new.devices': 'Ajouter un appareil lors du premier accès',
     'form.settings.misc.new.device.config': 'Nouvelle configuration d\'appareil',
     'form.settings.misc.new.device.group': 'Nouveau groupe d\'appareils',
@@ -507,12 +517,16 @@ document.localization ['fr_FR'] = {
     'search.placeholder': 'Rechercher ...',
     'search.placeholder.from': 'De ...',
     'search.placeholder.to': 'À ...',
+    'search.placeholder.user': 'Tapez le nom d\'utilisateur',
 
     'table.heading.customer.name': 'Nom',
     'table.heading.customer.desc': 'Description',
     'table.heading.customer.registration.time': 'Enregistré',
     'table.heading.customer.last.login.time': 'Dernière connexion',
     'table.heading.customer.actions': 'Actions',
+    'table.heading.customer.type': 'Type',
+    'table.heading.customer.expiry.time': 'Expire',
+    'table.heading.customer.device.limit': 'Limite',
 
     'table.heading.configuration.name': 'Nom',
     'table.heading.configuration.desc': 'Description',
@@ -672,6 +686,16 @@ document.localization ['fr_FR'] = {
 
     'search.placeholder.launcher.version': 'Version du lanceur',
     'error.date.range.invalid': 'L\'intervalle de date n\'est pas valide',
+
+    'customer.type.demo': 'Démo',
+    'customer.type.small': 'Petite entreprise',
+    'customer.type.corporate': 'Entreprise',
+    'customer.type.master': 'Primaire',
+
+    'account.expiring': 'Votre compte expirera dans $ {days} jours. Veuillez contacter le vendeur pour renouveler votre compte.',
+    'account.expired': 'Votre compte a expiré. Veuillez contacter le vendeur pour renouveler votre compte.',
+    'account.expired.short': 'Votre compte a expiré!',
+    'device.limit.achieved': 'Impossible d\'ajouter un appareil car vous avez atteint votre limite. Veuillez supprimer certains appareils ou contacter le vendeur pour étendre la limite de votre appareil.',
 
     'yes': 'oui',
     'no': 'non'

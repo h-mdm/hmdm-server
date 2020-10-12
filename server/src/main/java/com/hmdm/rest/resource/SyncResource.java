@@ -105,6 +105,7 @@ public class SyncResource {
 
     private static final String HEADER_IP_ADDRESS = "X-IP-Address";
     private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
+    private static final String HEADER_RESPONSE_SIGNATURE = "X-Response-Signature";
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -311,6 +312,12 @@ public class SyncResource {
                 }
 
                 response.setHeader(HEADER_IP_ADDRESS, request.getRemoteAddr());
+
+                if (secureEnrollment) {
+                    // Add a signature to avoid MITM attack
+                    response.setHeader(HEADER_RESPONSE_SIGNATURE, getDataSignature(syncResponse));
+                }
+
                 return Response.OK(syncResponse);
             } else {
                 logger.warn("Requested device {} was not found", number);
@@ -320,6 +327,19 @@ public class SyncResource {
             logger.error("Unexpected error when getting device info", e);
             return Response.INTERNAL_ERROR();
         }
+    }
+
+    private String getDataSignature(SyncResponseInt data) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String s = "";
+        try {
+            s = objectMapper.writeValueAsString(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        s = s.replaceAll("\\s", "");
+        String signature = CryptoUtil.getSHA1String(hashSecret + s);
+        return signature;
     }
 
     // =================================================================================================================
@@ -360,6 +380,23 @@ public class SyncResource {
                 this.unsecureDAO.updateDeviceInfo(dbDevice.getId(),
                         objectMapper.writeValueAsString(deviceInfo),
                         dbDevice.getImeiUpdateTs());
+
+                boolean needUpdate = false;
+                if (deviceInfo.getCustom1() != null) {
+                    dbDevice.setCustom1(deviceInfo.getCustom1());
+                    needUpdate = true;
+                }
+                if (deviceInfo.getCustom2() != null) {
+                    dbDevice.setCustom2(deviceInfo.getCustom2());
+                    needUpdate = true;
+                }
+                if (deviceInfo.getCustom3() != null) {
+                    dbDevice.setCustom3(deviceInfo.getCustom3());
+                    needUpdate = true;
+                }
+                if (needUpdate) {
+                    this.unsecureDAO.updateDeviceCustomProperties(dbDevice.getId(), dbDevice);
+                }
 
                 if (deviceInfo.getBatteryLevel() != null) {
                     this.eventService.fireEvent(new DeviceBatteryLevelUpdatedEvent(dbDevice.getId(), deviceInfo.getBatteryLevel()));

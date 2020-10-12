@@ -53,7 +53,7 @@ document.localization[ 'ru_RU' ] = {
     'button.add': 'Добавить',
     'button.add.icon': 'Новая',
     'button.search': 'Поиск',
-    'button.export': 'Экпорт',
+    'button.export': 'Экспорт',
     'button.change': 'Изменить',
     'button.copy': 'Копировать',
     'button.qrcode': 'QR-код',
@@ -72,6 +72,8 @@ document.localization[ 'ru_RU' ] = {
     'button.turn.common.app': 'Сделать общим',
     'button.hints.enable': 'Показывать подсказки',
     'button.hints.disable': 'Скрыть подсказки',
+    'button.show.password': 'Показать пароль',
+    'button.hide.password': 'Скрыть пароль',
 
     'question.impersonate.user': 'Войти в приложение от имени администратора организации "${customerName}"?',
     'question.delete.file': 'Удалить файл "${fileName}"?',
@@ -368,6 +370,9 @@ document.localization[ 'ru_RU' ] = {
     'form.customer.desc.placeholder': 'Введите описание организации',
     'form.customer.copy.configuration': 'Копировать конфигурации',
     'form.customer.copy.design': 'Копировать дизайн',
+    'form.customer.type': 'Тип клиента',
+    'form.customer.expiry.time': 'Дата окончания',
+    'form.customer.device.limit': 'Лимит устройств',
 
     'form.device.number': 'Номер',
     'form.device.number.hint': 'Латинские буквы, цифры, знаки',
@@ -443,15 +448,20 @@ document.localization[ 'ru_RU' ] = {
 
     'form.settings.lang.title': 'Языковые настройки',
     'form.settings.lang.use.default': 'Использовать язык по умолчанию',
-    'form.settings.lang.use': 'Исполльзовать язык',
-    'form.settings.lang.en': 'Английский',
+    'form.settings.lang.use': 'Использовать язык',
+    'form.settings.lang.en': 'English',
     'form.settings.lang.ru': 'Русский',
-    'form.settings.lang.fr': 'Французский',
-    'form.settings.lang.ar': 'Арабский',
+    'form.settings.lang.fr': 'Français',
+    'form.settings.lang.ar': 'عربي',
+    'form.settings.lang.es': 'Español',
 
     'form.settings.misc.title': 'Прочие настройки',
     'form.settings.misc.phone.format': 'Формат номера телефона',
     'form.settings.misc.phone.format.placeholder': '+9 (999) 999-99-99',
+    'form.settings.misc.custom.property.name.1': 'Пользовательское поле #1',
+    'form.settings.misc.custom.property.name.2': 'Пользовательское поле #2',
+    'form.settings.misc.custom.property.name.3': 'Пользовательское поле #3',
+    'form.settings.misc.custom.property.name.placeholder': 'Введите название пользовательского поля',
     'form.settings.misc.create.new.devices': 'Добавлять устр-во при первом обращении',
     'form.settings.misc.new.device.config': 'Конфигурация нового устройства',
     'form.settings.misc.new.device.group': 'Группа нового устройства',
@@ -465,7 +475,7 @@ document.localization[ 'ru_RU' ] = {
     'form.qr.device.number.placeholder': 'Введите ID устройства...',
     'form.qr.code.image.alt': 'QR-код',
 
-    'form.profile.title': 'Сменить пароль',
+    'form.profile.title': 'Смена пароля',
     'form.profile.password.old': 'Старый пароль',
     'form.profile.password.old.placeholder': 'Введите старый пароль',
     'form.profile.password.new': 'Новый пароль',
@@ -508,6 +518,7 @@ document.localization[ 'ru_RU' ] = {
     'search.placeholder': 'Поиск ...',
     'search.placeholder.from': 'С...',
     'search.placeholder.to': 'По...',
+    'search.placeholder.user': 'Имя пользователя',
 
 
     'table.heading.customer.name': 'Название',
@@ -515,6 +526,9 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.customer.registration.time': 'Зарегистрирован',
     'table.heading.customer.last.login.time': 'Последний логин',
     'table.heading.customer.actions': 'Действия',
+    'table.heading.customer.type': 'Тип',
+    'table.heading.customer.expiry.time': 'Окончание',
+    'table.heading.customer.device.limit': 'Лимит',
 
     'table.heading.configuration.name': 'Название',
     'table.heading.configuration.desc': 'Описание',
@@ -677,6 +691,16 @@ document.localization[ 'ru_RU' ] = {
 
     'search.placeholder.launcher.version': 'Версия лаунчера',
     'error.date.range.invalid': 'Неверный интервал дат',
+
+    'customer.type.demo': 'Демо',
+    'customer.type.small': 'Малый бизнес',
+    'customer.type.corporate': 'Корпоративный',
+    'customer.type.master': 'Основной',
+
+    'account.expiring': 'Ваша учетная запись истекает в течение ${days} дней. Пожалуйста, свяжитесь с продавцом для продления.',
+    'account.expired': 'Ваша учетная запись истекла. Пожалуйста, свяжитесь с продавцом для продления.',
+    'account.expired.short': 'Ваша учетная запись истекла!',
+    'device.limit.achieved': 'Нельзя добавить устройство - вы достигли лимита. Удалите устройства или свяжитесь с продавцом для увеличения лимита.',
 
     'yes': 'да',
     'no': 'нет'

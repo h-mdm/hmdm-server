@@ -110,6 +110,10 @@ public class UnsecureDAO {
         this.deviceMapper.updateDeviceInfo(id, info, imeiUpdateTs);
     }
 
+    public void updateDeviceCustomProperties(Integer id, Device device) {
+        this.deviceMapper.updateDeviceCustomProperties(id, device.getCustom1(), device.getCustom2(), device.getCustom3());
+    }
+
     // This method should be called in a single-tenant mode only
     // and the device customer ID should be set
     @Transactional

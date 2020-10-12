@@ -84,6 +84,9 @@ public class SettingsResource {
         try {
             Settings settings = Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
             settings.setSingleCustomer(unsecureDAO.isSingleCustomer());
+            if (!settings.isSingleCustomer()) {
+                this.commonDAO.loadCustomerSettings(settings);
+            }
             return Response.OK(settings);
         } catch (Exception e) {
             log.error("Unexpected error when getting the settings for customer", e);

@@ -45,6 +45,12 @@
                     DESC
                 </if>
             </if>
+            <if test="sortValue.equals('expiryTime')">
+                ORDER BY customers.expiryTime
+                <if test="sortDirection.equalsIgnoreCase(&quot;desc&quot;)">
+                    DESC
+                </if>
+            </if>
         </if>
         <if test="sortValue == null">
             ORDER BY name

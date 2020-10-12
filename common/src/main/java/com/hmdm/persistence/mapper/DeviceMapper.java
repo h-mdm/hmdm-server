@@ -71,6 +71,11 @@ public interface DeviceMapper {
 
     List<Device> getAllDevices(DeviceSearchRequest deviceSearchRequest);
 
+    @Select({"SELECT COUNT(*) " +
+            "FROM devices " +
+            "WHERE customerId = #{customerId}"})
+    Long countAllDevicesForCustomer(@Param("customerId") Integer customerId);
+
     Long countAllDevices(DeviceSearchRequest filter);
 
     @Update({"UPDATE devices SET " +
@@ -81,6 +86,16 @@ public interface DeviceMapper {
     void updateDeviceInfo(@Param("deviceId") Integer deviceId,
                           @Param("info") String info,
                           @Param("imeiUpdateTs") Long imeiUpdateTs);
+
+    @Update({"UPDATE devices SET " +
+            "  custom1 = #{custom1}, " +
+            "  custom2 = #{custom2}, " +
+            "  custom3 = #{custom3} " +
+            "WHERE id = #{deviceId}"})
+    void updateDeviceCustomProperties(@Param("deviceId") Integer deviceId,
+                                      @Param("custom1") String custom1,
+                                      @Param("custom2") String custom2,
+                                      @Param("custom3") String custom3);
 
     List<DeviceLookupItem> lookupDevices(@Param("userId") int userId,
                                          @Param("customerId") int customerId,

@@ -51,7 +51,16 @@
                             <span ng-if='paging.sortValue === "lastLoginTime" && paging.sortDirection === "desc"'
                                   class="glyphicon glyphicon-sort-by-order-alt"></span>
                         </th>
-                        <th class='actions-column' localized>table.heading.customer.actions</th>
+                        <th localized>table.heading.customer.type</th>
+                        <th ng-click="sortByExpiryTime()" class="sortable">
+                            <span localized>table.heading.customer.expiry.time</span>
+                            <span ng-if='paging.sortValue === "expiryTime" && paging.sortDirection === "asc"'
+                                  class="glyphicon glyphicon-sort-by-order"></span>
+                            <span ng-if='paging.sortValue === "expiryTime" && paging.sortDirection === "desc"'
+                                  class="glyphicon glyphicon-sort-by-order-alt"></span>
+                        </th>
+                        <th localized>table.heading.customer.device.limit</th>
+                        <th class='actions-column' style="min-width: 200px" localized>table.heading.customer.actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -60,6 +69,9 @@
                         <td>{{customer.description}}</td>
                         <td>{{customer.registrationTime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
                         <td>{{customer.lastLoginTime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                        <td>{{accountType(customer.accountType)}}</td>
+                        <td ng-class="{'warning-font': customer.expiryTime && customer.expiryTime < now}">{{customer.expiryTime | date:'dd/MM/yyyy'}}</td>
+                        <td>{{customer.deviceLimit}}</td>
                         <td>
                             <div>
                                 <button type='button' class='btn btn-default' localized-title="button.change"

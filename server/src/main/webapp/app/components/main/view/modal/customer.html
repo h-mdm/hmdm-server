@@ -24,6 +24,41 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label class='col-sm-3 control-label' localized>form.customer.type</label>
+            <div class='col-sm-9'>
+                <select required ng-model="customer.accountType" class="form-control">
+                    <option ng-value="0" ng-selected="customer.accountType==0" localized>customer.type.demo</option>
+                    <option ng-value="1" ng-selected="customer.accountType==1" localized>customer.type.small</option>
+                    <option ng-value="2" ng-selected="customer.accountType==2" localized>customer.type.corporate</option>
+                </select>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.expiry.time</label>
+            <div class='col-sm-9'>
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='yyyy-MM-dd' localized-placeholder="form.customer.expiry.time"
+                           ng-model='customer.expiryTimeStr' is-open='openDatePickers.expiryTime' show-button-bar='false'
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar($event)'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.device.limit</label>
+            <div class='col-sm-9'>
+                <input ng-model='customer.deviceLimit' required type='number' class='form-control' ng-disabled="formDisabled"
+                       localized-placeholder='form.customer.device.limit'>
+            </div>
+        </div>
+
         <div class="form-group" ng-if="!customer.id">
             <label class='col-sm-3 control-label' localized>form.customer.copy.configuration</label>
             <div class='col-sm-9'>
@@ -43,14 +78,14 @@
             </div>
         </div>
 
-        <div class='form-group'>
+<!--        <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.customer.apiKey</label>
             <div class='col-sm-9'>
                 <input ng-model='customer.apiKey' type='text' class='form-control' ng-disabled="formDisabled"
                        maxlength="500"
                        localized-placeholder='form.customer.apiKey.placeholder'>
             </div>
-        </div>
+        </div> -->
 
         <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.customer.prefix</label>

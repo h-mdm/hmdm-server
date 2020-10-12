@@ -21,22 +21,30 @@
 
 package com.hmdm.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * <p>A customer account managed by the application.</p>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer implements Serializable {
 
     private static final long serialVersionUID = 5087620848737792920L;
-    
+
     private Integer id;
     private String name;
     private String description;
     private String filesDir;
     private String apiKey;
     private boolean master = false;
+
+    public static final int Demo = 0;
+    public static final int SmallBusiness = 1;
+    public static final int Enterprise = 2;
+    public static final int Primary = 3;
 
     /**
      * <p>A prefix for numbers for default generated devices for customer.</p>
@@ -61,6 +69,21 @@ public class Customer implements Serializable {
     // A helper field for customer creation (not stored)
     private boolean copyDesign;
     private Integer[] configurationIds;
+
+    /**
+     * <p>A time of the customer account expiration. (In milliseconds since epoch time). May be null (no expiration)</p>
+     */
+    private Long expiryTime;
+
+    /**
+     * <p>Limit of devices</p>
+     */
+    private int deviceLimit;
+
+    /**
+     * <p>Customer account type (primary / demo / small business / enterprise)</p>
+     */
+    private int accountType;
 
     public Customer() {
     }
@@ -161,6 +184,30 @@ public class Customer implements Serializable {
         this.registrationTime = registrationTime;
     }
 
+    public Long getExpiryTime() {
+        return expiryTime;
+    }
+
+    public void setExpiryTime(Long expiryTime) {
+        this.expiryTime = expiryTime;
+    }
+
+    public int getDeviceLimit() {
+        return deviceLimit;
+    }
+
+    public void setDeviceLimit(int deviceLimit) {
+        this.deviceLimit = deviceLimit;
+    }
+
+    public int getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(int accountType) {
+        this.accountType = accountType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -184,6 +231,8 @@ public class Customer implements Serializable {
                 ", master=" + master +
                 ", prefix=" + prefix +
                 ", deviceConfigurationId=" + deviceConfigurationId +
+                ", accountType=" + accountType +
+                ", deviceLimit=" + deviceLimit +
                 '}';
     }
 }

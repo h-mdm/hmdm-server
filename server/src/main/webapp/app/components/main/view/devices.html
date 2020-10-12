@@ -111,13 +111,14 @@
                     ng-disabled='isNotSelected()'
                     class='btn btn-default' ng-click='openBulkUpdateModal()' localized>button.set.configuration</button>
             <button type='button' ng-if="hasPermission('edit_devices')"
+                    ng-disabled='commonSettings.deviceLimit > 0 && commonSettings.deviceCount >= commonSettings.deviceLimit'
                     class='btn btn-default' ng-click='editDevice( {} )' localized>button.add</button>
         </div>
     </div>
 
     </form>
 
-    <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+    <div class="text-center" ng-if="paging.totalItems > paging.pageSize && !accountExpired">
         <pagination
                 boundary-links='true' class='pagination-sm'
                 max-size='3'
@@ -212,13 +213,28 @@
                 <span ng-if='paging.sortBy === "DEFAULT_LAUNCHER"' class="glyphicon"
                       ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
             </th>
+            <th ng-if="settings.columnDisplayedCustom1 && commonSettings.customPropertyName1" ng-click="sortData('CUSTOM1')" class="pointer">
+                <span>{{commonSettings.customPropertyName1}}</span>
+                <span ng-if='paging.sortBy === "CUSTOM1"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
+            <th ng-if="settings.columnDisplayedCustom2 && commonSettings.customPropertyName2" ng-click="sortData('CUSTOM2')" class="pointer">
+                <span>{{commonSettings.customPropertyName2}}</span>
+                <span ng-if='paging.sortBy === "CUSTOM2"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
+            <th ng-if="settings.columnDisplayedCustom3 && commonSettings.customPropertyName3" ng-click="sortData('CUSTOM3')" class="pointer">
+                <span>{{commonSettings.customPropertyName3}}</span>
+                <span ng-if='paging.sortBy === "CUSTOM3"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
 
             <th ng-if="hasPermission('edit_devices')" class='actions-column' localized>table.heading.device.actions</th>
         </tr>
         </thead>
         <tbody>
         <!--<tr ng-repeat='device in devices | limitTo:paging.pageSize:paging.pageSize * (paging.currentPage - 1)'>-->
-        <tr ng-repeat='device in devices'>
+        <tr ng-repeat='device in devices' class="{{device.class}}">
             <td ng-if="hasPermission('edit_devices')">
                 <input ng-model='device.selected'
                        type='checkbox'
@@ -255,7 +271,7 @@
                      title='{{getDeviceFilesTitle(device)}}'>
             </td>
             <td ng-if="settings.columnDisplayedDeviceConfiguration">
-                {{device.configuration.name}}
+                <a class="action-link" ng-click="editConfiguration(device.configuration)">{{device.configuration.name}}</a>
             </td>
             <td ng-if="settings.columnDisplayedDeviceDesc">
                 <span ng-bind-html="formatMultiLine(device.description)"></span>
@@ -271,6 +287,15 @@
             </td>
             <td ng-if="settings.columnDisplayedDefaultLauncher">
                 <span ng-class="{'device-data-mismatch': device.info.defaultLauncher === false}">{{getIsDefaultLauncher(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedCustom1 && commonSettings.customPropertyName1">
+                <span>{{device.custom1}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedCustom2 && commonSettings.customPropertyName2">
+                <span>{{device.custom2}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedCustom3 && commonSettings.customPropertyName3">
+                <span>{{device.custom3}}</span>
             </td>
 
             <td class="deviceActions">
@@ -310,7 +335,7 @@
 
     <div ng-if='devices && devices.length === 0' class='center' localized>notfound.devices</div>
 
-    <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+    <div class="text-center" ng-if="paging.totalItems > paging.pageSize && !accountExpired">
         <pagination
                 boundary-links='true' class='pagination-sm'
                 max-size='3'

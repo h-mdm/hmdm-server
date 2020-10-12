@@ -2,7 +2,7 @@
 "breadcrumb.plugin.audit.main": "تدقيق",
   "plugin.audit.localization.key.name": "تدقيق" ,
   "plugin.audit.action.user.login": "تسجيل دخول المستخدم" ,
-  "plugin.audit.action.jwt.login": "تسجيل دخول عميل API" ,
+  "plugin.audit.action.jwt.login": "API تسجيل دخول عميل" ,
   "plugin.audit.action.update.configuration": "تم تحديث الاعداد" ,
   "plugin.audit.action.copy.configuration": "تم نسخ الاعداد" ,
   "plugin.audit.action.remove.configuration": "تمت إزالة الاعداد" ,
@@ -29,7 +29,7 @@
   "error.plugin.audit.date.range.invalid": "فاصل تاريخ غير صالح",
   "table.heading.plugin.audit.dateTime": "التاريخ والوقت",
   "table.heading.plugin.audit.user": "تسجيل دخول المستخدم",
-  "table.heading.plugin.audit.ipAddress": "عنوان IP" ,
+  "table.heading.plugin.audit.ipAddress": "IP عنوان" ,
   "table.heading.plugin.audit.action": "عمل" ,
   "table.heading.plugin.audit.payload": "الحمولة" ,
   "notfound.common.plugin.audit.logs": "لم يتم العثور على سجلات تدقيق. جرب استعلامًا مختلفًا."

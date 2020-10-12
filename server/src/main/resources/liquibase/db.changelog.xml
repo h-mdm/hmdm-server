@@ -1943,4 +1943,44 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="18.09.20-16:59" author="seva" context="common">
+        <comment>Column,new: settings#customPropertyName</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN customPropertyName1 VARCHAR(200);
+            ALTER TABLE settings ADD COLUMN customPropertyName2 VARCHAR(200);
+            ALTER TABLE settings ADD COLUMN customPropertyName3 VARCHAR(200);
+            ALTER TABLE devices ADD COLUMN custom1 TEXT;
+            ALTER TABLE devices ADD COLUMN custom2 TEXT;
+            ALTER TABLE devices ADD COLUMN custom3 TEXT;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedCustom1 BOOLEAN;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedCustom2 BOOLEAN;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedCustom3 BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN customPropertyName1;
+            ALTER TABLE settings DROP COLUMN customPropertyName2;
+            ALTER TABLE settings DROP COLUMN customPropertyName3;
+            ALTER TABLE devices DROP COLUMN custom1;
+            ALTER TABLE devices DROP COLUMN custom2;
+            ALTER TABLE devices DROP COLUMN custom3;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedCustom1;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedCustom2;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedCustom3;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="28.09.19-14:41" author="seva" context="common">
+        <comment>Column,new: customers#accountType</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN accountType INT NOT NULL DEFAULT 0;
+            ALTER TABLE customers ADD COLUMN expiryTime BIGINT;
+            ALTER TABLE customers ADD COLUMN deviceLimit INT NOT NULL DEFAULT 3;
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP COLUMN accountType;
+            ALTER TABLE customers DROP COLUMN expiryTime;
+            ALTER TABLE customers DROP COLUMN deviceLimit;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

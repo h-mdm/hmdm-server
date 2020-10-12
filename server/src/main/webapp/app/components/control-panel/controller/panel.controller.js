@@ -15,11 +15,13 @@ angular.module('headwind-kiosk')
             pageSize: 50,
             totalItems: 0,
             sortValue: undefined,
-            sortDirection: undefined
+            sortDirection: undefined,
+            expiredOnly: false
         };
 
         var regTimeSortDir = undefined;
         var loginTimeSortDir = undefined;
+        var expiryTimeSortDir = undefined;
 
         $scope.sortByRegistrationTime = function() {
             if (regTimeSortDir === 'asc') {
@@ -45,6 +47,18 @@ angular.module('headwind-kiosk')
             $scope.init();
         };
 
+        $scope.sortByExpiryTime = function() {
+            if (expiryTimeSortDir === 'asc') {
+                expiryTimeSortDir = 'desc';
+            } else {
+                expiryTimeSortDir = 'asc';
+            }
+
+            $scope.paging.sortValue = 'expiryTime';
+            $scope.paging.sortDirection = expiryTimeSortDir;
+            $scope.init();
+        };
+
         $scope.$watch('paging.currentPage', function() {
             $scope.search();
             $window.scrollTo(0, 0);
@@ -53,6 +67,20 @@ angular.module('headwind-kiosk')
         $scope.init = function () {
             $scope.paging.currentPage = 1;
             $scope.search();
+        };
+
+        $scope.now = Date.now();
+
+        $scope.accountType = function(type) {
+            switch (type) {
+                case 0:
+                    return localization.localize('customer.type.demo');
+                case 1:
+                    return localization.localize('customer.type.small');
+                case 2:
+                    return localization.localize('customer.type.corporate');
+            }
+            return '';
         };
 
         $scope.search = function () {
@@ -185,7 +213,7 @@ angular.module('headwind-kiosk')
     })
     // *****************************************************************************************************************
     .controller('CustomerModalController',
-        function ($scope, $modalInstance, customerService, customer, alertService, configurationService, localization) {
+        function ($scope, $filter, $modalInstance, customerService, customer, alertService, configurationService, localization) {
 
             var copyCustomer = function (original) {
                 var copy = {};
@@ -195,6 +223,14 @@ angular.module('headwind-kiosk')
                     }
                 }
 
+                if (!copy.expiryTime) {
+                    copy.expiryTime = Date.now() + 86400 * 365 * 1000;
+                }
+                if (!copy.deviceLimit) {
+                    copy.deviceLimit = 3;
+                }
+                copy.expiryTimeStr = new Date(copy.expiryTime);
+
                 return copy;
             };
 
@@ -202,6 +238,11 @@ angular.module('headwind-kiosk')
 
             $scope.configurationsSelection = [];
             $scope.deviceConfigurations = [];
+
+            $scope.datePickerOptions = { 'show-weeks': false };
+            $scope.openDatePickers = {
+                'expiryTime': false
+            };
 
             $scope.$watchCollection('configurationsSelection', function (newCol) {
                 var lookup = {};
@@ -255,6 +296,13 @@ angular.module('headwind-kiosk')
                 $scope.customer = copyCustomer(customer);
             }
 
+            $scope.openDateCalendar = function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                $scope.openDatePickers.expiryTime = true;
+            };
+
             $scope.save = function () {
                 $scope.saveInternal();
             };
@@ -270,6 +318,18 @@ angular.module('headwind-kiosk')
                 request.configurationIds = $scope.configurationsSelection.map(function (selection) {
                     return selection.id;
                 });
+
+                if (!request.expiryTimeStr) {
+                    request.expiryTime = null;
+                } else {
+                    // Conversion from Date to milliseconds(long)
+                    request.expiryTime = request.expiryTimeStr * 1;
+                }
+                request.expiryTimeStr = undefined;
+
+                if (!request.deviceLimit) {
+                    request.deviceLimit = 3;
+                }
 
                 customerService.updateCustomer(request, function (response) {
                     if (response.status === 'OK') {

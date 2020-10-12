@@ -2,7 +2,7 @@
 angular.module('headwind-kiosk')
     .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, confirmModal, deviceService,
                                                   groupService, settingsService, authService, pluginService, $window,
-                                                  configurationService,
+                                                  configurationService, alertService,
                                                   spinnerService, localization) {
         $scope.searchParams = {};
         $scope.selection = {
@@ -121,19 +121,26 @@ angular.module('headwind-kiosk')
             $scope.configurations.unshift({id: -1, name: localization.localize('devices.configuration.options.all')});
         });
 
-        var loadSettings = function () {
+        var loadCommonSettings = function(completion) {
+            settingsService.getSettings({}, function(response) {
+                if (response.data) {
+                    // Common settings
+                    $scope.commonSettings = response.data;
+                    if (completion) {
+                        completion();
+                    }
+                }
+            })
+        };
+
+        var loadSettings = function (completion) {
             settingsService.getUserRoleSettings({roleId: authService.getUser().userRole.id}, function (response) {
                 if (response.data) {
                     // Display settings
                     $scope.settings = response.data;
                 }
             });
-            settingsService.getSettings({}, function(response) {
-                if (response.data) {
-                    // Common settings
-                    $scope.commonSettings = response.data;
-                }
-            })
+            loadCommonSettings(completion);
         };
 
         var resolveDeviceField = function (serverData, deviceInfoData) {
@@ -149,7 +156,27 @@ angular.module('headwind-kiosk')
             }
         };
 
-        loadSettings();
+        var checkExpiryTime = function() {
+            if ($scope.commonSettings.expiryTime) {
+                var expiryDays = ($scope.commonSettings.expiryTime - new Date()) / 86400000;
+                var expiryWarningAttrName = 'hmdm-expiry-warning-time';
+                if (expiryDays <= 3) {
+                    var expirymessage = expiryDays <= 0 ? 'account.expired' : 'account.expiring';
+                    var expiryWarningTime = $window.localStorage.getItem(expiryWarningAttrName);
+                    if (!expiryWarningTime || expiryWarningTime < (new Date()) - 86400000) {
+                        alertService.showAlertMessage(localization.localize(expirymessage).replace('${days}', Math.ceil(expiryDays)));
+                        $window.localStorage.setItem(expiryWarningAttrName, (new Date()) * 1);
+                    }
+                }
+                if (expiryDays <= 0) {
+                    $rootScope.$emit('SHOW_EXPIRY_WARNING');
+                    $scope.accountExpired = true;
+                    $scope.search();
+                }
+            }
+        };
+
+        loadSettings(checkExpiryTime);
 
         var sub = $rootScope.$on('aero_COMMON_SETTINGS_UPDATED', function () {
             loadSettings();
@@ -226,6 +253,7 @@ angular.module('headwind-kiosk')
 
                     var configurations = response.data.configurations;
 
+                    var counter = 0;
                     response.data.devices.items.forEach(function (device) {
                         var deviceInfo = $scope.getDeviceInfo(device);
                         var serverIMEI = device.imei || '';
@@ -242,6 +270,17 @@ angular.module('headwind-kiosk')
                         device.displayedPhone = resolvedPhone[0];
                         device.phoneTooltip = resolvedPhone[1];
                         device.phoneTooltipClass = resolvedPhone[2];
+
+                        if ($scope.accountExpired) {
+                            if (counter == 3) {
+                                device.class='expired-device-opacity1';
+                            } else if (counter == 4) {
+                                device.class='expired-device-opacity2';
+                            } else if (counter > 4) {
+                                device.class='expired-device-hidden';
+                            }
+                            counter++;
+                        }
 
                     });
 
@@ -698,6 +737,8 @@ angular.module('headwind-kiosk')
 
             modalInstance.result.then(function () {
                 $scope.search();
+                // Reload settings because the device amount may be changed
+                loadCommonSettings();
             });
         };
 
@@ -706,12 +747,18 @@ angular.module('headwind-kiosk')
             confirmModal.getUserConfirmation(localizedText, function () {
                 deviceService.removeDevice({id: device.id}, function () {
                     $scope.search();
+                    // Reload settings because the device amount may be changed
+                    loadCommonSettings();
                 });
             });
         };
 
         $scope.notifyPluginOnDevice = function (plugin, device) {
             $rootScope.$emit('plugin-' + plugin.identifier + '-device-selected', device);
+        };
+
+        $scope.editConfiguration = function (configuration) {
+            $state.transitionTo('configEditor', {"id": configuration.id});
         };
 
         $scope.manageApplicationSettings = function (device) {
