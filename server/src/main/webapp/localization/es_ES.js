@@ -453,6 +453,7 @@ document.localization ['es_ES'] = {
     'form.settings.lang.fr': 'Français',
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
+    'form.settings.lang.de': 'Deutsch',
 
     'form.settings.misc.title': 'Opciones Varias',
     'form.settings.misc.phone.format': 'Formato del numero telefonico',
