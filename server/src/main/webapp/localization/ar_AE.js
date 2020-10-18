@@ -453,6 +453,7 @@ document.localization ['ar_AE'] = {
     'form.settings.lang.fr': 'Français',
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
+    'form.settings.lang.de': 'Deutsch',
 
 	"form.settings.misc.title": 'إعدادات متنوعة',
     "form.settings.misc.phone.format": 'تنسيق رقم الهاتف',
