@@ -1,0 +1,31 @@
+# maven target dir
+target
+
+# idea 
+*.iml
+.idea
+
+# node modules for grunt
+server/webtarget/node
+**/node_modules
+
+# bower modules
+**/bower_components
+
+# grunt bower task lib folder
+server/webtarget/lib
+
+# js generated libs
+server/src/main/webapp/lib/
+
+# logs folder
+logs
+
+server/Dockerfile
+server/context.xml
+server/docker-compose.yml
+server/src/main/resources/docker/base/Dockerfile
+
+# Backup copies
+server/pom.xml.bak
+plugins/pom.xml.bak
