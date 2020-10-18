@@ -454,8 +454,7 @@ document.localization ['de_DE'] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
-    
-    
+        
     'form.settings.misc.title': 'Verschiedene Einstellungen',
     'form.settings.misc.phone.format': 'Telefonnummernformat',
     'form.settings.misc.phone.format.placeholder': '+99 (999) 999 99 999',
@@ -654,7 +653,7 @@ document.localization ['de_DE'] = {
 
     'form.configuration.app.version.select.select.title': 'Wählen Sie die zu installierende Version aus',
     'form.configuration.app.version.select.version.check.off': 'Versionsprüfung deaktivieren',
-    'form.configuration.app.version.select.upgrade.warning': 'Upgrade der Anwendung "${v1}" auf die Version "${v3}" für die Konfiguration "${v2}"?', '
+    'form.configuration.app.version.select.upgrade.warning': 'Upgrade der Anwendung "${v1}" auf die Version "${v3}" für die Konfiguration "${v2}"?', 
     'form.configuration.app.version.select.downgrade.warning': 'Downgrade-Version LÖSCHEN SIE ALLE DIESEN ANWENDUNGEN auf allen Geräten! Downgrade der Anwendungsversion "${v1}" auf Version "${v2}"? ',
 
     'tip.step.1': 'Klicken Sie hier, um die Geräteregistrierung zu starten',

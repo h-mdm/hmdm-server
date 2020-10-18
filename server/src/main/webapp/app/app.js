@@ -28,6 +28,7 @@ angular.module('headwind-kiosk',
         'es_MX': 'es_ES',
         'es_AR': 'es_ES',
         'es_419': 'es_ES',
+        'de': 'de_DE',
         'de_DE': 'de_DE',
         'de_AT': 'de_DE',
         'de_CH': 'de_DE'
