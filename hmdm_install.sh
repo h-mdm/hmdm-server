@@ -201,12 +201,17 @@ if [ ! -f ./install/context_template.xml ]; then
     exit 1
 fi
 
-# Removing old application
-rm -rf $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH > /dev/null 2>&1
-rm -f $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war > /dev/null 2>&1
-
-# Waiting for undeploy
-sleep 5
+# Removing old application if required
+if [ -d $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH ]; then
+    rm -rf $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH > /dev/null 2>&1
+    rm -f $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH.war > /dev/null 2>&1
+    echo "Waiting for undeploying the previous version"
+    for i in {1..10}; do
+        echo -n "."
+        sleep 1
+    done
+    echo
+fi
 
 TOMCAT_CONFIG_PATH=$TOMCAT_HOME/conf/$TOMCAT_ENGINE/$TOMCAT_HOST
 if [ ! -d $TOMCAT_CONFIG_PATH ]; then
