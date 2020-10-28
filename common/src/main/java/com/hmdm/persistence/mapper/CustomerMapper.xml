@@ -32,23 +32,32 @@
             customers.name ILIKE ('%' || #{searchValue} || '%') OR customers.description ILIKE ('%' || #{searchValue} || '%')
             )
         </if>
+        <if test="accountType != null">
+            AND customers.accountType = #{accountType}
+        </if>
+        <if test="customerStatus != null">
+            AND (
+            customers.customerStatus = #{customerStatus} OR #{customerStatus} = 'customer.new' AND
+            customers.customerStatus IS NULL
+            )
+        </if>
         <if test="sortValue != null">
             <if test="sortValue.equals('registrationTime')">
                 ORDER BY customers.registrationTime
                 <if test="sortDirection.equalsIgnoreCase(&quot;desc&quot;)">
-                    DESC
+                    DESC NULLS LAST
                 </if>
             </if>
             <if test="sortValue.equals('lastLoginTime')">
                 ORDER BY customers.lastLoginTime
                 <if test="sortDirection.equalsIgnoreCase(&quot;desc&quot;)">
-                    DESC
+                    DESC NULLS LAST
                 </if>
             </if>
             <if test="sortValue.equals('expiryTime')">
                 ORDER BY customers.expiryTime
                 <if test="sortDirection.equalsIgnoreCase(&quot;desc&quot;)">
-                    DESC
+                    DESC NULLS LAST
                 </if>
             </if>
         </if>
@@ -66,6 +75,15 @@
         <if test="searchValue != null">
             AND (
             customers.name ILIKE ('%' || #{searchValue} || '%') OR customers.description ILIKE ('%' || #{searchValue} || '%')
+            )
+        </if>
+        <if test="accountType != null">
+            AND customers.accountType = #{accountType}
+        </if>
+        <if test="customerStatus != null">
+            AND (
+            customers.customerStatus = #{customerStatus} OR #{customerStatus} = 'customer.new' AND
+            customers.customerStatus IS NULL
             )
         </if>
     </select>

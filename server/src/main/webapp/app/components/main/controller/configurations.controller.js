@@ -1362,6 +1362,9 @@ angular.module('headwind-kiosk')
 
         $scope.save = function () {
             $scope.errorMessage = undefined;
+            if (!$scope.file.lastUpdate) {
+                $scope.file.lastUpdate = Date.now();
+            }
             $scope.file.remove = ($scope.file.remove === 'true' || $scope.file.remove === true);
             if ($scope.file.externalUrl && $scope.file.externalUrl.trim().length === 0) {
                 $scope.file.externalUrl = null;

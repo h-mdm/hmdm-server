@@ -36,6 +36,8 @@ public class CustomerSearchRequest implements Serializable {
     private String searchValue;
     private String sortValue;
     private String sortDirection;
+    private Integer accountType;
+    private String customerStatus;
 
     /**
      * <p>Constructs new <code>CustomerSearchRequest</code> instance. This implementation does nothing.</p>
@@ -83,6 +85,22 @@ public class CustomerSearchRequest implements Serializable {
         this.sortDirection = sortDirection;
     }
 
+    public Integer getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(Integer accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getCustomerStatus() {
+        return customerStatus;
+    }
+
+    public void setCustomerStatus(String customerStatus) {
+        this.customerStatus = customerStatus;
+    }
+
     @Override
     public String toString() {
         return "CustomerSearchRequest{" +
@@ -91,6 +109,8 @@ public class CustomerSearchRequest implements Serializable {
                 ", searchValue='" + searchValue + '\'' +
                 ", sortValue='" + sortValue + '\'' +
                 ", sortDirection='" + sortDirection + '\'' +
+                ", accountType=" + accountType +
+                ", customerStatus='" + customerStatus + '\'' +
                 '}';
     }
 

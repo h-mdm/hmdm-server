@@ -52,6 +52,10 @@ public interface ApplicationSettingMapper {
                                         @Param("applicationId") int applicationId,
                                         @Param("name") String name);
 
+    @Delete("DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId}")
+    void deleteApplicationSettingByApp(@Param("configurationId") int configurationId,
+                                        @Param("applicationId") int applicationId);
+
     @Insert("INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate) " +
             "        VALUES (#{configurationId}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})")
     void insertApplicationSetting(@Param("configurationId") int configurationId, @Param("item") ApplicationSetting setting);

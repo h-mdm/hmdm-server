@@ -73,6 +73,7 @@ public interface ConfigurationMapper {
             "passwordMode=#{passwordMode}, " +
             "orientation=#{orientation}, " +
             "runDefaultLauncher=#{runDefaultLauncher}, " +
+            "disableScreenshots=#{disableScreenshots}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "timeZone=#{timeZone}, " +
             "allowedClasses=#{allowedClasses}, " +
@@ -153,6 +154,13 @@ public interface ConfigurationMapper {
      * @return a list of all existing applications with set parameters of usage by specified configuration.
      */
     List<Application> getPlainConfigurationSoleApplications(@Param("id") Integer id);
+
+    @Select("SELECT EXISTS( " +
+            "SELECT * FROM configurationApplications ca " +
+            "LEFT JOIN applications a ON ca.applicationId=a.id " +
+            "WHERE a.pkg=#{pkg} AND ca.configurationId=#{configurationId} " +
+            ")")
+    boolean isAppInstalledInConfiguration(@Param("pkg") String pkg, @Param("configurationId") Integer configurationId);
 
     @Select("SELECT * FROM configurationApplicationParameters WHERE configurationId = #{id}")
     List<ConfigurationApplicationParameters> getApplicationParameters(@Param("id") Integer configurationId);

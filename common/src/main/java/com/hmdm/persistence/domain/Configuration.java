@@ -96,6 +96,8 @@ public class Configuration implements CustomerData, Serializable {
     private Integer orientation;
     @ApiModelProperty("Flag enabling usage with default launcher")
     private Boolean runDefaultLauncher;
+    @ApiModelProperty("Flag indicating if screenshots are disabled on the device")
+    private Boolean disableScreenshots;
     @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
     private String timeZone;
     @ApiModelProperty("Allowed classes, separated by comma")
@@ -569,6 +571,14 @@ public class Configuration implements CustomerData, Serializable {
         this.runDefaultLauncher = runDefaultLauncher;
     }
 
+    public Boolean getDisableScreenshots() {
+        return disableScreenshots;
+    }
+
+    public void setDisableScreenshots(Boolean disableScreenshots) {
+        this.disableScreenshots = disableScreenshots;
+    }
+
     public String getTimeZone() {
         return timeZone;
     }
@@ -663,6 +673,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setPasswordMode(getPasswordMode());
         copy.setOrientation(getOrientation());
         copy.setRunDefaultLauncher(getRunDefaultLauncher());
+        copy.setDisableScreenshots(getDisableScreenshots());
         copy.setTimeZone(getTimeZone());
         copy.setAllowedClasses(getAllowedClasses());
         copy.setNewServerUrl(getNewServerUrl());

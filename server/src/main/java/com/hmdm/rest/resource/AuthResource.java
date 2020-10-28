@@ -80,17 +80,19 @@ public class AuthResource {
     @Consumes( MediaType.APPLICATION_JSON )
     @Produces( MediaType.APPLICATION_JSON )
     public Response login( UserCredentials credentials,
-                           @Context HttpServletRequest req ){
+                           @Context HttpServletRequest req ) throws InterruptedException {
         if ( credentials.getLogin() == null || credentials.getPassword() == null ) {
             return Response.ERROR();
         }
 
         User user = userDAO.findByLoginOrEmail( credentials.getLogin() );
         if ( user == null ) {
+            Thread.sleep(1000);
             return Response.ERROR();
         }
 
         if ( !credentials.getPassword().equalsIgnoreCase( user.getPassword() ) ) {
+            Thread.sleep(1000);
             return Response.ERROR();
         }
 

@@ -1983,4 +1983,24 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="15.10.20-11:06" author="seva" context="common">
+        <comment>Adding disableScreenshots column to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN disableScreenshots BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN disableScreenshots;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20.10.20-16:41" author="seva" context="common">
+        <comment>Column,new: customers#customerStatus</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN customerStatus VARCHAR(100);
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP COLUMN customerStatus;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

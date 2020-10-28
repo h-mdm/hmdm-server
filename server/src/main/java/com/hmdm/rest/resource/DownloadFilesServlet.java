@@ -34,6 +34,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.hmdm.rest.json.Response;
+import com.hmdm.util.CryptoUtil;
 import org.apache.poi.util.IOUtils;
 
 @Singleton
@@ -41,10 +44,19 @@ public class DownloadFilesServlet extends HttpServlet {
     private final String filesDirectory;
     private final File baseDirectory;
 
+    private boolean secureEnrollment;
+    private String hashSecret;
+
+    private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
+
     @Inject
-    public DownloadFilesServlet(@Named("files.directory") String filesDirectory) {
+    public DownloadFilesServlet(@Named("files.directory") String filesDirectory,
+                                @Named("secure.enrollment") boolean secureEnrollment,
+                                @Named("hash.secret") String hashSecret) {
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
+        this.secureEnrollment = secureEnrollment;
+        this.hashSecret = hashSecret;
         if (!this.baseDirectory.exists()) {
             this.baseDirectory.mkdirs();
         }
@@ -55,6 +67,23 @@ public class DownloadFilesServlet extends HttpServlet {
         String path = URLDecoder.decode(req.getRequestURI(), "UTF8");
         int index = path.indexOf("/files/", 0) + "/files/".length();
         path = path.substring(index);
+
+        if (secureEnrollment) {
+            String signature = req.getHeader(HEADER_ENROLLMENT_SIGNATURE);
+            if (signature == null) {
+                resp.sendError(403);
+                return;
+            }
+            try {
+                String goodSignature = CryptoUtil.getSHA1String(hashSecret + path);
+                if (!signature.equalsIgnoreCase(goodSignature)) {
+                    resp.sendError(403);
+                    return;
+                }
+            } catch (Exception e) {
+            }
+        }
+
         File file = new File(String.format("%s/%s", this.filesDirectory, path));
         if (file.exists()) {
             try (InputStream input = new FileInputStream(file);

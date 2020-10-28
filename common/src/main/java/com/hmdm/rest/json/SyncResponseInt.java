@@ -105,6 +105,8 @@ public interface SyncResponseInt {
 
     Boolean getRunDefaultLauncher();
 
+    Boolean getDisableScreenshots();
+
     String getTimeZone();
 
     String getAllowedClasses();

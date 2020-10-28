@@ -133,6 +133,8 @@ angular.module('headwind-kiosk')
                                                         $modal, isControlPanel, localization, closeOnSave) {
         $scope.isControlPanel = isControlPanel;
 
+        $scope.localization = localization;
+
         $scope.isNewApp = application.id === null || application.id === undefined;
 
         $scope.application = angular.copy(application, {});

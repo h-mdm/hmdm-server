@@ -85,6 +85,11 @@ public class Customer implements Serializable {
      */
     private int accountType;
 
+    /**
+     * <p>Customer status (for super-admin information purposes)</p>
+     */
+    private String customerStatus;
+
     public Customer() {
     }
 
@@ -208,6 +213,14 @@ public class Customer implements Serializable {
         this.accountType = accountType;
     }
 
+    public String getCustomerStatus() {
+        return customerStatus;
+    }
+
+    public void setCustomerStatus(String customerStatus) {
+        this.customerStatus = customerStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -233,6 +246,7 @@ public class Customer implements Serializable {
                 ", deviceConfigurationId=" + deviceConfigurationId +
                 ", accountType=" + accountType +
                 ", deviceLimit=" + deviceLimit +
+                ", customerStatus='" + customerStatus + '\'' +
                 '}';
     }
 }

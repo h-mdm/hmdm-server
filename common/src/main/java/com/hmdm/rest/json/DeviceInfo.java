@@ -84,6 +84,30 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty(value = "Is Headwind MDM a default launcher")
     private Boolean defaultLauncher;
 
+    @ApiModelProperty("ICC ID")
+    private String iccid;
+
+    @ApiModelProperty("an IMSI identifier")
+    private String imsi;
+
+    @ApiModelProperty("An IMEI identifier for 2nd SIM slot")
+    private String imei2;
+
+    @ApiModelProperty("A phone number for 2nd SIM slot")
+    private String phone2;
+
+    @ApiModelProperty("ICC ID for 2nd SIM slot")
+    private String iccid2;
+
+    @ApiModelProperty("an IMSI identifier for 2nd SIM slot")
+    private String imsi2;
+
+    @ApiModelProperty("A device serial number")
+    private String serial;
+
+    @ApiModelProperty("CPU architecture")
+    private String cpu;
+
     @ApiModelProperty(value = "Custom property #1")
     private String custom1;
 
@@ -208,6 +232,70 @@ public class DeviceInfo implements Serializable {
         this.defaultLauncher = defaultLauncher;
     }
 
+    public String getIccid() {
+        return iccid;
+    }
+
+    public void setIccid(String iccid) {
+        this.iccid = iccid;
+    }
+
+    public String getImsi() {
+        return imsi;
+    }
+
+    public void setImsi(String imsi) {
+        this.imsi = imsi;
+    }
+
+    public String getImei2() {
+        return imei2;
+    }
+
+    public void setImei2(String imei2) {
+        this.imei2 = imei2;
+    }
+
+    public String getPhone2() {
+        return phone2;
+    }
+
+    public void setPhone2(String phone2) {
+        this.phone2 = phone2;
+    }
+
+    public String getIccid2() {
+        return iccid2;
+    }
+
+    public void setIccid2(String iccid2) {
+        this.iccid2 = iccid2;
+    }
+
+    public String getImsi2() {
+        return imsi2;
+    }
+
+    public void setImsi2(String imsi2) {
+        this.imsi2 = imsi2;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
     public String getCustom1() {
         return custom1;
     }
@@ -257,7 +345,14 @@ public class DeviceInfo implements Serializable {
                 ", location='" + location + '\'' +
                 ", launcherType='" + launcherType + '\'' +
                 ", launcherPackage='" + launcherPackage + '\'' +
-                ", defaultLauncher='" + defaultLauncher + '\'' +
+                ", imei2='" + imei2 + '\'' +
+                ", phone2='" + phone2 + '\'' +
+                ", imsi='" + imsi + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", imsi2='" + imsi2 + '\'' +
+                ", iccid2='" + iccid2 + '\'' +
+                ", serial='" + serial + '\'' +
+                ", cpu='" + cpu + '\'' +
                 ", custom1='" + custom1 + '\'' +
                 ", custom2='" + custom2 + '\'' +
                 ", custom3='" + custom3 + '\'' +

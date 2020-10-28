@@ -128,7 +128,7 @@ document.localization ['de_DE'] = {
      'error.configuration.file.empty.desc': 'Geben Sie eine Dateibeschreibung an',
      'error.configuration.file.empty.path': 'Geben Sie den Pfad auf dem Gerät an',
      'error.configuration.file.empty.file': 'Geben Sie eine URL ein oder laden Sie eine Datei hoch',
-    
+
      'error.notfound.device': 'Gerät nicht gefunden',
      'error.duplicate.device': 'Ein Gerät mit derselben Nummer existiert bereits',
      'error.duplicate.login': 'Ein solches Login wird bereits verwendet',
@@ -209,6 +209,7 @@ document.localization ['de_DE'] = {
     'form.configuration.settings.mdm.component.wifi.password': 'WiFi password',
     'form.configuration.settings.mdm.component.wifi.password.placeholder': 'WiFi-Pass für Registrierung - leer lassen, manuell eingeben',
     'form.configuration.settings.mdm.component.wifi.security': 'WiFi-Sicherheitstyp',
+    'form.configuration.settings.mdm.component.wifi.notice': 'Hinweis: Diese WLAN-Einstellungen gelten nur für die Erstregistrierung!',
     'form.configuration.settings.mdm.component.server.url': 'Neue Server-URL',
     'form.configuration.settings.mdm.component.server.url.placeholder': 'Wird für die Migration auf einen neuen MDM-Server verwendet',
     'form.configuration.settings.mdm.app.content': 'Inhaltsanwendung',
@@ -298,6 +299,7 @@ document.localization ['de_DE'] = {
     'form.configuration.settings.password.mode.moderate': 'Moderat (8+ Symbole, Buchstaben und Ziffern)',
     'form.configuration.settings.password.mode.strong': 'Stark (8+, Groß- und Kleinbuchstaben, Ziffern, Zeichen)',
     'form.configuration.settings.use.default.launcher': 'Mit Standardstarter verwenden',
+    'form.configuration.settings.disable.screenshots': 'Bildschirmaufnahme sperren',
     'form.configuration.settings.orientation': 'Ausrichtung sperren',
     'form.configuration.settings.orientation.none': 'Nicht sperren',
     'form.configuration.settings.orientation.portrait': 'Hochformat',
@@ -308,8 +310,11 @@ document.localization ['de_DE'] = {
 
     'form.configuration.file.name': 'Dateiname',
     'form.configuration.file.description': 'Dateibeschreibung',
+    'form.configuration.file.description.placeholder': 'Optional',
     'form.configuration.file.path': 'Pfad auf Gerät',
+    'form.configuration.file.path.placeholder': 'Kein Pfad zum Laufwerk, z.B. /my-app/image.jpg',
     'form.configuration.file.url': 'URL',
+    'form.configuration.file.url.placeholder': 'Für externen Ressourcen gehostete Dateien',
     'form.configuration.file.file': 'Datei',
     'form.configuration.file.action': 'Aktion',
     'form.configuration.file.action.prompt.1': 'Hochladen',
@@ -328,15 +333,27 @@ document.localization ['de_DE'] = {
     'form.application.type.option.web': 'Webseite',
     'form.application.type.option.app': 'Anwendung',
     'form.application.pkg': 'Paket-ID',
+    'form.application.pkg.title': 'Die Paket-ID wird automatisch ermittelt, wenn Sie die APK-Datei hochladen. Die manuell eingegebene Paket-ID ist nur für System-Apps erforderlich.',
+    'form.application.pkg.placeholder': 'Z.B., com.android.camera',
     'form.application.from.file': 'Aus Datei ermittelt',
     'form.application.name': 'Anwendungsname',
+    'form.application.name.title': 'Sie sehen den App-Namen in der Liste. Wir empfehlen die Verwendung eindeutiger und informativer Namen.',
+    'form.application.name.placeholder': 'Zum Beispiel Kamera (Android)',
     'form.application.version': 'Version',
+    'form.application.version.placeholder': '0 für System-Apps',
+    'form.application.version.title': 'Die Paketversion wird automatisch ermittelt, wenn Sie die APK-Datei hochladen. Setzen Sie es für System-Apps auf 0.',
     'form.application.system': 'System',
+    'form.application.system.title': 'System-Apps sind auf einem Gerät vorinstalliert und erfordern keine URL oder Datei. Setzen Sie dieses Flag nur, wenn Sie ein bestimmtes Systempaket aktivieren müssen.',
     'form.application.run.after.install': 'Nach der Installation ausführen',
+    'form.application.run.after.install.title': 'Anwendungen mit Hintergrunddiensten müssen mindestens einmal im Vordergrund gestartet werden.',
     'form.application.run.at.boot': 'Beim Booten ausführen',
+    'form.application.run.at.boot.title': 'Setzen Sie dieses Flag, wenn Sie die App nach dem Start im Vordergrund ausführen müssen. Dieses Flag wirkt sich nicht auf Hintergrundprozesse aus.',
     'form.application.url': 'URL',
+    'form.application.url.title': 'Die URL sollte nur eingegeben werden, wenn Ihre App auf einer externen Ressource gehostet wird. Es wird empfohlen, eine APK-Datei mithilfe eines Felds unten hochzuladen.',
+    'form.application.url.disabled': 'Die URL wird für jede Version eingerichtet. Um die URL zu ändern, schließen Sie dieses Fenster und klicken Sie auf das Symbol "Versionen".',
     'form.application.file': 'Datei',
     'form.application.showLabel': 'Symbol anzeigen',
+    'form.application.showLabel.title': 'Dieses Flag gibt an, ob das App-Symbol im Launcher angezeigt werden soll. Diese Option kann in der Konfiguration überschrieben werden.',
     'form.application.iconText': 'Symboltext',
     'form.application.iconText.placeholder': '(Standard)',
     'form.application.versions.title': 'Versionen der Anwendung',
@@ -351,7 +368,7 @@ document.localization ['de_DE'] = {
     'form.application.setting.comment': 'Kommentar',
     'form.application.setting.type': 'Type',
     'form.application.setting.readonly': 'Ändert sich nicht auf dem Gerät',
-    
+
     'form.application.configurations.app': 'Anwendung',
     'form.application.configurations.configs': 'Konfigurationen',
 
@@ -370,6 +387,7 @@ document.localization ['de_DE'] = {
     'form.customer.copy.configuration': 'Konfigurationen kopieren',
     'form.customer.copy.design': 'Design kopieren',
     'form.customer.type': 'Kundentyp',
+    'form.customer.status': 'Kundenstatus',
     'form.customer.expiry.time': 'Ablaufdatum',
     'form.customer.device.limit': 'Gerätelimit',
 
@@ -454,7 +472,7 @@ document.localization ['de_DE'] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
-        
+
     'form.settings.misc.title': 'Verschiedene Einstellungen',
     'form.settings.misc.phone.format': 'Telefonnummernformat',
     'form.settings.misc.phone.format.placeholder': '+99 (999) 999 99 999',
@@ -498,7 +516,7 @@ document.localization ['de_DE'] = {
     'tab.license': 'Lizenz',
     'tab.hints': 'Hinweise',
     'tab.plugins': 'Plugins',
-    
+
     'tab.configeditor.common.settings': 'Allgemeine Einstellungen',
     'tab.configeditor.design.settings': 'Darstellungseinstellungen',
     'tab.configeditor.applications': 'Anwendungen',
@@ -528,6 +546,18 @@ document.localization ['de_DE'] = {
     'table.heading.customer.type': 'Type',
     'table.heading.customer.expiry.time': 'Expires',
     'table.heading.customer.device.limit': 'Limit',
+    'table.heading.customer.status': 'Status',
+
+    'customer.new': 'Neu',
+    'customer.active': 'Aktiv',
+    'customer.need.followup': 'Follow-up braucht',
+    'customer.followup.sent': 'Follow-up gesendet',
+    'customer.internal.test': 'Interner Test',
+    'customer.developer': 'Entwickler',
+    'customer.difficult': 'Schwierig',
+    'customer.pause': 'Pause',
+    'customer.denial': 'Ablehnung',
+    'customer.client': 'Klient',
 
     'table.heading.configuration.name': 'Name',
     'table.heading.configuration.desc': 'Beschreibung',
@@ -545,7 +575,7 @@ document.localization ['de_DE'] = {
     'table.heading.file.description': 'Dateibeschreibung',
     'table.heading.file.action': 'Aktion',
     'table.heading.file.lastUpdate': 'Erstellungsdatum',
-    
+
     'table.heading.application.pkg': 'Paket-ID',
     'table.heading.application.name': 'Anwendungsname',
     'table.heading.application.version': 'Version',
@@ -653,7 +683,7 @@ document.localization ['de_DE'] = {
 
     'form.configuration.app.version.select.select.title': 'Wählen Sie die zu installierende Version aus',
     'form.configuration.app.version.select.version.check.off': 'Versionsprüfung deaktivieren',
-    'form.configuration.app.version.select.upgrade.warning': 'Upgrade der Anwendung "${v1}" auf die Version "${v3}" für die Konfiguration "${v2}"?', 
+    'form.configuration.app.version.select.upgrade.warning': 'Upgrade der Anwendung "${v1}" auf die Version "${v3}" für die Konfiguration "${v2}"?',
     'form.configuration.app.version.select.downgrade.warning': 'Downgrade-Version LÖSCHEN SIE ALLE DIESEN ANWENDUNGEN auf allen Geräten! Downgrade der Anwendungsversion "${v1}" auf Version "${v2}"? ',
 
     'tip.step.1': 'Klicken Sie hier, um die Geräteregistrierung zu starten',
@@ -667,7 +697,9 @@ document.localization ['de_DE'] = {
     'form.resolved.duplicate.pkg.text1': 'Die Paket-ID "${pkg}" wird bereits von den unten aufgeführten Anwendungen verwendet.',
     'form.resolved.duplicate.pkg.text2': 'Möchten Sie eine neue Anwendung oder eine neue Version einer vorhandenen Anwendung hinzufügen?',
     'form.resolved.duplicate.pkg.text3': 'Neue Version für',
-    
+    'form.resolved.duplicate.pkg.text4': 'Die Paket-ID "${pkg}" wird bereits von Anwendungen ${apps} verwendet.',
+    'form.resolved.duplicate.pkg.text5': 'Möchten Sie die Paket-ID wirklich ändern?',
+
     'tooltip.usage.byconfigurations': 'Wird von Konfigurationen verwendet',
     'tooltip.usage.byapps': 'Wird von Anwendungen verwendet',
     'tooltip.usage.byicons': 'Wird von Symbolen verwendet',
@@ -692,6 +724,9 @@ document.localization ['de_DE'] = {
     'customer.type.small': 'Professional',
     'customer.type.corporate': 'Enterprise',
     'customer.type.master': 'Primary',
+
+    'customer.type.options.all': 'Alle Arten',
+    'customer.status.options.all': 'Alle Status',
 
     'account.expiring': 'Ihr Konto läuft in ${days} Tagen ab. Bitte kontaktieren Sie den Verkäufer, um Ihr Konto zu erneuern. ',
     'account.expired.short': 'Ihr Konto ist abgelaufen!',

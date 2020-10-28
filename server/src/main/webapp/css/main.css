@@ -2066,6 +2066,27 @@
     color: red;
 }
 
+.customer-new {
+    color: black;
+}
+
+.customer-active, .customer-followup-sent {
+    color: blue;
+}
+
+.customer-need-followup {
+    color: red;
+}
+
+.customer-internal-test, .customer-developer, .customer-denial, .customer-client {
+    color: #c0c0c0;
+}
+
+.customer-difficult, .customer-pause {
+    color: #c0a080;
+}
+
+
 .profile, .administration, .settings, .reports {
     padding: 50px 0px 0px 0px;
     height: 100%;

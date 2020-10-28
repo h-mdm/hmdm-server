@@ -58,4 +58,12 @@ public class ApplicationSettingDAO {
         this.mapper.deleteApplicationSettingByName(configurationId, setting.getApplicationId(), setting.getName());
         this.mapper.insertApplicationSetting(configurationId, setting);
     }
+
+    public void deleteApplicationSetting(int configurationId, int applicationId, String name) {
+        this.mapper.deleteApplicationSettingByName(configurationId, applicationId, name);
+    }
+
+    public void deleteApplicationSettingByApp(int configurationId, int applicationId) {
+        this.mapper.deleteApplicationSettingByApp(configurationId, applicationId);
+    }
 }

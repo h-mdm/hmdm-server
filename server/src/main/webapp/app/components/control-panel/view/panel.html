@@ -10,14 +10,44 @@
             <div>
                 <div class='form-group'>
                     <input type='text'
-                           ng-enter='search()'
+                           ng-enter='newSearch()'
                            ng-model='paging.searchValue'
                            localized-placeholder='search.placeholder.customer'
                            class='form-control configurations-search-input'>
 
                     <div class='configurations-search-buttons'>
-                        <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+                        <button type='button' class='btn btn-default' ng-click='newSearch()' localized>button.search</button>
                         <button type='button' class='btn btn-default' ng-click='editCustomer( {} )' localized>button.add</button>
+                    </div>
+                </div>
+
+                <div class='form-group'>
+                    <div class="col-sm-3 margin-bottom">
+                        <select class='form-control'
+                                ng-model='paging.accountType'
+                                ng-change='newSearch()'>
+                            <option value="" selected localized>customer.type.options.all</option>
+                            <option value="0" localized>customer.type.demo</option>
+                            <option value="1" localized>customer.type.small</option>
+                            <option value="2" localized>customer.type.corporate</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 margin-bottom">
+                        <select class='form-control'
+                                ng-model='paging.customerStatus'
+                                ng-change='newSearch()'>
+                            <option value="" selected localized>customer.status.options.all</option>
+                            <option value="customer.new" localized>customer.new</option>
+                            <option value="customer.active" localized>customer.active</option>
+                            <option value="customer.need.followup" localized>customer.need.followup</option>
+                            <option value="customer.followup.sent" localized>customer.followup.sent</option>
+                            <option value="customer.internal.test" localized>customer.internal.test</option>
+                            <option value="customer.developer" localized>customer.developer</option>
+                            <option value="customer.difficult" localized>customer.difficult</option>
+                            <option value="customer.pause" localized>customer.pause</option>
+                            <option value="customer.denial" localized>customer.denial</option>
+                            <option value="customer.client" localized>customer.client</option>
+                        </select>
                     </div>
                 </div>
 
@@ -60,6 +90,7 @@
                                   class="glyphicon glyphicon-sort-by-order-alt"></span>
                         </th>
                         <th localized>table.heading.customer.device.limit</th>
+                        <th localized>table.heading.customer.status</th>
                         <th class='actions-column' style="min-width: 200px" localized>table.heading.customer.actions</th>
                     </tr>
                     </thead>
@@ -72,6 +103,7 @@
                         <td>{{accountType(customer.accountType)}}</td>
                         <td ng-class="{'warning-font': customer.expiryTime && customer.expiryTime < now}">{{customer.expiryTime | date:'dd/MM/yyyy'}}</td>
                         <td>{{customer.deviceLimit}}</td>
+                        <td class="{{customerClass(customer.customerStatus)}}">{{localization.localize(customer.customerStatus)}}</td>
                         <td>
                             <div>
                                 <button type='button' class='btn btn-default' localized-title="button.change"

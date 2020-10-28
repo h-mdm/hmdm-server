@@ -188,7 +188,6 @@ document.localization[ 'ru_RU' ] = {
     'form.icon.name': 'Название',
     'form.icon.file': 'Файл',
 
-
     'form.configuration.title': 'Конфигурация',
     'form.configuration.title.typical': 'Типовая конфигурация',
     'form.configuration.settings.auto.update': 'Автообновление',
@@ -210,6 +209,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.mdm.component.wifi.password': 'WiFi пароль',
     'form.configuration.settings.mdm.component.wifi.password.placeholder': 'WiFi пароль - оставьте пустым для ручного ввода',
     'form.configuration.settings.mdm.component.wifi.security': 'Тип защиты WiFi',
+    'form.configuration.settings.mdm.component.wifi.notice': 'Внимание: настройки WiFi применяются только для начальной регистрации устройства!',
     'form.configuration.settings.mdm.component.server.url': 'URL нового сервера',
     'form.configuration.settings.mdm.component.server.url.placeholder': 'Заполняется при миграции на новый MDM сервер',
     'form.configuration.settings.mdm.app.content': 'Контентное приложение',
@@ -299,6 +299,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.password.mode.moderate' : 'Средний (8+ символов, буквы и цифры)',
     'form.configuration.settings.password.mode.strong' : 'Сложный (8+, разный регистр, цифры, знаки)',
     'form.configuration.settings.use.default.launcher': 'Запускать с другим лаунчером',
+    'form.configuration.settings.disable.screenshots': 'Запретить скриншоты',
     'form.configuration.settings.orientation': 'Ориентация',
     'form.configuration.settings.orientation.none': 'Не фиксировать',
     'form.configuration.settings.orientation.portrait': 'Портретная',
@@ -309,8 +310,11 @@ document.localization[ 'ru_RU' ] = {
 
     'form.configuration.file.name': 'Имя файла',
     'form.configuration.file.description': 'Описание файла',
+    'form.configuration.file.description.placeholder': 'Опционально, для вашего удобства',
     'form.configuration.file.path': 'Путь на устройстве',
+    'form.configuration.file.path.placeholder': 'Без пути к носителю, например /my-app/image.jpg',
     'form.configuration.file.url': 'URL',
+    'form.configuration.file.url.placeholder': 'Только если файл на внешнем ресурсе',
     'form.configuration.file.file': 'Файл',
     'form.configuration.file.action': 'Действие',
     'form.configuration.file.action.prompt.1': 'Загрузить',
@@ -330,14 +334,26 @@ document.localization[ 'ru_RU' ] = {
     'form.application.type.option.app': 'Приложение',
     'form.application.pkg': 'ID пакета',
     'form.application.from.file': 'Определяется из файла',
+    'form.application.pkg.title': 'ID пакета определяется автоматически при загрузке файла. Указывайте ID пакета вручную только для системных приложений.',
+    'form.application.pkg.placeholder': 'Например, com.android.camera',
     'form.application.name': 'Название приложения',
+    'form.application.name.title': 'Под этим названием вы будете видеть приложение в списке. Рекомендуем давать приложениям уникальные и информативные названия.',
+    'form.application.name.placeholder': 'Например, Камера (Android)',
     'form.application.version': 'Версия',
+    'form.application.version.title': 'Версия пакета определяется автоматически при загрузке файла. Для системных приложений ставьте 0.',
+    'form.application.version.placeholder': '0 для системных приложений',
     'form.application.system': 'Системное',
+    'form.application.system.title': 'Системные приложения уже установлены на устройстве и не требуют файла. Ставьте этот флажок, только если требуется разрешить системный пакет.',
     'form.application.run.after.install': 'Запуск после установки',
+    'form.application.run.after.install.title': 'Приложения с фоновыми сервисами требуют явного запуска хотя бы один раз.',
     'form.application.run.at.boot': 'Запуск при загрузке',
+    'form.application.run.at.boot.title': 'Этот флажок будет открывать окно приложения при каждом запуске. Он не влияет на запуск фоновых сервисов приложений.',
     'form.application.url': 'URL',
+    'form.application.url.title': 'URL нужно указывать, только если приложение размещено на внешнем ресурсе. Лучше загрузите APK файл на сервер с помощью поля ниже.',
+    'form.application.url.disabled': 'URL редактируется для каждой версии в отдельности. Чтобы изменить URL, закройте это окно и нажмите иконку "Версии".',
     'form.application.file': 'Файл',
     'form.application.showLabel': 'Показать ярлык',
+    'form.application.showLabel.title': 'Показывать ли иконку приложения в лаунчере. Эту опцию можно затем переопределить в конфигурации.',
     'form.application.iconText': 'Текст ярлыка',
     'form.application.iconText.placeholder': '(по умолчанию)',
     'form.application.versions.title': 'Версии приложения',
@@ -371,6 +387,7 @@ document.localization[ 'ru_RU' ] = {
     'form.customer.copy.configuration': 'Копировать конфигурации',
     'form.customer.copy.design': 'Копировать дизайн',
     'form.customer.type': 'Тип клиента',
+    'form.customer.status': 'Статус клиента',
     'form.customer.expiry.time': 'Дата окончания',
     'form.customer.device.limit': 'Лимит устройств',
 
@@ -521,7 +538,6 @@ document.localization[ 'ru_RU' ] = {
     'search.placeholder.to': 'По...',
     'search.placeholder.user': 'Имя пользователя',
 
-
     'table.heading.customer.name': 'Название',
     'table.heading.customer.desc': 'Описание',
     'table.heading.customer.registration.time': 'Зарегистрирован',
@@ -530,6 +546,18 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.customer.type': 'Тип',
     'table.heading.customer.expiry.time': 'Окончание',
     'table.heading.customer.device.limit': 'Лимит',
+    'table.heading.customer.status': 'Статус',
+
+    'customer.new': 'Новый',
+    'customer.active': 'В процессе',
+    'customer.need.followup': 'Нужен Follow-up',
+    'customer.followup.sent': 'Follow-up выслан',
+    'customer.internal.test': 'Тестовый',
+    'customer.developer': 'Разработчик',
+    'customer.difficult': 'Проблемный',
+    'customer.pause': 'Пауза',
+    'customer.denial': 'Отказ',
+    'customer.client': 'Клиент',
 
     'table.heading.configuration.name': 'Название',
     'table.heading.configuration.desc': 'Описание',
@@ -616,7 +644,6 @@ document.localization[ 'ru_RU' ] = {
     'menu.settings': 'Настройки',
     'menu.show.hints': 'Показать подсказки',
 
-
     'plugin.name.not.specified': '<<Имя функции не указано>>',
 
     'breadcrumb.devices': 'Устройства',
@@ -697,6 +724,9 @@ document.localization[ 'ru_RU' ] = {
     'customer.type.small': 'Малый бизнес',
     'customer.type.corporate': 'Корпоративный',
     'customer.type.master': 'Основной',
+
+    'customer.type.options.all': 'Все типы',
+    'customer.status.options.all': 'Все статусы',
 
     'account.expiring': 'Ваша учетная запись истекает в течение ${days} дней. Пожалуйста, свяжитесь с продавцом для продления.',
     'account.expired': 'Ваша учетная запись истекла. Пожалуйста, свяжитесь с продавцом для продления.',

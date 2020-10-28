@@ -45,13 +45,17 @@ public interface CustomerMapper {
     @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
     List<Customer> findAll();
 
-    @Insert({"INSERT INTO customers (name, description, filesDir, master, prefix, registrationTime, accountType, expiryTime, deviceLimit) " +
-            "VALUES (#{name}, #{description}, #{filesDir}, FALSE, #{prefix}, #{registrationTime}, #{accountType}, #{expiryTime}, #{deviceLimit})"})
-    @SelectKey( statement = "SELECT currval('customers_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert({"INSERT INTO customers (name, description, filesDir, master, prefix, registrationTime, " +
+             "accountType, expiryTime, deviceLimit, customerStatus) " +
+             "VALUES (#{name}, #{description}, #{filesDir}, FALSE, #{prefix}, #{registrationTime}, " +
+             "#{accountType}, #{expiryTime}, #{deviceLimit}, #{customerStatus})"})
+    @SelectKey( statement = "SELECT currval('customers_id_seq')", keyColumn = "id",
+            keyProperty = "id", before = false, resultType = int.class )
     void insert(Customer customer);
 
     @Update({"UPDATE customers SET name=#{name}, description=#{description}, " +
-            "accountType=#{accountType}, expiryTime=#{expiryTime}, deviceLimit=#{deviceLimit} WHERE id=#{id} AND master = FALSE"})
+            "accountType=#{accountType}, expiryTime=#{expiryTime}, deviceLimit=#{deviceLimit}, " +
+            "customerStatus=#{customerStatus} WHERE id=#{id} AND master = FALSE"})
     void update(Customer customer);
 
     @Delete({"DELETE FROM customers WHERE id=#{id} AND master = FALSE"})

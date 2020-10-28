@@ -90,6 +90,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Set to true if Headwind MDM need to work together with a third-party launcher")
     private Boolean runDefaultLauncher;
 
+    @ApiModelProperty("Flag indicating if screenshots are disabled on the device")
+    private Boolean disableScreenshots;
+
     @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
     private String timeZone;
 
@@ -542,6 +545,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setRunDefaultLauncher(Boolean runDefaultLauncher) {
         this.runDefaultLauncher = runDefaultLauncher;
+    }
+
+    @Override
+    public Boolean getDisableScreenshots() {
+        return disableScreenshots;
+    }
+
+    public void setDisableScreenshots(Boolean disableScreenshots) {
+        this.disableScreenshots = disableScreenshots;
     }
 
     @Override

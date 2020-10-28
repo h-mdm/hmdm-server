@@ -83,6 +83,21 @@ angular.module('headwind-kiosk')
             return '';
         };
 
+        $scope.customerClass = function(status) {
+            return status.replace(/\./g, "-");
+        }
+
+        $scope.newSearch = function() {
+            if ($scope.paging.accountType === "") {
+                $scope.paging.accountType = undefined;
+            }
+            if ($scope.paging.customerStatus === "") {
+                $scope.paging.customerStatus = undefined;
+            }
+            $scope.paging.currentPage = 1;
+            $scope.search();
+        }
+
         $scope.search = function () {
             customerService.getAllCustomers($scope.paging, function (response) {
                 $scope.customers = response.data.items;

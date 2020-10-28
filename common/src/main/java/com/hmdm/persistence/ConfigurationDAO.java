@@ -225,6 +225,10 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
         );
     }
 
+    public boolean isAppInstalledInConfiguration(String pkg, Integer configurationId) {
+        return this.mapper.isAppInstalledInConfiguration(pkg, configurationId);
+    }
+
     public Configuration getConfigurationById(Integer id) {
         return getSingleRecord(() -> this.mapper.getConfigurationById(id), SecurityException::onConfigurationAccessViolation);
     }

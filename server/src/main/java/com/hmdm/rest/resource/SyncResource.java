@@ -237,6 +237,7 @@ public class SyncResource {
                 data.setPasswordMode(configuration.getPasswordMode());
                 data.setOrientation(configuration.getOrientation());
                 data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
+                data.setDisableScreenshots(configuration.getDisableScreenshots());
                 data.setTimeZone(configuration.getTimeZone());
                 data.setAllowedClasses(configuration.getAllowedClasses());
                 data.setNewServerUrl(configuration.getNewServerUrl());
