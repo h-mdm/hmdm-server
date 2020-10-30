@@ -666,11 +666,11 @@ document.localization ['de_DE'] = {
     'app.title': 'Headwind-MDM-Webpanel',
 
     'box.show.my.apps.only': 'Nur meine Anwendungen anzeigen',
-    'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version $ {neuesteVersion}',
+    'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version ${neuesteVersion}',
 
     'about.line.1': 'MDM-Bedienfeld für Headwind',
     'about.line.2': 'Enterprise Launcher für Android',
-    'about.line.3': 'Version $ {versionNumber}',
+    'about.line.3': 'Version ${versionNumber}',
     'about.line.4': 'Installierte Plugins',
 
     'common.app.clarification': 'Diese Anwendung ist öffentlich und kann nicht bearbeitet werden. Um eine weitere Version dieser App hinzuzufügen, wenden Sie sich bitte an den Administrator. ',
