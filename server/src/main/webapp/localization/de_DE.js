@@ -666,7 +666,7 @@ document.localization ['de_DE'] = {
     'app.title': 'Headwind-MDM-Webpanel',
 
     'box.show.my.apps.only': 'Nur meine Anwendungen anzeigen',
-    'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version ${neuesteVersion}',
+    'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version ${latestVersion}',
 
     'about.line.1': 'MDM-Bedienfeld für Headwind',
     'about.line.2': 'Enterprise Launcher für Android',
