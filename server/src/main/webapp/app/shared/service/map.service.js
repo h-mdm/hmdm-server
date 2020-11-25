@@ -158,6 +158,9 @@ angular.module('headwind-kiosk')
             // The markers added to map so far. Maps marker identifier to marker object
             const markers = {};
 
+            // Polylines added to map so far.
+            const polylines = {};
+
             /**
              * Creates a new icon with specified properties.
              *
@@ -261,6 +264,48 @@ angular.module('headwind-kiosk')
                 }
             };
 
+            var addPolyline = function (identifier, points, options) {
+                const polyline = L.polyline(points, options);
+
+                polyline.hmdmProperties = {identifier: identifier};
+
+                polyline.addTo(map);
+
+                polylines[identifier] = polyline;
+
+                return polyline;
+            };
+
+            /**
+             * Checks if specified polyline is currently present on map.
+             *
+             * @param identifier a polyline identifier.
+             * @returns {boolean} true if requested polyline is currently displayed on map; false if there is no such polyline.
+             */
+            var isPolylineDisplayed = function (identifier) {
+                return polylines.hasOwnProperty(identifier);
+            };
+
+            /**
+             * Removes specified polyline from map.
+             *
+             * @param identifier a polyline identifier.
+             */
+            var removePolyline = function (identifier) {
+                if (isPolylineDisplayed(identifier)) {
+                    const polyline = polylines[identifier];
+                    delete polylines[identifier];
+                    map.removeLayer(polyline);
+                }
+            };
+
+            const removeAllPolylines = function () {
+                angular.forEach(polylines, function (polyline, identifier) {
+                    map.removeLayer(polyline);
+                    delete polylines[identifier];
+                });
+            };
+
             /**
              * Locates the specified marker and passes it to specified handler for further manipulations.
              *
@@ -308,6 +353,10 @@ angular.module('headwind-kiosk')
                 createMarkerIcon: getMarkerIcon,
                 dispose: disposeMap,
                 removeAllMarkers: removeAllMarkers,
+                addPolyline: addPolyline,
+                removePolyline: removePolyline,
+                isPolylineDisplayed: isPolylineDisplayed,
+                removeAllPolylines: removeAllPolylines,
             }
         };
 

@@ -282,6 +282,7 @@ document.localization ['ar_AE'] = {
     "form.configuration.settings.common.timezone": 'المنطقة الزمنية',
     'form.configuration.settings.common.timezone.placeholder': 'على سبيل المثال أمريكا/لوس أنجليس' ,
     "form.configuration.settings.common.timezone.link": 'قائمة المناطق الزمنية',
+    'form.configuration.settings.common.no.network.warning': 'تحذير! لا تغلق جميع قنوات الاتصال ، وإلا فلن تتمكن من إدارة الأجهزة بعد الآن!',
     'form.configuration.settings.request.updates': 'تحديث الموقع',
     "form.configuration.settings.request.updates.donottrack": 'عدم التعقب',
     "form.configuration.settings.request.updates.gps": 'GPS بواسطة',
@@ -472,6 +473,8 @@ document.localization ['ar_AE'] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
+    'form.settings.lang.cn': '繁体中文',
+    'form.settings.lang.tw': '繁體中文',
 
 	"form.settings.misc.title": 'إعدادات متنوعة',
     "form.settings.misc.phone.format": 'تنسيق رقم الهاتف',

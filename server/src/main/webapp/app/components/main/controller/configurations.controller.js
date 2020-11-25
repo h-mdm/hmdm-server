@@ -323,6 +323,12 @@ angular.module('headwind-kiosk')
                     || (item.type === 'app' && item.pkg && item.pkg.toLowerCase().indexOf(filter) >= 0);
             };
 
+            $scope.checkNetworkState = function() {
+                if ($scope.configuration.wifi === false && $scope.configuration.mobileData === false) {
+                    alertService.showAlertMessage(localization.localize('form.configuration.settings.common.no.network.warning'));
+                }
+            };
+
             $scope.addApp = function () {
                 var modalInstance = $modal.open({
                     templateUrl: 'app/components/main/view/modal/addConfigurationApplication.html',

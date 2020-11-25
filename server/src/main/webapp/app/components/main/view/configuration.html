@@ -127,11 +127,11 @@
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.common.wifi</label>
                         <div class='col-sm-9 three-state'>
                             <label><span localized>form.configuration.settings.common.gps.any</span>
-                                <input ng-model='configuration.wifi'  name="c_wifi" type='radio' class='form-control' ng-value="null"/></label>
+                                <input ng-model='configuration.wifi'  name="c_wifi" type='radio' class='form-control' ng-value="null" ng-change="checkNetworkState()"/></label>
                             <label><span localized>form.configuration.settings.common.gps.off</span>
-                                <input ng-model='configuration.wifi'  name="c_wifi" type='radio' class='form-control' ng-value="false"/></label>
+                                <input ng-model='configuration.wifi'  name="c_wifi" type='radio' class='form-control' ng-value="false" ng-change="checkNetworkState()"/></label>
                             <label><span localized>form.configuration.settings.common.gps.on</span>
-                                <input ng-model='configuration.wifi'  name="c_wifi" type='radio' class='form-control' ng-value="true"/></label>
+                                <input ng-model='configuration.wifi'  name="c_wifi" type='radio' class='form-control' ng-value="true" ng-change="checkNetworkState()"/></label>
                         </div>
                     </div>
 
@@ -139,11 +139,11 @@
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.common.mobile.data</label>
                         <div class='col-sm-9 three-state'>
                             <label><span localized>form.configuration.settings.common.gps.any</span>
-                                <input ng-model='configuration.mobileData'  name="c_mobileData" type='radio' class='form-control' ng-value="null"/></label>
+                                <input ng-model='configuration.mobileData'  name="c_mobileData" type='radio' class='form-control' ng-value="null" ng-change="checkNetworkState()"/></label>
                             <label><span localized>form.configuration.settings.common.gps.off</span>
-                                <input ng-model='configuration.mobileData'  name="c_mobileData" type='radio' class='form-control' ng-value="false"/></label>
+                                <input ng-model='configuration.mobileData'  name="c_mobileData" type='radio' class='form-control' ng-value="false" ng-change="checkNetworkState()"/></label>
                             <label><span localized>form.configuration.settings.common.gps.on</span>
-                                <input ng-model='configuration.mobileData'  name="c_mobileData" type='radio' class='form-control' ng-value="true"/></label>
+                                <input ng-model='configuration.mobileData'  name="c_mobileData" type='radio' class='form-control' ng-value="true" ng-change="checkNetworkState()"/></label>
                         </div>
                     </div>
 

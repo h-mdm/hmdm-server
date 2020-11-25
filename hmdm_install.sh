@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 # Headwind MDM installer script
-# Tested on Ubuntu Linux 18.04 LTS, 19.10
+# Tested on Ubuntu Linux 18.04 - 20.10
 #
 REPOSITORY_BASE=https://h-mdm.com/files
-CLIENT_VERSION=3.43
+CLIENT_VERSION=3.47
 DEFAULT_SQL_HOST=localhost
 DEFAULT_SQL_PORT=5432
 DEFAULT_SQL_BASE=hmdm
@@ -21,6 +21,11 @@ DEFAULT_PORT="8080"
 TEMP_DIRECTORY="/tmp"
 TEMP_SQL_FILE="$TEMP_DIRECTORY/hmdm_init.sql"
 TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
+
+# Use sandbox directory for tomcat 9
+if [ "$TOMCAT_HOME" == "/var/lib/tomcat9" ]; then
+    DEFAULT_LOCATION="/var/lib/tomcat9/work"
+fi 
 
 # Check if we are root
 CURRENTUSER=$(whoami)
@@ -271,4 +276,3 @@ echo "Headwind MDM has been installed!"
 echo "To continue, open in your web browser:"
 echo "$PROTOCOL://$BASE_HOST$BASE_PATH"
 echo "Login: admin:admin"
-

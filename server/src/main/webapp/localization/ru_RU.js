@@ -282,6 +282,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.common.timezone': 'Временная зона',
     'form.configuration.settings.common.timezone.placeholder': 'Например, Europe/Moscow',
     'form.configuration.settings.common.timezone.link': 'Список временных зон',
+    'form.configuration.settings.common.no.network.warning': 'ВНИМАНИЕ! Не отключайте все каналы связи, это может привести к недоступности управления устройствами!',
     'form.configuration.settings.request.updates': 'Отслеживать координаты',
     'form.configuration.settings.request.updates.donottrack': 'Не отслеживать',
     'form.configuration.settings.request.updates.gps': 'По GPS',
@@ -472,6 +473,8 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
+    'form.settings.lang.cn': '繁体中文',
+    'form.settings.lang.tw': '繁體中文',
 
     'form.settings.misc.title': 'Прочие настройки',
     'form.settings.misc.phone.format': 'Формат номера телефона',

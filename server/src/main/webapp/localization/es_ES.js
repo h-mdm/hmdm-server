@@ -282,6 +282,7 @@ document.localization ['es_ES'] = {
     'form.configuration.settings.common.timezone': 'Zona',
     'form.configuration.settings.common.timezone.placeholder': 'e.j. America/Los_Angeles',
     'form.configuration.settings.common.timezone.link': 'Lista de zonas',
+    'form.configuration.settings.common.no.network.warning': '¡ADVERTENCIA! ¡No apague todos los canales de conexión, de lo contrario ya no podrá administrar dispositivos!',
     'form.configuration.settings.request.updates': 'Actualizar Localizacion',
     'form.configuration.settings.request.updates.donottrack': 'No seguir',
     'form.configuration.settings.request.updates.gps': 'Con GPS',
@@ -472,6 +473,8 @@ document.localization ['es_ES'] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
+    'form.settings.lang.cn': '繁体中文',
+    'form.settings.lang.tw': '繁體中文',
 
     'form.settings.misc.title': 'Opciones Varias',
     'form.settings.misc.phone.format': 'Formato del numero telefonico',

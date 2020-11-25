@@ -282,6 +282,7 @@ document.localization ['de_DE'] = {
     'form.configuration.settings.common.timezone': 'Zeitzone',
     'form.configuration.settings.common.timezone.placeholder': 'z.B. Europe / Vienna ',
     'form.configuration.settings.common.timezone.link': 'Liste der Zeitzonen',
+    'form.configuration.settings.common.no.network.warning': 'ACHTUNG! Schalten Sie nicht alle Verbindungskanäle aus, sonst können Sie keine Geräte mehr verwalten!',
     'form.configuration.settings.request.updates': 'Ort aktualisieren',
     'form.configuration.settings.request.updates.donottrack': 'Nicht verfolgen',
     'form.configuration.settings.request.updates.gps': 'Per GPS',
@@ -472,6 +473,8 @@ document.localization ['de_DE'] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
+    'form.settings.lang.cn': '繁体中文',
+    'form.settings.lang.tw': '繁體中文',
 
     'form.settings.misc.title': 'Verschiedene Einstellungen',
     'form.settings.misc.phone.format': 'Telefonnummernformat',
@@ -666,11 +669,11 @@ document.localization ['de_DE'] = {
     'app.title': 'Headwind-MDM-Webpanel',
 
     'box.show.my.apps.only': 'Nur meine Anwendungen anzeigen',
-    'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version $ {neuesteVersion}',
+    'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version ${latestVersion}',
 
     'about.line.1': 'MDM-Bedienfeld für Headwind',
     'about.line.2': 'Enterprise Launcher für Android',
-    'about.line.3': 'Version $ {versionNumber}',
+    'about.line.3': 'Version ${versionNumber}',
     'about.line.4': 'Installierte Plugins',
 
     'common.app.clarification': 'Diese Anwendung ist öffentlich und kann nicht bearbeitet werden. Um eine weitere Version dieser App hinzuzufügen, wenden Sie sich bitte an den Administrator. ',

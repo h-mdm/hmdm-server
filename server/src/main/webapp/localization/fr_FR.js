@@ -282,6 +282,7 @@ document.localization ['fr_FR'] = {
     'form.configuration.settings.common.timezone': 'Fuseau horaire',
     'form.configuration.settings.common.timezone.placeholder': 'p.e. America/Los_Angeles',
     'form.configuration.settings.common.timezone.link': 'Liste des fuseaux horaires',
+    'form.configuration.settings.common.no.network.warning': 'ATTENTION! Ne désactivez pas tous les canaux de connexion, sinon vous ne pourrez plus gérer les appareils!',
     'form.configuration.settings.request.updates': 'Mettre à jour la localisation',
     'form.configuration.settings.request.updates.donottrack': 'Ne pas suivre',
     'form.configuration.settings.request.updates.gps': 'Par GPS',
@@ -472,6 +473,8 @@ document.localization ['fr_FR'] = {
     'form.settings.lang.ar': 'عربي',
     'form.settings.lang.es': 'Español',
     'form.settings.lang.de': 'Deutsch',
+    'form.settings.lang.cn': '繁体中文',
+    'form.settings.lang.tw': '繁體中文',
 
     'form.settings.misc.title': 'Paramètres divers',
     'form.settings.misc.phone.format': 'Format du numéro de téléphone',
