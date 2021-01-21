@@ -567,6 +567,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 newCommonApplication.setPkg(application.getPkg());
                 newCommonApplication.setName(application.getName());
                 newCommonApplication.setShowIcon(application.getShowIcon());
+                newCommonApplication.setUseKiosk(application.getUseKiosk());
                 newCommonApplication.setSystem(application.isSystem());
                 newCommonApplication.setCustomerId(newAppCustomer.getId());
                 newCommonApplication.setLatestVersion(null);

@@ -65,7 +65,7 @@ public class PushSenderMqtt implements PushSender {
 
             MqttMessage mqttMessage = new MqttMessage(strMessage.getBytes());
             mqttMessage.setQos(2);
-            client.publish(device.getNumber(), mqttMessage);
+            client.publish(device.getOldNumber() == null ? device.getNumber() : device.getOldNumber(), mqttMessage);
 
         } catch (Exception e) {
             e.printStackTrace();

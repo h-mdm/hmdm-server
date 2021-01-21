@@ -819,9 +819,13 @@ angular.module('headwind-kiosk')
         }
     })
     .controller('DeviceModalController',
-        function ($scope, $modalInstance, deviceService, configurationService, groupService, device, settings, localization, authService) {
+        function ($scope, $modalInstance, deviceService, configurationService, groupService, device, settings,
+                  localization, authService, confirmModal) {
 
             $scope.canEditDevice = authService.hasPermission('edit_devices');
+
+            $scope.migratingDevice = device.hasOwnProperty('oldNumber') && device.oldNumber !== null;
+            $scope.migrationHint = $scope.migratingDevice ? localization.localize('form.device.number.locked') : null;
 
             $scope.groupsList = [];
 
@@ -843,7 +847,7 @@ angular.module('headwind-kiosk')
                 'dynamicButtonTextSuffix': localization.localize('table.filtering.suffix.group')
             };
 
-            var deviceFields = ["id", "number", "description", "configurationId", "imei", "phone", "groups"];
+            var deviceFields = ["id", "number", "description", "configurationId", "imei", "phone", "groups", "custom1", "custom2", "custom3", "oldNumber"];
             $scope.device = {};
             for (var prop in device) {
                 if (device.hasOwnProperty(prop)) {
@@ -856,6 +860,20 @@ angular.module('headwind-kiosk')
             $scope.settings = settings;
 
             $scope.loading = false;
+
+            var saveCompletion = function(targetService, pathParams, request) {
+                targetService(pathParams, request, function (response) {
+                    $scope.loading = false;
+                    if (response.status === 'OK') {
+                        $modalInstance.close();
+                    } else {
+                        $scope.errorMessage = localization.localizeServerResponse(response);
+                    }
+                }, function () {
+                    $scope.loading = false;
+                    $scope.errorMessage = localization.localizeServerResponse('error.request.failure');
+                });
+            };
 
             $scope.save = function () {
                 $scope.errorMessage = undefined;
@@ -879,24 +897,26 @@ angular.module('headwind-kiosk')
                                 request[prop] = $scope.device[prop]
                             }
                         }
+
+                        if ($scope.device.number !== device.number &&
+                            device.lastUpdate > 0) {
+                            // Confirm the migration
+                            $scope.loading = false;
+                            var localizedText = localization.localize('form.device.migration.warning');
+                            confirmModal.getUserConfirmation(localizedText, function () {
+                                $scope.loading = true;
+                                request.oldNumber = device.number;
+                                saveCompletion(targetService, pathParams, request);
+                            });
+                            return;
+                        }
                     } else {
                         targetService = deviceService.updateDeviceDesc;
                         pathParams.id = $scope.device.id;
                         request = $scope.device.description;
                     }
 
-                    targetService(pathParams, request, function (response) {
-                        $scope.loading = false;
-                        if (response.status === 'OK') {
-                            $modalInstance.close();
-                        } else {
-                            $scope.errorMessage = localization.localizeServerResponse(response);
-                        }
-                    }, function () {
-                        $scope.loading = false;
-                        $scope.errorMessage = localization.localizeServerResponse('error.request.failure');
-                    });
-                    
+                    saveCompletion(targetService, pathParams, request);
                 }
             };
 

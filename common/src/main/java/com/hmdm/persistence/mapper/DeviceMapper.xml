@@ -26,7 +26,7 @@
     <sql id="deviceWithGroupsSelect">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
-               devices.custom1, devices.custom2, devices.custom3,
+               devices.custom1, devices.custom2, devices.custom3, devices.oldNumber,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName
         FROM devices
@@ -52,6 +52,7 @@
         <result property="custom1" column="custom1"/>
         <result property="custom2" column="custom2"/>
         <result property="custom3" column="custom3"/>
+        <result property="oldNumber" column="oldNumber"/>
 
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>
@@ -61,15 +62,15 @@
 
     <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO devices(number, description, lastUpdate, configurationId,
-            imei, phone, customerId, custom1, custom2, custom3)
+            imei, phone, customerId, custom1, custom2, custom3, oldNumber)
         VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId},
-            #{imei}, #{phone}, #{customerId}, #{custom1}, #{custom2}, #{custom3});
+            #{imei}, #{phone}, #{customerId}, #{custom1}, #{custom2}, #{custom3}, #{oldNumber});
     </insert>
 
     <update id="updateDevice" parameterType="Device">
         UPDATE devices SET number = #{number}, description = #{description},
                            configurationId = #{configurationId}, imei = #{imei}, phone = #{phone},
-                           custom1=#{custom1}, custom2=#{custom2}, custom3=#{custom3} WHERE id = #{id}
+                           custom1=#{custom1}, custom2=#{custom2}, custom3=#{custom3}, oldNumber=#{oldNumber} WHERE id = #{id}
     </update>
 
     <sql id="allowedDevicesSelect">
@@ -136,6 +137,7 @@
             OR devices.custom1 ILIKE #{value}
             OR devices.custom2 ILIKE #{value}
             OR devices.custom3 ILIKE #{value}
+            OR devices.oldNumber ILIKE #{value}
             OR configurations.name ILIKE #{value}
             OR groups.name ILIKE #{value}
             )
@@ -183,7 +185,7 @@
     <select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
-               devices.custom1, devices.custom2, devices.custom3,
+               devices.custom1, devices.custom2, devices.custom3, devices.oldNumber,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName,
                applications.pkg AS launcherPkg,
@@ -231,6 +233,7 @@
             OR devices.custom1 ILIKE #{value}
             OR devices.custom2 ILIKE #{value}
             OR devices.custom3 ILIKE #{value}
+            OR devices.oldNumber ILIKE #{value}
             )
         </if>
         <if test="imeiChanged">
@@ -271,6 +274,11 @@
     <select id="getDeviceByNumber" resultMap="deviceResult">
         <include refid="deviceWithGroupsSelect"/>
         WHERE devices.number = #{number}
+    </select>
+
+    <select id="getDeviceByOldNumber" resultMap="deviceResult">
+        <include refid="deviceWithGroupsSelect"/>
+        WHERE devices.oldNumber = #{number}
     </select>
 
     <select id="getDeviceByNumberIgnoreCase" resultMap="deviceResult">

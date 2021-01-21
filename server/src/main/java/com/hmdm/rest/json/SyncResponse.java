@@ -189,6 +189,14 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<SyncConfigurationFileInt> files;
 
+    @ApiModelProperty("New device number, used for changing the device number")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String newNumber;
+
+    @ApiModelProperty("List of additional restrictions in MDM mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String restrictions;
+
     public SyncResponse() {
     }
 
@@ -204,6 +212,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         if (device != null) {
             this.imei = device.getImei();
             this.phone = device.getPhone();
+            if (device.getOldNumber() != null) {
+                this.newNumber = device.getNumber();
+            }
         }
 
         this.password = CryptoUtil.getMD5String(password);
@@ -226,6 +237,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         if (device != null) {
             this.imei = device.getImei();
             this.phone = device.getPhone();
+            if (device.getOldNumber() != null) {
+                this.newNumber = device.getNumber();
+            }
         }
 
         this.password = CryptoUtil.getMD5String(settings.getPassword());
@@ -599,5 +613,23 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setFiles(List<SyncConfigurationFileInt> files) {
         this.files = files;
+    }
+
+    @Override
+    public String getNewNumber() {
+        return this.newNumber;
+    }
+
+    public void setNewNumber(String newNumber) {
+        this.newNumber = newNumber;
+    }
+
+    @Override
+    public String getRestrictions() {
+        return this.restrictions;
+    }
+
+    public void setRestrictions(String restrictions) {
+        this.restrictions = restrictions;
     }
 }

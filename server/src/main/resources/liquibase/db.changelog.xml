@@ -2003,4 +2003,26 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="03.12.20-20:22" author="seva" context="common">
+        <comment>Column,new: applications#useKiosk</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN useKiosk BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN useKiosk;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20.01.21-13:18" author="seva" context="common">
+        <comment>Column,new: devices#oldNumber, configurations#restrictions</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN oldNumber VARCHAR(100);
+            ALTER TABLE configurations ADD COLUMN restrictions TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP COLUMN oldNumber;
+            ALTER TABLE configurations DROP COLUMN restrictions;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

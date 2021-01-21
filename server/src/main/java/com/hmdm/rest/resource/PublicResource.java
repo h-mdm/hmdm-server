@@ -24,6 +24,8 @@ package com.hmdm.rest.resource;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.inject.Named;
+
+import com.hmdm.persistence.domain.ApplicationType;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import io.swagger.annotations.Api;
@@ -201,11 +203,13 @@ public class PublicResource {
             application.setName(request.getName());
             application.setPkg(request.getPkg());
             application.setShowIcon(request.isShowIcon());
+            application.setUseKiosk(request.isUseKiosk());
             application.setRunAfterInstall(request.isRunAfterInstall());
             application.setRunAtBoot(request.isRunAtBoot());
             application.setSystem(request.isSystem());
             application.setVersion(request.getVersion());
             application.setCustomerId(dbDevice.getCustomerId());
+            application.setType(ApplicationType.app);
 
             if (fileUploaded) {
                 String url = String.format("%s/files/%s/%s/%s", this.baseUrl,

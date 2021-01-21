@@ -192,8 +192,9 @@ public class DeviceResource {
                 dbDevice = this.deviceDAO.getDeviceById(device.getId());
                 if (device.getId() != null) {
                     if (dbDevice != null) {
-                        boolean notify = dbDevice.getConfigurationId() != null &&
-                                !dbDevice.getConfigurationId().equals(device.getConfigurationId());
+                        boolean notify = (dbDevice.getConfigurationId() != null &&
+                                !dbDevice.getConfigurationId().equals(device.getConfigurationId())) ||
+                                (dbDevice.getOldNumber() == null && device.getOldNumber() != null);
                         this.deviceDAO.updateDevice(device);
                         if (notify) {
                             this.pushService.notifyDeviceOnSettingUpdate(device.getId());

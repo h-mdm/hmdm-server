@@ -132,6 +132,8 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean kioskSystemInfo;
     @ApiModelProperty("Flag enabling lock screen in kiosk mode")
     private Boolean kioskKeyguard;
+    @ApiModelProperty("Additional comma separated restrictions in MDM mode")
+    private String restrictions;
 
     // This group of settings corresponds to Design settings
     private boolean useDefaultDesignSettings;
@@ -417,6 +419,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setKioskKeyguard(Boolean kioskKeyguard) {
         this.kioskKeyguard = kioskKeyguard;
+    }
+
+    public String getRestrictions() {
+        return restrictions;
+    }
+
+    public void setRestrictions(String restrictions) {
+        this.restrictions = restrictions;
     }
 
     public String getBaseUrl() {

@@ -89,6 +89,9 @@ public class NotificationResource {
         log.debug("#getPushMessages: deviceId = {}", deviceId);
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceId);
+            if (dbDevice == null) {
+                dbDevice = this.unsecureDAO.getDeviceByOldNumber(deviceId);
+            }
             if (dbDevice != null) {
                 List<PushMessage> messages = this.notificationDAO.getPendingMessagesForDelivery(deviceId);
                 log.info("Delivering push-messages to device '{}': {}", deviceId, messages);

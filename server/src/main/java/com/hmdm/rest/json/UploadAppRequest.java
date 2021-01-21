@@ -39,6 +39,7 @@ public class UploadAppRequest implements Serializable {
     private String version;
     private String pkg;
     private boolean showIcon;
+    private boolean useKiosk;
     private boolean runAfterInstall;
     private boolean runAtBoot;
     private boolean system;
@@ -83,6 +84,14 @@ public class UploadAppRequest implements Serializable {
 
     public void setShowIcon(boolean showIcon) {
         this.showIcon = showIcon;
+    }
+
+    public boolean isUseKiosk() {
+        return useKiosk;
+    }
+
+    public void setUseKiosk(boolean useKiosk) {
+        this.useKiosk = useKiosk;
     }
 
     public String getLocalPath() {
@@ -150,6 +159,7 @@ public class UploadAppRequest implements Serializable {
                 ", version='" + version + '\'' +
                 ", pkg='" + pkg + '\'' +
                 ", showIcon=" + showIcon +
+                ", useKiosk=" + useKiosk +
                 ", runAfterInstall=" + runAfterInstall +
                 ", runAtBoot=" + runAtBoot +
                 ", system=" + system +

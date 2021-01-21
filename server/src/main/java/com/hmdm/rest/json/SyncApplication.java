@@ -87,6 +87,11 @@ public class SyncApplication implements SyncApplicationInt {
     }
 
     @Override
+    public boolean getUseKiosk() {
+        return wrapped.getUseKiosk();
+    }
+
+    @Override
     @Deprecated
     public boolean isRemove() {
         return wrapped.isRemove();

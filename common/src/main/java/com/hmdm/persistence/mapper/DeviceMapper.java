@@ -65,6 +65,8 @@ public interface DeviceMapper {
 
     Device getDeviceByNumber(@Param("number") String number);
 
+    Device getDeviceByOldNumber(@Param("number") String number);
+
     Device getDeviceByNumberIgnoreCase(@Param("number") String number);
 
     Device getDeviceById(@Param("id") Integer id);
@@ -96,6 +98,10 @@ public interface DeviceMapper {
                                       @Param("custom1") String custom1,
                                       @Param("custom2") String custom2,
                                       @Param("custom3") String custom3);
+
+    @Update({"UPDATE devices SET oldNumber = null " +
+            "WHERE id = #{deviceId}"})
+    void clearOldNumber(@Param("deviceId") Integer deviceId);
 
     List<DeviceLookupItem> lookupDevices(@Param("userId") int userId,
                                          @Param("customerId") int customerId,

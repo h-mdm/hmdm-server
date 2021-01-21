@@ -87,6 +87,8 @@ public class Device implements CustomerData, Serializable {
     private String launcherPkg;
     @ApiModelProperty(hidden = true)
     private String statusCode;
+    @ApiModelProperty("Old device number, used when the number is changed")
+    private String oldNumber;
 
     public Device() {
     }
@@ -281,6 +283,14 @@ public class Device implements CustomerData, Serializable {
         this.statusCode = statusCode;
     }
 
+    public String getOldNumber() {
+        return oldNumber;
+    }
+
+    public void setOldNumber(String oldNumber) {
+        this.oldNumber = oldNumber;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
@@ -307,6 +317,7 @@ public class Device implements CustomerData, Serializable {
                 ", launcherPkg='" + launcherPkg + '\'' +
                 ", launcherVersion='" + launcherVersion + '\'' +
                 ", statusCode='" + statusCode + '\'' +
+                ", oldNumber='" + oldNumber + '\'' +
                 '}';
     }
 }

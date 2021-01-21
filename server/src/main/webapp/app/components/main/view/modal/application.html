@@ -119,6 +119,14 @@
             </div>
         </div>
 
+        <div class='form-group' ng-if="application.type === 'web'">
+            <label class='col-sm-4 control-label' for="useKioskBox" localized>form.application.use.kiosk</label>
+            <div class='col-sm-8'>
+                <input localized-title="form.application.use.kiosk.title" ng-model='application.useKiosk'
+                       type='checkbox' class='form-control' id="useKioskBox"/>
+            </div>
+        </div>
+
         <div class='form-group' ng-if="application.showIcon">
             <label class='col-sm-4 control-label' for="iconTextInput" localized>form.application.iconText</label>
             <div class='col-sm-8'>

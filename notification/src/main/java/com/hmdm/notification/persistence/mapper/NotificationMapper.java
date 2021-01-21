@@ -41,7 +41,7 @@ public interface NotificationMapper {
             "FROM pendingPushes " +
             "INNER JOIN pushMessages ON pushMessages.id = pendingPushes.messageId " +
             "INNER JOIN devices ON devices.id = pushMessages.deviceId " +
-            "WHERE devices.number = #{deviceNumber} " +
+            "WHERE (devices.number = #{deviceNumber} OR devices.oldNumber = #{deviceNumber}) " +
             "AND pendingPushes.status = 0 " +
             "ORDER BY pendingPushes.createTime ASC")
     List<PushMessage> getPendingMessagesForDelivery(@Param("deviceNumber") String deviceId);

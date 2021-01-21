@@ -31,7 +31,7 @@
                                     passwordMode, orientation, runDefaultLauncher, disableScreenshots, timeZone, allowedClasses, newServerUrl,
                                     lockSafeSettings, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
                                     wifiSSID, wifiPassword, wifiSecurityType, kioskHome, kioskRecents,
-                                    kioskNotifications, kioskSystemInfo, kioskKeyguard, autoUpdate,
+                                    kioskNotifications, kioskSystemInfo, kioskKeyguard, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
                 #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth},
@@ -40,7 +40,7 @@
                 #{passwordMode}, #{orientation}, #{runDefaultLauncher}, #{disableScreenshots}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
                 #{lockSafeSettings}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
                 #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{kioskHome}, #{kioskRecents},
-                                    #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{autoUpdate},
+                                    #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})
     </insert>
 
@@ -97,6 +97,7 @@
                    WHEN configurationApplications.configurationId IS NOT NULL THEN configurationApplications.showIcon
                    ELSE applications.showIcon
                END AS showIcon,
+               applications.useKiosk,
                configurationApplications.action AS action,
                configurationApplications.screenOrder AS screenOrder,
                configurationApplications.keyCode AS keyCode,
@@ -133,6 +134,7 @@
                (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
                COALESCE(configurationApplications.remove, FALSE) AS remove,
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
+               applications.useKiosk,
                configurationApplications.action AS action,
                configurationApplications.screenOrder AS screenOrder,
                configurationApplications.keyCode AS keyCode,
@@ -173,6 +175,7 @@
                (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
                COALESCE(configurationApplications.remove, FALSE) AS remove,
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
+               applications.useKiosk,
                configurationApplications.action AS action,
                configurationApplications.screenOrder AS screenOrder,
                configurationApplications.keyCode AS keyCode,

@@ -175,6 +175,12 @@ public class SyncResource {
 
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
+            boolean migration = false;
+
+            if (dbDevice == null) {
+                dbDevice = this.unsecureDAO.getDeviceByOldNumber(number);
+                migration = dbDevice != null;
+            }
 
             // Device creation on demand
             if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
@@ -182,6 +188,12 @@ public class SyncResource {
             }
 
             if (dbDevice != null) {
+
+                if (!migration && dbDevice.getOldNumber() != null) {
+                    // If a device requested the configuration by new device ID, the migration is completed
+                    unsecureDAO.completeDeviceMigration(dbDevice.getId());
+                    dbDevice.setOldNumber(null);
+                }
 
                 final Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
 
@@ -260,6 +272,7 @@ public class SyncResource {
                 data.setKioskNotifications(configuration.getKioskNotifications());
                 data.setKioskSystemInfo(configuration.getKioskSystemInfo());
                 data.setKioskKeyguard(configuration.getKioskKeyguard());
+                data.setRestrictions(configuration.getRestrictions());
 
                 // Evaluate the application settings
                 final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
@@ -360,6 +373,12 @@ public class SyncResource {
 
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceInfo.getDeviceId());
+            boolean migration = false;
+
+            if (dbDevice == null) {
+                dbDevice = this.unsecureDAO.getDeviceByOldNumber(deviceInfo.getDeviceId());
+                migration = dbDevice != null;
+            }
 
             // Device creation on demand
             if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
@@ -367,6 +386,11 @@ public class SyncResource {
             }
 
             if (dbDevice != null) {
+                if (!migration && dbDevice.getOldNumber() != null) {
+                    // If a device sends data using a new device ID, the migration is completed
+                    this.unsecureDAO.completeDeviceMigration(dbDevice.getId());
+                    dbDevice.setOldNumber(null);
+                }
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 DeviceInfo prevInfo = null;

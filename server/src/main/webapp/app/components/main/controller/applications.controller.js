@@ -196,6 +196,7 @@ angular.module('headwind-kiosk')
                         var app = response.data.data.application;
                         $scope.application.name = app.name;
                         $scope.application.showIcon = app.showIcon;
+                        $scope.application.useKiosk = app.useKiosk;
                         $scope.application.runAfterInstall = app.runAfterInstall;
                         $scope.application.runAtBoot = app.runAtBoot;
                         $scope.application.system = app.system;
@@ -715,6 +716,7 @@ angular.module('headwind-kiosk')
                         var app = response.data.data.application;
                         $scope.application.name = app.name;
                         $scope.application.showIcon = app.showIcon;
+                        $scope.application.useKiosk = app.useKiosk;
                         $scope.application.runAfterInstall = app.runAfterInstall;
                         $scope.application.runAtBoot = app.runAtBoot;
                         $scope.application.system = app.system;

@@ -135,6 +135,11 @@ public class DeviceView {
         return device.getCustom3();
     }
 
+    @ApiModelProperty("Old device number, used when the number is changed")
+    public String getOldNumber() {
+        return device.getOldNumber();
+    }
+
     @ApiModelProperty("A list of groups assigned to device")
     public List<LookupItem> getGroups() {
         return device.getGroups();

@@ -48,6 +48,8 @@ public class Application implements CustomerData, Serializable {
     private String url;
     @ApiModelProperty("A flag indicating if icon is to be shown on mobile device")
     private boolean showIcon;
+    @ApiModelProperty("A flag indicating if the web application must run in Kiosk Browser")
+    private boolean useKiosk;
     @ApiModelProperty("A flag indicating if application is a system application")
     private boolean system;
     @ApiModelProperty("A list of configurations using the application")
@@ -180,6 +182,14 @@ public class Application implements CustomerData, Serializable {
 
     public void setShowIcon(boolean showIcon) {
         this.showIcon = showIcon;
+    }
+
+    public boolean getUseKiosk() {
+        return useKiosk;
+    }
+
+    public void setUseKiosk(boolean useKiosk) {
+        this.useKiosk = useKiosk;
     }
 
     public List<Configuration> getConfigurations() {
@@ -366,6 +376,7 @@ public class Application implements CustomerData, Serializable {
                 ", version='" + version + '\'' +
                 ", url='" + url + '\'' +
                 ", showIcon=" + showIcon +
+                ", useKiosk=" + useKiosk +
                 ", iconText='" + iconText + '\'' +
                 ", iconId='" + iconId + '\'' +
                 ", runAfterInstall=" + runAfterInstall +

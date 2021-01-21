@@ -125,8 +125,8 @@ public interface ApplicationMapper {
             "ORDER BY applications.name"})
     List<Application> getAllApplicationsByUrl(@Param("customerId") int customerId, @Param("url") String url);
 
-    @Insert({"INSERT INTO applications (name, pkg, showIcon, system, customerId, runAfterInstall, runAtBoot, type, iconText, iconId) " +
-            "VALUES (#{name}, #{pkg}, #{showIcon}, #{system}, #{customerId}, #{runAfterInstall}, #{runAtBoot}, #{type}, #{iconText}, #{iconId})"})
+    @Insert({"INSERT INTO applications (name, pkg, showIcon, useKiosk, system, customerId, runAfterInstall, runAtBoot, type, iconText, iconId) " +
+            "VALUES (#{name}, #{pkg}, #{showIcon}, #{useKiosk}, #{system}, #{customerId}, #{runAfterInstall}, #{runAtBoot}, #{type}, #{iconText}, #{iconId})"})
     @SelectKey( statement = "SELECT currval('applications_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertApplication(Application application);
 
@@ -140,7 +140,7 @@ public interface ApplicationMapper {
 //                                        @Param("applicationVersionId") int applicationVersionId);
 
     @Update({"UPDATE applications SET name=#{name}, pkg=#{pkg}, " +
-            "showIcon=#{showIcon}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall}, runAtBoot = #{runAtBoot}, " +
+            "showIcon=#{showIcon}, useKiosk=#{useKiosk}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall}, runAtBoot = #{runAtBoot}, " +
             "type = #{type}, iconText = #{iconText}, iconId = #{iconId} " +
             "WHERE id=#{id}"})
     void updateApplication(Application application);
@@ -159,6 +159,7 @@ public interface ApplicationMapper {
             "       applications.id                    AS applicationId, " +
             "       applications.name                  AS applicationName, " +
             "       COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon, " +
+            "       applications.useKiosk              AS useKiosk, " +
             "       configurationApplications.remove   AS remove, " +
             "       latestAppVersion.version   AS latestVersionText, " +
             "       currentAppVersion.version   AS currentVersionText, " +
@@ -182,6 +183,7 @@ public interface ApplicationMapper {
 //            "       applications.id                    AS applicationId, " +
 //            "       applications.name                  AS applicationName, " +
 //            "       configurationApplications.showIcon AS showIcon, " +
+//            "       applications.useKiosk              AS useKiosk, " +
 //            "       applications.id                    AS applicationVersionId, " +
 //            "       applications.id                    AS versionText, " +
 //            "       configurationApplications.remove   AS remove, " +
@@ -206,6 +208,7 @@ public interface ApplicationMapper {
             "       applications.id                    AS applicationId, " +
             "       applications.name                  AS applicationName, " +
             "       COALESCE(configurationApplications.showIcon, caPrev.showIcon, applications.showIcon) AS showIcon, " +
+            "       applications.useKiosk              AS useKiosk, " +
             "       COALESCE(configurationApplications.screenOrder, caPrev.screenOrder) AS screenOrder, " +
             "       COALESCE(configurationApplications.screenOrder, caPrev.keyCode) AS keyCode, " +
             "       applications.id                    AS applicationVersionId, " +

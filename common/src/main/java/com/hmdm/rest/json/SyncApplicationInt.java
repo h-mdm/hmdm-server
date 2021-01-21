@@ -48,6 +48,8 @@ public interface SyncApplicationInt {
 
     boolean getShowIcon();
 
+    boolean getUseKiosk();
+
     boolean isRemove();
 
     boolean isSystem();

@@ -270,8 +270,10 @@
                      ng-src='{{getDeviceFilesIndicatorImage(device)}}'
                      title='{{getDeviceFilesTitle(device)}}'>
             </td>
-            <td ng-if="settings.columnDisplayedDeviceConfiguration">
+            <td ng-if="settings.columnDisplayedDeviceConfiguration && hasPermission('configurations')">
                 <a class="action-link" ng-click="editConfiguration(device.configuration)">{{device.configuration.name}}</a>
+            </td>
+            <td ng-if="settings.columnDisplayedDeviceConfiguration && !hasPermission('configurations')">{{device.configuration.name}}
             </td>
             <td ng-if="settings.columnDisplayedDeviceDesc">
                 <span ng-bind-html="formatMultiLine(device.description)"></span>

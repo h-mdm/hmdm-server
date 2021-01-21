@@ -100,6 +100,10 @@ public class UnsecureDAO {
         return this.deviceMapper.getDeviceByNumber(number);
     }
 
+    public Device getDeviceByOldNumber(String number) {
+        return this.deviceMapper.getDeviceByOldNumber(number);
+    }
+
     public List<ApplicationSetting> getDeviceAppSettings(int deviceId) {
         final List<ApplicationSetting> appSettings
                 = this.applicationSettingDAO.getApplicationSettingsByDeviceId(deviceId);
@@ -112,6 +116,10 @@ public class UnsecureDAO {
 
     public void updateDeviceCustomProperties(Integer id, Device device) {
         this.deviceMapper.updateDeviceCustomProperties(id, device.getCustom1(), device.getCustom2(), device.getCustom3());
+    }
+
+    public void completeDeviceMigration(Integer id) {
+        this.deviceMapper.clearOldNumber(id);
     }
 
     // This method should be called in a single-tenant mode only

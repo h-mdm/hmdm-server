@@ -96,6 +96,7 @@ public interface ConfigurationMapper {
             "kioskNotifications=#{kioskNotifications}, " +
             "kioskSystemInfo=#{kioskSystemInfo}, " +
             "kioskKeyguard=#{kioskKeyguard}, " +
+            "restrictions=#{restrictions}, " +
             "autoUpdate=#{autoUpdate}, " +
             "blockStatusBar=#{blockStatusBar}, " +
             "systemUpdateType=#{systemUpdateType}, " +

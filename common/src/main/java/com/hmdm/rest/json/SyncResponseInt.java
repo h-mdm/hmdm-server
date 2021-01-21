@@ -116,4 +116,8 @@ public interface SyncResponseInt {
     Boolean getLockSafeSettings();
 
     List<SyncConfigurationFileInt> getFiles();
+
+    String getNewNumber();
+
+    String getRestrictions();
 }
