@@ -118,15 +118,22 @@
 
     </form>
 
-    <div class="text-center" ng-if="paging.totalItems > paging.pageSize && !accountExpired">
-        <pagination
-                boundary-links='true' class='pagination-sm'
-                max-size='3'
-                ng-model='paging.pageNum'
-                total-items='paging.totalItems'
-                items-per-page='paging.pageSize'
-                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
-                last-text='&raquo;'></pagination>
+    <div class="custom-pagination-wrapper">
+        <div class="custom-pagination" ng-if="paging.totalItems > 0">
+            <div class='pagination-label'>
+                <span>{{firstRecord()}}</span>-<span>{{lastRecord()}}</span>/<span>{{paging.totalItems}}</span>
+            </div>
+
+            <pagination
+                    ng-if="paging.totalItems > paging.pageSize && !accountExpired"
+                    boundary-links='true' class='pagination-sm'
+                    max-size='3'
+                    ng-model='paging.pageNum'
+                    total-items='paging.totalItems'
+                    items-per-page='paging.pageSize'
+                    previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                    last-text='&raquo;'></pagination>
+        </div>
     </div>
 
     <table ng-if='devices && devices.length > 0' class='table'>
@@ -337,8 +344,14 @@
 
     <div ng-if='devices && devices.length === 0' class='center' localized>notfound.devices</div>
 
-    <div class="text-center" ng-if="paging.totalItems > paging.pageSize && !accountExpired">
-        <pagination
+    <div class="custom-pagination-wrapper">
+        <div class="custom-pagination" ng-if="paging.totalItems > 0">
+            <div class='pagination-label'>
+                <span>{{firstRecord()}}</span>-<span>{{lastRecord()}}</span>/<span>{{paging.totalItems}}</span>
+            </div>
+
+           <pagination
+                ng-if="paging.totalItems > paging.pageSize && !accountExpired"
                 boundary-links='true' class='pagination-sm'
                 max-size='3'
                 ng-model='paging.pageNum'
@@ -346,6 +359,7 @@
                 items-per-page='paging.pageSize'
                 previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
                 last-text='&raquo;'></pagination>
+        </div>
     </div>
 
 </div>

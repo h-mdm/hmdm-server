@@ -24,17 +24,11 @@ package com.hmdm.persistence;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.ApplicationSetting;
-import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.ConfigurationFile;
-import com.hmdm.persistence.domain.Device;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.persistence.domain.User;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.*;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -324,5 +318,10 @@ public class UnsecureDAO {
      */
     public boolean isSingleCustomer() {
         return !customerMapper.isMultiTenant();
+    }
+
+    // This should only be called from the tasks, not from the web resource methods
+    public List<Customer> getAllCustomersUnsecure() {
+        return customerMapper.findAll();
     }
 }

@@ -24,7 +24,9 @@ package com.hmdm.plugins.devicelog.persistence.postgres.dao;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
+import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRecord;
@@ -235,8 +237,15 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
     public void purgeLogRecords() {
         try {
             logger.info("Deleting outdated records from the device logs...");
-            final int count = this.deviceLogMapper.purgeLogRecords();
-            logger.info("Deleted {} records from the device logs", count);
+
+            List<Customer> customers = unsecureDAO.getAllCustomersUnsecure();
+            for (Customer c : customers) {
+                final int count = this.deviceLogMapper.purgeLogRecords(c.getId());
+                if (count > 0) {
+                    logger.info("Deleted {} records from the device logs for customer {}", count, c.getId());
+                }
+            }
+
         } catch (Exception e) {
             logger.error("Unexpected error when purging the device log records", e);
         }

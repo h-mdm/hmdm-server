@@ -65,6 +65,21 @@ angular.module('headwind-kiosk')
             sortAsc: true
         };
 
+        $scope.firstRecord = function() {
+            if ($scope.paging.totalItems == 0) {
+                return 0;
+            }
+            return ($scope.paging.pageNum - 1) * $scope.paging.pageSize + 1;
+        };
+
+        $scope.lastRecord = function() {
+            var l = $scope.paging.pageNum * $scope.paging.pageSize;
+            if (l > $scope.paging.totalItems) {
+                return $scope.paging.totalItems;
+            }
+            return l;
+        };
+
         $scope.sortData = function (sortBy) {
             if ($scope.paging.sortBy !== sortBy) {
                 $scope.paging.sortBy = sortBy;

@@ -122,6 +122,6 @@ public interface PostgresDeviceLogMapper {
     @Delete("DELETE FROM plugin_devicelog_log " +
             "WHERE createTime < (SELECT EXTRACT(EPOCH FROM DATE_TRUNC('day', NOW() - (pds.logsPreservePeriod || ' day')::INTERVAL)) * 1000 " +
             "                    FROM plugin_devicelog_settings pds " +
-            "                    WHERE pds.customerId = plugin_devicelog_log.customerId)")
-    int purgeLogRecords();
+            "                    WHERE pds.customerId = #{customerId})")
+    int purgeLogRecords(@Param("customerId") int customerId);
 }

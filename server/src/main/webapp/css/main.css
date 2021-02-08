@@ -978,10 +978,17 @@
     padding: 5px 0px 0px 20px!important;
 }
 
-.custom-pagination div,
+.custom-pagination-wrapper {
+    margin: 10px 0 10px 45%;
+}
+
+.custom-pagination div {
+    display: inline-block;
+    padding-top: 5px;
+}
+
 .custom-pagination ul{
-    float: right !important;
-    margin: 5px !important;
+    display: inline;
 }
 
 .tab-content .table {
