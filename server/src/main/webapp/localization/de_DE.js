@@ -240,6 +240,7 @@ document.localization ['de_DE'] = {
     'form.configuration.apps.label.not.show': 'Verbergen',
     'form.configuration.apps.edit.details': 'Zusätzliche Parameter',
     'form.configuration.apps.keycode': 'Schlüsselcode',
+    'form.configuration.apps.bottom': 'In der unteren Zeile anzeigen',
     'form.configuration.apps.hint': 'Hinweis: Um die Verknüpfung der App mit der Konfiguration aufzuheben, wählen Sie die Aktion "Blockieren" oder "Nicht installieren".',
     'form.configuration.settings.design.use.default': 'Standarddesign verwenden',
     'form.configuration.settings.design.color.background': 'Hintergrundfarbe',

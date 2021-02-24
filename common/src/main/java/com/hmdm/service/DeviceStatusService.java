@@ -119,7 +119,7 @@ public class DeviceStatusService {
                             notRemovedCount.incrementAndGet();
                         }
                     } else if (!configApp.getVersion().equals("0")
-                            && (configApp.isSkipVersion() == null || !configApp.isSkipVersion())
+                            && !configApp.isSkipVersion()
                             && !areVersionsEqual.test(deviceApp.getVersion(), configApp.getVersion())) {
                         // Version mismatch
                         versionMismatchCount.incrementAndGet();

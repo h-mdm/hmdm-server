@@ -21,6 +21,7 @@
 
 package com.hmdm.plugins.devicelog.persistence;
 
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
 import org.apache.ibatis.annotations.Param;
@@ -38,11 +39,17 @@ public interface DeviceLogPluginSettingsDAO {
 
     DeviceLogPluginSettings getDefaultSettings();
 
+    public DeviceLogPluginSettings getDefaultSettings(Customer customer);
+
     void insertPluginSettings(DeviceLogPluginSettings settings);
+
+    void insertPluginSettings(DeviceLogPluginSettings settings, Customer customer);
 
     void updatePluginSettings(DeviceLogPluginSettings settings);
 
     void savePluginSettingsRule(DeviceLogRule rule);
+
+    void savePluginSettingsRule(DeviceLogPluginSettings settings, DeviceLogRule rule);
 
     DeviceLogPluginSettings getPluginSettings(int customerId);
 

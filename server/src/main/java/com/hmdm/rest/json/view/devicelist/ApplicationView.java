@@ -81,7 +81,7 @@ public class ApplicationView implements Serializable {
 
     @ApiModelProperty("A flag indicating if application version shouldnt be checked")
     public boolean isSkipVersion() {
-        return this.application.isSkipVersion() != null ? this.application.isSkipVersion() : false;
+        return this.application.isSkipVersion();
     }
 
     // A helper property to indicate the action required to be performed by mobile device

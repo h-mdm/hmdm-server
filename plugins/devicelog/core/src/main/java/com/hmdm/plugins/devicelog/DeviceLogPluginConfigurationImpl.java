@@ -26,6 +26,7 @@ import com.hmdm.plugin.PluginConfiguration;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.devicelog.guice.module.DeviceLogLiquibaseModule;
 import com.hmdm.plugins.devicelog.guice.module.DeviceLogRestModule;
+import com.hmdm.plugins.devicelog.guice.module.DeviceLogTaskModule;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPersistenceConfiguration;
 
 import javax.servlet.ServletContext;
@@ -108,6 +109,8 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
     public Optional<List<Class<? extends PluginTaskModule>>> getTaskModules(ServletContext context) {
         try {
             List<Class<? extends PluginTaskModule>> modules = new ArrayList<>();
+
+            modules.add(DeviceLogTaskModule.class);
 
             final String configClass = context.getInitParameter("plugin.devicelog.persistence.config.class");
             if (configClass != null && !configClass.trim().isEmpty()) {

@@ -19,24 +19,36 @@
  *
  */
 
-package com.hmdm.rest.json;
+package com.hmdm.event;
+
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.rest.json.DeviceLocation;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * <p>An interface for the application settings sent to mobile client in response to request for configuration
- * synchronization.</p>
+ * <p>$</p>
  *
- * @author isv
+ * @author seva
  */
-public interface SyncApplicationSettingInt {
-    String getPackageId();
+public class CustomerCreatedEvent implements Event, Serializable {
 
-    String getName();
+    private final Customer customer;
 
-    int getType();
+    /**
+     * <p>Constructs new <code>CustomerCreatedEvent</code> instance. This implementation does nothing.</p>
+     */
+    public CustomerCreatedEvent(Customer customer) {
+        this.customer = customer;
+    }
 
-    String getValue();
+    public Customer getCustomer() {
+        return customer;
+    }
 
-    Boolean isReadonly();
-
-    long getLastUpdate();
+    @Override
+    public EventType getType() {
+        return EventType.CUSTOMER_CREATED;
+    }
 }

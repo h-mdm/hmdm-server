@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import javax.inject.Named;
 
 import com.google.inject.Singleton;
+import com.hmdm.event.CustomerCreatedEvent;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Device;
@@ -224,6 +225,9 @@ public class CustomerDAO {
                 }
             }
             log.debug("Mapping for original and copied configurations: {}", configIdsMapping);
+
+            // Notify plugins about new customer so they could set up default settings for this customer
+            this.eventService.fireEvent(new CustomerCreatedEvent(customer));
 
             // Generate three default devices
             for (int i = 0; i < DEFAULT_DEVICE_SUFFIXES.length; i++) {

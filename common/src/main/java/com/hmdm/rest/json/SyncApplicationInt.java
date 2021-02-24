@@ -46,17 +46,17 @@ public interface SyncApplicationInt {
 
     Integer getId();
 
-    boolean getShowIcon();
+    Boolean getShowIcon();
 
-    boolean getUseKiosk();
+    Boolean getUseKiosk();
 
-    boolean isRemove();
+    Boolean isRemove();
 
-    boolean isSystem();
+    Boolean isSystem();
 
-    boolean isRunAfterInstall();
+    Boolean isRunAfterInstall();
 
-    boolean isRunAtBoot();
+    Boolean isRunAtBoot();
 
     Boolean isSkipVersion();
 
@@ -67,4 +67,6 @@ public interface SyncApplicationInt {
     Integer getScreenOrder();
 
     Integer getKeyCode();
+
+    Boolean getBottom();
 }

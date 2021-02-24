@@ -2025,4 +2025,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="19.02.21-14:25" author="seva" context="common">
+        <comment>Adding bottom column to configurationapplications</comment>
+        <sql>
+            ALTER TABLE configurationApplications ADD COLUMN bottom BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationApplications DROP COLUMN bottom;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

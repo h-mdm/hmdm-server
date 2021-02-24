@@ -240,6 +240,7 @@ document.localization ['es_ES'] = {
     'form.configuration.apps.label.not.show': 'Ocultar',
     'form.configuration.apps.edit.details': 'Parametros adicionales',
     'form.configuration.apps.keycode': 'Codigo Key',
+    'form.configuration.apps.bottom': 'Mostrar en la línea inferior',
     'form.configuration.apps.hint': 'Pista: para desvincular la aplicacion de la configuracion, seleccione la accion "Bloquear" o "No instalar".',
     'form.configuration.settings.design.use.default': 'Usar diseño por defecto',
     'form.configuration.settings.design.color.background': 'Color de Fondo',

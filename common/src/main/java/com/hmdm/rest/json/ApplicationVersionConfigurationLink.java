@@ -59,6 +59,8 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
     private Integer screenOrder;
     @ApiModelProperty("Key code for fast app start")
     private Integer keyCode;
+    @ApiModelProperty("A flag indicating if application must be displayed at the bottom of the launcher")
+    private boolean bottom;
 
     // A helper property to indicate the action required to be performed by mobile device
     // in regard to application installation
@@ -188,6 +190,14 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
         this.keyCode = keyCode;
     }
 
+    public boolean getBottom() {
+        return bottom;
+    }
+
+    public void setBottom(boolean bottom) {
+        this.bottom = bottom;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersionConfigurationLink{" +
@@ -204,6 +214,7 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
                 ", showIcon=" + showIcon +
                 ", screenOrder=" + screenOrder +
                 ", keyCode=" + keyCode +
+                ", bottom=" + bottom +
                 '}';
     }
 }

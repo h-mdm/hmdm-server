@@ -240,6 +240,7 @@ document.localization ['ar_AE'] = {
     'form.configuration.apps.label.not.show': 'إخفاء',
     'form.configuration.apps.edit.details': 'معلومات إضافية' ,
     "form.configuration.apps.keycode": 'رمز المفتاح',
+    'form.configuration.apps.bottom': 'العرض في الخلاصة',
     'form.configuration.apps.hint': 'تلميح: لإلغاء ربط التطبيق بالاعداد , حدد الإجراء "حظر" أو "عدم التثبيت".',
     'form.configuration.settings.design.use.default': 'استخدام التصميم الافتراضي' ,
     "form.configuration.settings.design.color.background": 'لون الخلفية',

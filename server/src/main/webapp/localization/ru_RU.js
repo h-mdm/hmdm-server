@@ -240,6 +240,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.apps.label.not.show': 'Не показывать',
     'form.configuration.apps.edit.details': 'Дополнительные параметры',
     'form.configuration.apps.keycode': 'Код кнопки запуска',
+    'form.configuration.apps.bottom': 'Отображать в нижней строке',
     'form.configuration.apps.hint': 'Совет: чтобы убрать приложения из этого списка, выберите действие "Блокировать" или "Не устанавливать".',
     'form.configuration.settings.design.use.default': 'Использовать дизайн по умолчанию',
     'form.configuration.settings.design.color.background': 'Цвет фона',

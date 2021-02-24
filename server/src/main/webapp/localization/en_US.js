@@ -240,6 +240,7 @@ document.localization ['en_US'] = {
     'form.configuration.apps.label.not.show': 'Hide',
     'form.configuration.apps.edit.details': 'Additional parameters',
     'form.configuration.apps.keycode': 'Key code',
+    'form.configuration.apps.bottom': 'Display at the bottom line',
     'form.configuration.apps.hint': 'Hint: to unlink the app from the configuration, select the action "Block" or "Do not install".',
     'form.configuration.settings.design.use.default': 'Use default design',
     'form.configuration.settings.design.color.background': 'Background Color',

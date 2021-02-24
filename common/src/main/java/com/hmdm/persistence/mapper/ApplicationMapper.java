@@ -140,7 +140,8 @@ public interface ApplicationMapper {
 //                                        @Param("applicationVersionId") int applicationVersionId);
 
     @Update({"UPDATE applications SET name=#{name}, pkg=#{pkg}, " +
-            "showIcon=#{showIcon}, useKiosk=#{useKiosk}, system=#{system}, customerId=#{customerId}, runAfterInstall = #{runAfterInstall}, runAtBoot = #{runAtBoot}, " +
+            "showIcon=#{showIcon}, useKiosk=#{useKiosk}, system=#{system}, customerId=#{customerId}, " +
+            "runAfterInstall = #{runAfterInstall}, runAtBoot = #{runAtBoot}, " +
             "type = #{type}, iconText = #{iconText}, iconId = #{iconId} " +
             "WHERE id=#{id}"})
     void updateApplication(Application application);
@@ -210,7 +211,8 @@ public interface ApplicationMapper {
             "       COALESCE(configurationApplications.showIcon, caPrev.showIcon, applications.showIcon) AS showIcon, " +
             "       applications.useKiosk              AS useKiosk, " +
             "       COALESCE(configurationApplications.screenOrder, caPrev.screenOrder) AS screenOrder, " +
-            "       COALESCE(configurationApplications.screenOrder, caPrev.keyCode) AS keyCode, " +
+            "       COALESCE(configurationApplications.keyCode, caPrev.keyCode) AS keyCode, " +
+            "       COALESCE(configurationApplications.bottom, caPrev.bottom) AS bottom, " +
             "       applications.id                    AS applicationVersionId, " +
             "       applications.id                    AS versionText, " +
             "       configurationApplications.remove   AS remove, " +

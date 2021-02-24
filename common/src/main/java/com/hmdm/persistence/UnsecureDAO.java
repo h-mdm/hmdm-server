@@ -324,4 +324,12 @@ public class UnsecureDAO {
     public List<Customer> getAllCustomersUnsecure() {
         return customerMapper.findAll();
     }
+
+    public Application getDefaultLauncher() {
+        List<Application> apps = this.applicationMapper.findByPackageId(1, Application.DEFAULT_LAUNCHER_PACKAGE);
+        if (apps.size() == 0) {
+            return null;
+        }
+        return apps.get(0);
+    }
 }

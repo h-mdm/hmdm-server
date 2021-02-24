@@ -557,15 +557,15 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         Application application = this.mapper.findById(id);
         if (application != null) {
             if (!application.isCommonApplication()) {
-                guardDuplicateApp(application);
-
                 final int currentUserCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
                 final Customer newAppCustomer = customerDAO.findById(currentUserCustomerId);
 
                 // Create new common application record
+                // Notice: all applications belonging to a super-admin are considered as common (or shared)
                 final Application newCommonApplication = new Application();
                 newCommonApplication.setPkg(application.getPkg());
                 newCommonApplication.setName(application.getName());
+                newCommonApplication.setType(application.getType());
                 newCommonApplication.setShowIcon(application.getShowIcon());
                 newCommonApplication.setUseKiosk(application.getUseKiosk());
                 newCommonApplication.setSystem(application.isSystem());

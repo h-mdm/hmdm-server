@@ -36,6 +36,8 @@ public class Application implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -5580525163643021270L;
 
+    public static final String DEFAULT_LAUNCHER_PACKAGE = "com.hmdm.launcher";
+
     @ApiModelProperty("An application ID")
     private Integer id;
     @ApiModelProperty("A name of application")
@@ -62,7 +64,7 @@ public class Application implements CustomerData, Serializable {
     private boolean runAtBoot;
     @ApiModelProperty("A flag indicating if version check must be skipped for application")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean skipVersion;
+    private boolean skipVersion;
     @ApiModelProperty("A text for the application icon")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String iconText;
@@ -79,6 +81,8 @@ public class Application implements CustomerData, Serializable {
     @ApiModelProperty("Key code for fast app start")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer keyCode;
+    @ApiModelProperty("A flag indicating if application must be displayed at the bottom of the launcher")
+    private boolean bottom;
 
     // A flag indicating that application is to be removed from the application
     // This field is going to be removed as now action field is stored in DB and encodes the removed apps with
@@ -318,11 +322,11 @@ public class Application implements CustomerData, Serializable {
         this.runAtBoot = runAtBoot;
     }
 
-    public Boolean isSkipVersion() {
+    public boolean isSkipVersion() {
         return skipVersion;
     }
 
-    public void setSkipVersion(Boolean skipVersion) {
+    public void setSkipVersion(boolean skipVersion) {
         this.skipVersion = skipVersion;
     }
 
@@ -366,6 +370,14 @@ public class Application implements CustomerData, Serializable {
         this.keyCode = keyCode;
     }
 
+    public boolean isBottom() {
+        return bottom;
+    }
+
+    public void setBottom(boolean bottom) {
+        this.bottom = bottom;
+    }
+
     @Override
     public String toString() {
         return "Application{" +
@@ -377,6 +389,7 @@ public class Application implements CustomerData, Serializable {
                 ", url='" + url + '\'' +
                 ", showIcon=" + showIcon +
                 ", useKiosk=" + useKiosk +
+                ", bottom=" + bottom +
                 ", iconText='" + iconText + '\'' +
                 ", iconId='" + iconId + '\'' +
                 ", runAfterInstall=" + runAfterInstall +

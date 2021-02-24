@@ -31,7 +31,8 @@ public enum EventType {
     DEVICE_BATTERY_LEVEL_UPDATED(DeviceBatteryLevelUpdatedEvent.class),
     DEVICE_LOCATION_UPDATED(DeviceLocationUpdatedEvent.class),
     DEVICE_INFO_UPDATED(DeviceInfoUpdatedEvent.class),
-    CONFIGURATION_UPDATED(ConfigurationUpdatedEvent.class);
+    CONFIGURATION_UPDATED(ConfigurationUpdatedEvent.class),
+    CUSTOMER_CREATED(CustomerCreatedEvent.class);
 
     /**
      * <p>A type of the event.</p>

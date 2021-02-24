@@ -19,6 +19,16 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <div class="col-sm-6">
+                <label for="c_bottom" localized>form.configuration.apps.bottom</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="checkbox" id="c_bottom" class="form-control" ng-model="application.bottom"
+                       value="{{application.bottom}}"/>
+            </div>
+        </div>
+
         <div class='form-group'>
             <div class='col-sm-12 text-center'>
                 <button type='submit' class='btn btn-default' ng-click='closeModal()' localized>button.close</button>

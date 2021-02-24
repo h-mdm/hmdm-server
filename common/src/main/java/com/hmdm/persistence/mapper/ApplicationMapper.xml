@@ -44,11 +44,11 @@
     </insert>
 
     <insert id="insertApplicationVersionConfigurations">
-        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, screenOrder, keyCode, action)
+        INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon, screenOrder, keyCode, bottom, action)
         VALUES
         <foreach item="item" index="index" collection="confs"
                  open="" separator="," close="">
-            (#{item.configurationId}, #{applicationId}, #{versionId}, #{item.remove}, #{item.showIcon}, #{item.screenOrder}, #{item.keyCode}, #{item.action})
+            (#{item.configurationId}, #{applicationId}, #{versionId}, #{item.remove}, #{item.showIcon}, #{item.screenOrder}, #{item.keyCode}, #{item.bottom}, #{item.action})
         </foreach>
     </insert>
 

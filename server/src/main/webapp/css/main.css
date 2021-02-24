@@ -230,6 +230,18 @@
     margin: 0px;
 }
 
+tr.app-desc td {
+    vertical-align: middle !important;
+}
+
+td.app-desc {
+    font-size: 16px;
+}
+
+td.app-desc span {
+    color: #888;
+}
+
 .devices {
     width: 300px;
     height: 100%;

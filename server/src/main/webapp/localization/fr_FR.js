@@ -240,6 +240,7 @@ document.localization ['fr_FR'] = {
     'form.configuration.apps.label.not.show': 'Cacher',
     'form.configuration.apps.edit.details': 'Paramètres supplémentaires',
     'form.configuration.apps.keycode': 'Code clé',
+    'form.configuration.apps.bottom': 'Affichage en bas',
     'form.configuration.apps.hint': 'Astuce: pour dissocier l\'application de la configuration, sélectionnez l\'action "Bloquer" ou "Ne pas installer".',
     'form.configuration.settings.design.use.default': 'Utiliser la conception par défaut',
     'form.configuration.settings.design.color.background': 'Couleur d\'arrière-plan',

@@ -463,7 +463,6 @@
                                         <table class='table'>
                                             <thead>
                                             <tr>
-                                                <th localized>table.heading.application.pkg</th>
                                                 <th localized>table.heading.application.name</th>
                                                 <th localized>table.heading.application.version</th>
                                                 <th localized>table.heading.application.actions</th>
@@ -473,9 +472,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
-                                                <td ng-if="pkgInfoVisible(application)">{{application.pkg}}</td><td ng-if="!pkgInfoVisible(application)"></td>
-                                                <td>{{application.name}}</td>
+                                            <tr class="app-desc" ng-repeat="application in filterData = (applications | orderBy: sort.by | filter : filterApps).slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))">
+                                                <td class="app-desc">{{application.name}}<span ng-if="pkgInfoVisible(application)"><br>{{application.pkg}}</span></td>
                                                 <td ng-if="pkgInfoVisible(application)">
                                                     <a ng-if="application.action == 1" class="action-link" ng-click="selectVersion(application)">
                                                         {{application.version}}

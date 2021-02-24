@@ -41,7 +41,7 @@ public abstract class DeviceLogPluginSettings implements Serializable {
     private static final long serialVersionUID = -4806434589453165014L;
 
     @ApiModelProperty(value = "A period for preserving the log records in persistent data store (in days)", required = true)
-    private int logsPreservePeriod = 30;
+    private int logsPreservePeriod = 3;
 
     @ApiModelProperty(value = "A list of device log rules", required = true)
     private List<DeviceLogRule> rules;

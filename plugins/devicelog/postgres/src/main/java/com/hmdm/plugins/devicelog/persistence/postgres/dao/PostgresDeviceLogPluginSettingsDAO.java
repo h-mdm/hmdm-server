@@ -24,6 +24,7 @@ package com.hmdm.plugins.devicelog.persistence.postgres.dao;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPluginSettingsDAO;
@@ -77,9 +78,23 @@ public class PostgresDeviceLogPluginSettingsDAO extends AbstractDAO<PostgresDevi
     }
 
     @Override
+    public DeviceLogPluginSettings getDefaultSettings(Customer customer) {
+        PostgresDeviceLogPluginSettings settings = new PostgresDeviceLogPluginSettings();
+        settings.setCustomerId(customer.getId());
+        return settings;
+    }
+
+    @Override
     public void insertPluginSettings(DeviceLogPluginSettings settings) {
         PostgresDeviceLogPluginSettings postgresSettings = (PostgresDeviceLogPluginSettings) settings;
         insertRecord(postgresSettings, this.mapper::insertPluginSettings);
+    }
+
+    @Override
+    public void insertPluginSettings(DeviceLogPluginSettings settings, Customer customer) {
+        PostgresDeviceLogPluginSettings postgresSettings = (PostgresDeviceLogPluginSettings) settings;
+        postgresSettings.setCustomerId(customer.getId());
+        this.mapper.insertPluginSettings(postgresSettings);
     }
 
     @Override
@@ -95,7 +110,13 @@ public class PostgresDeviceLogPluginSettingsDAO extends AbstractDAO<PostgresDevi
     @Override
     @Transactional
     public void savePluginSettingsRule(@NotNull DeviceLogRule rule) {
-        PostgresDeviceLogPluginSettings postgresSettings = (PostgresDeviceLogPluginSettings) getPluginSettings();
+        savePluginSettingsRule(getPluginSettings(), rule);
+    }
+
+    @Override
+    @Transactional
+    public void savePluginSettingsRule(@NotNull DeviceLogPluginSettings settings, @NotNull DeviceLogRule rule) {
+        PostgresDeviceLogPluginSettings postgresSettings = (PostgresDeviceLogPluginSettings) settings;
         if (postgresSettings != null) {
             PostgresDeviceLogRule postgresRule = (PostgresDeviceLogRule) rule;
 

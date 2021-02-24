@@ -240,6 +240,7 @@ document.localization ['zh_TW'] = {
     'form.configuration.apps.label.not.show' : "隱藏",
     'form.configuration.apps.edit.details':"其他參數",
     'form.configuration.apps.keycode' : "按鈕代碼",
+    'form.configuration.apps.bottom': '顯示在底行',
     'form.configuration.apps.hint' : "提示:要斷開應用程式與配置的鏈接，請選擇操作“阻止\"或“不安裝\"。",
     'form.configuration.settings.design.use.default':"使用默認設計",
     'form.configuration.settings.design.color.background' : "背景顏色",

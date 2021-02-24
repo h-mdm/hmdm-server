@@ -38,6 +38,7 @@ import javax.validation.constraints.NotNull;
  */
 @ApiModel(description = "A specification of a single application available for usage on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyncApplication implements SyncApplicationInt {
 
     @JsonIgnore
@@ -51,7 +52,6 @@ public class SyncApplication implements SyncApplicationInt {
     }
 
     @Override
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public String getIcon() {
         return wrapped.getIcon();
     }
@@ -82,40 +82,39 @@ public class SyncApplication implements SyncApplicationInt {
     }
 
     @Override
-    public boolean getShowIcon() {
-        return wrapped.getShowIcon();
+    public Boolean getShowIcon() {
+        return wrapped.getShowIcon() ? true : null;
     }
 
     @Override
-    public boolean getUseKiosk() {
-        return wrapped.getUseKiosk();
+    public Boolean getUseKiosk() {
+        return wrapped.getUseKiosk() ? true : null;
     }
 
     @Override
     @Deprecated
-    public boolean isRemove() {
-        return wrapped.isRemove();
+    public Boolean isRemove() {
+        return wrapped.isRemove() ? true : null;
     }
 
     @Override
-    public boolean isSystem() {
-        return wrapped.isSystem();
+    public Boolean isSystem() {
+        return wrapped.isSystem() ? true : null;
     }
 
     @Override
-    public boolean isRunAfterInstall() {
-        return wrapped.isRunAfterInstall();
+    public Boolean isRunAfterInstall() {
+        return wrapped.isRunAfterInstall() ? true : null;
     }
 
     @Override
-    public boolean isRunAtBoot() {
-        return wrapped.isRunAtBoot();
+    public Boolean isRunAtBoot() {
+        return wrapped.isRunAtBoot() ? true : null;
     }
 
     @Override
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean isSkipVersion() {
-        return wrapped.isSkipVersion();
+        return wrapped.isSkipVersion() ? true : null;
     }
 
     @Override
@@ -130,14 +129,17 @@ public class SyncApplication implements SyncApplicationInt {
     }
 
     @Override
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Integer getScreenOrder() {
         return wrapped.getScreenOrder();
     }
 
     @Override
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Integer getKeyCode() {
         return wrapped.getKeyCode();
+    }
+
+    @Override
+    public Boolean getBottom() {
+        return wrapped.isBottom() ? true : null;
     }
 }

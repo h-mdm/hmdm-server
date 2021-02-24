@@ -50,7 +50,7 @@ public class SyncApplicationSetting implements Serializable, SyncApplicationSett
     private String value;
 
     @ApiModelProperty(value = "A flag indicating if setting can not be modified on device", required = true)
-    private boolean readonly;
+    private Boolean readonly;
 
     @ApiModelProperty("A timestamp of the last update of the setting (in milliseconds since epoch time")
     private long lastUpdate;
@@ -98,8 +98,8 @@ public class SyncApplicationSetting implements Serializable, SyncApplicationSett
     }
 
     @Override
-    public boolean isReadonly() {
-        return readonly;
+    public Boolean isReadonly() {
+        return readonly != null && readonly ? true : null;
     }
 
     public void setReadonly(boolean readonly) {
