@@ -184,7 +184,7 @@ public class SyncResource {
 
             // Device creation on demand
             if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
-                dbDevice = createNewDeviceOnDemand(number);
+                dbDevice = unsecureDAO.createNewDeviceOnDemand(number);
             }
 
             if (dbDevice != null) {
@@ -382,7 +382,7 @@ public class SyncResource {
 
             // Device creation on demand
             if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
-                dbDevice = createNewDeviceOnDemand(deviceInfo.getDeviceId());
+                dbDevice = unsecureDAO.createNewDeviceOnDemand(deviceInfo.getDeviceId());
             }
 
             if (dbDevice != null) {
@@ -447,29 +447,6 @@ public class SyncResource {
         } catch (Exception e) {
             logger.error("Unexpected error when processing info submitted by device", e);
             return Response.INTERNAL_ERROR();
-        }
-    }
-
-    private Device createNewDeviceOnDemand(String deviceId) {
-
-        Settings settings = this.unsecureDAO.getSingleCustomerSettings();
-        if (settings.isCreateNewDevices()) {
-            Device newDevice = new Device();
-            newDevice.setCustomerId(settings.getCustomerId());
-            newDevice.setConfigurationId(settings.getNewDeviceConfigurationId());
-            Integer groupId = settings.getNewDeviceGroupId();
-            if (groupId != null) {
-                List<LookupItem> groups = new LinkedList<>();
-                groups.add(new LookupItem(groupId, ""));
-                newDevice.setGroups(groups);
-            }
-            newDevice.setNumber(deviceId);
-            newDevice.setLastUpdate(0L);
-            this.unsecureDAO.insertDevice(newDevice);
-
-            return this.unsecureDAO.getDeviceByNumber(deviceId);
-        } else {
-            return null;
         }
     }
 

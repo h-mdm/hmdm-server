@@ -173,7 +173,8 @@ public class FilesResource {
     // =================================================================================================================
     @ApiOperation(
             value = "Complete file upload",
-            notes = "Commits the file upload to MDM server"
+            notes = "Commits the file upload to MDM server. Returns the uploaded file data",
+            response = HFile.class
     )
     @POST
     @Path("/move")
@@ -183,7 +184,9 @@ public class FilesResource {
             try {
                 File movedFile = FileUtil.moveFile(customer, filesDirectory, moveFileRequest.getLocalPath(), moveFileRequest.getPath());
                 if (movedFile != null) {
-                    return Response.OK();
+                    List<HFile> result = new LinkedList<>();
+                    handleFile(movedFile, result, null, customer);
+                    return Response.OK(result.get(0));
                 } else {
                     return Response.ERROR("error.file.save");
                 }

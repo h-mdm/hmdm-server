@@ -101,7 +101,8 @@ public interface ConfigurationMapper {
             "blockStatusBar=#{blockStatusBar}, " +
             "systemUpdateType=#{systemUpdateType}, " +
             "systemUpdateFrom=#{systemUpdateFrom}, " +
-            "systemUpdateTo=#{systemUpdateTo} " +
+            "systemUpdateTo=#{systemUpdateTo}, " +
+            "defaultFilePath=#{defaultFilePath} " +
             "WHERE id=#{id}"})
     void updateConfiguration(Configuration configuration);
 

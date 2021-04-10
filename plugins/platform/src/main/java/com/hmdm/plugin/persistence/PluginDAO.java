@@ -24,6 +24,7 @@ package com.hmdm.plugin.persistence;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.plugin.PluginList;
+import com.hmdm.plugin.persistence.domain.DisabledPlugin;
 import com.hmdm.plugin.persistence.domain.Plugin;
 import com.hmdm.plugin.persistence.mapper.PluginMapper;
 import com.hmdm.plugin.service.PluginStatusCache;
@@ -98,7 +99,7 @@ public class PluginDAO {
     }
 
     /**
-     * <p>Disables the specified plugins for customer account assoicated with the current user.</p>
+     * <p>Disables the specified plugins for customer account associated with the current user.</p>
      *
      * @param pluginIds a list of plugin IDs.
      */
@@ -113,5 +114,19 @@ public class PluginDAO {
                     return 1;
                 })
                 .orElseThrow(SecurityException::onAnonymousAccess);
+    }
+
+    /**
+     * <p>Copies the disabled plugins from the master (super-admin) account to the customer account.</p>
+     */
+    @Transactional
+    public void copyDisabledPluginsFromMaster(int customerId) {
+        List<DisabledPlugin> disabledPlugins = this.pluginMapper.getDisabledPluginsForCustomer(1);
+        Integer[] disabledPluginIds = new Integer[disabledPlugins.size()];
+        int n = 0;
+        for (DisabledPlugin disabledPlugin : disabledPlugins) {
+            disabledPluginIds[n++] = disabledPlugin.getPluginId();
+        }
+        this.pluginMapper.insertDisabledPlugin(disabledPluginIds, customerId);
     }
 }

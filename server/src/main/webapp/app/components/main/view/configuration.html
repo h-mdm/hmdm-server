@@ -335,10 +335,15 @@
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.design.background.image.url</label>
-                        <div class='col-sm-9'>
+                        <div class='col-sm-7'>
                             <input ng-model='configuration.backgroundImageUrl' name="n7"
                                    type='text' class='form-control' ng-disabled="configuration.useDefaultDesignSettings"
                                    localized-placeholder='form.configuration.settings.design.background.image.url.placeholder'>
+                        </div>
+                        <div class="col-sm-2 text-right">
+                            <button type="button" class="btn btn-default" ng-click="uploadBackground()"
+                                    ng-disabled="configuration.useDefaultDesignSettings"
+                                    localized>form.configuration.settings.design.upload</button>
                         </div>
                     </div>
 
@@ -863,6 +868,15 @@
                 <!-- FILES -->
                 <tab>
                     <tab-heading localized>tab.configeditor.files</tab-heading>
+
+                    <div class='form-group' style="padding-top: 5px">
+                        <label class='col-sm-4 control-label' localized>form.configuration.settings.files.default.path</label>
+                        <div class='col-sm-6' style="padding-right: 25px">
+                            <input ng-model='configuration.defaultFilePath' name="defaultFilePath"
+                                   type='text' class='form-control'
+                                   localized-placeholder='form.configuration.file.path.placeholder'>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="col-sm-12">

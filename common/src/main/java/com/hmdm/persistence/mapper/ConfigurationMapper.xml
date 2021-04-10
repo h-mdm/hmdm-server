@@ -32,7 +32,7 @@
                                     lockSafeSettings, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
                                     wifiSSID, wifiPassword, wifiSecurityType, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, restrictions, autoUpdate,
-                                    blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo)
+                                    blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo, defaultFilePath)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
                 #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth},
                 #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
@@ -41,7 +41,7 @@
                 #{lockSafeSettings}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
                 #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{kioskHome}, #{kioskRecents},
                                     #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{restrictions}, #{autoUpdate},
-                #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo})
+                #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo}, #{defaultFilePath})
     </insert>
 
     <insert id="insertConfigurationApplications">

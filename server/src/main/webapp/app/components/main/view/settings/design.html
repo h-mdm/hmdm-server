@@ -26,10 +26,14 @@
             </div>
             <div class='form-group'>
                 <label class='col-sm-3 control-label' localized>form.settings.design.url.background.image</label>
-                <div class='col-sm-9'>
+                <div class='col-sm-7'>
                     <input ng-model='settings.backgroundImageUrl'
                            type='text' class='form-control'
                            localized-placeholder='form.settings.design.url.background.image.placeholder'>
+                </div>
+                <div class="col-sm-2 text-right">
+                    <button type="button" class="btn btn-default" ng-click="uploadBackground()"
+                            localized>form.configuration.settings.design.upload</button>
                 </div>
             </div>
             <div class='form-group'>

@@ -33,11 +33,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -331,5 +327,29 @@ public class UnsecureDAO {
             return null;
         }
         return apps.get(0);
+    }
+
+
+    public Device createNewDeviceOnDemand(String deviceId) {
+
+        Settings settings = getSingleCustomerSettings();
+        if (settings.isCreateNewDevices()) {
+            Device newDevice = new Device();
+            newDevice.setCustomerId(settings.getCustomerId());
+            newDevice.setConfigurationId(settings.getNewDeviceConfigurationId());
+            Integer groupId = settings.getNewDeviceGroupId();
+            if (groupId != null) {
+                List<LookupItem> groups = new LinkedList<>();
+                groups.add(new LookupItem(groupId, ""));
+                newDevice.setGroups(groups);
+            }
+            newDevice.setNumber(deviceId);
+            newDevice.setLastUpdate(0L);
+            insertDevice(newDevice);
+
+            return getDeviceByNumber(deviceId);
+        } else {
+            return null;
+        }
     }
 }

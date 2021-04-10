@@ -168,6 +168,9 @@ public class Configuration implements CustomerData, Serializable {
     @ApiModelProperty(hidden = true)
     private List<Integer> filesToRemove;
 
+    @ApiModelProperty(hidden = true)
+    private String defaultFilePath;
+
     public Configuration() {
     }
 
@@ -637,6 +640,14 @@ public class Configuration implements CustomerData, Serializable {
         this.filesToRemove = filesToRemove;
     }
 
+    public String getDefaultFilePath() {
+        return defaultFilePath;
+    }
+
+    public void setDefaultFilePath(String defaultFilePath) {
+        this.defaultFilePath = defaultFilePath;
+    }
+
     public Configuration newCopy() {
         Configuration copy = new Configuration();
 
@@ -695,6 +706,8 @@ public class Configuration implements CustomerData, Serializable {
         copy.setBackgroundImageUrl(getBackgroundImageUrl());
         copy.setIconSize(getIconSize());
         copy.setDesktopHeader(getDesktopHeader());
+
+        copy.setDefaultFilePath(getDefaultFilePath());
 
         return copy;
     }

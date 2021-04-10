@@ -2035,4 +2035,15 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="07.04.21-11:44" author="seva" context="common">
+        <comment>Add defaultFilePath to configurations</comment>
+
+        <sql>
+            ALTER TABLE configurations ADD COLUMN defaultFilePath TEXT NOT NULL DEFAULT '/';
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN defaultFilePath;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

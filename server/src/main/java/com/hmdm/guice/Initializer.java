@@ -49,6 +49,7 @@ import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugin.guice.module.PluginLiquibaseModule;
 import com.hmdm.plugin.guice.module.PluginPersistenceModule;
+import com.hmdm.plugin.guice.module.PluginPlatformTaskModule;
 import com.hmdm.plugin.guice.module.PluginRestModule;
 
 public final class Initializer extends GuiceServletContextListener {
@@ -163,6 +164,9 @@ public final class Initializer extends GuiceServletContextListener {
 
         final NotificationMqttTaskModule notificationMqttTaskModule = this.injector.getInstance(NotificationMqttTaskModule.class);
         notificationMqttTaskModule.init();
+
+        final PluginPlatformTaskModule pluginPlatformTaskModule = this.injector.getInstance(PluginPlatformTaskModule.class);
+        pluginPlatformTaskModule.init();
 
         final List<Class<? extends PluginTaskModule>> pluginTaskModules = PluginList.getPluginTaskModules();
         if (pluginTaskModules != null) {

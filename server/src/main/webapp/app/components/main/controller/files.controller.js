@@ -129,7 +129,7 @@ angular.module('headwind-kiosk')
 
                 fileService.moveFile(request, function (response) {
                     if (response.status === 'OK') {
-                        $modalInstance.close();
+                        $modalInstance.close(response.data);
                     } else {
                         $modalInstance.close();
                         alertService.showAlertMessage(localization.localize(response.message));

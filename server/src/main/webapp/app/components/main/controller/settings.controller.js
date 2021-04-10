@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('SettingsTabController', function ($scope, $rootScope, $timeout, hintService, settingsService,
+    .controller('SettingsTabController', function ($scope, $rootScope, $timeout, $modal, hintService, settingsService,
                                                    localization, authService, userService,
                                                    groupService, configurationService) {
         $scope.settings = {};
@@ -90,6 +90,20 @@ angular.module('headwind-kiosk')
             } else {
                 $scope.userRoleSettings = userRoleSettings[roleId];
             }
+        };
+
+        $scope.uploadBackground = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/main/view/modal/file.html',
+                // Defined in files.controller.js
+                controller: 'FileModalController'
+            });
+
+            modalInstance.result.then(function (data) {
+                if (data) {
+                    $scope.settings.backgroundImageUrl = data.url;
+                }
+            });
         };
 
         $scope.saveDefaultDesignSettings = function () {

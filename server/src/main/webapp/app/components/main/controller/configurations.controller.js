@@ -308,6 +308,20 @@ angular.module('headwind-kiosk')
                 return $scope.configurationForm.$dirty ? 'btn-attention' : '';
             }
 
+            $scope.uploadBackground = function () {
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/components/main/view/modal/file.html',
+                    // Defined in files.controller.js
+                    controller: 'FileModalController'
+                });
+
+                modalInstance.result.then(function (data) {
+                    if (data) {
+                        $scope.configuration.backgroundImageUrl = data.url;
+                    }
+                });
+            };
+
             $scope.localizeRenewVersionTitle = function (application) {
                 let localizedText = localization.localize('configuration.app.version.upgrade.message')
                     .replace('${installedVersion}', application.version)
@@ -719,6 +733,9 @@ angular.module('headwind-kiosk')
                     resolve: {
                         file: function () {
                             return {remove: false};
+                        },
+                        defaultFilePath: function() {
+                            return $scope.configuration.defaultFilePath;
                         }
                     }
                 });
@@ -1021,6 +1038,9 @@ angular.module('headwind-kiosk')
                     resolve: {
                         file: function () {
                             return file;
+                        },
+                        defaultFilePath: function() {
+                            return $scope.configuration.defaultFilePath;
                         }
                     }
                 });
@@ -1356,7 +1376,7 @@ angular.module('headwind-kiosk')
             $modalInstance.dismiss();
         };
     })
-    .controller('FileEditorController', function ($scope, $modalInstance, localization, file) {
+    .controller('FileEditorController', function ($scope, $modalInstance, localization, file, defaultFilePath) {
 
         $scope.file = angular.copy(file, {});
         $scope.errorMessage = undefined;
@@ -1416,6 +1436,10 @@ angular.module('headwind-kiosk')
             $scope.loading = false;
 
             if (response.data.status === 'OK') {
+                if (!defaultFilePath.endsWith("/")) {
+                    defaultFilePath += "/";
+                }
+                $scope.file.path = defaultFilePath + response.data.data.filePath;
                 $scope.file.filePath = response.data.data.filePath;
                 $scope.file.fileId = response.data.data.id;
                 $scope.file.lastUpdate = response.data.data.uploadTime;
