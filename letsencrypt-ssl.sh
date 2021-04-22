@@ -51,3 +51,9 @@ echo "        <Certificate certificateKeystoreFile=\"$SSL_DIR/$DOMAIN.jks\""
 echo "                     type=\"RSA\" certificateKeystorePassword=\"$PASSWORD\" />"
 echo "    </SSLHostConfig>"
 echo "</Connector>"
+
+# This line is required when you refresh the certificates because Tomcat needs
+# to be restarted to load a new certificate.
+# Here we assume the service has the same name as the Tomcat directory
+# (e.g. tomcat9)
+service $TOMCAT_HOME restart
