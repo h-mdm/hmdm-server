@@ -5,8 +5,6 @@
 
 # Set this parameter to 1 if you're redirecting port 80 to 8080 to be able to run Headwind MDM on port 80
 HTTP_REDIRECT=0
-# Use ifconfig to determine this network interface
-INTERFACE=ens34
 DOMAIN=your-domain.com
 TOMCAT_HOME=$(ls -d /var/lib/tomcat* | tail -n1)
 TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
@@ -14,13 +12,13 @@ SSL_DIR=$TOMCAT_HOME/ssl
 PASSWORD=123456
 
 if [ "$DOMAIN" = "your-domain.com" ]; then
-    echo "Please edit this script and update HTTP_REDIRECT, INTERFACE, DOMAIN variables!"
+    echo "Please edit this script and update HTTP_REDIRECT and DOMAIN variables!"
     exit 1
 fi
 
 # Remove HTTP redirection to tomcat so certbot could verify the domain
 if [ "$HTTP_REDIRECT" = "1" ]; then
-	/sbin/iptables -D PREROUTING -t nat -i $INTERFACE -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+	/sbin/iptables -D PREROUTING -t nat -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
 fi
 
 if [ ! -d $SSL_DIR ]; then
@@ -31,7 +29,7 @@ certbot certonly --standalone --force-renewal -d $DOMAIN
 
 # Add the HTTP rule back
 if [ "$HTTP_REDIRECT" = "1" ]; then
-	/sbin/iptables -A PREROUTING -t nat -i $INTERFACE -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+	/sbin/iptables -A PREROUTING -t nat -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
 fi
 
 # TODO: here we should check that certbot actually renewed the certificate!
