@@ -297,6 +297,16 @@ document.localization ['zh_TW'] = {
     'form.configuration.settings.push.options.mqtt.worker' :"MQTT協議（節省電池）",
     'form.configuration.settings.push.options.mqtt.alarm' :"MQTT協議（即時交付）",
     'form.configuration.settings.push.options.polling' :"HTTP輪詢",
+    'form.configuration.settings.push.options.mqtt.worker.hint' : '設備處於活動狀態時，立即發送推送消息。 但是在睡眠模式下，郵件可能會延遲多達幾個小時。 不要在獨立設備上使用此選項。 MQTT使用TCP端口31000，在防火牆上啟用它。',
+    'form.configuration.settings.push.options.mqtt.alarm.hint' : '立即發送“推”消息，但在設備休眠時可能會花費更多電量。 獨立供電設備的最佳選擇。 MQTT使用TCP端口31000，在防火牆上啟用它。',
+    'form.configuration.settings.push.options.polling.hint' : '可靠地發送推送消息，最大延遲為15分鐘。 除HTTP（S）外，不需要任何其他TCP端口。 請勿與遠程控制插件一起使用此選項。',
+    'form.configuration.settings.push.options.keepalive' : '保活時間',
+    'form.configuration.settings.minute.1' : '1分鐘',
+    'form.configuration.settings.minutes.2' : '2分鐘',
+    'form.configuration.settings.minutes.3' : '3分鐘',
+    'form.configuration.settings.minutes.5' : '5分鐘',
+    'form.configuration.settings.minutes.10' : '10分鐘',
+    'form.configuration.settings.minutes.15' : '15分鐘',
     'form.configuration.settings.password.mode' :"密碼要求",
     'form.configuration.settings.password.mode.any'  : "沒有",
     'form.configuration.settings.password.mode.present' :"需要密碼",
@@ -501,7 +511,15 @@ document.localization ['zh_TW'] = {
 		
     'form.settings.users.title':"用戶",
     'form.settings.users.search.placeholder':"搜索用戶",
-		
+
+    'form.qr.device.number': '設備編號',
+    'form.qr.auto.create': '添加到設備列表（如果不存在）',
+    'form.qr.number.use': '設備編號分配',
+    'form.qr.number.use.request': '用戶價值',
+    'form.qr.number.use.imei': 'IMEI',
+    'form.qr.number.use.serial': '序列號',
+    'form.qr.groups': '新增至群組',
+    'form.qr.button.json': '獲取JSON',
     'form.qr.device.number.placeholder':"輸入設備ID ...",
     'form.qr.code.image.alt' : "二維碼",
 		

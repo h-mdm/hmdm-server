@@ -89,6 +89,8 @@ public interface SyncResponseInt {
 
     String getPushOptions();
 
+    Integer getKeepaliveTime();
+
     Boolean getAutoBrightness();
 
     Integer getBrightness();

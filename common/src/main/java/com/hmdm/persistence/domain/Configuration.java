@@ -80,6 +80,8 @@ public class Configuration implements CustomerData, Serializable {
     private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
     @ApiModelProperty("Push notification options")
     private String pushOptions;
+    @ApiModelProperty("Keep-Alive time for MQTT connection")
+    private Integer keepaliveTime;
     @ApiModelProperty("Brightness management flag. null: not managed, false: manual, true: auto")
     private Boolean autoBrightness;
     @ApiModelProperty("Brightness value (if manual), 0-255")
@@ -520,6 +522,14 @@ public class Configuration implements CustomerData, Serializable {
         this.pushOptions = pushOptions;
     }
 
+    public Integer getKeepaliveTime() {
+        return keepaliveTime;
+    }
+
+    public void setKeepaliveTime(Integer keepaliveTime) {
+        this.keepaliveTime = keepaliveTime;
+    }
+
     public Boolean getAutoBrightness() {
         return autoBrightness;
     }
@@ -686,6 +696,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setUsbStorage(getUsbStorage());
         copy.setRequestUpdates(getRequestUpdates());
         copy.setPushOptions(getPushOptions());
+        copy.setKeepaliveTime(getKeepaliveTime());
         copy.setAutoBrightness(getAutoBrightness());
         copy.setBrightness(getBrightness());
         copy.setManageTimeout(getManageTimeout());

@@ -61,6 +61,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Push notification options")
     private String pushOptions;
 
+    @ApiModelProperty("Keep-Alive time for MQTT connection")
+    private Integer keepaliveTime;
+
     @ApiModelProperty("Brightness management option")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean autoBrightness;
@@ -493,6 +496,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setPushOptions(String pushOptions) {
         this.pushOptions = pushOptions;
+    }
+
+    @Override
+    public Integer getKeepaliveTime() {
+        return keepaliveTime;
+    }
+
+    public void setKeepaliveTime(Integer keepaliveTime) {
+        this.keepaliveTime = keepaliveTime;
     }
 
     public Boolean getAutoBrightness() {

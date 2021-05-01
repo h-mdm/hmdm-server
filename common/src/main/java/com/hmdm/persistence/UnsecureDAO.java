@@ -26,6 +26,7 @@ import com.google.inject.Singleton;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.*;
+import com.hmdm.rest.json.DeviceCreateOptions;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
@@ -351,5 +352,89 @@ public class UnsecureDAO {
         } else {
             return null;
         }
+    }
+
+    public Device createNewDeviceOnDemand(String deviceId, DeviceCreateOptions createOptions) {
+        int customerId = 1;
+        if (!isSingleCustomer()) {
+            if (createOptions.getCustomer() == null) {
+                logger.warn("Customer is not set, device not created");
+                return null;
+            }
+            Customer customer = customerMapper.findCustomerByName(createOptions.getCustomer());
+            if (customer != null) {
+                customerId = customer.getId();
+            } else {
+                logger.warn("Failed to get a customer by name '" + createOptions.getCustomer() + "', device not created");
+                return null;
+            }
+        }
+        Settings settings = getSettings(customerId);
+        Device newDevice = new Device();
+        newDevice.setCustomerId(customerId);
+
+        // If the configuration is specified, we want to create a new device, so don't check the legacy setting
+        if (createOptions.getConfiguration() != null) {
+            int configId = 0;
+            try {
+                configId = Integer.parseInt(createOptions.getConfiguration());
+            } catch (NumberFormatException e) {
+                logger.warn("Configuration id must be integer: '" + createOptions.getConfiguration() + "', device not created");
+                return null;
+            }
+            Configuration configuration = configurationMapper.getConfigurationById(configId);
+            if (configuration == null) {
+                logger.warn("Failed to get a configuration by id " + createOptions.getConfiguration() + ", device not created");
+                return null;
+            } else if (configuration.getCustomerId() != customerId) {
+                logger.warn("Configuration id " + createOptions.getConfiguration() + " doesn't belong to customer " +
+                        customerId + ", device not created");
+                return null;
+            } else {
+                newDevice.setConfigurationId(configuration.getId());
+            }
+        } else if (settings != null && settings.isCreateNewDevices()) {
+            // Configuration not specified, we will add a device only if a legacy setting "Create new devices" is set
+            newDevice.setConfigurationId(settings.getNewDeviceConfigurationId());
+        } else {
+            return null;
+        }
+
+        if (createOptions.getGroups() != null) {
+            List<LookupItem> groups = new LinkedList<>();
+            for (String s : createOptions.getGroups()) {
+                int groupId = 0;
+                try {
+                    groupId = Integer.parseInt(s);
+                } catch (Exception e) {
+                    logger.warn("Group id must be integer: '" + s + "', group ignored");
+                    continue;
+                }
+                Group group = deviceMapper.getGroupById(groupId);
+                if (group == null) {
+                    logger.warn("Failed to find group by id: " + s + ", group ignored");
+                } else if (group.getCustomerId() != customerId) {
+                    logger.warn("Group id " + s + " doesn't belong to customer " + customerId + ", group ignored");
+                } else {
+                    groups.add(new LookupItem(group.getId(), ""));
+                }
+            }
+            if (groups.size() > 0) {
+                newDevice.setGroups(groups);
+            }
+        } else if (settings != null) {
+            Integer groupId = settings.getNewDeviceGroupId();
+            if (groupId != null) {
+                List<LookupItem> groups = new LinkedList<>();
+                groups.add(new LookupItem(groupId, ""));
+                newDevice.setGroups(groups);
+            }
+        }
+
+        newDevice.setNumber(deviceId);
+        newDevice.setLastUpdate(0L);
+        insertDevice(newDevice);
+
+        return getDeviceByNumber(deviceId);
     }
 }

@@ -65,6 +65,7 @@ public interface ConfigurationMapper {
             "desktopHeader=#{desktopHeader}, " +
             "requestUpdates=#{requestUpdates}, " +
             "pushOptions=#{pushOptions}, " +
+            "keepaliveTime=#{keepaliveTime}, " +
             "autoBrightness=#{autoBrightness}, " +
             "brightness=#{brightness}, " +
             "manageTimeout=#{manageTimeout}, " +
@@ -112,7 +113,7 @@ public interface ConfigurationMapper {
     @Select({"SELECT * " +
             "FROM configurations " +
             "WHERE customerId=#{customerId} " +
-            "AND name=#{name}"})
+            "AND name=#{name} LIMIT 1"})
     Configuration getConfigurationByName(@Param("customerId") int customerId, @Param("name") String name);
 
     void insertConfigurationApplications(@Param("id") Integer id, @Param("apps") List<Application> applications);

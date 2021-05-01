@@ -54,4 +54,9 @@ public final class StringUtil {
 
         return text;
     }
+
+    public static String jsonEscape(String text) {
+        return text.replace("\\", "\\\\")
+                .replace("\"", "\\\"");
+    }
 }

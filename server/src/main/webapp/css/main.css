@@ -34,6 +34,12 @@
     color: #a0a0a0;
 }
 
+.field-hint {
+    color: #888;
+    font-size: 13px;
+    margin: 5px 0 15px 0;
+}
+
 .device-indicator {
     width: 15px;
     margin-top: 3px;

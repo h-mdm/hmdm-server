@@ -2046,4 +2046,44 @@
         </rollback>
     </changeSet>
 
+
+    <changeSet id="12.04.21-11:43" author="seva" context="common">
+        <comment>Create userConfigurationAccess table</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN allConfigAvailable BOOLEAN NOT NULL DEFAULT TRUE;
+
+            CREATE TABLE userConfigurationAccess (
+            id serial NOT NULL CONSTRAINT userConfigurationAccess_pr_key PRIMARY KEY,
+            userId INT NOT NULL REFERENCES users( id ) ON DELETE CASCADE,
+            configurationId INT NOT NULL REFERENCES configurations( id ) ON DELETE CASCADE
+            );
+
+            INSERT INTO permissions (id, name, description, superadmin) VALUES (5, 'add_config', 'Add new empty configurations', FALSE);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, 5);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, 5);
+
+            INSERT INTO permissions (id, name, description, superadmin) VALUES (6, 'copy_config', 'Duplicate/copy configurations', FALSE);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, 6);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, 6);
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, 6);
+
+        </sql>
+        <rollback>
+            DROP TABLE userConfigurationAccess;
+            ALTER TABLE users DROP COLUMN allConfigAvailable;
+            DELETE FROM permissions WHERE id IN (5, 6);
+            DELETE FROM userRolePermissions WHERE permissionId IN (5, 6);
+        </rollback>
+    </changeSet>
+
+    <changeSet id="21.04.21-17:48" author="seva" context="common">
+        <comment>Column,new: configurations#keepaliveTime</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN keepaliveTime INT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN keepaliveTime;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

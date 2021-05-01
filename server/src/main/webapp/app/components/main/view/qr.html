@@ -1,31 +1,78 @@
 <!-- Localization completed -->
 <div style="text-align: center" ng-if="showQR">
-    <img ng-src="rest/public/qr/{{qrCodeKey}}?size={{size}}&deviceId={{deviceId}}" width="{{size}}" height="{{size}}"
+    <img ng-src="{{qrCodeUrl}}" width="{{size}}" height="{{size}}"
          localized-alt="form.qr.code.image.alt"/>
 </div>
 
-<div class="text-center">
-    <div class='form-group'>
-        <input type="text" maxlength="100" name="qrdevice" style="width: auto;display: inline-block"
-               ng-enter='renew()'
-               ng-model="formData.deviceIdNew"
-               localized-placeholder="form.qr.device.number.placeholder"
-               class="form-control"
-               data-hint-key="hint.step.4" data-hint-order="4"
-        />
-        <div style="display: inline-block">
-            <button type="button" class="btn btn-default" ng-click="renew()" localized>button.renew.code</button>
+<form class='form-horizontal' name="qrForm">
+<div class="text-center width-1000">
+    <div class="form-group">
+        <label class="col-sm-6 control-label" localized>form.qr.device.number</label>
+        <div class="col-sm-3" style="text-align: left">
+            <input type="text" maxlength="100" name="qrdevice" style="width: auto;display: inline-block"
+                   ng-enter='renew()'
+                   ng-model="formData.deviceIdNew"
+                   localized-placeholder="form.qr.device.number.placeholder"
+                   class="form-control"
+                   data-hint-key="hint.step.4" data-hint-order="4"
+            />
         </div>
     </div>
 
-    <div class="text-center">
-        <button type="button" class="btn btn-default dropdown-toggle" data-hint-key="hint.step.3" data-hint-order="3"
-                localized-title="button.help" ng-click="helpClicked()">
-            <span localized>button.help</span>
-        </button>
+    <div class="form-group">
+        <label class="col-sm-6 control-label" localized>form.qr.auto.create</label>
+        <div class="col-sm-1">
+            <input type="checkbox" name="qrcreate"
+                   ng-model="formData.create"
+                   ng-change="renew()"
+                   class="form-control common-checkbox"
+            />
+        </div>
+    </div>
+
+    <div class="form-group" ng-if="formData.create">
+        <label class="col-sm-6 control-label" localized>form.qr.number.use</label>
+        <div class="col-sm-3" style="padding-right: 45px">
+            <select class='form-control' id="useId-c" name="useId" ng-change="renew()"
+                    ng-model='formData.useId'>
+                <option ng-value="''" ng-selected="!formData.useId" localized>form.qr.number.use.request</option>
+                <option ng-value="'imei'" ng-selected="formData.useId === 'imei'" localized>form.qr.number.use.imei</option>
+                <option ng-value="'serial'" ng-selected="formData.useId === 'serial'" localized>form.qr.number.use.serial</option>
+            </select>
+        </div>
+    </div>
+
+    <style type="text/css">.dropdown-multiselect button { min-width: 198px; }</style>
+    <div class="form-group" ng-if="formData.create">
+        <label class="col-sm-6 control-label" localized>form.qr.groups</label>
+        <div class="col-sm-3" style="text-align: left">
+                    <div ng-dropdown-multiselect
+                         options='groupsList'
+                         translation-texts='tableFilteringTexts'
+                         selected-model='groupsSelection'
+                         events="groupsSelectionEvents"
+                         ng-change="renew()"
+                         class='left margin-right-half custom-multi-select'></div>
+        </div>
+    </div>
+
+    <div class="form-group" ng-if="jsonData && formData.create">
+        <textarea class="col-sm-6 col-sm-offset-3" style="height: 150px">{{jsonData}}</textarea>
+    </div>
+
+    <div class='form-group'>
+        <div style="display: inline-block">
+            <button type="button" class="btn btn-default" ng-click="renew()" localized>button.renew.code</button>
+            <button type="button" class="btn btn-default" ng-disabled="!formData.create" ng-click="generateJson()" localized>form.qr.button.json</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-hint-key="hint.step.3" data-hint-order="3"
+                    localized-title="button.help" ng-click="helpClicked()">
+                <span localized>button.help</span>
+            </button>
+        </div>
     </div>
 
 </div>
+</form>
 
 <br/>
 

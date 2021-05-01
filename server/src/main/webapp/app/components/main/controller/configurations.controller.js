@@ -396,6 +396,22 @@ angular.module('headwind-kiosk')
                 }
             };
 
+            $scope.pushOptionsChanged = function() {
+                updateMqttHint();
+            };
+
+            var updateMqttHint = function() {
+                if ($scope.configuration.pushOptions === 'mqttWorker') {
+                    $scope.pushHint = localization.localize('form.configuration.settings.push.options.mqtt.worker.hint');
+                } else if ($scope.configuration.pushOptions === 'mqttAlarm') {
+                    $scope.pushHint = localization.localize('form.configuration.settings.push.options.mqtt.alarm.hint');
+                } else if ($scope.configuration.pushOptions === 'polling') {
+                    $scope.pushHint = localization.localize('form.configuration.settings.push.options.polling.hint');
+                } else {
+                    $scope.pushHint = '';
+                }
+            };
+
             $scope.upgradeApp = function (application) {
                 let localizedText = localization.localize('question.app.upgrade')
                     .replace('${v1}', application.name)
@@ -1226,7 +1242,8 @@ angular.module('headwind-kiosk')
 
                         filterApplicationSettings();
                         filterFiles();
-                        
+                        updateMqttHint();
+
                         if (response.data.systemUpdateType === 2) {
                             try {
                                 if (response.data.systemUpdateFrom) {

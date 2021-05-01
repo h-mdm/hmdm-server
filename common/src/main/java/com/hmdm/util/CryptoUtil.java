@@ -21,7 +21,10 @@
 
 package com.hmdm.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
+import com.hmdm.rest.json.Response;
+import com.hmdm.rest.json.SyncResponseInt;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -119,5 +122,32 @@ public class CryptoUtil {
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
+    }
+
+    public static String getDataSignature(String hashSecret, Object data) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String s = "";
+        try {
+            s = objectMapper.writeValueAsString(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        s = s.replaceAll("\\s", "");
+        String signature = CryptoUtil.getSHA1String(hashSecret + s);
+        return signature;
+    }
+
+    public static boolean checkRequestSignature(String signature, String value) {
+        if (signature == null) {
+            return false;
+        }
+        try {
+            String goodSignature = CryptoUtil.getSHA1String(value);
+            if (!signature.equalsIgnoreCase(goodSignature)) {
+                return false;
+            }
+        } catch (Exception e) {
+        }
+        return true;
     }
 }

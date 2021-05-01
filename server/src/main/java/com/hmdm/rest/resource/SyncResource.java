@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
@@ -145,7 +146,57 @@ public class SyncResource {
 
     // =================================================================================================================
     @ApiOperation(
-            value = "Get device info",
+            value = "Get device settings",
+            notes = "Gets the device info and settings from the MDM server.",
+            response = SyncResponse.class
+    )
+    @POST
+    @Path("/configuration/{deviceId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDeviceSettingExtended(DeviceCreateOptions createOptions,
+                                     @PathParam("deviceId")
+                                     @ApiParam("An identifier of device within MDM server")
+                                             String number,
+                                     @Context HttpServletRequest request,
+                                     @Context HttpServletResponse response) {
+        logger.debug("/public/sync/configuration/{}", number);
+
+        if (secureEnrollment) {
+            if (!CryptoUtil.checkRequestSignature(request.getHeader(HEADER_ENROLLMENT_SIGNATURE), hashSecret + number)) {
+                return Response.PERMISSION_DENIED();
+            }
+        }
+
+        try {
+            Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
+            boolean migration = false;
+
+            if (dbDevice == null) {
+                dbDevice = this.unsecureDAO.getDeviceByOldNumber(number);
+                migration = dbDevice != null;
+            }
+
+            // Device creation on demand
+            if (dbDevice == null) {
+                dbDevice = unsecureDAO.createNewDeviceOnDemand(number, createOptions);
+            }
+
+            if (dbDevice != null) {
+                return getDeviceSettingInternal(dbDevice, migration, request, response);
+            } else {
+                logger.warn("Requested device {} was not found", number);
+                return Response.DEVICE_NOT_FOUND_ERROR();
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error when getting device settings", e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Get device settings",
             notes = "Gets the device info and settings from the MDM server.",
             response = SyncResponse.class
     )
@@ -160,16 +211,8 @@ public class SyncResource {
         logger.debug("/public/sync/configuration/{}", number);
 
         if (secureEnrollment) {
-            String signature = request.getHeader(HEADER_ENROLLMENT_SIGNATURE);
-            if (signature == null) {
+            if (!CryptoUtil.checkRequestSignature(request.getHeader(HEADER_ENROLLMENT_SIGNATURE), hashSecret + number)) {
                 return Response.PERMISSION_DENIED();
-            }
-            try {
-                String goodSignature = CryptoUtil.getSHA1String(hashSecret + number);
-                if (!signature.equalsIgnoreCase(goodSignature)) {
-                    return Response.PERMISSION_DENIED();
-                }
-            } catch (Exception e) {
             }
         }
 
@@ -188,172 +231,167 @@ public class SyncResource {
             }
 
             if (dbDevice != null) {
-
-                if (!migration && dbDevice.getOldNumber() != null) {
-                    // If a device requested the configuration by new device ID, the migration is completed
-                    unsecureDAO.completeDeviceMigration(dbDevice.getId());
-                    dbDevice.setOldNumber(null);
-                }
-
-                final Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
-
-                Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());
-                final List<Application> applications = this.unsecureDAO.getPlainConfigurationApplications(
-                        dbDevice.getCustomerId(), dbDevice.getConfigurationId()
-                );
-
-                for (Application app: applications) {
-                    final String icon = app.getIcon();
-                    if (icon != null) {
-                        if (!icon.trim().isEmpty()) {
-                            String iconUrl = String.format("%s/files/%s/%s", this.baseUrl,
-                                    URLEncoder.encode(customer.getFilesDir(), "UTF8"),
-                                    URLEncoder.encode(icon, "UTF8"));
-                            app.setIcon(iconUrl);
-                        }
-                    }
-                }
-
-                Configuration configuration = this.unsecureDAO.getConfigurationByIdWithAppSettings(dbDevice.getConfigurationId());
-
-                SyncResponse data;
-                if (configuration.isUseDefaultDesignSettings()) {
-                    data = new SyncResponse(settings, configuration.getPassword(), applications, dbDevice);
-                } else {
-                    data = new SyncResponse(configuration, applications, dbDevice);
-                }
-
-                data.setGps(configuration.getGps());
-                data.setBluetooth(configuration.getBluetooth());
-                data.setWifi(configuration.getWifi());
-                data.setMobileData(configuration.getMobileData());
-                data.setUsbStorage(configuration.getUsbStorage());
-                data.setLockStatusBar(configuration.isBlockStatusBar());
-                data.setSystemUpdateType(configuration.getSystemUpdateType());
-                data.setRequestUpdates(configuration.getRequestUpdates().getTransmittedValue());
-                data.setPushOptions(configuration.getPushOptions());
-                data.setAutoBrightness(configuration.getAutoBrightness());
-                if (data.getAutoBrightness() != null && !data.getAutoBrightness()) {
-                    // Set only if autoBrightness == false
-                    data.setBrightness(configuration.getBrightness());
-                }
-                data.setManageTimeout(configuration.getManageTimeout());
-                if (data.getManageTimeout() != null && data.getManageTimeout()) {
-                    data.setTimeout(configuration.getTimeout());
-                }
-                data.setLockVolume(configuration.getLockVolume());
-                if (configuration.getSystemUpdateType() == 2) {
-                    data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
-                    data.setSystemUpdateTo(configuration.getSystemUpdateTo());
-                }
-                data.setPasswordMode(configuration.getPasswordMode());
-                data.setOrientation(configuration.getOrientation());
-                data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
-                data.setDisableScreenshots(configuration.getDisableScreenshots());
-                data.setTimeZone(configuration.getTimeZone());
-                data.setAllowedClasses(configuration.getAllowedClasses());
-                data.setNewServerUrl(configuration.getNewServerUrl());
-                data.setLockSafeSettings(configuration.getLockSafeSettings());
-
-                data.setKioskMode(configuration.isKioskMode());
-                if (data.isKioskMode()) {
-                    Integer contentAppId = configuration.getContentAppId();
-                    if (contentAppId != null) {
-                        ApplicationVersion applicationVersion = this.unsecureDAO.findApplicationVersionById(contentAppId);
-                        if (applicationVersion != null) {
-                            Application application = this.unsecureDAO.findApplicationById(applicationVersion.getApplicationId());
-                            data.setMainApp(application.getPkg());
-                        }
-                    }
-                }
-
-                data.setKioskHome(configuration.getKioskHome());
-                data.setKioskRecents(configuration.getKioskRecents());
-                data.setKioskNotifications(configuration.getKioskNotifications());
-                data.setKioskSystemInfo(configuration.getKioskSystemInfo());
-                data.setKioskKeyguard(configuration.getKioskKeyguard());
-                data.setRestrictions(configuration.getRestrictions());
-
-                // Evaluate the application settings
-                final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
-                final List<ApplicationSetting> configApplicationSettings = configuration.getApplicationSettings();
-                final List<ApplicationSetting> applicationSettings
-                        = combineDeviceLogRules(configApplicationSettings, deviceAppSettings);
-
-                final Device dbDevice1 = dbDevice;
-                data.setApplicationSettings(applicationSettings.stream().map(s -> {
-                    SyncApplicationSetting syncSetting = new SyncApplicationSetting();
-                    syncSetting.setPackageId(s.getApplicationPkg());
-                    syncSetting.setName(s.getName());
-                    syncSetting.setType(s.getType().getId());
-                    syncSetting.setReadonly(s.isReadonly());
-                    syncSetting.setValue(s.getValueForDevice(dbDevice1));
-                    syncSetting.setLastUpdate(s.getLastUpdate());
-
-                    return syncSetting;
-                }).collect(Collectors.toList()));
-
-                final List<ConfigurationFile> configurationFiles = this.unsecureDAO.getConfigurationFiles(dbDevice);
-                configurationFiles.forEach(
-                        file -> {
-                            if (file.getExternalUrl() != null) {
-                                file.setUrl(file.getExternalUrl());
-                            } else if (file.getFilePath() != null) {
-                                final String url;
-                                if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
-                                    url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + file.getFilePath();
-                                } else {
-                                    url = this.baseUrl + "/files/" + file.getFilePath();
-                                }
-                                file.setUrl(url);
-                            }
-                        }
-                );
-
-                data.setFiles(configurationFiles.stream().map(SyncConfigurationFile::new).collect(Collectors.toList()));
-
-                SyncResponseInt syncResponse = data;
-
-                SecurityContext.init(dbDevice.getCustomerId());
-                try {
-                    if (this.syncResponseHooks != null && !this.syncResponseHooks.isEmpty()) {
-                        for (SyncResponseHook hook : this.syncResponseHooks) {
-                            syncResponse = hook.handle(dbDevice.getId(), syncResponse);
-                        }
-                    }
-                } finally {
-                    SecurityContext.release();
-                }
-
-                response.setHeader(HEADER_IP_ADDRESS, request.getRemoteAddr());
-
-                if (secureEnrollment) {
-                    // Add a signature to avoid MITM attack
-                    response.setHeader(HEADER_RESPONSE_SIGNATURE, getDataSignature(syncResponse));
-                }
-
-                return Response.OK(syncResponse);
+                return getDeviceSettingInternal(dbDevice, migration, request, response);
             } else {
                 logger.warn("Requested device {} was not found", number);
                 return Response.DEVICE_NOT_FOUND_ERROR();
             }
         } catch (Exception e) {
-            logger.error("Unexpected error when getting device info", e);
+            logger.error("Unexpected error when getting device settings", e);
             return Response.INTERNAL_ERROR();
         }
     }
 
-    private String getDataSignature(SyncResponseInt data) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String s = "";
-        try {
-            s = objectMapper.writeValueAsString(data);
-        } catch (Exception e) {
-            e.printStackTrace();
+    private Response getDeviceSettingInternal(Device dbDevice, boolean migration,
+                                           HttpServletRequest request,
+                                           HttpServletResponse response) throws UnsupportedEncodingException {
+
+        if (!migration && dbDevice.getOldNumber() != null) {
+            // If a device requested the configuration by new device ID, the migration is completed
+            unsecureDAO.completeDeviceMigration(dbDevice.getId());
+            dbDevice.setOldNumber(null);
         }
-        s = s.replaceAll("\\s", "");
-        String signature = CryptoUtil.getSHA1String(hashSecret + s);
-        return signature;
+
+        final Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
+
+        Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());
+        final List<Application> applications = this.unsecureDAO.getPlainConfigurationApplications(
+                dbDevice.getCustomerId(), dbDevice.getConfigurationId()
+        );
+
+        for (Application app: applications) {
+            final String icon = app.getIcon();
+            if (icon != null) {
+                if (!icon.trim().isEmpty()) {
+                    String iconUrl = String.format("%s/files/%s/%s", this.baseUrl,
+                            URLEncoder.encode(customer.getFilesDir(), "UTF8"),
+                            URLEncoder.encode(icon, "UTF8"));
+                    app.setIcon(iconUrl);
+                }
+            }
+        }
+
+        Configuration configuration = this.unsecureDAO.getConfigurationByIdWithAppSettings(dbDevice.getConfigurationId());
+
+        SyncResponse data;
+        if (configuration.isUseDefaultDesignSettings()) {
+            data = new SyncResponse(settings, configuration.getPassword(), applications, dbDevice);
+        } else {
+            data = new SyncResponse(configuration, applications, dbDevice);
+        }
+
+        data.setGps(configuration.getGps());
+        data.setBluetooth(configuration.getBluetooth());
+        data.setWifi(configuration.getWifi());
+        data.setMobileData(configuration.getMobileData());
+        data.setUsbStorage(configuration.getUsbStorage());
+        data.setLockStatusBar(configuration.isBlockStatusBar());
+        data.setSystemUpdateType(configuration.getSystemUpdateType());
+        data.setRequestUpdates(configuration.getRequestUpdates().getTransmittedValue());
+        data.setPushOptions(configuration.getPushOptions());
+        data.setKeepaliveTime(configuration.getKeepaliveTime());
+        data.setAutoBrightness(configuration.getAutoBrightness());
+        if (data.getAutoBrightness() != null && !data.getAutoBrightness()) {
+            // Set only if autoBrightness == false
+            data.setBrightness(configuration.getBrightness());
+        }
+        data.setManageTimeout(configuration.getManageTimeout());
+        if (data.getManageTimeout() != null && data.getManageTimeout()) {
+            data.setTimeout(configuration.getTimeout());
+        }
+        data.setLockVolume(configuration.getLockVolume());
+        if (configuration.getSystemUpdateType() == 2) {
+            data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
+            data.setSystemUpdateTo(configuration.getSystemUpdateTo());
+        }
+        data.setPasswordMode(configuration.getPasswordMode());
+        data.setOrientation(configuration.getOrientation());
+        data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
+        data.setDisableScreenshots(configuration.getDisableScreenshots());
+        data.setTimeZone(configuration.getTimeZone());
+        data.setAllowedClasses(configuration.getAllowedClasses());
+        data.setNewServerUrl(configuration.getNewServerUrl());
+        data.setLockSafeSettings(configuration.getLockSafeSettings());
+
+        data.setKioskMode(configuration.isKioskMode());
+        if (data.isKioskMode()) {
+            Integer contentAppId = configuration.getContentAppId();
+            if (contentAppId != null) {
+                ApplicationVersion applicationVersion = this.unsecureDAO.findApplicationVersionById(contentAppId);
+                if (applicationVersion != null) {
+                    Application application = this.unsecureDAO.findApplicationById(applicationVersion.getApplicationId());
+                    data.setMainApp(application.getPkg());
+                }
+            }
+        }
+
+        data.setKioskHome(configuration.getKioskHome());
+        data.setKioskRecents(configuration.getKioskRecents());
+        data.setKioskNotifications(configuration.getKioskNotifications());
+        data.setKioskSystemInfo(configuration.getKioskSystemInfo());
+        data.setKioskKeyguard(configuration.getKioskKeyguard());
+        data.setRestrictions(configuration.getRestrictions());
+
+        // Evaluate the application settings
+        final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
+        final List<ApplicationSetting> configApplicationSettings = configuration.getApplicationSettings();
+        final List<ApplicationSetting> applicationSettings
+                = combineDeviceLogRules(configApplicationSettings, deviceAppSettings);
+
+        final Device dbDevice1 = dbDevice;
+        data.setApplicationSettings(applicationSettings.stream().map(s -> {
+            SyncApplicationSetting syncSetting = new SyncApplicationSetting();
+            syncSetting.setPackageId(s.getApplicationPkg());
+            syncSetting.setName(s.getName());
+            syncSetting.setType(s.getType().getId());
+            syncSetting.setReadonly(s.isReadonly());
+            syncSetting.setValue(s.getValueForDevice(dbDevice1));
+            syncSetting.setLastUpdate(s.getLastUpdate());
+
+            return syncSetting;
+        }).collect(Collectors.toList()));
+
+        final List<ConfigurationFile> configurationFiles = this.unsecureDAO.getConfigurationFiles(dbDevice);
+        configurationFiles.forEach(
+                file -> {
+                    if (file.getExternalUrl() != null) {
+                        file.setUrl(file.getExternalUrl());
+                    } else if (file.getFilePath() != null) {
+                        final String url;
+                        if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
+                            url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + file.getFilePath();
+                        } else {
+                            url = this.baseUrl + "/files/" + file.getFilePath();
+                        }
+                        file.setUrl(url);
+                    }
+                }
+        );
+
+        data.setFiles(configurationFiles.stream().map(SyncConfigurationFile::new).collect(Collectors.toList()));
+
+        SyncResponseInt syncResponse = data;
+
+        SecurityContext.init(dbDevice.getCustomerId());
+        try {
+            if (this.syncResponseHooks != null && !this.syncResponseHooks.isEmpty()) {
+                for (SyncResponseHook hook : this.syncResponseHooks) {
+                    syncResponse = hook.handle(dbDevice.getId(), syncResponse);
+                }
+            }
+        } finally {
+            SecurityContext.release();
+        }
+
+        response.setHeader(HEADER_IP_ADDRESS, request.getRemoteAddr());
+
+        if (secureEnrollment) {
+            // Add a signature to avoid MITM attack
+            response.setHeader(HEADER_RESPONSE_SIGNATURE, CryptoUtil.getDataSignature(hashSecret, syncResponse));
+        }
+
+        return Response.OK(syncResponse);
+
     }
 
     // =================================================================================================================
