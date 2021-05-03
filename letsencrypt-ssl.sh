@@ -8,6 +8,7 @@ HTTP_REDIRECT=0
 DOMAIN=your-domain.com
 TOMCAT_HOME=$(ls -d /var/lib/tomcat* | tail -n1)
 TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
+TOMCAT_SERVICE=$(echo $TOMCAT_HOME | awk '{n=split($1,A,"/"); print A[n]}')
 SSL_DIR=$TOMCAT_HOME/ssl
 PASSWORD=123456
 
@@ -54,4 +55,4 @@ echo "</Connector>"
 # to be restarted to load a new certificate.
 # Here we assume the service has the same name as the Tomcat directory
 # (e.g. tomcat9)
-service $TOMCAT_HOME restart
+service $TOMCAT_SERVICE restart
