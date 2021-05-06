@@ -34,6 +34,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ public class UnsecureDAO {
     private final ApplicationSettingDAO applicationSettingDAO;
     private final ConfigurationFileMapper configurationFileMapper;
     private final CustomerMapper customerMapper;
+    private final String defaultLauncherPackage;
 
     /**
      * <p>Constructs new <code>UnsecureDAO</code> instance. This implementation does nothing.</p>
@@ -71,7 +73,8 @@ public class UnsecureDAO {
                        ApplicationDAO applicationDAO,
                        ApplicationSettingDAO applicationSettingDAO,
                        ConfigurationFileMapper configurationFileMapper,
-                       CustomerMapper customerMapper) {
+                       CustomerMapper customerMapper,
+                       @Named("launcher.package") String defaultLauncherPackage) {
         this.deviceMapper = deviceMapper;
         this.userMapper = userMapper;
         this.configurationMapper = configurationMapper;
@@ -81,6 +84,7 @@ public class UnsecureDAO {
         this.applicationSettingDAO = applicationSettingDAO;
         this.configurationFileMapper = configurationFileMapper;
         this.customerMapper = customerMapper;
+        this.defaultLauncherPackage = defaultLauncherPackage;
     }
 
     public User findByLoginOrEmail(String login) {
@@ -323,7 +327,7 @@ public class UnsecureDAO {
     }
 
     public Application getDefaultLauncher() {
-        List<Application> apps = this.applicationMapper.findByPackageId(1, Application.DEFAULT_LAUNCHER_PACKAGE);
+        List<Application> apps = this.applicationMapper.findByPackageId(1, defaultLauncherPackage);
         if (apps.size() == 0) {
             return null;
         }

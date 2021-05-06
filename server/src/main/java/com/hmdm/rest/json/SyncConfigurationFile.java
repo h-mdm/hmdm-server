@@ -52,7 +52,9 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
     @Override
     @ApiModelProperty("A description of the file")
     public String getDescription() {
-        return wrapped.getDescription();
+        //return wrapped.getDescription();
+        // Not required in the mobile app
+        return null;
     }
 
     /**
@@ -69,8 +71,8 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
      */
     @Override
     @ApiModelProperty("A flag indicating if file is to be removed from the device or not")
-    public boolean isRemove() {
-        return wrapped.isRemove();
+    public Boolean getRemove() {
+        return wrapped.isRemove() ? true : null;
     }
 
     /**
@@ -96,5 +98,14 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
     @ApiModelProperty("An URL referencing the content of the file")
     public String getUrl() {
         return wrapped.getUrl();
+    }
+
+    /**
+     * <p>A flag indicating if file is to be removed from the device or not.</p>
+     */
+    @Override
+    @ApiModelProperty("A flag indicating whether the file content must be updated by device-specific values")
+    public Boolean getVarContent() {
+        return wrapped.isReplaceVariables() ? true : null;
     }
 }

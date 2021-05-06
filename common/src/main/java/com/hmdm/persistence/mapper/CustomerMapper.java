@@ -70,23 +70,13 @@ public interface CustomerMapper {
     @Select({SELECT_BASE + " WHERE id=#{id}"})
     Customer findCustomerById(@Param("id") Integer id);
 
-    // TODO : This is a weak point. It is a direct link to table from Licensing plugin. Needs to be re-worked
-    @Select({"SELECT customers.*, settings.apiKey " +
+    @Select({"SELECT customers.* " +
             "FROM customers " +
-            "LEFT JOIN plugin_licensing_settings settings ON settings.customerId = customers.id " +
-            "WHERE customers.id = #{id}"})
+            "WHERE id = #{id}"})
     Customer findCustomerByIdForUpdate(@Param("id") Integer id);
 
     @Select({SELECT_BASE + " WHERE LOWER(name) = LOWER(#{name}) LIMIT 1"})
     Customer findCustomerByName(@Param("name") String name);
-
-    // TODO : This is a weak point. It is a direct link to table from Licensing plugin. Needs to be re-worked
-    @Insert("INSERT INTO plugin_licensing_settings (apiKey, customerId) VALUES (#{apiKey}, #{id}) " +
-            "ON CONFLICT ON CONSTRAINT plugin_licensing_settings_customer_unique DO " +
-            "UPDATE SET " +
-            "apiKey = EXCLUDED.apiKey"
-    )
-    void saveApiKey(Customer customer);
 
     @Select("SELECT EXISTS (SELECT 1 FROM customers WHERE LOWER(prefix) = LOWER(#{prefix}))")
     boolean isPrefixUsed(@Param("prefix") String prefix);

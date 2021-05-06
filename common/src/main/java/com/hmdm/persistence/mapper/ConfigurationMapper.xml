@@ -65,11 +65,13 @@
     </insert>
 
     <insert id="insertConfigurationFiles">
-        INSERT INTO configurationFiles (configurationId, description, devicePath, externalUrl, filePath, checksum, remove, lastUpdate, fileId)
+        INSERT INTO configurationFiles (configurationId, description, devicePath, externalUrl, filePath, checksum,
+                                        remove, lastUpdate, fileId, replaceVariables)
         VALUES
         <foreach item="item" index="index" collection="files"
                  open="" separator="," close="">
-            (${id}, #{item.description}, #{item.devicePath}, #{item.externalUrl}, #{item.filePath}, #{item.checksum}, #{item.remove}, #{item.lastUpdate},  #{item.fileId})
+            (${id}, #{item.description}, #{item.devicePath}, #{item.externalUrl}, #{item.filePath}, #{item.checksum},
+             #{item.remove}, #{item.lastUpdate},  #{item.fileId}, #{item.replaceVariables})
         </foreach>
     </insert>
 

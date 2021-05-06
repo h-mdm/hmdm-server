@@ -200,6 +200,18 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String restrictions;
 
+    @ApiModelProperty(value = "Custom property #1 if it is being sent to device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String custom1;
+
+    @ApiModelProperty(value = "Custom property #2 if it is being sent to device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String custom2;
+
+    @ApiModelProperty(value = "Custom property #3 if it is being sent to device")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String custom3;
+
     public SyncResponse() {
     }
 
@@ -643,5 +655,32 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setRestrictions(String restrictions) {
         this.restrictions = restrictions;
+    }
+
+    @Override
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    @Override
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    @Override
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
     }
 }

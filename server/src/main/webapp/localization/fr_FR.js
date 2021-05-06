@@ -323,6 +323,8 @@ document.localization ['fr_FR'] = {
     'form.configuration.files.search.label': 'Rechercher:',
     'form.configuration.files.action.upload': 'Télécharger',
     'form.configuration.files.action.remove': 'Supprimer',
+    'form.configuration.files.variables': 'Contenu variable',
+    'form.configuration.files.variables.hint': 'Les chaînes DEVICE_NUMBER, IMEI, CUSTOM* seront remplacées par leurs valeurs',
 
 	'form.configuration.file.name': 'Nom du fichier',
     'form.configuration.file.description': 'Description',
@@ -501,6 +503,8 @@ document.localization ['fr_FR'] = {
     'form.settings.misc.custom.property.name.1': 'Propriété personnalisée #1',
     'form.settings.misc.custom.property.name.2': 'Propriété personnalisée #2',
     'form.settings.misc.custom.property.name.3': 'Propriété personnalisée #3',
+    'form.settings.misc.custom.property.multiline': 'Multiligne',
+    'form.settings.misc.custom.property.send': 'Envoyer à l\'appareil',
     'form.settings.misc.custom.property.name.placeholder': 'Entrez le nom d\'une propriété personnalisée',
     'form.settings.misc.create.new.devices': 'Ajouter un appareil lors du premier accès',
     'form.settings.misc.new.device.config': 'Nouvelle configuration d\'appareil',

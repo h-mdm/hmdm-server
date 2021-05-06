@@ -23,11 +23,20 @@ package com.hmdm.guice.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import com.hmdm.persistence.domain.Application;
+
 import javax.servlet.ServletContext;
 
 public class ConfigureModule extends AbstractModule {
-    private final String filesDirectory = "files.directory";
-    private final String baseUrl = "base.url";
+    private final String filesDirectoryParameter = "files.directory";
+    private final String baseUrlParameter = "base.url";
+    private final String pluginFilesDirectoryParameter = "plugins.files.directory";
+    private final String usageScenarioParameter = "usage.scenario";
+    private final String secureEnrollmentParameter = "secure.enrollment";
+    private final String hashSecretParameter = "hash.secret";
+    private final String aaptCommandParameter = "aapt.command";
+    private final String roleOrgadminIdParameter = "role.orgadmin.id";
+    private final String launcherPackageParameter = "launcher.package";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -35,18 +44,23 @@ public class ConfigureModule extends AbstractModule {
     }
 
     protected void configure() {
-        this.bindConstant().annotatedWith(Names.named(filesDirectory)).to(this.context.getInitParameter(filesDirectory));
-        this.bindConstant().annotatedWith(Names.named(baseUrl)).to(this.context.getInitParameter(baseUrl));
-        this.bindConstant().annotatedWith(Names.named("plugins.files.directory")).to(this.context.getInitParameter("plugins.files.directory"));
-        this.bindConstant().annotatedWith(Names.named("usage.scenario")).to(this.context.getInitParameter("usage.scenario"));
-        String secureEnrollment = this.context.getInitParameter("secure.enrollment");
-        this.bindConstant().annotatedWith(Names.named("secure.enrollment")).to(
+        this.bindConstant().annotatedWith(Names.named(filesDirectoryParameter)).to(this.context.getInitParameter(filesDirectoryParameter));
+        this.bindConstant().annotatedWith(Names.named(baseUrlParameter)).to(this.context.getInitParameter(baseUrlParameter));
+        this.bindConstant().annotatedWith(Names.named(pluginFilesDirectoryParameter)).to(this.context.getInitParameter(pluginFilesDirectoryParameter));
+        this.bindConstant().annotatedWith(Names.named(usageScenarioParameter)).to(this.context.getInitParameter(usageScenarioParameter));
+        String secureEnrollment = this.context.getInitParameter(secureEnrollmentParameter);
+        this.bindConstant().annotatedWith(Names.named(secureEnrollmentParameter)).to(
                 secureEnrollment != null && (secureEnrollment.equals("1") || secureEnrollment.equalsIgnoreCase("true"))
         );
-        this.bindConstant().annotatedWith(Names.named("hash.secret")).to(this.context.getInitParameter("hash.secret"));
-        this.bindConstant().annotatedWith(Names.named("aapt.command")).to(this.context.getInitParameter("aapt.command"));
-        this.bindConstant().annotatedWith(Names.named("role.orgadmin.id")).to(
-                Integer.parseInt(this.context.getInitParameter("role.orgadmin.id"))
+        this.bindConstant().annotatedWith(Names.named(hashSecretParameter)).to(this.context.getInitParameter(hashSecretParameter));
+        this.bindConstant().annotatedWith(Names.named(aaptCommandParameter)).to(this.context.getInitParameter(aaptCommandParameter));
+        this.bindConstant().annotatedWith(Names.named(roleOrgadminIdParameter)).to(
+                Integer.parseInt(this.context.getInitParameter(roleOrgadminIdParameter))
         );
+        String launcherPackage = this.context.getInitParameter(launcherPackageParameter);
+        if (launcherPackage == null) {
+            launcherPackage = Application.DEFAULT_LAUNCHER_PACKAGE;
+        }
+        this.bindConstant().annotatedWith(Names.named(launcherPackageParameter)).to(launcherPackage);
     }
 }

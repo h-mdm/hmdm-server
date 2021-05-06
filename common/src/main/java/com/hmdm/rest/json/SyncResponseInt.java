@@ -122,4 +122,10 @@ public interface SyncResponseInt {
     String getNewNumber();
 
     String getRestrictions();
+
+    String getCustom1();
+
+    String getCustom2();
+
+    String getCustom3();
 }

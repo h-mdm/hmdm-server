@@ -323,7 +323,9 @@ document.localization ['zh_TW'] = {
     'form.configuration.files.search.label' : "搜索",
     'form.configuration.files.action.upload':"上傳",
     'form.configuration.files.action.remove' : "去掉",
-		
+    'form.configuration.files.variables': '內容可變',
+    'form.configuration.files.variables.hint': '字符串DEVICE_NUMBER，IMEI，CUSTOM*將替換為其值',
+
     'form.configuration.file.name' : "文檔名",
     'form.configuration.file.description' : "文檔資訊",
     'form.configuration.file.description.placeholder':"可選，為了您的方便",
@@ -501,6 +503,8 @@ document.localization ['zh_TW'] = {
     'form.settings.misc.custom.property.name.1':"自定義媒體資源1",
     'form.settings.misc.custom.property.name.2':"自定義屬性2",
     'form.settings.misc.custom.property.name.3':"自定義屬性3",
+    'form.settings.misc.custom.property.multiline': '多行',
+    'form.settings.misc.custom.property.send': '發送到設備',
     'form.settings.misc.custom.property.name.placeholder':"輸入自定義屬性的名稱",
     'form.settings.misc.create.new.devices':"在首次訪問時新增設備",
     'form.settings.misc.new.device.config':"新設備配置",

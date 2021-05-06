@@ -110,4 +110,10 @@ public class ConfigurationFile implements Serializable {
      */
     @ApiModelProperty("An URL referencing the content of the file")
     private String url;
+
+    /**
+     * <p>A flag indicating whether the file content must be updated by device-specific values.</p>
+     */
+    @ApiModelProperty("A flag indicating whether the file content must be updated by device-specific values")
+    private boolean replaceVariables;
 }

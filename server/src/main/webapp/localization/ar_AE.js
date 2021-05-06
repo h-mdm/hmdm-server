@@ -323,6 +323,8 @@ document.localization ['ar_AE'] = {
     'form.configuration.files.search.label': 'بحث:',
     'form.configuration.files.action.upload': 'تحميل',
     'form.configuration.files.action.remove': 'إزالة' ,
+    'form.configuration.files.variables': 'محتوى متغير',
+    'form.configuration.files.variables.hint': 'سيتم استبدال السلاسل DEVICE_NUMBER و IMEI و CUSTOM* بقيمها',
 
 	'form.configuration.file.name': 'اسم الملف' ,
     'form.configuration.file.description': 'وصف الملف',
@@ -501,6 +503,8 @@ document.localization ['ar_AE'] = {
     'form.settings.misc.custom.property.name.1': 'الخاصية المخصصة #1',
     'form.settings.misc.custom.property.name.2': 'الخاصية المخصصة #2',
     'form.settings.misc.custom.property.name.3': 'الخاصية المخصصة #3',
+    'form.settings.misc.custom.property.multiline': 'متعدد الأسطر',
+    'form.settings.misc.custom.property.send': 'أرسل إلى الجهاز',
     'form.settings.misc.custom.property.name.placeholder': 'أدخل اسمًا لخاصية مخصصة',
     "form.settings.misc.create.new.devices": 'إضافة جهاز عند الوصول الأول',
     "form.settings.misc.new.device.config": 'اعداد جهاز جديد',

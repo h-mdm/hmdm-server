@@ -323,6 +323,8 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.files.search.label': 'Поиск:',
     'form.configuration.files.action.upload': 'Загрузить',
     'form.configuration.files.action.remove': 'Удалить',
+    'form.configuration.files.variables': 'Менять содержимое',
+    'form.configuration.files.variables.hint': 'Строки DEVICE_NUMBER, IMEI, CUSTOM* будут заменены их значениями',
 
     'form.configuration.file.name': 'Имя файла',
     'form.configuration.file.description': 'Описание файла',
@@ -501,6 +503,8 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.misc.custom.property.name.1': 'Пользовательское поле #1',
     'form.settings.misc.custom.property.name.2': 'Пользовательское поле #2',
     'form.settings.misc.custom.property.name.3': 'Пользовательское поле #3',
+    'form.settings.misc.custom.property.multiline': 'Многострочное',
+    'form.settings.misc.custom.property.send': 'Отпр. на устр-во',
     'form.settings.misc.custom.property.name.placeholder': 'Введите название пользовательского поля',
     'form.settings.misc.create.new.devices': 'Добавлять устр-во при первом обращении',
     'form.settings.misc.new.device.config': 'Конфигурация нового устройства',

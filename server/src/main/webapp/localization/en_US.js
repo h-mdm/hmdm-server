@@ -323,6 +323,8 @@ document.localization ['en_US'] = {
     'form.configuration.files.search.label': 'Search:',
     'form.configuration.files.action.upload': 'Upload',
     'form.configuration.files.action.remove': 'Remove',
+    'form.configuration.files.variables': 'Variable content',
+    'form.configuration.files.variables.hint': 'Strings DEVICE_NUMBER, IMEI, CUSTOM* will be replaced by their values',
 
     'form.configuration.file.name': 'File name',
     'form.configuration.file.description': 'File description',
@@ -501,6 +503,8 @@ document.localization ['en_US'] = {
     'form.settings.misc.custom.property.name.1': 'Custom property #1',
     'form.settings.misc.custom.property.name.2': 'Custom property #2',
     'form.settings.misc.custom.property.name.3': 'Custom property #3',
+    'form.settings.misc.custom.property.multiline': 'Multiline',
+    'form.settings.misc.custom.property.send': 'Send to device',
     'form.settings.misc.custom.property.name.placeholder': 'Enter name for a custom property',
     'form.settings.misc.create.new.devices': 'Add device on first access',
     'form.settings.misc.new.device.config': 'New device configuration',

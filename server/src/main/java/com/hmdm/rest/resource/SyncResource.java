@@ -332,6 +332,20 @@ public class SyncResource {
         data.setKioskKeyguard(configuration.getKioskKeyguard());
         data.setRestrictions(configuration.getRestrictions());
 
+        if (settings != null) {
+            if (settings.isCustomSend1()) {
+                data.setCustom1(dbDevice.getCustom1());
+            }
+
+            if (settings.isCustomSend2()) {
+                data.setCustom2(dbDevice.getCustom2());
+            }
+
+            if (settings.isCustomSend3()) {
+                data.setCustom3(dbDevice.getCustom3());
+            }
+        }
+
         // Evaluate the application settings
         final List<ApplicationSetting> deviceAppSettings = this.unsecureDAO.getDeviceAppSettings(dbDevice.getId());
         final List<ApplicationSetting> configApplicationSettings = configuration.getApplicationSettings();

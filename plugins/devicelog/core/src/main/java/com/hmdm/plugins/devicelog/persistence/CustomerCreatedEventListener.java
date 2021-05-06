@@ -71,20 +71,14 @@ public class CustomerCreatedEventListener implements EventListener<CustomerCreat
      */
     @Override
     public void onEvent(CustomerCreatedEvent event) {
+        // Copy rules from admin's account
+        DeviceLogPluginSettings masterPluginSettings = this.settingsDAO.getPluginSettings(1);
         DeviceLogPluginSettings defaultPluginSettings = this.settingsDAO.getDefaultSettings(event.getCustomer());
+        defaultPluginSettings.setLogsPreservePeriod(masterPluginSettings.getLogsPreservePeriod());
         this.settingsDAO.insertPluginSettings(defaultPluginSettings, event.getCustomer());
 
-        Application launcher = unsecureDAO.getDefaultLauncher();
-        if (launcher != null) {
-            try {
-                DeviceLogRule rule = this.settingsDAO.getSettingsRuleClass().newInstance();
-                rule.setName("Headwind MDM");
-                rule.setActive(true);
-                rule.setApplicationId(launcher.getId());
-                rule.setSeverity(LogLevel.VERBOSE);
-                this.settingsDAO.savePluginSettingsRule(defaultPluginSettings, rule);
-            } catch (Exception e) {
-            }
+        for (DeviceLogRule rule : masterPluginSettings.getRules()) {
+            this.settingsDAO.savePluginSettingsRule(defaultPluginSettings, rule);
         }
     }
 

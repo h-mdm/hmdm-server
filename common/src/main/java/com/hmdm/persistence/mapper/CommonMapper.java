@@ -93,6 +93,12 @@ public interface CommonMapper {
                     "customPropertyName1, " +
                     "customPropertyName2, " +
                     "customPropertyName3, " +
+                    "customMultiline1, " +
+                    "customMultiline2, " +
+                    "customMultiline3, " +
+                    "customSend1, " +
+                    "customSend2, " +
+                    "customSend3, " +
                     "customerId" +
                     ") VALUES (" +
                     "#{createNewDevices}, " +
@@ -102,6 +108,12 @@ public interface CommonMapper {
                     "#{customPropertyName1}, " +
                     "#{customPropertyName2}, " +
                     "#{customPropertyName3}, " +
+                    "#{customMultiline1}, " +
+                    "#{customMultiline2}, " +
+                    "#{customMultiline3}, " +
+                    "#{customSend1}, " +
+                    "#{customSend2}, " +
+                    "#{customSend3}, " +
                     "#{customerId}" +
                     ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
@@ -112,7 +124,13 @@ public interface CommonMapper {
                     "phoneNumberFormat = EXCLUDED.phoneNumberFormat, " +
                     "customPropertyName1 = EXCLUDED.customPropertyName1, " +
                     "customPropertyName2 = EXCLUDED.customPropertyName2, " +
-                    "customPropertyName3 = EXCLUDED.customPropertyName3"
+                    "customPropertyName3 = EXCLUDED.customPropertyName3, " +
+                    "customMultiline1 = EXCLUDED.customMultiline1, " +
+                    "customMultiline2 = EXCLUDED.customMultiline2, " +
+                    "customMultiline3 = EXCLUDED.customMultiline3, " +
+                    "customSend1 = EXCLUDED.customSend1, " +
+                    "customSend2 = EXCLUDED.customSend2, " +
+                    "customSend3 = EXCLUDED.customSend3 "
     })
     void saveMiscSettings(Settings settings);
 }

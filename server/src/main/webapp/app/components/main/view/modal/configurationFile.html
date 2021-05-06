@@ -59,6 +59,16 @@
         </div>
 
         <div class='form-group'>
+            <div class="col-sm-4">
+                <label class='control-label' for="replaceVariables" localized>form.configuration.files.variables</label><br>
+                <span class="field-hint" localized>form.configuration.files.variables.hint</span>
+            </div>
+            <div class='col-sm-1'>
+                <input ng-model='file.replaceVariables' type='checkbox' class='form-control' id="replaceVariables"/>
+            </div>
+        </div>
+
+        <div class='form-group'>
             <div class='col-sm-offset-4 col-sm-8'>
                 <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="loading" localized>button.save</button>
                 <button type='button' class='btn btn-default' ng-click='closeModal()' ng-disabled="loading" localized >button.cancel</button>

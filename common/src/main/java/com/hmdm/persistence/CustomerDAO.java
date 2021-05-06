@@ -163,7 +163,6 @@ public class CustomerDAO {
 
     private static final String[] DEFAULT_DEVICE_SUFFIXES = {"001", "002", "003"};
 
-    @Transactional
     public String insertCustomer(Customer customer) {
         if (!SecurityContext.get().isSuperAdmin()) {
             throw SecurityException.onAdminDataAccessViolation("create new customer account");
@@ -212,9 +211,6 @@ public class CustomerDAO {
 
                 this.settingDAO.saveDefaultDesignSettingsBySuperAdmin(customerSettings);
             }
-
-            // Save API key
-            this.mapper.saveApiKey(customer);
 
             // Copy configurations if required
             Map<Integer, Integer> configIdsMapping = new HashMap<>();
@@ -287,7 +283,6 @@ public class CustomerDAO {
             throw SecurityException.onAdminDataAccessViolation("update customer account with ID " + customer.getId());
         }
         this.mapper.update(customer);
-        this.mapper.saveApiKey(customer);
 
         log.info("Updated customer account: {}", customer);
     }

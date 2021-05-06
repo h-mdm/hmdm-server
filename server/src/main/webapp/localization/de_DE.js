@@ -323,6 +323,8 @@ document.localization ['de_DE'] = {
     'form.configuration.files.search.label': 'Suche:',
     'form.configuration.files.action.upload': 'Hochladen',
     'form.configuration.files.action.remove': 'Entfernen',
+    'form.configuration.files.variables': 'Variabler Inhalt',
+    'form.configuration.files.variables.hint': 'Die Zeichenfolgen DEVICE_NUMBER, IMEI, CUSTOM* werden durch ihre Werte ersetzt',
 
     'form.configuration.file.name': 'Dateiname',
     'form.configuration.file.description': 'Dateibeschreibung',
@@ -501,6 +503,8 @@ document.localization ['de_DE'] = {
     'form.settings.misc.custom.property.name.1': 'Benutzerdefinierte Eigenschaft #1',
     'form.settings.misc.custom.property.name.2': 'Benutzerdefinierte Eigenschaft #2',
     'form.settings.misc.custom.property.name.3': 'Benutzerdefinierte Eigenschaft #3',
+    'form.settings.misc.custom.property.multiline': 'Mehrzeilig',
+    'form.settings.misc.custom.property.send': 'An Gerät senden',
     'form.settings.misc.custom.property.name.placeholder': 'Name für eine benutzerdefinierte Eigenschaft eingeben',
     'form.settings.misc.create.new.devices': 'Gerät beim ersten Zugriff hinzufügen',
     'form.settings.misc.new.device.config': 'Neue Gerätekonfiguration',
@@ -693,12 +697,12 @@ document.localization ['de_DE'] = {
 
     'app.name': 'Headwind MDM',
     'app.description': 'ist das Open-Source-Managementsystem für mobile Geräte',
-    'app.title': 'Headwind-MDM-Webpanel',
+    'app.title': 'Headwind MDM-Webpanel',
 
     'box.show.my.apps.only': 'Nur meine Anwendungen anzeigen',
     'configuration.app.version.upgrade.message': 'Installierte Version ${installedVersion}, verfügbare Version ${latestVersion}',
 
-    'about.line.1': 'MDM-Bedienfeld für Headwind',
+    'about.line.1': 'Headwind MDM-Bedienfeld',
     'about.line.2': 'Enterprise Launcher für Android',
     'about.line.3': 'Version ${versionNumber}',
     'about.line.4': 'Installierte Plugins',
@@ -722,7 +726,7 @@ document.localization ['de_DE'] = {
     'tip.step.4': 'Suchen Sie auf der Registerkarte «Geräte» nach einer verfügbaren Geräte-ID. Klicken Sie auf «Erneuern», um es in den QR-Code aufzunehmen. ',
 
     'ie.browser.notice.1': 'Internet Explorer wird leider nicht unterstützt.',
-    'ie.browser.notice.2': 'Empfohlener Browser für die Verwendung von Headwind-MDM - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop"> Chrome</a>.',
+    'ie.browser.notice.2': 'Empfohlener Browser für die Verwendung von Headwind MDM - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop"> Chrome</a>.',
 
     'form.resolved.duplicate.pkg.text1': 'Die Paket-ID "${pkg}" wird bereits von den unten aufgeführten Anwendungen verwendet.',
     'form.resolved.duplicate.pkg.text2': 'Möchten Sie eine neue Anwendung oder eine neue Version einer vorhandenen Anwendung hinzufügen?',

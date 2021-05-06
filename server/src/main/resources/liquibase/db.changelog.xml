@@ -2086,4 +2086,36 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="02.05.21-09:27" author="seva" context="common">
+        <comment>Column,new: settings#customMultiline</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN customMultiline1 BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE settings ADD COLUMN customMultiline2 BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE settings ADD COLUMN customMultiline3 BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE settings ADD COLUMN customSend1 BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE settings ADD COLUMN customSend2 BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE settings ADD COLUMN customSend3 BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE configurationFiles ADD COLUMN replaceVariables BOOLEAN NOT NULL DEFAULT FALSE;
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN customMultiline1;
+            ALTER TABLE settings DROP COLUMN customMultiline2;
+            ALTER TABLE settings DROP COLUMN customMultiline3;
+            ALTER TABLE settings DROP COLUMN customSend1;
+            ALTER TABLE settings DROP COLUMN customSend2;
+            ALTER TABLE settings DROP COLUMN customSend3;
+            ALTER TABLE configurationFiles DROP COLUMN replaceVariables;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="05.05.21-11:48" author="seva" context="common">
+        <comment>Drop legacy licensing data</comment>
+        <sql>
+            DROP TABLE plugin_licensing_settings;
+            DELETE FROM plugins WHERE identifier='licensing';
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

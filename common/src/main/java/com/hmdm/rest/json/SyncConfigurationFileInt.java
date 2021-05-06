@@ -45,7 +45,7 @@ public interface SyncConfigurationFileInt {
     /**
      * <p>A flag indicating if file is to be removed from the device or not.</p>
      */
-    boolean isRemove();
+    Boolean getRemove();
 
     /**
      * <p>A timestamp of file uploading to server (in milliseconds since epoch time).</p>
@@ -57,4 +57,8 @@ public interface SyncConfigurationFileInt {
      */
     String getUrl();
 
+    /**
+     * A flag indicating whether the file content must be updated by device-specific values
+     */
+    Boolean getVarContent();
 }

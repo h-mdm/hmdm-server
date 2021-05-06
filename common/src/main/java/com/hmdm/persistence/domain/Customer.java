@@ -38,7 +38,6 @@ public class Customer implements Serializable {
     private String name;
     private String description;
     private String filesDir;
-    private String apiKey;
     private boolean master = false;
 
     public static final int Demo = 0;
@@ -147,14 +146,6 @@ public class Customer implements Serializable {
 
     public void setConfigurationIds(Integer[] configurationIds) {
         this.configurationIds = configurationIds;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
     }
 
     public String getPrefix() {

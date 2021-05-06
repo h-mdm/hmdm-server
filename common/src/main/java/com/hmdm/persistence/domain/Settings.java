@@ -72,6 +72,18 @@ public class Settings implements CustomerData, Serializable {
     private String customPropertyName2;
     @ApiModelProperty("Custom property name 3")
     private String customPropertyName3;
+    @ApiModelProperty("Is custom property 1 multiline")
+    private boolean customMultiline1;
+    @ApiModelProperty("Is custom property 2 multiline")
+    private boolean customMultiline2;
+    @ApiModelProperty("Is custom property 3 multiline")
+    private boolean customMultiline3;
+    @ApiModelProperty("Send custom property 1 to device")
+    private boolean customSend1;
+    @ApiModelProperty("Send custom property 1 to device")
+    private boolean customSend2;
+    @ApiModelProperty("Send custom property 1 to device")
+    private boolean customSend3;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
@@ -216,6 +228,54 @@ public class Settings implements CustomerData, Serializable {
 
     public void setCustomPropertyName3(String customPropertyName3) {
         this.customPropertyName3 = customPropertyName3;
+    }
+
+    public boolean isCustomMultiline1() {
+        return customMultiline1;
+    }
+
+    public void setCustomMultiline1(boolean customMultiline1) {
+        this.customMultiline1 = customMultiline1;
+    }
+
+    public boolean isCustomMultiline2() {
+        return customMultiline2;
+    }
+
+    public void setCustomMultiline2(boolean customMultiline2) {
+        this.customMultiline2 = customMultiline2;
+    }
+
+    public boolean isCustomMultiline3() {
+        return customMultiline3;
+    }
+
+    public void setCustomMultiline3(boolean customMultiline3) {
+        this.customMultiline3 = customMultiline3;
+    }
+
+    public boolean isCustomSend1() {
+        return customSend1;
+    }
+
+    public void setCustomSend1(boolean customSend1) {
+        this.customSend1 = customSend1;
+    }
+
+    public boolean isCustomSend2() {
+        return customSend2;
+    }
+
+    public void setCustomSend2(boolean customSend2) {
+        this.customSend2 = customSend2;
+    }
+
+    public boolean isCustomSend3() {
+        return customSend3;
+    }
+
+    public void setCustomSend3(boolean customSend3) {
+        this.customSend3 = customSend3;
     }
 
     public boolean isSingleCustomer() {
