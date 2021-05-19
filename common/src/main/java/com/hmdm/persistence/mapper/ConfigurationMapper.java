@@ -71,6 +71,8 @@ public interface ConfigurationMapper {
             "manageTimeout=#{manageTimeout}, " +
             "timeout=#{timeout}, " +
             "lockVolume=#{lockVolume}, " +
+            "manageVolume=#{manageVolume}, " +
+            "volume=#{volume}, " +
             "passwordMode=#{passwordMode}, " +
             "orientation=#{orientation}, " +
             "runDefaultLauncher=#{runDefaultLauncher}, " +

@@ -279,6 +279,8 @@ document.localization ['zh_TW'] = {
     'form.configuration.settings.common.timeout':"管理屏幕超時",
     'form.configuration.settings.common.timeout.value':"屏幕超時（秒）",
     'form.configuration.settings.common.volume.block':"鎖定音量",
+    'form.configuration.settings.common.volume.manage': '管理設備音量',
+    'form.configuration.settings.common.volume.value': '裝置音量',
     'form.configuration.settings.common.timezone.mode':"管理時區",
     'form.configuration.settings.common.timezone.mode.default':"不要管",
     'form.configuration.settings.common.timezone.mode.auto' : "自動",

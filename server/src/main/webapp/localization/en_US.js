@@ -279,6 +279,8 @@ document.localization ['en_US'] = {
     'form.configuration.settings.common.timeout': 'Manage screen timeout',
     'form.configuration.settings.common.timeout.value': 'Screen timeout (s)',
     'form.configuration.settings.common.volume.block': 'Lock volume',
+    'form.configuration.settings.common.volume.manage': 'Manage volume',
+    'form.configuration.settings.common.volume.value': 'Volume',
     'form.configuration.settings.common.timezone.mode': 'Manage time zone',
     'form.configuration.settings.common.timezone.mode.default': 'Do not manage',
     'form.configuration.settings.common.timezone.mode.auto': 'Auto',

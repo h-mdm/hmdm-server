@@ -279,6 +279,8 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.common.timeout': 'Управление таймаутом экрана',
     'form.configuration.settings.common.timeout.value': 'Таймаут экрана (с)',
     'form.configuration.settings.common.volume.block': 'Блокировка громкости',
+    'form.configuration.settings.common.volume.manage': 'Управлять громкостью',
+    'form.configuration.settings.common.volume.value': 'Громкость',
     'form.configuration.settings.common.timezone.mode': 'Управление временной зоной',
     'form.configuration.settings.common.timezone.mode.default': 'Не управлять',
     'form.configuration.settings.common.timezone.mode.auto': 'Автоматически',

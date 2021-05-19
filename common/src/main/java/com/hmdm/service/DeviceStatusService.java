@@ -120,7 +120,7 @@ public class DeviceStatusService {
                         }
                     } else if (!configApp.getVersion().equals("0")
                             && !configApp.isSkipVersion()
-                            && !areVersionsEqual.test(deviceApp.getVersion(), configApp.getVersion())) {
+                            && !isVersionUpToDate.test(deviceApp.getVersion(), configApp.getVersion())) {
                         // Version mismatch
                         versionMismatchCount.incrementAndGet();
                     }
@@ -194,4 +194,49 @@ public class DeviceStatusService {
         return v1d.equals(v2d);
 
     };
+
+    /**
+     * <p>Checks if the installed version is up to date. </p>
+     */
+    BiPredicate<String, String> isVersionUpToDate = (installed, required) -> {
+        return compareVersions(installed, required) >= 0;
+    };
+
+    // Returns -1 if v1 < v2, 0 if v1 == v2 and 1 if v1 > v2
+    public static int compareVersions(String v1, String v2) {
+        // Versions are numbers separated by a dot
+        String v1d = v1.replaceAll("[^\\d.]", "");
+        String v2d = v2.replaceAll("[^\\d.]", "");
+
+        String[] v1n = v1d.split("\\.");
+        String[] v2n = v2d.split("\\.");
+
+        // One version could contain more digits than another
+        int count = v1n.length < v2n.length ? v1n.length : v2n.length;
+
+        for (int n = 0; n < count; n++) {
+            try {
+                int n1 = Integer.parseInt(v1n[n]);
+                int n2 = Integer.parseInt(v2n[n]);
+                if (n1 < n2) {
+                    return -1;
+                } else if (n1 > n2) {
+                    return 1;
+                }
+                // If major version numbers are equals, continue to compare minor version numbers
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+
+        // Here we are if common parts are equal
+        // Now we decide that if a version has more parts, it is considered as greater
+        if (v1n.length < v2n.length) {
+            return -1;
+        } else if (v1n.length > v2n.length) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

@@ -21,9 +21,12 @@
 
 package com.hmdm.persistence.mapper;
 
+import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.ConfigurationFile;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -35,11 +38,25 @@ public interface ConfigurationFileMapper {
     @Select("SELECT * FROM configurationFiles WHERE configurationId = #{configurationId} ORDER BY id")
     List<ConfigurationFile> getConfigurationFiles(@Param("configurationId") int configurationId);
 
+    @Select("SELECT * FROM configurationFiles WHERE configurationId = #{configurationId} AND devicepath = #{path} LIMIT 1")
+    ConfigurationFile getConfigurationFileByPath(@Param("configurationId") int configurationId, @Param("path") String path);
+
     @Select("SELECT COUNT(*) AS cnt " +
             "FROM configurationFiles cf " +
             "INNER JOIN uploadedFiles uf ON uf.id = cf.fileId " +
             "WHERE uf.filePath = #{fileName}")
     long countFileUsedAsConfigFile(@Param("fileName") String fileName);
+
+    @Insert("INSERT INTO configurationFiles(configurationId, description, devicePath, externalUrl, " +
+            "filePath, checksum, remove, lastUpdate, fileId, replaceVariables) VALUES " +
+            "(#{configurationId}, #{description}, #{devicePath}, #{externalUrl}, #{filePath}, #{checksum}, " +
+            "#{remove}, #{lastUpdate}, #{fileId}, #{replaceVariables})")
+    void insertConfigurationFile(ConfigurationFile file);
+
+    @Update("UPDATE configurationFiles SET configurationId=#{configurationId}, description=#{description}, devicePath=#{devicePath}, " +
+            "externalUrl=#{externalUrl}, filePath=#{filePath}, checksum=#{checksum}, remove=#{remove}, lastUpdate=#{lastUpdate}, " +
+            "fileId=#{fileId}, replaceVariables=#{replaceVariables} WHERE id=#{id}")
+    void updateConfigurationFile(ConfigurationFile file);
 
     @Select("SELECT c.name " +
             "FROM configurationFiles cf " +

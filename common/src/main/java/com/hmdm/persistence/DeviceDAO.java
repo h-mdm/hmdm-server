@@ -188,6 +188,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
                         device.getId(), device.getGroups().stream().map(LookupItem::getId).collect(Collectors.toList())
                 );
             }
+            this.eventService.fireEvent(new DeviceInfoUpdatedEvent(device.getId()));
         }, SecurityException::onDeviceAccessViolation);
     }
 

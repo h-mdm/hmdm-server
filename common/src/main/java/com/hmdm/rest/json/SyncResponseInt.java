@@ -101,6 +101,10 @@ public interface SyncResponseInt {
 
     Boolean getLockVolume();
 
+    Boolean getManageVolume();
+
+    Integer getVolume();
+
     String getPasswordMode();
 
     Integer getOrientation();

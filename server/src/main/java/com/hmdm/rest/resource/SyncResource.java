@@ -295,11 +295,15 @@ public class SyncResource {
             // Set only if autoBrightness == false
             data.setBrightness(configuration.getBrightness());
         }
-        data.setManageTimeout(configuration.getManageTimeout());
+        data.setManageTimeout(configuration.getManageTimeout() == null || !configuration.getManageTimeout() ? null : true);
         if (data.getManageTimeout() != null && data.getManageTimeout()) {
             data.setTimeout(configuration.getTimeout());
         }
         data.setLockVolume(configuration.getLockVolume());
+        data.setManageVolume(configuration.getManageVolume() == null || !configuration.getManageVolume() ? null : true);
+        if (data.getManageVolume() != null && data.getManageVolume()) {
+            data.setVolume(configuration.getVolume());
+        }
         if (configuration.getSystemUpdateType() == 2) {
             data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
             data.setSystemUpdateTo(configuration.getSystemUpdateTo());

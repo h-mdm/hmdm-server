@@ -279,6 +279,8 @@ document.localization ['ar_AE'] = {
     "form.configuration.settings.common.timeout": 'إدارة مهلة الشاشة',
     "form.configuration.settings.common.timeout.value": 'مهلة (فترات) الشاشة',
     "form.configuration.settings.common.volume.block": 'قفل حجم االصوت',
+    'form.configuration.settings.common.volume.manage': 'إدارة حجم الجهاز',
+    'form.configuration.settings.common.volume.value': 'حجم الجهاز',
     "form.configuration.settings.common.timezone.mode": 'إدارة المنطقة الزمنية',
     "form.configuration.settings.common.timezone.mode.default": 'بدون اعداد',
     "form.configuration.settings.common.timezone.mode.auto": 'تلقائي',

@@ -92,6 +92,10 @@ public class Configuration implements CustomerData, Serializable {
     private Integer timeout;
     @ApiModelProperty("A flag indicating if volume is locked on device")
     private Boolean lockVolume;
+    @ApiModelProperty("A flag indicating if volume must be adjusted on device")
+    private Boolean manageVolume;
+    @ApiModelProperty("Volume value (in percents)")
+    private Integer volume;
     @ApiModelProperty("Password requirements for the mobile device")
     private String passwordMode;
     @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
@@ -570,6 +574,22 @@ public class Configuration implements CustomerData, Serializable {
         this.lockVolume = lockVolume;
     }
 
+    public Boolean getManageVolume() {
+        return manageVolume;
+    }
+
+    public void setManageVolume(Boolean manageVolume) {
+        this.manageVolume = manageVolume;
+    }
+
+    public Integer getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Integer volume) {
+        this.volume = volume;
+    }
+
     public String getPasswordMode() {
         return passwordMode;
     }
@@ -702,6 +722,8 @@ public class Configuration implements CustomerData, Serializable {
         copy.setManageTimeout(getManageTimeout());
         copy.setTimeout(getTimeout());
         copy.setLockVolume(getLockVolume());
+        copy.setManageVolume(getManageVolume());
+        copy.setVolume(getVolume());
         copy.setPasswordMode(getPasswordMode());
         copy.setOrientation(getOrientation());
         copy.setRunDefaultLauncher(getRunDefaultLauncher());

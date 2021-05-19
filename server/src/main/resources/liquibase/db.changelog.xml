@@ -2118,4 +2118,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="08.05.21-11:35" author="seva" context="common">
+        <comment>Column,new: configurations#manageVolume, #volume</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN manageVolume BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN volume INT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN manageVolume;
+            ALTER TABLE configurations DROP COLUMN volume;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

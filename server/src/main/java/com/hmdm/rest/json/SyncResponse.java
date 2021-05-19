@@ -84,6 +84,14 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean lockVolume;
 
+    @ApiModelProperty("Volume manage option")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean manageVolume;
+
+    @ApiModelProperty("Volume (percents)")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer volume;
+
     @ApiModelProperty("Password requirements for the mobile device")
     private String passwordMode;
 
@@ -557,6 +565,22 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setLockVolume(Boolean lockVolume) {
         this.lockVolume = lockVolume;
+    }
+
+    public Boolean getManageVolume() {
+        return manageVolume;
+    }
+
+    public void setManageVolume(Boolean manageVolume) {
+        this.manageVolume = manageVolume;
+    }
+
+    public Integer getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Integer volume) {
+        this.volume = volume;
     }
 
     public String getPasswordMode() {

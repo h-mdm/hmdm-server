@@ -512,6 +512,43 @@ angular.module('headwind-kiosk')
             return v1d === v2d;
         }
 
+        function isVersionUpToDate(installed, required) {
+            return compareVersions(installed, required) >= 0;
+        }
+
+        // Returns -1 if v1 < v2, 0 if v1 == v2 and 1 if v1 > v2
+        function compareVersions(v1, v2) {
+            // Versions are numbers separated by a dot
+            var v1d = (v1 || "").replace(/[^\d.]/g, "");
+            var v2d = (v2 || "").replace(/[^\d.]/g, "");
+
+            var v1n = v1d.split(".");
+            var v2n = v2d.split(".");
+
+            // One version could contain more digits than another
+            var count = v1n.length < v2n.length ? v1n.length : v2n.length;
+
+            for (var n = 0; n < count; n++) {
+                var n1 = v1n[n];
+                var n2 = v2n[n];
+                if (n1 < n2) {
+                    return -1;
+                } else if (n1 > n2) {
+                    return 1;
+                }
+                // If major version numbers are equals, continue to compare minor version numbers
+            }
+
+            // Here we are if common parts are equal
+            // Now we decide that if a version has more parts, it is considered as greater
+            if (v1n.length < v2n.length) {
+                return -1;
+            } else if (v1n.length > v2n.length) {
+                return 1;
+            }
+            return 0;
+        }
+
         $scope.getDeviceLauncherVersion = function (device) {
             var info = $scope.getDeviceInfo(device);
             if (info) {
@@ -686,7 +723,7 @@ angular.module('headwind-kiosk')
                 var configApplications = device.configuration.applications;
 
                 for (var j = 0; j < configApplications.length; j++) {
-                    // Приложения без URL - это системные приложения, их не проверяем
+                    // Applications without URL are system apps and they are not checked
                     if (configApplications[j].selected && configApplications[j].url) {
                         configApplications[j].status = 3; // Good
 
@@ -701,7 +738,7 @@ angular.module('headwind-kiosk')
                                         configApplications[j].status = 4; // Needs to be removed
                                     }
                                 } else if (configApplications[j].version !== '0' && !configApplications[j].skipVersion
-                                    && !areVersionsEqual(deviceApplications[i].version, configApplications[j].version)) {
+                                    && !isVersionUpToDate(deviceApplications[i].version, configApplications[j].version)) {
                                     configApplications[j].installedVersion = deviceApplications[i].version;
                                     configApplications[j].status = 2; // Version mismatch
                                 }

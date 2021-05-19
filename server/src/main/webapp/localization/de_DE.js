@@ -279,6 +279,8 @@ document.localization ['de_DE'] = {
     'form.configuration.settings.common.timeout': 'Bildschirm-Timeout verwalten',
     'form.configuration.settings.common.timeout.value': 'Bildschirm-Timeout (s)',
     'form.configuration.settings.common.volume.block': 'Lautstärke sperren',
+    'form.configuration.settings.common.volume.manage': 'Gerätevolumen verwalten',
+    'form.configuration.settings.common.volume.value': 'Gerätevolumen',
     'form.configuration.settings.common.timezone.mode': 'Zeitzone verwalten',
     'form.configuration.settings.common.timezone.mode.default': 'Nicht verwalten',
     'form.configuration.settings.common.timezone.mode.auto': 'Auto',

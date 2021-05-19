@@ -23,8 +23,12 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.mapper.ConfigurationFileMapper;
+import com.hmdm.persistence.mapper.ConfigurationMapper;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
 
 import java.util.List;
 
@@ -39,19 +43,62 @@ public class ConfigurationFileDAO {
      */
     private final ConfigurationFileMapper configurationFileMapper;
 
+    private final ConfigurationMapper configurationMapper;
+
     private final UploadedFileDAO uploadedFileDAO;
 
     /**
      * <p>Constructs new <code>ConfigurationFileDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public ConfigurationFileDAO(ConfigurationFileMapper configurationFileMapper, UploadedFileDAO uploadedFileDAO) {
+    public ConfigurationFileDAO(ConfigurationFileMapper configurationFileMapper,
+                                ConfigurationMapper configurationMapper,
+                                UploadedFileDAO uploadedFileDAO) {
         this.configurationFileMapper = configurationFileMapper;
+        this.configurationMapper = configurationMapper;
         this.uploadedFileDAO = uploadedFileDAO;
     }
 
     public List<ConfigurationFile> getConfigurationFiles(Integer configurationId) {
         return this.configurationFileMapper.getConfigurationFiles(configurationId);
+    }
+
+    public ConfigurationFile getConfigurationFileByPath(Integer configurationId, String path) {
+        return this.configurationFileMapper.getConfigurationFileByPath(configurationId, path);
+    }
+
+    public void insertConfigurationFile(ConfigurationFile configurationFile) {
+        // Check access to configuration prior to making changes
+        SecurityContext.get()
+                .getCurrentUser()
+                .ifPresent(u -> {
+                    Configuration configuration = configurationMapper.getConfigurationById(configurationFile.getConfigurationId());
+                    if (configuration == null) {
+                        throw new IllegalArgumentException("Configuration id " + configurationFile.getConfigurationId() + " does not exist");
+                    }
+                    if (u.isSuperAdmin() || u.getCustomerId() == configuration.getCustomerId()) {
+                        this.configurationFileMapper.insertConfigurationFile(configurationFile);
+                    } else {
+                        throw SecurityException.onConfigurationAccessViolation(configurationFile.getConfigurationId());
+                    }
+                });
+    }
+
+    public void updateConfigurationFile(ConfigurationFile configurationFile) {
+        // Check access to configuration prior to making changes
+        SecurityContext.get()
+                .getCurrentUser()
+                .ifPresent(u -> {
+                    Configuration configuration = configurationMapper.getConfigurationById(configurationFile.getConfigurationId());
+                    if (configuration == null) {
+                        throw new IllegalArgumentException("Configuration id " + configurationFile.getConfigurationId() + " does not exist");
+                    }
+                    if (u.isSuperAdmin() || u.getCustomerId() == configuration.getCustomerId()) {
+                        this.configurationFileMapper.updateConfigurationFile(configurationFile);
+                    } else {
+                        throw SecurityException.onConfigurationAccessViolation(configurationFile.getConfigurationId());
+                    }
+                });
     }
 
     public boolean isFileUsed(String fileName) {

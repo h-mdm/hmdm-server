@@ -279,6 +279,8 @@ document.localization ['fr_FR'] = {
     'form.configuration.settings.common.timeout': 'Gérer le mise en veille de l\'écran',
     'form.configuration.settings.common.timeout.value': 'Veille de l\'écran (s)',
     'form.configuration.settings.common.volume.block': 'Verrouiller le volume',
+    'form.configuration.settings.common.volume.manage': 'Gérer le volume',
+    'form.configuration.settings.common.volume.value': 'Volume',
     'form.configuration.settings.common.timezone.mode': 'Gérer le fuseau horaire',
     'form.configuration.settings.common.timezone.mode.default': 'Ne gère pas',
     'form.configuration.settings.common.timezone.mode.auto': 'Auto',

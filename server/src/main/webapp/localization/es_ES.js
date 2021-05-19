@@ -279,6 +279,8 @@ document.localization ['es_ES'] = {
     'form.configuration.settings.common.timeout': 'Tiempo de espera en pantalla',
     'form.configuration.settings.common.timeout.value': 'Espera en pantalla (s)',
     'form.configuration.settings.common.volume.block': 'Bloquear volumen',
+    'form.configuration.settings.common.volume.manage': 'Administrar volumen',
+    'form.configuration.settings.common.volume.value': 'Volumen',
     'form.configuration.settings.common.timezone.mode': 'Administrar Zona',
     'form.configuration.settings.common.timezone.mode.default': 'No administrar',
     'form.configuration.settings.common.timezone.mode.auto': 'Automatico',
