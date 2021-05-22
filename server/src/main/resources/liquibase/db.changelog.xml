@@ -2108,16 +2108,6 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="05.05.21-11:48" author="seva" context="common">
-        <comment>Drop legacy licensing data</comment>
-        <sql>
-            DROP TABLE IF EXISTS plugin_licensing_settings;
-            DELETE FROM plugins WHERE identifier='licensing';
-        </sql>
-        <rollback>
-        </rollback>
-    </changeSet>
-
     <changeSet id="08.05.21-11:35" author="seva" context="common">
         <comment>Column,new: configurations#manageVolume, #volume</comment>
         <sql>

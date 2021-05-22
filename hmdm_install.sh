@@ -14,10 +14,10 @@ DEFAULT_LOCATION="/opt/hmdm"
 TOMCAT_HOME=$(ls -d /var/lib/tomcat* | tail -n1)
 TOMCAT_ENGINE="Catalina"
 TOMCAT_HOST="localhost"
-DEFAULT_PROTOCOL=http
+DEFAULT_PROTOCOL=https
 DEFAULT_BASE_DOMAIN=
-DEFAULT_BASE_PATH="/hmdm"
-DEFAULT_PORT="8080"
+DEFAULT_BASE_PATH="ROOT"
+DEFAULT_PORT=""
 TEMP_DIRECTORY="/tmp"
 TEMP_SQL_FILE="$TEMP_DIRECTORY/hmdm_init.sql"
 TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
@@ -173,8 +173,8 @@ echo
 
 read -e -p "Protocol (http|https) [$DEFAULT_PROTOCOL]: " -i "$DEFAULT_PROTOCOL" PROTOCOL
 read -e -p "Domain name or public IP (e.g. example.com): " -i "$DEFAULT_BASE_DOMAIN" BASE_DOMAIN
-read -e -p "Port (leave empty for default ports 80 or 443): " -i "$DEFAULT_PORT" PORT
-read -e -p "Project path on server or ROOT [$DEFAULT_BASE_PATH]: " -i "$DEFAULT_BASE_PATH" BASE_PATH
+read -e -p "Port (e.g. 8080, leave empty for default ports 80 or 443): " -i "$DEFAULT_PORT" PORT
+read -e -p "Project path on server (e.g. /hmdm) or ROOT: " -i "$DEFAULT_BASE_PATH" BASE_PATH
 read -e -p "Tomcat virtual host [$TOMCAT_HOST]: " -i "$TOMCAT_HOST" TOMCAT_HOST
 
 TOMCAT_DEPLOY_PATH=$BASE_PATH

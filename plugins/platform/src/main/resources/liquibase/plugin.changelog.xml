@@ -116,4 +116,15 @@
             ALTER TABLE plugins ALTER COLUMN name TYPE VARCHAR(50);
         </rollback>
     </changeSet>
+
+    <changeSet id="plugin-platform-05.05.21-11:48" author="seva" context="common">
+        <comment>Drop legacy licensing data</comment>
+        <sql>
+            DROP TABLE IF EXISTS plugin_licensing_settings;
+            DELETE FROM plugins WHERE identifier='licensing';
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
