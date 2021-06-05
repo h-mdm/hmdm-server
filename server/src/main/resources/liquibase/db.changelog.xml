@@ -2120,4 +2120,28 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="31.05.21-19:02" author="seva" context="common">
+        <comment>Column,new: applicationVersions#split, #urlArmeabi, #urlArm64</comment>
+        <sql>
+            ALTER TABLE applicationVersions ADD COLUMN split BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE applicationVersions ADD COLUMN urlArmeabi TEXT;
+            ALTER TABLE applicationVersions ADD COLUMN urlArm64 TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE applicationVersions DROP COLUMN split;
+            ALTER TABLE applicationVersions DROP COLUMN urlArmeabi;
+            ALTER TABLE applicationVersions DROP COLUMN urlArm64;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="04.06.21-14:05" author="seva" context="common">
+        <comment>Column,new: configurations#showWifi</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN showWifi BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN showWifi;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -121,6 +121,8 @@ public interface SyncResponseInt {
 
     Boolean getLockSafeSettings();
 
+    Boolean getShowWifi();
+
     List<SyncConfigurationFileInt> getFiles();
 
     String getNewNumber();

@@ -13,7 +13,7 @@
         </div>
 
         <div class='device-search-buttons col-sm-2'>
-            <button type='button' class='btn btn-default' ng-click='editApplication( {} )' localized>button.add</button>
+            <button type='button' class='btn btn-default' ng-click='editApplication( {arch:null} )' localized>button.add</button>
         </div>
     </div>
 
@@ -67,7 +67,13 @@
             <td>
                 <span ng-if="pkgInfoVisible(application)">{{application.version}}</span>
             </td>
-            <td>{{application.url}}</td>
+            <td ng-if="!application.split">{{application.url}}</td>
+            <td ng-if="application.split" class="column-split-apk"><span class="configuration-hint">arm64:</span>&nbsp;&nbsp;
+                <span ng-if="application.urlArm64">{{application.urlArm64}}</span>
+                <span class="warning-font" ng-if="!application.urlArm64" localized>form.configuration.apps.no.apk</span><br>
+                <span class="configuration-hint">armeabi:</span>
+                <span ng-if="application.urlArmeabi">{{application.urlArmeabi}}</span>
+                <span class="warning-font" ng-if="!application.urlArmeabi" localized>form.configuration.apps.no.apk</span>
             <td>{{application.showIcon ? '+' : ''}}</td>
 
             <td>

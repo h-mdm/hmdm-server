@@ -44,6 +44,15 @@ public class ApplicationVersion implements Serializable {
     @ApiModelProperty("An URL for application package")
     private String url;
 
+    @ApiModelProperty("Has the APK native code, i.e. is split into two APKs")
+    private boolean split;
+
+    @ApiModelProperty("An URL for armeabi APK")
+    private String urlArmeabi;
+
+    @ApiModelProperty("An URL for arm64 APK")
+    private String urlArm64;
+
     @ApiModelProperty(hidden = true)
     private boolean deletionProhibited;
 
@@ -77,7 +86,15 @@ public class ApplicationVersion implements Serializable {
     public ApplicationVersion(Application application) {
         this.applicationId = application.getId();
         this.version = application.getVersion();
-        this.url = application.getUrl();
+        if (application.getArch() == null) {
+            this.url = application.getUrl();
+        } else if (application.getArch().equals(Application.ARCH_ARMEABI)) {
+            this.split = true;
+            this.urlArmeabi = application.getUrl();
+        } else if (application.getArch().equals(Application.ARCH_ARM64)) {
+            this.split = true;
+            this.urlArm64 = application.getUrl();
+        }
     }
 
 
@@ -112,6 +129,30 @@ public class ApplicationVersion implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isSplit() {
+        return split;
+    }
+
+    public void setSplit(boolean split) {
+        this.split = split;
+    }
+
+    public String getUrlArmeabi() {
+        return urlArmeabi;
+    }
+
+    public void setUrlArmeabi(String urlArmeabi) {
+        this.urlArmeabi = urlArmeabi;
+    }
+
+    public String getUrlArm64() {
+        return urlArm64;
+    }
+
+    public void setUrlArm64(String urlArm64) {
+        this.urlArm64 = urlArm64;
     }
 
     public boolean isDeletionProhibited() {

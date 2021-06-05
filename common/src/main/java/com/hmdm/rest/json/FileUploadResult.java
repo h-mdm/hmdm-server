@@ -50,6 +50,16 @@ public class FileUploadResult implements Serializable {
     private Application application;
 
     /**
+     * <p>True if both CPU architectures are uploaded or for universal APK.</p>
+     */
+    private Boolean complete;
+
+    /**
+     * <p>True if version already exists.</p>
+     */
+    private Boolean exists;
+
+    /**
      * <p>Constructs new <code>FileUploadResult</code> instance. This implementation does nothing.</p>
      */
     public FileUploadResult() {
@@ -79,12 +89,30 @@ public class FileUploadResult implements Serializable {
         return application;
     }
 
+    public Boolean getComplete() {
+        return complete;
+    }
+
+    public void setComplete(Boolean complete) {
+        this.complete = complete;
+    }
+
+    public Boolean getExists() {
+        return exists;
+    }
+
+    public void setExists(Boolean exists) {
+        this.exists = exists;
+    }
+
     @Override
     public String toString() {
         return "FileUploadResult{" +
                 "serverPath='" + serverPath + '\'' +
                 ", fileDetails=" + fileDetails +
                 ", application=" + application +
+                ", complete=" + complete +
+                ", exists=" + exists +
                 '}';
     }
 }

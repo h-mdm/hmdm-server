@@ -64,6 +64,12 @@ angular.module('headwind-kiosk')
             }
         };
 
+        $scope.addConfiguration = function() {
+            confirmModal.getUserConfirmation(localization.localize('configuration.add.warning'), function () {
+                $scope.editConfiguration({});
+            });
+        };
+
         $scope.editConfiguration = function (configuration) {
 
             // $state.goNewTab('configEditor', {"id": configuration.id, "typical": $scope.isTypical});
@@ -88,7 +94,9 @@ angular.module('headwind-kiosk')
         };
 
         $scope.removeConfiguration = function (configuration) {
-            let localizedText = localization.localize('question.delete.configuration').replace('${configurationName}', configuration.name);
+            let localizedText = $scope.configurations.length > 1 ?
+                localization.localize('question.delete.configuration').replace('${configurationName}', configuration.name) :
+                localization.localize('configuration.remove.warning');
             confirmModal.getUserConfirmation(localizedText, function () {
                 configurationService.removeConfiguration({id: configuration.id}, function (response) {
                     if (response.status === 'OK') {
@@ -335,6 +343,19 @@ angular.module('headwind-kiosk')
 
                 return (item.name && item.name.toLowerCase().indexOf(filter) >= 0)
                     || (item.type === 'app' && item.pkg && item.pkg.toLowerCase().indexOf(filter) >= 0);
+            };
+
+            $scope.splitApkWarning = function(application) {
+                if (application.type != 'app') {
+                    return null;
+                }
+                if (application.split && application.urlArmeabi && !application.urlArm64) {
+                    return localization.localize('form.application.arch.warning').replace('${arch}', "armeabi-v7a");
+                }
+                if (application.split && !application.urlArmeabi && application.urlArm64) {
+                    return localization.localize('form.application.arch.warning').replace('${arch}', "arm64-v8a");
+                }
+                return null;
             };
 
             $scope.checkNetworkState = function() {
@@ -1220,7 +1241,9 @@ angular.module('headwind-kiosk')
             var contentAppSelected = false;
             var allApplications;
 
-            $scope.configuration = {};
+            $scope.configuration = {
+                defaultFilePath: "/"
+            };
             $scope.isTypical = ($stateParams.typical === 'true');
             $scope.saved = false;
             $scope.showSystemApps = true;

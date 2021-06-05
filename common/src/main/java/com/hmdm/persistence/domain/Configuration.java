@@ -112,6 +112,8 @@ public class Configuration implements CustomerData, Serializable {
     private String newServerUrl;
     @ApiModelProperty("Flag disabling safe settings")
     private Boolean lockSafeSettings;
+    @ApiModelProperty("Show WiFi settings if there's a connection error, also in Kiosk mode")
+    private Boolean showWifi;
 
     // This group of settings corresponds to MDM settings
     @ApiModelProperty("A package ID for main application")
@@ -654,6 +656,14 @@ public class Configuration implements CustomerData, Serializable {
         this.lockSafeSettings = lockSafeSettings;
     }
 
+    public Boolean getShowWifi() {
+        return showWifi;
+    }
+
+    public void setShowWifi(Boolean showWifi) {
+        this.showWifi = showWifi;
+    }
+
     public List<ConfigurationFile> getFiles() {
         return files;
     }
@@ -732,6 +742,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setAllowedClasses(getAllowedClasses());
         copy.setNewServerUrl(getNewServerUrl());
         copy.setLockSafeSettings(getLockSafeSettings());
+        copy.setShowWifi(getShowWifi());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());
         copy.setBackgroundColor(getBackgroundColor());

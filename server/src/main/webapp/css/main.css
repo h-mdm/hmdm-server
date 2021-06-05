@@ -2088,8 +2088,16 @@ td.app-desc span {
     color: lightgrey;
 }
 
+.device-data-mismatch, .success-font {
+    color: green;
+}
+
 .device-data-mismatch, .warning-font {
     color: red;
+}
+
+.column-split-apk, .column-split-apk span {
+    font-size: 13px;
 }
 
 .customer-new {

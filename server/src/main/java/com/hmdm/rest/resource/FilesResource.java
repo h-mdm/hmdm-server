@@ -27,9 +27,11 @@ import javax.inject.Named;
 
 import com.hmdm.persistence.ConfigurationFileDAO;
 import com.hmdm.persistence.IconDAO;
+import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.FileUploadResult;
 import com.hmdm.util.APKFileAnalyzer;
+import com.hmdm.util.StringUtil;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -58,6 +60,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.ResponseHeader;
 import org.apache.poi.util.IOUtils;
+import org.reflections.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.ApplicationDAO;
@@ -252,6 +255,21 @@ public class FilesResource {
                 final APKFileDetails apkFileDetails;
                 apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
                 result.setFileDetails(apkFileDetails);
+
+                ApplicationVersion version = this.applicationDAO.findApplicationVersion(apkFileDetails.getPkg(), apkFileDetails.getVersion());
+                if (StringUtil.isEmpty(apkFileDetails.getArch())){
+                    if (version != null) {
+                        result.setExists(true);
+                    }
+                } else if (apkFileDetails.getArch().equals(Application.ARCH_ARMEABI)) {
+                    // If version for arm64 is already uploaded, set the complete flag
+                    result.setComplete(version != null && !StringUtil.isEmpty(version.getUrlArm64()));
+                    // Check if version is already uploaded
+                    result.setExists(version != null && (!version.isSplit() || !StringUtil.isEmpty(version.getUrlArmeabi())));
+                } else if (apkFileDetails.getArch().equals(Application.ARCH_ARM64)) {
+                    result.setComplete(version != null && !StringUtil.isEmpty(version.getUrlArmeabi()));
+                    result.setExists(version != null && (!version.isSplit() || !StringUtil.isEmpty(version.getUrlArm64())));
+                }
 
                 final List<Application> dbAppsByPkg = this.applicationDAO.findByPackageId(apkFileDetails.getPkg());
                 if (!dbAppsByPkg.isEmpty()) {

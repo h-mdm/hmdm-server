@@ -45,10 +45,9 @@ import com.hmdm.rest.json.ApplicationVersionConfigurationLink;
 import com.hmdm.rest.json.LinkConfigurationsToAppRequest;
 import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
 import com.hmdm.rest.json.LookupItem;
-import com.hmdm.util.APKFileAnalyzer;
-import com.hmdm.util.ApplicationUtil;
-import com.hmdm.util.FileExistsException;
+import com.hmdm.util.*;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.glassfish.jersey.jaxb.internal.XmlJaxbElementProvider;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +56,6 @@ import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import com.hmdm.util.FileUtil;
 
 import javax.validation.constraints.NotNull;
 
@@ -133,6 +131,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
                 application.setPkg(apkFileDetails.getPkg());
                 application.setVersion(apkFileDetails.getVersion());
+                application.setArch(apkFileDetails.getArch());
             } else {
                 log.error("Could not move the uploaded .apk-file {}", filePath);
                 throw new DAOException("Could not move the uploaded .apk-file");
@@ -536,6 +535,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         return this.mapper.findVersionById(id);
     }
 
+    public ApplicationVersion findApplicationVersion(String pkg, String version) {
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> this.mapper.findApplicationVersion(u.getCustomerId(), pkg, version))
+                .orElse(null);
+    }
+
     public List<Application> getAllAdminApplications() {
         if (SecurityContext.get().isSuperAdmin()) {
             return this.mapper.getAllAdminApplications();
@@ -820,7 +826,17 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 // If URL is not specified explicitly for new app then set the application URL to reference to that
                 // file
                 if ((applicationVersion.getUrl() == null || applicationVersion.getUrl().trim().isEmpty())) {
-                    applicationVersion.setUrl(this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName());
+                    String url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName();
+                    if (StringUtil.isEmpty(apkFileDetails.getArch())) {
+                        applicationVersion.setSplit(false);
+                        applicationVersion.setUrl(url);
+                    } else if (apkFileDetails.getArch().equals(Application.ARCH_ARMEABI)) {
+                        applicationVersion.setSplit(true);
+                        applicationVersion.setUrlArmeabi(url);
+                    } else if (apkFileDetails.getArch().equals(Application.ARCH_ARM64)) {
+                        applicationVersion.setSplit(true);
+                        applicationVersion.setUrlArm64(url);
+                    }
                 }
 
                 applicationVersion.setVersion(apkFileDetails.getVersion());
@@ -857,6 +873,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         int duplicateVersionId = getDuplicateAppVersion(existingApplication, applicationVersion);
         if (duplicateVersionId > 0) {
             applicationVersion.setId(duplicateVersionId);
+            ApplicationVersion existingVersion = this.mapper.findVersionById(duplicateVersionId);
+            // If a user added APK for another architecture, keep previous architecture
+            if (applicationVersion.isSplit()) {
+                if (StringUtil.isEmpty(applicationVersion.getUrlArmeabi())) {
+                    applicationVersion.setUrlArmeabi(existingVersion.getUrlArmeabi());
+                }
+                if (StringUtil.isEmpty(applicationVersion.getUrlArm64())) {
+                    applicationVersion.setUrlArmeabi(existingVersion.getUrlArm64());
+                }
+            }
             this.mapper.updateApplicationVersion(applicationVersion);
         } else {
             this.mapper.insertApplicationVersion(applicationVersion);

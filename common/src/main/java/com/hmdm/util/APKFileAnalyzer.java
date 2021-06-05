@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javax.inject.Named;
 import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.APKFileDetails;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -94,6 +95,7 @@ public class APKFileAnalyzer {
 
             final AtomicReference<String> appPkg = new AtomicReference<>();
             final AtomicReference<String> appVersion = new AtomicReference<>();
+            final AtomicReference<String> appArch = new AtomicReference<>();
             final List<String> errorLines = new ArrayList<>();
 
             // Process the error stream by collecting all the error lines for further logging
@@ -108,6 +110,9 @@ public class APKFileAnalyzer {
                         log.warn("Failed to parse aapt output: '" + line + "', trying legacy parser");
                         parseInfoLineLegacy(line, appPkg, appVersion);
                     }
+                } else if (line.startsWith("native-code:")) {
+                    // This is an optional line, so do not care for errors
+                    parseNativeCodeLine(line, appArch);
                 }
             });
 
@@ -126,6 +131,7 @@ public class APKFileAnalyzer {
 
                 result.setPkg(appPkg.get());
                 result.setVersion(appVersion.get());
+                result.setArch(appArch.get());
 
                 return result;
             } else {
@@ -204,6 +210,18 @@ public class APKFileAnalyzer {
         }
     }
 
+    // Parse a line containing the native code CPU architecture
+    // It presumes the following format of the line:
+    // native-code: 'xxxxx'
+    private void parseNativeCodeLine(final String line, final AtomicReference<String> appArch) {
+        if (line.indexOf("armeabi-v7a") != -1) {
+            appArch.set(Application.ARCH_ARMEABI);
+        } else if (line.indexOf("arm64-v8a") != -1) {
+            appArch.set(Application.ARCH_ARM64);
+        }
+    }
+
+
     /**
      * <p>A consumer for the stream contents. Outputs the line read from the stream and passes it to provided line
      * consumer.</p>
@@ -273,6 +291,17 @@ public class APKFileAnalyzer {
         APKFileDetails fileDetails = new APKFileDetails();
         fileDetails.setPkg(jsonObject.getString("package_name"));
         fileDetails.setVersion(jsonObject.getString("version_name"));
+
+        // XAPK manifest doesn't contain data about the native code
+        // So we try to guess it by searching the keywords
+        boolean hasArm64 = manifest.contains("arm64");
+        boolean hasArmeabi = manifest.contains("armeabi");
+        if (hasArm64 && !hasArmeabi) {
+            fileDetails.setArch(Application.ARCH_ARM64);
+        } else if (hasArmeabi && !hasArm64) {
+            fileDetails.setArch(Application.ARCH_ARMEABI);
+        }
+
         return fileDetails;
     }
 }

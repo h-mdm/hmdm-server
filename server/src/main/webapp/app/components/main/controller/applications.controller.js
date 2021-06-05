@@ -142,6 +142,8 @@ angular.module('headwind-kiosk')
             $scope.application.iconId = -1;
         }
 
+        $scope.appdesc = {};
+
         $scope.icons = [{id: -1, name: localization.localize("form.application.icon.default")}];
 
         const loadIcons = function (callback) {
@@ -204,7 +206,22 @@ angular.module('headwind-kiosk')
                     if (response.data.data.fileDetails) {
                         var fileDetails = response.data.data.fileDetails;
                         $scope.application.pkg = fileDetails.pkg;
+                        $scope.appdesc.pkg = fileDetails.pkg + " - " + localization.localize("form.application.from.file");
                         $scope.application.version = fileDetails.version;
+                        $scope.appdesc.version = fileDetails.version + " - " + localization.localize("form.application.from.file");
+                        $scope.application.arch = fileDetails.arch;
+
+                        $scope.appTypeWarning = null;
+                        $scope.appTypeSuccess = null;
+                        $scope.complete = null;
+                        if (response.data.data.exists) {
+                            $scope.appTypeWarning = localization.localize('form.application.version.exists');
+                        } else if (response.data.data.complete) {
+                            $scope.appTypeSuccess = localization.localize('form.application.arch.success');
+                            $scope.complete = true;
+                        } else if (fileDetails.arch) {
+                            $scope.appTypeWarning = localization.localize('form.application.arch.warning').replace('${arch}', fileDetails.arch);
+                        }
                     }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
@@ -356,7 +373,8 @@ angular.module('headwind-kiosk')
                     var existingAppsForPkg = response.data;
                     if (existingAppsForPkg.length > 0 && (!request.id || request.pkg !== $scope.application.pkg)) {
                         if (existingAppsForPkg.length != 1 ||
-                            existingAppsForPkg[0].version >= request.version ||
+                            existingAppsForPkg[0].version > request.version ||
+                            (existingAppsForPkg[0].version == request.version && !$scope.complete) ||       // Do not confirm if upload different architectures
                             existingAppsForPkg[0].name != request.name) {
                             // If the user change the name, he may decide to create a new app
                             // Also, let him choose the proper option if there are multiple apps with the same package ID
@@ -626,9 +644,26 @@ angular.module('headwind-kiosk')
             alertService.showAlertMessage(localization.localize('common.app.clarification'));
         };
 
+        $scope.addApplicationVersion = function (applicationVersion) {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/main/view/modal/applicationVersionAdd.html',
+                controller: 'ApplicationVersionModalController',
+                resolve: {
+                    applicationVersion: function () {
+                        return applicationVersion;
+                    },
+                    isControlPanel: function () {
+                        return false;
+                    }
+                }
+            });
+
+            modalInstance.result.then($scope.search, $scope.search);
+        };
+
         $scope.editApplicationVersion = function (applicationVersion) {
             var modalInstance = $modal.open({
-                templateUrl: 'app/components/main/view/modal/applicationVersion.html',
+                templateUrl: 'app/components/main/view/modal/applicationVersionEdit.html',
                 controller: 'ApplicationVersionModalController',
                 resolve: {
                     applicationVersion: function () {
@@ -706,6 +741,7 @@ angular.module('headwind-kiosk')
             $scope.errorMessage = undefined;
             $scope.successMessage = undefined;
             $scope.fileSelected = false;
+            $scope.appdesc = {};
 
             $scope.loading = false;
 
@@ -725,6 +761,20 @@ angular.module('headwind-kiosk')
                         var fileDetails = response.data.data.fileDetails;
                         $scope.application.pkg = fileDetails.pkg;
                         $scope.application.version = fileDetails.version;
+                        $scope.application.arch = fileDetails.arch;
+                        $scope.appdesc.version = fileDetails.version + " - " + localization.localize("form.application.from.file");
+
+                        $scope.appTypeWarning = null;
+                        $scope.appTypeSuccess = null;
+                        $scope.complete = null;
+                        if (response.data.data.exists) {
+                            $scope.appTypeWarning = localization.localize('form.application.version.exists');
+                        } else if (response.data.data.complete) {
+                            $scope.appTypeSuccess = localization.localize('form.application.arch.success');
+                            $scope.complete = true;
+                        } else if (fileDetails.arch) {
+                            $scope.appTypeWarning = localization.localize('form.application.arch.warning').replace('${arch}', fileDetails.arch);
+                        }
                     }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;

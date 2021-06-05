@@ -105,6 +105,7 @@ public class SyncResource {
     private String hashSecret;
 
     private static final String HEADER_IP_ADDRESS = "X-IP-Address";
+    private static final String HEADER_CPU_ARCH = "X-CPU-Arch";
     private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
     private static final String HEADER_RESPONSE_SIGNATURE = "X-Response-Signature";
 
@@ -254,6 +255,15 @@ public class SyncResource {
 
         final Customer customer = this.customerDAO.findById(dbDevice.getCustomerId());
 
+        String cpuArch = request.getHeader(HEADER_CPU_ARCH);
+        if (cpuArch == null) {
+            // Default
+            cpuArch = Application.ARCH_ARM64;
+        } else {
+            // Remove version: armeabi-v7a -> armeabi
+            cpuArch = cpuArch.substring(0, cpuArch.indexOf('-'));
+        }
+
         Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());
         final List<Application> applications = this.unsecureDAO.getPlainConfigurationApplications(
                 dbDevice.getCustomerId(), dbDevice.getConfigurationId()
@@ -267,6 +277,13 @@ public class SyncResource {
                             URLEncoder.encode(customer.getFilesDir(), "UTF8"),
                             URLEncoder.encode(icon, "UTF8"));
                     app.setIcon(iconUrl);
+                }
+            }
+            if (app.isSplit()) {
+                if (cpuArch.equals(Application.ARCH_ARM64)) {
+                    app.setUrl(app.getUrlArm64());
+                } else if (cpuArch.equals(Application.ARCH_ARMEABI)) {
+                    app.setUrl(app.getUrlArmeabi());
                 }
             }
         }
@@ -316,6 +333,7 @@ public class SyncResource {
         data.setAllowedClasses(configuration.getAllowedClasses());
         data.setNewServerUrl(configuration.getNewServerUrl());
         data.setLockSafeSettings(configuration.getLockSafeSettings());
+        data.setShowWifi(configuration.getShowWifi());
 
         data.setKioskMode(configuration.isKioskMode());
         if (data.isKioskMode()) {

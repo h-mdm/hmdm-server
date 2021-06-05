@@ -41,6 +41,7 @@ public interface ApplicationMapper {
     String SELECT_BASE =
             "SELECT applications.*, customers.name AS customerName, customers.master AS commonApplication, " +
                     "applicationVersions.version, applicationVersions.url," +
+                    "applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64," +
                     "applications.latestVersion AS usedVersionId, " +
                     "(usageData.usageCount > 0) AS deletionProhibited " +
             "FROM applications " +
@@ -54,6 +55,7 @@ public interface ApplicationMapper {
     String SELECT_BY_VERSION_BASE =
             "SELECT applications.*, customers.name AS customerName, customers.master AS commonApplication, " +
                     "applicationVersions.version, applicationVersions.url, " +
+                    "applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64," +
                     "applications.latestVersion AS usedVersionId, " +
                     "(usageData.usageCount > 0) AS deletionProhibited " +
                     "FROM applicationVersions " +
@@ -70,6 +72,9 @@ public interface ApplicationMapper {
                     "applicationVersions.applicationId, " +
                     "applicationVersions.version, " +
                     "applicationVersions.url, " +
+                    "applicationVersions.split, " +
+                    "applicationVersions.urlArmeabi, " +
+                    "applicationVersions.urlArm64, " +
                     "applicationVersions.apkHash, " +
                     "(usageData.usageCount > 0 OR versionsData.appVersionsCount = 1) AS deletionProhibited, " +
                     "customers.master AS commonApplication," +
@@ -130,14 +135,10 @@ public interface ApplicationMapper {
     @SelectKey( statement = "SELECT currval('applications_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertApplication(Application application);
 
-    @Insert({"INSERT INTO applicationVersions (applicationId, version, url) " +
-            "VALUES (#{applicationId}, #{version}, #{url})"})
+    @Insert({"INSERT INTO applicationVersions (applicationId, version, url, apkHash, split, urlArmeabi, urlArm64) " +
+            "VALUES (#{applicationId}, #{version}, #{url}, #{apkHash}, #{split}, #{urlArmeabi}, #{urlArm64})"})
     @SelectKey( statement = "SELECT currval('applicationVersions_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     int insertApplicationVersion(ApplicationVersion version);
-
-//    @Update("UPDATE applications SET latestVersion = #{applicationVersionId} WHERE id = #{applicationId}")
-//    void updateApplicationLatestVersion(@Param("applicationId") int applicationId,
-//                                        @Param("applicationVersionId") int applicationVersionId);
 
     @Update({"UPDATE applications SET name=#{name}, pkg=#{pkg}, " +
             "showIcon=#{showIcon}, useKiosk=#{useKiosk}, system=#{system}, customerId=#{customerId}, " +
@@ -146,7 +147,8 @@ public interface ApplicationMapper {
             "WHERE id=#{id}"})
     void updateApplication(Application application);
 
-    @Update({"UPDATE applicationVersions SET version = #{version}, url = #{url}, apkHash = #{apkHash} " +
+    @Update({"UPDATE applicationVersions SET version = #{version}, url = #{url}, apkHash = #{apkHash}, " +
+            "split = #{split}, urlArmeabi = #{urlArmeabi}, urlArm64 = #{urlArm64} " +
             "WHERE id=#{id}"})
     void updateApplicationVersion(ApplicationVersion applicationVersion);
 
@@ -176,31 +178,6 @@ public interface ApplicationMapper {
             "ORDER BY LOWER(configurations.name)"})
     List<ApplicationConfigurationLink> getApplicationConfigurations(@Param("customerId") Integer customerId,
                                                                     @Param("id") Integer applicationId);
-
-//    @Select({"SELECT configurationApplications.id       AS id, " +
-//            "       configurations.id                  AS configurationId, " +
-//            "       configurations.name                AS configurationName, " +
-//            "       configurations.customerId          AS customerId, " +
-//            "       applications.id                    AS applicationId, " +
-//            "       applications.name                  AS applicationName, " +
-//            "       configurationApplications.showIcon AS showIcon, " +
-//            "       applications.useKiosk              AS useKiosk, " +
-//            "       applications.id                    AS applicationVersionId, " +
-//            "       applications.id                    AS versionText, " +
-//            "       configurationApplications.remove   AS remove, " +
-//            "       CASE " +
-//            "           WHEN configurationApplications.applicationId IS NOT NULL AND configurationApplications.remove = TRUE THEN 2 " +
-//            "           WHEN configurationApplications.applicationId IS NOT NULL AND configurationApplications.remove = FALSE THEN 1 " +
-//            "           ELSE 0 " +
-//            "       END AS action " +
-//            "FROM configurations " +
-//            "INNER JOIN configurationApplications ON configurations.id = configurationApplications.configurationId " +
-//            "INNER JOIN applicationVersions ON  applicationVersions.id = configurationApplications.applicationVersionId " +
-//            "INNER JOIN applications ON applications.id = applicationVersions.applicationId " +
-//            "WHERE configurations.customerId = #{customerId} AND applicationVersions.id = #{id} " +
-//            "ORDER BY LOWER(configurations.name)"})
-//    List<ApplicationVersionConfigurationLink> getApplicationVersionConfigurations(@Param("customerId") Integer customerId,
-//                                                                                  @Param("id") Integer applicationVersionId);
 
     @Select({"SELECT configurationApplications.id       AS id, " +
             "       configurations.id                  AS configurationId, " +
@@ -285,12 +262,6 @@ public interface ApplicationMapper {
             "WHERE pkg = #{pkg}"})
     List<Application> findAllByPackageId(@Param("pkg") String pkg);
 
-//    @Select({SELECT_BY_VERSION_BASE +
-//            "WHERE pkg = #{pkg} " +
-//            "AND applicationVersions.version=#{version}"})
-//    List<Application> findAllByPackageIdAndVersion(@Param("pkg") String pkg,
-//                                                   @Param("version") String version);
-
     @Select({SELECT_BASE +
             "WHERE applications.id = #{id}"})
     Application findById(@Param("id") int id);
@@ -327,6 +298,13 @@ public interface ApplicationMapper {
             "WHERE applicationVersions.applicationId=#{id} " +
             "ORDER BY mdm_app_version_comparison_index(applicationVersions.version) DESC")
     List<ApplicationVersion> getApplicationVersions(@Param("id") Integer applicationId);
+
+    @Select(SELECT_VERSION_BASE +
+            "WHERE (customerId = #{customerId} OR customers.master = TRUE) " +
+            "AND applications.pkg=#{pkg} AND applicationVersions.version=#{version} LIMIT 1")
+    ApplicationVersion findApplicationVersion(@Param("customerId") int customerId,
+                                              @Param("pkg") String pkg,
+                                              @Param("version") String version);
 
     @Select("SELECT COUNT(*) > 0 " +
             "FROM configurationApplications " +

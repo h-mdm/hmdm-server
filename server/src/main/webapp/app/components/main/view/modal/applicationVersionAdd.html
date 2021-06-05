@@ -8,17 +8,28 @@
 <div class='modal-body'>
     <form class='form-horizontal'>
 
-        <div class='form-group' ng-if="!fileSelected && !isWebType">
+        <div class='form-group' ng-if="!isWebType">
             <label class='col-sm-4 control-label' localized>form.application.version</label>
             <div class='col-sm-8'>
-                <input ng-model='application.version' type='text' class='form-control'>
+                <input ng-model='application.version' type='text' class='form-control' ng-if="!fileSelected">
+                <input disabled type='text' class='form-control' id="applicationVersion2"
+                       ng-model='appdesc.version' ng-if="fileSelected"/>
             </div>
         </div>
 
-        <div class='form-group' ng-if="fileSelected && !isWebType">
-            <label class='col-sm-4 control-label' localized>form.application.version</label>
+        <div class='form-group' ng-if="!isWebType">
+            <label class='col-sm-4 control-label' for="applicationArch" localized>form.application.arch</label>
             <div class='col-sm-8'>
-                <input disabled type='text' class='form-control' localized-placeholder="form.application.from.file">
+                <select class="form-control" ng-model='application.arch' id="applicationArch">
+                    <option ng-value="''" ng-selected="application.arch === null || application.arch === ''"
+                            localized>form.application.arch.universal</option>
+                    <option ng-value="'armeabi'" ng-selected="application.arch === 'armeabi'"
+                            localized>form.application.arch.armeabi</option>
+                    <option ng-value="'arm64'" ng-selected="application.arch === 'arm64'"
+                            localized>form.application.arch.arm64</option>
+                </select>
+                <div class="field-hint warning-font" ng-show="appTypeWarning">{{appTypeWarning}}</div>
+                <div class="field-hint success-font" ng-show="appTypeSuccess">{{appTypeSuccess}}</div>
             </div>
         </div>
 
@@ -30,7 +41,7 @@
             </div>
         </div>
 
-        <div class='form-group' ng-if="isNewApp && !isWebType">
+        <div class='form-group' ng-if="!isWebType">
             <label class='col-sm-4 control-label' localized>form.application.file</label>
             <div class='col-sm-8'>
                 <div class="btn btn-default full-width btn-upload" ng-if="!file.path"
@@ -48,8 +59,6 @@
             <div class='col-sm-offset-4 col-sm-8'>
                 <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="loading" localized>button.save</button>
                 <button type='button' class='btn btn-default' ng-click='closeModal()' ng-disabled="loading" localized >button.cancel</button>
-                <button type='button' class='btn btn-default' ng-click='manageConfigurations()' ng-disabled="loading"
-                        ng-if="!isNewApp" localized>button.configurations</button>
             </div>
         </div>
     </form>

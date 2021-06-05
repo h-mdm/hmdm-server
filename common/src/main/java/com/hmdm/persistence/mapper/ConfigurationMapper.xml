@@ -30,7 +30,7 @@
                                     pushOptions, keepaliveTime, autoBrightness, brightness, manageTimeout, timeout,
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
                                     runDefaultLauncher, disableScreenshots, timeZone, allowedClasses, newServerUrl,
-                                    lockSafeSettings, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
+                                    lockSafeSettings, showWifi, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
                                     wifiSSID, wifiPassword, wifiSecurityType, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo, defaultFilePath)
@@ -40,7 +40,7 @@
                 #{pushOptions}, #{keepaliveTime}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout},
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
                 #{runDefaultLauncher}, #{disableScreenshots}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
-                #{lockSafeSettings}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
+                #{lockSafeSettings}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
                 #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{kioskHome}, #{kioskRecents},
                                     #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo}, #{defaultFilePath})
@@ -91,6 +91,7 @@
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId,
                applicationVersions.version, applicationVersions.url,
+               applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
                applications.latestVersion,
@@ -133,6 +134,7 @@
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
                applicationVersions.version, applicationVersions.url,
+               applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
                applications.latestVersion,

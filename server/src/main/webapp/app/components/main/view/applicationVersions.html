@@ -13,7 +13,7 @@
         <div class='col-sm-offset-10 text-right'>
             <button type='button' class='btn btn-default'
                     ng-disabled="application.commonApplication && !authService.isSuperAdmin()"
-                    ng-click='editApplicationVersion( {system: application.system, applicationId: application.id} )'
+                    ng-click='addApplicationVersion( {system: application.system, applicationId: application.id, arch: null} )'
                     localized>button.add</button>
         </div>
     </div>
@@ -40,7 +40,13 @@
         <tbody>
         <tr ng-repeat='application in applications.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
             <td>{{application.version}}</td>
-            <td>{{application.url}}</td>
+            <td ng-if="!application.split">{{application.url}}</td>
+            <td ng-if="application.split" class="column-split-apk"><span class="configuration-hint">arm64:</span>&nbsp;&nbsp;
+                <span ng-if="application.urlArm64">{{application.urlArm64}}</span>
+                <span class="warning-font" ng-if="!application.urlArm64" localized>form.configuration.apps.no.apk</span><br>
+                <span class="configuration-hint">armeabi:</span>
+                <span ng-if="application.urlArmeabi">{{application.urlArmeabi}}</span>
+                <span class="warning-font" ng-if="!application.urlArmeabi" localized>form.configuration.apps.no.apk</span>
 
             <td>
                 <div>

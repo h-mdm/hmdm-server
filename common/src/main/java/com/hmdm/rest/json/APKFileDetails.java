@@ -43,6 +43,11 @@ public class APKFileDetails implements Serializable {
     private String version;
 
     /**
+     * <p>CPU architecture (null = universal, armeabi or arm64).</p>
+     */
+    private String arch;
+
+    /**
      * <p>Constructs new <code>APKFileDetails</code> instance. This implementation does nothing.</p>
      */
     public APKFileDetails() {
@@ -64,11 +69,20 @@ public class APKFileDetails implements Serializable {
         this.version = version;
     }
 
+    public String getArch() {
+        return arch;
+    }
+
+    public void setArch(String arch) {
+        this.arch = arch;
+    }
+
     @Override
     public String toString() {
         return "APKFileDetails{" +
                 "pkg='" + pkg + '\'' +
                 ", version='" + version + '\'' +
+                ", arch='" + arch + '\'' +
                 '}';
     }
 }

@@ -266,6 +266,7 @@ public class ApplicationResource {
     public Response updateApplicationVersion(ApplicationVersion applicationVersion) {
         try {
             if (applicationVersion.getId() == null) {
+                // Here only "url" is coming, we may need to change it to urlArmeabi or urlArm64 if arch is set
                 this.applicationDAO.insertApplicationVersion(applicationVersion);
                 applicationVersion = this.applicationDAO.findApplicationVersionById(applicationVersion.getId());
                 return Response.OK(applicationVersion);

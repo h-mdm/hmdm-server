@@ -38,6 +38,9 @@ public class Application implements CustomerData, Serializable {
 
     public static final String DEFAULT_LAUNCHER_PACKAGE = "com.hmdm.launcher";
 
+    public static final String ARCH_ARMEABI = "armeabi";
+    public static final String ARCH_ARM64 = "arm64";
+
     @ApiModelProperty("An application ID")
     private Integer id;
     @ApiModelProperty("A name of application")
@@ -46,8 +49,16 @@ public class Application implements CustomerData, Serializable {
     private String pkg;
     @ApiModelProperty("A version of application")
     private String version;
-    @ApiModelProperty("An URL for application package")
+    @ApiModelProperty("CPU architecture (for file transfer only)")
+    private String arch;
+    @ApiModelProperty("An URL for the latest version of the application package")
     private String url;
+    @ApiModelProperty("Has the latest version native code, i.e. is split into two APKs")
+    private boolean split;
+    @ApiModelProperty("An URL for armeabi APK for the latest version")
+    private String urlArmeabi;
+    @ApiModelProperty("An URL for arm64 APK for the latest version")
+    private String urlArm64;
     @ApiModelProperty("A flag indicating if icon is to be shown on mobile device")
     private boolean showIcon;
     @ApiModelProperty("A flag indicating if the web application must run in Kiosk Browser")
@@ -156,12 +167,44 @@ public class Application implements CustomerData, Serializable {
         this.version = version;
     }
 
+    public String getArch() {
+        return arch;
+    }
+
+    public void setArch(String arch) {
+        this.arch = arch;
+    }
+
     public String getUrl() {
         return this.url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isSplit() {
+        return split;
+    }
+
+    public void setSplit(boolean split) {
+        this.split = split;
+    }
+
+    public String getUrlArmeabi() {
+        return urlArmeabi;
+    }
+
+    public void setUrlArmeabi(String urlArmeabi) {
+        this.urlArmeabi = urlArmeabi;
+    }
+
+    public String getUrlArm64() {
+        return urlArm64;
+    }
+
+    public void setUrlArm64(String urlArm64) {
+        this.urlArm64 = urlArm64;
     }
 
     public Integer getId() {
@@ -387,6 +430,9 @@ public class Application implements CustomerData, Serializable {
                 ", pkg='" + pkg + '\'' +
                 ", version='" + version + '\'' +
                 ", url='" + url + '\'' +
+                ", split=" + split +
+                ", urlArmeabi='" + urlArmeabi + '\'' +
+                ", urlArm64='" + urlArm64 + '\'' +
                 ", showIcon=" + showIcon +
                 ", useKiosk=" + useKiosk +
                 ", bottom=" + bottom +

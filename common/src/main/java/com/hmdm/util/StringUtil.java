@@ -59,4 +59,8 @@ public final class StringUtil {
         return text.replace("\\", "\\\\")
                 .replace("\"", "\\\"");
     }
+
+    public static boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
 }
