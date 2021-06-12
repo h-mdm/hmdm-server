@@ -66,9 +66,10 @@ INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestver
     (54, 'com.miui.global.packageinstaller', 'MIUI Инсталлятор пакетов', false, 1, true, 10053, false),
     (55, 'com.miui.msa.global', 'MIUI Менеджер разрешений', false, 1, true, 10054, false),
     (56, 'com.miui.securitycenter', 'MIUI Центр безопасности', false, 1, true, 10055, false),
-    (57, 'com.xiaomi.discover', 'Xiaomi Обновления', false, 1, true, 10056, false);
+    (57, 'com.xiaomi.discover', 'Xiaomi Обновления', false, 1, true, 10056, false),
+    (58, 'com.google.android.permissioncontroller', 'Контроллер разрешений', false, 1, true, 10057, false);
 
-SELECT pg_catalog.setval('public.applications_id_seq', 57, true);
+SELECT pg_catalog.setval('public.applications_id_seq', 58, true);
 
 INSERT INTO applicationversions (id, applicationid, version, url) VALUES 
     (10000, 1, '0', NULL),
@@ -124,9 +125,10 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10053, 54, '0', NULL),
     (10054, 55, '0', NULL),
     (10055, 56, '0', NULL),
-    (10056, 57, '0', NULL);
+    (10056, 57, '0', NULL),
+    (10057, 58, '0', NULL);
     
-SELECT pg_catalog.setval('public.applicationversions_id_seq', 10056, true);
+SELECT pg_catalog.setval('public.applicationversions_id_seq', 10057, true);
 
 ALTER TABLE applications ADD CONSTRAINT applications_latestversion_fkey FOREIGN KEY (latestversion) REFERENCES applicationversions(id) ON DELETE SET NULL;
 
