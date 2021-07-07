@@ -880,7 +880,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                     applicationVersion.setUrlArmeabi(existingVersion.getUrlArmeabi());
                 }
                 if (StringUtil.isEmpty(applicationVersion.getUrlArm64())) {
-                    applicationVersion.setUrlArmeabi(existingVersion.getUrlArm64());
+                    applicationVersion.setUrlArm64(existingVersion.getUrlArm64());
                 }
             }
             this.mapper.updateApplicationVersion(applicationVersion);

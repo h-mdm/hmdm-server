@@ -216,6 +216,10 @@ public class APKFileAnalyzer {
     private void parseNativeCodeLine(final String line, final AtomicReference<String> appArch) {
         if (line.indexOf("armeabi-v7a") != -1) {
             appArch.set(Application.ARCH_ARMEABI);
+            if (line.indexOf("arm64-v8a") != -1) {
+                // Native code for both architectures present, so it is a universal file
+                appArch.set(null);
+            }
         } else if (line.indexOf("arm64-v8a") != -1) {
             appArch.set(Application.ARCH_ARM64);
         }

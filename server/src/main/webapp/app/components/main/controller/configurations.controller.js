@@ -255,7 +255,7 @@ angular.module('headwind-kiosk')
         ];
 
         $scope.isInstallOptionAvailable = function (application) {
-            return !(application.system || !application.url || application.url.length === 0);
+            return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
         };
         $scope.isRemoveOptionAvailable = function (application) {
             return !application.system;
@@ -458,7 +458,7 @@ angular.module('headwind-kiosk')
             ];
 
             $scope.isInstallOptionAvailable = function (application) {
-                return !(application.system || !application.url || application.url.length === 0);
+                return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
             };
             $scope.isRemoveOptionAvailable = function (application) {
                 return !application.system;

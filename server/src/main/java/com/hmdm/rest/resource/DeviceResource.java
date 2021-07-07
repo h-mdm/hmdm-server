@@ -184,7 +184,13 @@ public class DeviceResource {
                 return Response.PERMISSION_DENIED();
             }
 
-            Device dbDevice = this.deviceDAO.getDeviceByNumber(device.getNumber());
+            Device dbDevice;
+            try {
+                dbDevice = this.deviceDAO.getDeviceByNumber(device.getNumber());
+            } catch (SecurityException e) {
+                log.error("A different device with same number exists in other organization: {}", device.getNumber());
+                return Response.DEVICE_EXISTS();
+            }
             if (dbDevice != null && !dbDevice.getId().equals(device.getId())) {
                 log.error("A different device with same number exists: {}", dbDevice);
                 return Response.DEVICE_EXISTS();
@@ -204,8 +210,8 @@ public class DeviceResource {
                     // This is a bulk request to update configurations for selected devices
                     Iterator it = device.getIds().iterator();
 
-                    while(it.hasNext()) {
-                        Integer id = (Integer)it.next();
+                    while (it.hasNext()) {
+                        Integer id = (Integer) it.next();
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
                             this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
