@@ -76,6 +76,7 @@ document.localization[ 'ru_RU' ] = {
     'button.hide.password': 'Скрыть пароль',
 
     'question.impersonate.user': 'Войти в приложение от имени администратора организации "${customerName}"?',
+    'question.change.user': 'Войти в приложение от имени пользователя "${userName}"?',
     'question.delete.file': 'Удалить файл "${fileName}"?',
     'question.delete.customer': 'Удалить организацию "${customerName}"?',
     'question.delete.user': 'Удалить пользователя "${username}"?',

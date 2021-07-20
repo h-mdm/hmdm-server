@@ -23,6 +23,8 @@ package com.hmdm.rest.resource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.hmdm.persistence.domain.Customer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,6 +35,9 @@ import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,7 +46,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,6 +57,8 @@ import java.util.stream.Collectors;
 @Singleton
 @Path("/private/users")
 public class UserResource {
+
+    private static final String sessionCredentials = "credentials";
 
     private UserDAO userDAO;
 
@@ -245,6 +254,41 @@ public class UserResource {
         } else {
             return Response.PERMISSION_DENIED();
         }
+    }
+
+    @GET
+    @Path("/impersonate/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(@PathParam("id") Integer id,
+                                        @Context HttpServletRequest req,
+                                        @Context HttpServletResponse res) throws IOException {
+
+        return SecurityContext.get().getCurrentUser().map(u -> {
+            if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                return Response.PERMISSION_DENIED();
+            }
+
+            User user = this.userDAO.getUserDetails(id);
+            if (user == null) {
+                return Response.INTERNAL_ERROR();
+            }
+            if (u.getCustomerId() != user.getCustomerId() && !u.getUserRole().isSuperAdmin()) {
+                return Response.PERMISSION_DENIED();
+            }
+
+            HttpSession session = req.getSession( false );
+            if ( session != null ) {
+                session.invalidate();
+            }
+
+            user.setPassword(null);
+
+            HttpSession userSession = req.getSession(true);
+            userSession.setAttribute( sessionCredentials, user );
+
+            return Response.OK( user );
+
+        }).orElse(Response.PERMISSION_DENIED());
     }
 
     private Response updatePassword(User dbUser, User user) {

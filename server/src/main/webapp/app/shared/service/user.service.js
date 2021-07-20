@@ -15,7 +15,7 @@ angular.module('headwind-kiosk')
             getUserDetails: {url: 'rest/private/users/:id', method: 'GET'},
             getTypes: {url: 'rest/private/users/types', method: 'GET'},
             validate: {url: 'rest/private/users/validate', method: 'POST'},
-            changeToUser: {url: 'rest/private/users/change/:login', method: 'GET'},
+            loginAs: {url: 'rest/private/users/impersonate/:id', method: 'GET'},
 
             getOrganizations: {url: 'rest/private/users/organizations', method: 'GET'},
             createOrganization: {url: 'rest/private/users/organizations', method: 'POST'},

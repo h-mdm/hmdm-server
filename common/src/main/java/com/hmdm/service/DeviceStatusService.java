@@ -102,7 +102,8 @@ public class DeviceStatusService {
 
         configApplications.forEach(configApp -> {
             // Do not test apps without URL (they are mostly system apps) as well as web pages
-            if (configApp.getUrl() == null || configApp.getType() != ApplicationType.app) {
+            if ((configApp.getUrl() == null && configApp.getUrlArm64() == null && configApp.getUrlArmeabi() == null)
+                    || configApp.getType() != ApplicationType.app) {
                 return;
             }
 

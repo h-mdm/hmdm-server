@@ -117,6 +117,10 @@ public class UserDAO extends AbstractDAO<User> {
         return mapper.findAll(id).stream().filter(u -> u.getUserRole().getId() == this.orgAdminRoleId).findFirst().orElse(null);
     }
 
+    public boolean isOrgAdmin(User user) {
+        return user.getUserRole().getId() == this.orgAdminRoleId;
+    }
+
     public List<UserRole> findAllUserRoles() {
         return SecurityContext.get().getCurrentUser()
                 .map(u -> mapper.findAllUserRoles(u.getUserRole().isSuperAdmin()))

@@ -261,7 +261,10 @@ public class SyncResource {
             cpuArch = Application.ARCH_ARM64;
         } else {
             // Remove version: armeabi-v7a -> armeabi
-            cpuArch = cpuArch.substring(0, cpuArch.indexOf('-'));
+            int i = cpuArch.indexOf('-');
+            if (i != -1) {
+                cpuArch = cpuArch.substring(0, i);
+            }
         }
 
         Settings settings = this.unsecureDAO.getSettings(dbDevice.getCustomerId());

@@ -76,6 +76,7 @@ document.localization ['de_DE'] = {
     'button.hide.password': 'Password verbergen',
 
     'question.impersonate.user': 'Melden Sie sich als Administrator der Organisation "${customerName}" bei der Anwendung an?',
+    'question.change.user': 'Melden Sie sich als Benutzer "${userName}" bei der Anwendung an?',
     'question.delete.file': 'Datei "${fileName} löschen"?',
     'question.delete.customer': 'Organisation "${customerName}" löschen?',
     'question.delete.user': 'Benutzer "${username}" löschen?',

@@ -76,6 +76,7 @@ document.localization ['zh_TW'] = {
     'button.hide.password':"隱藏密碼",
 		
     'question.impersonate.user':"以組織\"${customerName}\"的管理員身份登錄到應用程式嗎？",
+    'question.change.user': '以用戶\"${userName}\"的身份登錄應用程序？',
     'question.delete.file' : "要刪除文檔\"${fileName}\"嗎？",
     'question.delete.customer':"刪除組織\"${customerName}\"？",
     'question.delete.user':"刪除用戶\"${username}\"？",

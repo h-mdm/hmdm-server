@@ -76,6 +76,7 @@ document.localization ['es_ES'] = {
     'button.hide.password': 'Ocultar Contraseña',
 
     'question.impersonate.user': 'Ingresar como el administrador de la aplicacion "${customerName}"?',
+    'question.change.user': '¿Iniciar sesión en la aplicación como usuario "${userName}"?',
     'question.delete.file': 'Eliminar archivo "${fileName}"?',
     'question.delete.customer': 'Eliminar organizacion "${customerName}"?',
     'question.delete.user': 'Eliminar usuario "${username}"?',

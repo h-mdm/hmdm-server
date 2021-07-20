@@ -304,8 +304,9 @@ angular.module('headwind-kiosk')
 
             $scope.successMessage = null;
 
+            let sortItem = $window.localStorage.getItem('HMDM_configAppsSortBy');
             $scope.sort = {
-                by: 'name'
+                by: ((sortItem !== null && sortItem !== undefined) ? sortItem : 'name')
             };
 
             $scope.pkgInfoVisible = function (application) {
@@ -477,6 +478,7 @@ angular.module('headwind-kiosk')
                 });
 
             $scope.sortByChanged = function () {
+                $window.localStorage.setItem('HMDM_configAppsSortBy', $scope.sort.by);
                 $scope.paging.currentPage = 1;
             };
 
@@ -573,6 +575,7 @@ angular.module('headwind-kiosk')
 
             $scope.systemAppsToggled = function () {
                 $scope.showSystemApps = !$scope.showSystemApps;
+                $window.localStorage.setItem('HMDM_configShowSystemApps', $scope.showSystemApps);
                 $scope.applications = allApplications.filter(function (app) {
                     return (app.actionChanged || app.action != '0') && (!app.system || $scope.showSystemApps);
                 });
@@ -1246,7 +1249,12 @@ angular.module('headwind-kiosk')
             };
             $scope.isTypical = ($stateParams.typical === 'true');
             $scope.saved = false;
-            $scope.showSystemApps = true;
+            let item = $window.localStorage.getItem('HMDM_configShowSystemApps');
+            if (item !== null && item !== undefined) {
+                $scope.showSystemApps = (item === 'true');
+            } else {
+                $scope.showSystemApps = true;
+            }
 
             var d1 = new Date();
             d1.setHours(0);

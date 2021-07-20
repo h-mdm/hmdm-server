@@ -66,7 +66,17 @@ public class ApplicationView implements Serializable {
 
     @ApiModelProperty("An URL for application package")
     public String getUrl() {
-        return this.application.getUrl();
+        if (this.application.getUrl() != null) {
+            return this.application.getUrl();
+        } else {
+            // URL is used just to check the application status
+            // So for split APKs we return the first non-null URL
+            // If an app is not installed but has at least one APK URL, we treat this as an error
+            if (this.application.getUrlArm64() != null) {
+                return this.application.getUrlArm64();
+            }
+            return this.application.getUrlArmeabi();
+        }
     }
 
     @ApiModelProperty("An application ID")

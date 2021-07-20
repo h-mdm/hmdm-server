@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('UsersTabController', function ($scope, $rootScope, $timeout, userService, $modal, confirmModal,
-                                                alertService, $window, localization) {
+    .controller('UsersTabController', function ($scope, $rootScope, $timeout, $state, userService, $modal, confirmModal,
+                                                alertService, authService, $window, localization) {
 
         $scope.search = {};
 
@@ -64,6 +64,22 @@ angular.module('headwind-kiosk')
                         $scope.search();
                     } else {
                         alertService.showAlertMessage(localization.localize('error.internal.server'));
+                    }
+                });
+            });
+        };
+
+        $scope.loginAs = function (user) {
+            let localizedText = localization.localize('question.change.user').replace('${userName}', user.name);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                userService.loginAs({id: user.id}, function (response) {
+                    if (response.status === 'OK') {
+                        var user = response.data;
+                        authService.update(user);
+                        $state.transitionTo( 'main' );
+                        $rootScope.$emit('aero_USER_AUTHENTICATED');
+                    } else {
+                        alertService.showAlertMessage(localization.localize(response.message));
                     }
                 });
             });

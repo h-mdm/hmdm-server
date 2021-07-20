@@ -457,16 +457,7 @@
 
                                 <div class="text-center"
                                      ng-if="(applications | filter : filterApps).length > paging.pageSize">
-                                    <pagination ng-if="sort.by === 'name'"
-                                                boundary-links='true' class='pagination-sm'
-                                                max-size='3'
-                                                ng-model='paging.currentPage'
-                                                total-items='(applications | filter : filterApps).length'
-                                                items-per-page='paging.pageSize'
-                                                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
-                                                last-text='&raquo;'></pagination>
-                                    <pagination ng-if="sort.by === 'pkg'"
-                                                boundary-links='true' class='pagination-sm'
+                                    <pagination boundary-links='true' class='pagination-sm'
                                                 max-size='3'
                                                 ng-model='paging.currentPage'
                                                 total-items='(applications | filter : filterApps).length'
@@ -476,7 +467,7 @@
                                 </div>
 
                                 <div class='panel-body'>
-                                    <div class="row padding-bottom" ng-init="sort.by = 'name'">
+                                    <div class="row padding-bottom">
                                         <div class="col-sm-2" localized>form.configuration.apps.sort.label</div>
                                         <div class="col-sm-2">
                                             <input id='sort-by-pkg' type="radio" name="sortBy" class='file-checkbox' ng-value="'pkg'"

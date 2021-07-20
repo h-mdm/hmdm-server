@@ -33,7 +33,7 @@
                 <th localized>table.heading.users.login</th>
                 <th localized>table.heading.users.name</th>
                 <th localized>table.heading.users.role</th>
-                <th class='actions-column' localized>table.heading.users.actions</th>
+                <th class='actions-column' style="min-width: 150px" localized>table.heading.users.actions</th>
             </tr>
             </thead>
             <tbody>
@@ -46,6 +46,11 @@
                         <button ng-if="user.editable && !user.superAdmin"
                                 type='button' class='btn btn-default' ng-click='editUser( user )'>
                             <span class='glyphicon glyphicon-pencil'></span>
+                        </button>
+                        <button type='button' ng-if="user.editable && !user.superAdmin"
+                                class='btn btn-default' localized-title="button.login"
+                                ng-click='loginAs( user )'>
+                            <span class='glyphicon glyphicon-copy'></span>
                         </button>
                         <button type='button' ng-if="user.editable && !user.superAdmin"
                                 class='btn btn-default'

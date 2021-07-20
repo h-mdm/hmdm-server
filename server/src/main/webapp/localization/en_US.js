@@ -76,6 +76,7 @@ document.localization ['en_US'] = {
     'button.hide.password': 'Hide password',
 
     'question.impersonate.user': 'Log in to the application as the administrator of the organization "${customerName}"?',
+    'question.change.user': 'Log in to the application as the user "${userName}"?',
     'question.delete.file': 'Delete file "${fileName}"?',
     'question.delete.customer': 'Delete organization "${customerName}"?',
     'question.delete.user': 'Delete user "${username}"?',

@@ -76,6 +76,7 @@ document.localization ['fr_FR'] = {
     'button.hide.password': 'Masquer le mot de passe',
 
 	'question.impersonate.user': 'Connectez-vous à l\'application comme administrateur de l\'organisation "${customerName}"?',
+    'question.change.user': 'Connectez-vous à l\'application en tant qu\'utilisateur "${userName}"?',
     'question.delete.file': 'Supprimer le fichier "${fileName}"?',
     'question.delete.customer': 'Supprimer l\'organisation "${customerName}"?',
     'question.delete.user': 'Supprimer l\'utilisateur "${username}"?',

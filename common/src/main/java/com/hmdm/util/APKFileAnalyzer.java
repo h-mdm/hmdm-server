@@ -146,7 +146,7 @@ public class APKFileAnalyzer {
         }
     }
 
-    // This function deals with an issue when the version name contains a space
+    // This function deals with an issue when the version name contains a space or even an apostrophe
     // It presumes the following format of the line:
     // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx' compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
     private void parseInfoLine(final String line, final AtomicReference<String> appPkg, final AtomicReference<String> appVersion) {
@@ -179,10 +179,10 @@ public class APKFileAnalyzer {
         // appCode.set(l.substring(0, pos));
         l = l.substring(pos + versionNamePrefix.length());
 
-        pos = l.indexOf(sdkVersionPrefix);
+        // Different versions of aapt may give different output
+        pos = l.indexOf(platformBuildPrefix);
         if (pos == -1) {
-            // Different versions of aapt may give different output
-            pos = l.indexOf(platformBuildPrefix);
+            pos = l.indexOf(sdkVersionPrefix);
         }
         if (pos == -1) {
             return;

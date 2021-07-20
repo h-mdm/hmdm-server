@@ -14,10 +14,10 @@ angular.module('headwind-kiosk')
         };
 
         $scope.showMyAppsOnly = {
-            on: ($window.sessionStorage.getItem('HMDM_showMyAppsOnly') === 'true'),
+            on: ($window.localStorage.getItem('HMDM_showMyAppsOnly') === 'true'),
             system: true,
         };
-        let item = $window.sessionStorage.getItem('HMDM_showSystemApps');
+        let item = $window.localStorage.getItem('HMDM_showSystemApps');
         if (item !== null && item !== undefined) {
             $scope.showMyAppsOnly.system = (item === 'true');
         }
@@ -25,12 +25,12 @@ angular.module('headwind-kiosk')
         $scope.myAppsButtonVisible = false;
 
         $scope.showMyAppsOnlyToggled = function () {
-            $window.sessionStorage.setItem('HMDM_showMyAppsOnly', $scope.showMyAppsOnly.on);
+            $window.localStorage.setItem('HMDM_showMyAppsOnly', $scope.showMyAppsOnly.on);
             $scope.init();
         };
 
         $scope.showSystemAppsOnlyToggled = function () {
-            $window.sessionStorage.setItem('HMDM_showSystemApps', $scope.showMyAppsOnly.system);
+            $window.localStorage.setItem('HMDM_showSystemApps', $scope.showMyAppsOnly.system);
             $scope.init();
         };
 

@@ -76,6 +76,7 @@ document.localization ['ar_AE'] = {
     'button.hide.password': 'اخفاء كلمة المرور',
 
     'question.impersonate.user': '؟ "${customerName}" قم بتسجيل الدخول إلى التطبيق كمسؤول عن المؤسسة',
+    'question.change.user': '؟ "${customerName}" قم بتسجيل الدخول إلى التطبيق باسم المستخدم',
     'question.delete.file': '؟ "${fileName}" حذف الملف',
     'question.delete.customer': '؟ "${customerName}" هل تريد حذف المؤسسة',
     'question.delete.user': '؟ "${username}" حذف المستخدم',
