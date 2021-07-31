@@ -34,10 +34,13 @@ angular.module('headwind-kiosk',
         'de_CH': 'de_DE',
         'zh_TW': 'zh_TW',
         'zh_HK': 'zh_TW',
-        'zh_CN': 'zh_CN'
+        'zh_CN': 'zh_CN',
+        'pt': 'pt_PT',
+        'pt_PT': 'pt_PT',
+        'pt_BR': 'pt_PT'
     })
-    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN'])
-    .constant("APP_VERSION", "4.02.1") // Update this value on each commit
+    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN'])
+    .constant("APP_VERSION", "4.03.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {

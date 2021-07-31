@@ -106,10 +106,16 @@
         </div>
 
         <div class='col-sm-7 text-right margin-bottom'>
-            <button type='button' class='btn btn-default' ng-click='initSearch()' localized>button.search</button>
-            <button type='button' ng-if="hasPermission('edit_devices')"
-                    ng-disabled='isNotSelected()'
-                    class='btn btn-default' ng-click='openBulkUpdateModal()' localized>button.set.configuration</button>
+            <button type='button' class='btn btn-default' style="float: left" ng-click='initSearch()' localized>button.search</button>
+            <span class="btn-group dropdown" ng-if="hasPermission('edit_devices')">
+                    <button id="group-actions-button" type="button"
+                            class="btn btn-default dropdown-toggle" ng-disabled='isNotSelected()' localized>button.group.action</button>
+                    <ul class="dropdown-menu dropdown-menu-devices" role="menu">
+                        <li role="menuitem">
+                            <a ng-click="openBulkUpdateModal()" localized>button.set.configuration</a>
+                        </li>
+                    </ul>
+                    </span>
             <button type='button' ng-if="hasPermission('edit_devices')"
                     ng-disabled='commonSettings.deviceLimit > 0 && commonSettings.deviceCount >= commonSettings.deviceLimit'
                     class='btn btn-default' ng-click='editDevice( {} )' localized>button.add</button>

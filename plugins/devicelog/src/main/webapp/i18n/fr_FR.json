@@ -49,8 +49,8 @@
   "table.heading.plugin.devicelog.severity": "Gravité",
   "table.heading.plugin.devicelog.message": "Message",
 
-  "format.date.plugin.devicelog.createTime": "jj/MM/aaaa HH:mm:ss",
-  "format.date.plugin.devicelog.datePicker": "jj-MM-aaaa",
+  "format.date.plugin.devicelog.createTime": "dd/MM/yyyy HH:mm:ss",
+  "format.date.plugin.devicelog.datePicker": "dd-MM-yyyy",
 
   "success.plugin.devicelog.settings.saved": "Paramètres enregistrés avec succès",
   "error.plugin.devicelog.date.range.invalid": "Intervalle de date non valide",
