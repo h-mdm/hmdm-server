@@ -212,11 +212,16 @@ public class QRCodeResource {
                             wifiPasswordEntry = "\"android.app.extra.PROVISIONING_WIFI_PASSWORD\":\"" + configuration.getWifiPassword().trim() + "\",\n";
                         }
 
+                        String mobileEnrollmentEntry = "";
+                        if (configuration.isMobileEnrollment()) {
+                            mobileEnrollmentEntry = "\"android.app.extra.PROVISIONING_USE_MOBILE_DATA\":true,\n";
+                        }
+
                         String s = "{\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
-                                wifiSsidEntry + wifiPasswordEntry +
+                                wifiSsidEntry + wifiPasswordEntry + mobileEnrollmentEntry +
                                 "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
                                 "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +
                                 "\"android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE\": " +

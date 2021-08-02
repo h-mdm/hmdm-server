@@ -2144,4 +2144,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="02.08.21-14:31" author="seva" context="common">
+        <comment>Add mobile entrollment column to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN mobileEnrollment BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN mobileEnrollment;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

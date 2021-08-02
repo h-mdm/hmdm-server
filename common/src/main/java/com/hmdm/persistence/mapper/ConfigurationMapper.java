@@ -95,6 +95,7 @@ public interface ConfigurationMapper {
             "wifiSSID=#{wifiSSID}, " +
             "wifiPassword=#{wifiPassword}, " +
             "wifiSecurityType=#{wifiSecurityType}, " +
+            "mobileEnrollment=#{mobileEnrollment}, " +
             "kioskHome=#{kioskHome}, " +
             "kioskRecents=#{kioskRecents}, " +
             "kioskNotifications=#{kioskNotifications}, " +

@@ -130,6 +130,8 @@ public class Configuration implements CustomerData, Serializable {
     private String wifiPassword;
     @ApiModelProperty("WiFi security type for provisioning: NONE/WPA/WEP/EAP")
     private String wifiSecurityType;
+    @ApiModelProperty("Prefer mobile data for provisioning")
+    private boolean mobileEnrollment;
     @ApiModelProperty("Flag enabling Home button in kiosk mode")
     private Boolean kioskHome;
     @ApiModelProperty("Flag enabling Recents button in kiosk mode")
@@ -390,6 +392,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setWifiSecurityType(String wifiSecurityType) {
         this.wifiSecurityType = wifiSecurityType;
+    }
+
+    public boolean isMobileEnrollment() {
+        return mobileEnrollment;
+    }
+
+    public void setMobileEnrollment(boolean mobileEnrollment) {
+        this.mobileEnrollment = mobileEnrollment;
     }
 
     public Boolean getKioskHome() {
