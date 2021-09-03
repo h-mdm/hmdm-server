@@ -522,7 +522,7 @@
                                                     </a>
                                                     <span class="glyphicon glyphicon-exclamation-sign" style="color:orange" ng-if="application.action == 1 && splitApkWarning(application)" title="{{splitApkWarning(application)}}"></span>
 
-                                                    <span ng-if="application.outdated && application.action == 1"><br>
+                                                    <span ng-if="application.outdated && application.action == 1 && !upgrading"><br>
                                                     <a class="version-management-link version-upgrade-link" ng-click="upgradeApp(application)" localized>button.upgrade</a></span>
 
                                                     <span ng-if="application.action != 1">{{application.version}}</span>

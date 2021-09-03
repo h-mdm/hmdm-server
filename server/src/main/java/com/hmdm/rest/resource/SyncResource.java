@@ -191,6 +191,7 @@ public class SyncResource {
             }
         } catch (Exception e) {
             logger.error("Unexpected error when getting device settings", e);
+            e.printStackTrace();
             return Response.INTERNAL_ERROR();
         }
     }
@@ -239,6 +240,7 @@ public class SyncResource {
             }
         } catch (Exception e) {
             logger.error("Unexpected error when getting device settings", e);
+            e.printStackTrace();
             return Response.INTERNAL_ERROR();
         }
     }

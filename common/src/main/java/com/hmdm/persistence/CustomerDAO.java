@@ -139,7 +139,7 @@ public class CustomerDAO {
         if (!SecurityContext.get().isSuperAdmin()) {
             throw SecurityException.onAdminDataAccessViolation("get the list of customers");
         }
-        return this.mapper.findAll();
+        return this.mapper.findAllExceptMaster();
     }
 
     public List<Customer> getAllCustomersByValue(String value) {

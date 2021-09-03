@@ -42,8 +42,11 @@ public interface CustomerMapper {
 
     String SELECT_BASE = "SELECT customers.* FROM customers ";
 
-    @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
+    @Select({SELECT_BASE})
     List<Customer> findAll();
+
+    @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
+    List<Customer> findAllExceptMaster();
 
     @Insert({"INSERT INTO customers (name, description, filesDir, master, prefix, registrationTime, " +
              "accountType, expiryTime, deviceLimit, customerStatus) " +

@@ -434,13 +434,20 @@ angular.module('headwind-kiosk')
                 }
             };
 
+            $scope.upgrading = false;
             $scope.upgradeApp = function (application) {
+                if ($scope.upgrading) {
+                    // Prevent multiple clicks, because this somehow clears the app being upgraded
+                    return;
+                }
                 let localizedText = localization.localize('question.app.upgrade')
                     .replace('${v1}', application.name)
                     .replace('${v2}', $scope.configuration.name);
                 confirmModal.getUserConfirmation(localizedText, function () {
+                    $scope.upgrading = true;
                     configurationService.upgradeConfigurationApplication(
                         {configurationId: $scope.configuration.id, applicationId: application.id}, function (response) {
+                            $scope.upgrading = false;
                             if (response.status === 'OK') {
                                 $scope.configuration.mainAppId = response.data.mainAppId;
                                 $scope.configuration.contentAppId = response.data.contentAppId;
@@ -449,7 +456,11 @@ angular.module('headwind-kiosk')
                             } else {
                                 alertService.showAlertMessage(localization.localize(response.message));
                             }
-                        }, alertService.onRequestFailure);
+                        }, function (response) {
+                            $scope.upgrading = false;
+                            console.error("Error when sending request to server", response);
+                            showAlert(localization.localize('error.request.failure'));
+                        });
                 });
             };
 
