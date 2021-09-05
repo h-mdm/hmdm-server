@@ -2154,4 +2154,17 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="05.09.21-13:44" author="seva" context="common">
+        <comment>Add permission to send Push via API</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('push_api', 'Send Push messages to devices via REST API');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'push_api';
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

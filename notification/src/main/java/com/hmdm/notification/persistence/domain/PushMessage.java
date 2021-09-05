@@ -52,6 +52,12 @@ public class PushMessage implements Serializable {
     public PushMessage() {
     }
 
+    public PushMessage(String messageType, String payload, int deviceId) {
+        this.messageType = messageType;
+        this.payload = payload;
+        this.deviceId = deviceId;
+    }
+
     public Integer getId() {
         return id;
     }
