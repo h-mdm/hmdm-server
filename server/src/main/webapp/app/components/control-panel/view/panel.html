@@ -1,13 +1,11 @@
 <!-- Localization completed -->
 <div class='content-wrapper fullscreen'>
     <tabset class='tabset'>
-        <tab ng-controller='CustomersTabController'
-             active="isActive"
-             select='init()'>
+        <tab>
 
             <tab-heading localized>tab.customers</tab-heading>
 
-            <div>
+            <div ng-controller='CustomersTabController'>
                 <div class='form-group'>
                     <input type='text'
                            ng-enter='newSearch()'
@@ -144,13 +142,11 @@
             </div>
         </tab>
 
-        <tab ng-controller='ControlPanelApplicationsTabController'
-             active="isActive"
-             select='init()'>
+        <tab>
 
             <tab-heading localized>tab.common.applications</tab-heading>
 
-            <div>
+            <div ng-controller='ControlPanelApplicationsTabController'>
                 <div class='form-group'>
                     <input type='text'
                            ng-model='search.searchValue'

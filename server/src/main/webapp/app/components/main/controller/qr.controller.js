@@ -10,7 +10,7 @@ angular.module('headwind-kiosk')
             groups: null
         };
 
-        $scope.qrCodeKey = $stateParams.code;
+        $scope.qrCodeKey = $stateParams.qrCode;
         $scope.devices = [];
         $scope.device = {};
         $scope.showQR = true;

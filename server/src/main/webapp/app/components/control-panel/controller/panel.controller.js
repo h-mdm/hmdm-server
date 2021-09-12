@@ -396,8 +396,7 @@ angular.module('headwind-kiosk')
             }
         })
     // *****************************************************************************************************************
-    .controller('ControlPanelController', function ($scope, $rootScope, $state, $modal, $interval, confirmModal, deviceService,
-                                                    groupService, settingsService, localization) {
+    .controller('ControlPanelController', function ($scope, localization) {
         $scope.localization = localization;
     })
     // *****************************************************************************************************************
@@ -473,6 +472,8 @@ angular.module('headwind-kiosk')
                 $scope.search();
             });
         }
+
+        $scope.search();
 
     });
 

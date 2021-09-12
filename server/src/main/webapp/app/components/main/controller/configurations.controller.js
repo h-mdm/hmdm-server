@@ -1487,6 +1487,13 @@ angular.module('headwind-kiosk')
             }
         };
 
+        $scope.onUploadProgress = function(progress) {
+            var loadedMb = (progress.loaded / 1048576).toFixed(1);
+            var totalMb = (progress.total / 1048576).toFixed(1);
+            $scope.successMessage = localization.localize('success.uploading.file') +
+                " " + loadedMb + " / " + totalMb + " Mb";
+        };
+
         $scope.fileUploaded = function (response) {
             $scope.errorMessage = undefined;
             $scope.successMessage = undefined;

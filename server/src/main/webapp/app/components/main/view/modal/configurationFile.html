@@ -40,6 +40,7 @@
                      upload-button
                      url="rest/private/config-files"
                      on-upload="onStartedUpload(files)"
+                     on-progress="onUploadProgress(progress)"
                      on-success="fileUploaded( response )"></div>
                 <span ng-if="file.filePath">{{file.filePath}}</span>
                 <button class="btn btn-default" ng-if="file.filePath" ng-click="clearFile()" localized>button.cleanup</button>

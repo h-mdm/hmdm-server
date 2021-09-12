@@ -91,7 +91,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     }
 
     public List<Application> getAllApplicationsByUrl(String url) {
-        return getList(customerId -> this.mapper.getAllApplicationsByUrl(customerId, url));
+        List<Application> appList = getList(customerId -> this.mapper.getAllApplicationsByUrl(customerId, url));
+        if (appList == null || appList.size() == 0) {
+            // There's an issue with the last slash, it's sometimes duplicated!
+            int i = url.lastIndexOf('/');
+            if (i != -1) {
+                String url1 = url.substring(0, i) + '/' + url.substring(i);
+                return getList(customerId -> this.mapper.getAllApplicationsByUrl(customerId, url1));
+            }
+        }
+        return appList;
     }
 
     /**

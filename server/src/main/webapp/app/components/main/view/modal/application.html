@@ -127,7 +127,8 @@
                      upload-button
                      url="rest/private/web-ui-files"
                      on-upload="onStartedUpload(files)"
-                     on-success="fileUploaded( response )"></div>
+                     on-progress="onUploadProgress(progress)"
+                     on-success="fileUploaded(response)"></div>
                 <span ng-if="file.path && !invalidFile">{{fileName}}</span>
                 <button class="btn btn-default" ng-if="file.path" ng-click="clearFile()" localized>button.cleanup</button>
             </div>

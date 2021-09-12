@@ -11,9 +11,8 @@
             <ng-include src="'app/components/main/view/applications.html'" ng-if="activeTab === 'APPS'"></ng-include>
         </tab>
 
-        <tab active="act.CONFS" ng-if="hasPermission('configurations')" ng-click="openTab('CONFS')"
-             data-hint-key="hint.step.1">
-            <tab-heading localized-change-tracking>tab.configurations</tab-heading>
+        <tab active="act.CONFS" ng-if="hasPermission('configurations')" ng-click="openTab('CONFS')">
+            <tab-heading localized-change-tracking data-hint-key="hint.step.1">tab.configurations</tab-heading>
             <ng-include src="'app/components/main/view/configurations.html'" ng-if="activeTab === 'CONFS'"></ng-include>
         </tab>
 

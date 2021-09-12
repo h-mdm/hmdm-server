@@ -2,8 +2,8 @@
 angular.module('headwind-kiosk')
     .factory('authService', function ($cookies, serverAuthService) {
         var user;
-        if ($cookies.user) {
-            user = JSON.parse($cookies.user);
+        if ($cookies.get('user')) {
+            user = JSON.parse($cookies.get('user'));
         }
 
         return {
@@ -11,7 +11,7 @@ angular.module('headwind-kiosk')
                 serverAuthService.login({login: login, password: password}, function (response) {
                     if (response.status === "OK") {
                         user = response.data;
-                        $cookies.user = JSON.stringify(user);
+                        $cookies.put('user', JSON.stringify(user));
                     }
 
                     successCallback(response);
@@ -40,7 +40,7 @@ angular.module('headwind-kiosk')
                 serverAuthService.mobileLogin({'email': email}, function (response) {
                     if (response.status === "OK") {
                         user = response.data;
-                        $cookies.user = JSON.stringify(user);
+                        $cookies.put('user', JSON.stringify(user));
                     }
 
                     successCallback(response);
@@ -51,12 +51,12 @@ angular.module('headwind-kiosk')
                 serverAuthService.logout();
 
                 user = undefined;
-                delete $cookies.user;
+                $cookies.remove('user');
             },
 
             update: function (newUser) {
                 user = newUser;
-                $cookies.user = JSON.stringify(newUser)
+                $cookies.put('user', JSON.stringify(newUser))
             },
 
             isLoggedIn: function () {
