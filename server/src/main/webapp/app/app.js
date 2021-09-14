@@ -414,7 +414,7 @@ angular.module('headwind-kiosk',
         }
     })
     .run(function ($rootScope, $state, $stateParams, authService, pluginService, $ocLazyLoad, localization, hintService,
-                   $window) {
+                   $window, $transitions) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
@@ -459,22 +459,19 @@ angular.module('headwind-kiosk',
             console.log('$cssAdd:', a, b, c);
         });
 
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-
+        $transitions.onStart({ }, function(trans) {
             hintService.onStateChangeStart();
 
-            if (toState.name !== 'password_recovery' && toState.name !== 'qr') {
-                if (!authService.isLoggedIn() && toState.name !== 'login') {
-                    event.preventDefault();
+            if (trans.to().name !== 'password_recovery' && trans.to().name !== 'qr') {
+                if (!authService.isLoggedIn() && trans.to().name !== 'login') {
                     hintService.onLogout();
-                    $state.transitionTo('login');
+                    return trans.router.stateService.target('login');
                 }
             }
 
             if (authService.isLoggedIn() &&
-                (toState.name === 'login' || toState.name === 'password_recovery')) {
-                event.preventDefault();
-                $state.transitionTo('main');
+                (trans.to().name === 'login' || trans.to().name === 'password_recovery')) {
+                return trans.router.stateService.target('main');
             }
         });
     });

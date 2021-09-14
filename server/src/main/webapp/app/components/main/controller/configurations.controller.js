@@ -300,7 +300,7 @@ angular.module('headwind-kiosk')
     })
     .controller('ConfigurationEditorController',
         function ($scope, configurationService, settingsService, $stateParams, $state, $rootScope, $window, $timeout,
-                  localization, confirmModal, alertService, $modal, appVersionComparisonService) {
+                  $transitions, localization, confirmModal, alertService, $modal, appVersionComparisonService) {
 
             $scope.successMessage = null;
 
@@ -476,17 +476,18 @@ angular.module('headwind-kiosk')
                 return !application.system;
             };
 
-            $scope.$on('$stateChangeStart',
-                function (event, toState, toParams, fromState, fromParams) {
-                    if ($scope.configurationForm.$dirty) {
-                        if (!$scope.saved) {
-                            var confirmed = confirm(localization.localize('question.exit.without.saving'));
-                            if (!confirmed) {
-                                event.preventDefault();
-                            }
+            var transFunction = function(trans) {
+                if ($scope.configurationForm && $scope.configurationForm.$dirty) {
+                    if (!$scope.saved) {
+                        var confirmed = confirm(localization.localize('question.exit.without.saving'));
+                        if (!confirmed) {
+                            $transitions.onStart({ }, transFunction, {invokeLimit: 1});
+                            return false;
                         }
                     }
-                });
+                }
+            }
+            $transitions.onStart({ }, transFunction, {invokeLimit: 1});
 
             $scope.sortByChanged = function () {
                 $window.localStorage.setItem('HMDM_configAppsSortBy', $scope.sort.by);

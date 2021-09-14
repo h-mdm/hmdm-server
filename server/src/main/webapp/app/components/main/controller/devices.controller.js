@@ -149,12 +149,14 @@ angular.module('headwind-kiosk')
         };
 
         var loadSettings = function (completion) {
-            settingsService.getUserRoleSettings({roleId: authService.getUser().userRole.id}, function (response) {
-                if (response.data) {
-                    // Display settings
-                    $scope.settings = response.data;
-                }
-            });
+            if (authService.getUser().userRole) {
+                settingsService.getUserRoleSettings({roleId: authService.getUser().userRole.id}, function (response) {
+                    if (response.data) {
+                        // Display settings
+                        $scope.settings = response.data;
+                    }
+                });
+            }
             loadCommonSettings(completion);
         };
 
