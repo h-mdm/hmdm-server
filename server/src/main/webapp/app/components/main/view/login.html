@@ -1,4 +1,4 @@
-<div class="login-logo"><img src="images/logo.png"><span class="logo" localized>app.name</span></div>
+<div class="login-logo" ng-if="rebranding"><img src="rest/public/logo"><span class="logo">{{rebranding.appName}}</span></div>
 
 <!-- Localization completed -->
 <div ng-if="!isIE">
@@ -28,9 +28,9 @@
 
 <div class='content-wrapper width-1000' ng-if="isIE">
     <div localized>ie.browser.notice.1</div>
-    <div ng-bind-html="'ie.browser.notice.2' | localize"></div>
+    <div ng-bind-html="ieBrowserNotice2"></div>
 </div>
 
-<div class="login-footer">
-    <span localized>app.name</span> <span localized>app.description</span>. (c) 2021 <a href="https://h-mdm.com">h-mdm.com</a>
+<div class="login-footer" ng-if="rebranding">
+    <span>{{rebranding.appName}}</span> <span localized>app.description</span>. (c) 2021 <a href="{{rebranding.vendorLink}}">{{rebranding.vendorName}}</a>
 </div>

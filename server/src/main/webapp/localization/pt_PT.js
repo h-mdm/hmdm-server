@@ -720,13 +720,15 @@ document.localization ['pt_PT'] = {
     'breadcrumb.application.versions': 'Versões',
 
     'app.name': 'Headwind MDM',
+    'app.vendor.name':"h-mdm.com",
+    'app.vendor.link':"https://h-mdm.com",
     'app.description': 'é o sistema de gerenciamento de dispositivos móveis de código aberto',
-    'app.title': 'Painel Web Headwind MDM',
+    'app.title': 'Painel Web ${appName}',
 
     'box.show.my.apps.only': 'Mostrar apenas minhas aplicações',
     'configuration.app.version.upgrade.message': 'Versão instalada ${installedVersion}, versão disponível ${latestVersion}',
 
-    'about.line.1': 'Painel de controle Headwind MDM',
+    'about.line.1': 'Painel de controle ${appName}',
     'about.line.2': 'Iniciador empresarial para Android',
     'about.line.3': 'Versão ${versionNumber}',
     'about.line.4': 'Plugins Instalador',
@@ -737,7 +739,7 @@ document.localization ['pt_PT'] = {
     'qrcode.help.line2': 'Redefina o dispositivo para as configurações de fábrica',
     'qrcode.help.line3': 'Toque 7 vezes em qualquer lugar da tela inicial (você deve entrar em modo oculto de leitura de QR code)',
     'qrcode.help.line4': 'Siga as instruções do dispositivo: aceite os termos, conecte-se ao Wi-Fi, escaneie este QR code',
-    'qrcode.help.line5': 'O QR code talvez contenha o ID do dispositivo para Headwind MDM (então você não precisa inserí-lo em um dispositivo mobile). Para incorporar o ID do dispositivo ao QR code, insira o ID do dispositivo nesta tela e clique "Renovar".',
+    'qrcode.help.line5': 'O QR code talvez contenha o ID do dispositivo para ${appName} (então você não precisa inserí-lo em um dispositivo mobile). Para incorporar o ID do dispositivo ao QR code, insira o ID do dispositivo nesta tela e clique "Renovar".',
 
     'form.configuration.app.version.select.select.title': 'Selecione a versão para instalar',
     'form.configuration.app.version.select.version.check.off': 'Desabilitar verificação de versão',
@@ -750,7 +752,7 @@ document.localization ['pt_PT'] = {
     'hint.step.4': 'Encontre um ID de dispositivo disponível na aba Dispositivos». Clique em «Renovar» para incluir  no QR code.',
 
     'ie.browser.notice.1': 'Infelizmente, o Internet Explorer não é compatível.',
-    'ie.browser.notice.2': 'Browser recomendado para o Headwind MDM - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
+    'ie.browser.notice.2': 'Browser recomendado para o ${appName} - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
 
     'form.resolved.duplicate.pkg.text1': 'O ID "${pkg}" do pacote já é usado pelos aplicativos listados abaixo.',
     'form.resolved.duplicate.pkg.text2': 'Você deseja adicionar uma nova aplicação ou uma nova versão de uma aplicação existente?',

@@ -223,6 +223,12 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String custom3;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String appName;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String vendor;
+
     public SyncResponse() {
     }
 
@@ -718,5 +724,23 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setCustom3(String custom3) {
         this.custom3 = custom3;
+    }
+
+    @Override
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    @Override
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
     }
 }

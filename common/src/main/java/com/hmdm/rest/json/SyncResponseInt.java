@@ -134,4 +134,8 @@ public interface SyncResponseInt {
     String getCustom2();
 
     String getCustom3();
+
+    String getAppName();
+
+    String getVendor();
 }

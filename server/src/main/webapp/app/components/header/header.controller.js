@@ -1,7 +1,7 @@
 // Localization completed
 angular.module( 'headwind-kiosk' )
 .controller( 'HeaderController', function( $scope, $rootScope, $state, $modal, $timeout, $interval, $filter, $window,
-                                           authService, localization, hintService ) {
+                                           authService, localization, hintService, rebranding ) {
     $scope.isControlPanel = false;
     $scope.authService = authService;
     $scope.showExitReportMode = false;
@@ -32,6 +32,10 @@ angular.module( 'headwind-kiosk' )
     $rootScope.$on( 'SHOW_EXPIRY_WARNING', function() {
         $scope.expiryWarning = true;
     } );
+
+    rebranding.query(function(value) {
+        $scope.appName = value.appName;
+    });
 
     updateDateTime = function() {
         $scope.dateTime = $filter( 'date' )( new Date(), localization.localize('format.date.header') );

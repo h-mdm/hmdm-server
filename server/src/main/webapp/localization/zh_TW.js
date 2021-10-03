@@ -721,13 +721,15 @@ document.localization ['zh_TW'] = {
     'breadcrumb.application.versions':"版本",
 		
     'app.name':"Headwind MDM",
+    'app.vendor.name':"h-mdm.com",
+    'app.vendor.link':"https://h-mdm.com",
     'app.description':"是開源移動設備管理系統",
-    'app.title':"Headwind MDM Web面板",
+    'app.title':"${appName} Web面板",
 		
     'box.show.my.apps.only':"僅顯示我的應用程式",
     'configuration.app.version.upgrade.message':"已安裝版本${installedVersion}，可用版本${latestVersion}",
 		
-    'about.line.1':"Headwind MDM控制面板",
+    'about.line.1':"${appName}控制面板",
     'about.line.2':"Android企業啟動器",
     'about.line.3':"版本${versionNumber}",
     'about.line.4':"已安裝的插件",
@@ -738,7 +740,7 @@ document.localization ['zh_TW'] = {
     'qrcode.help.line2':"將設備重置為出廠設置",
     'qrcode.help.line3':"在開始屏幕的任何位置點擊7次（您必須輸入隱藏的QR碼掃描模式）",
     'qrcode.help.line4' : "按照設備說明進行操作:接受條款，連接到Wi-Fi，掃描此QR碼",
-    'qrcode.help.line5':"QR碼可能包含Headwind MDM的設備ID（因此您無需在移動設備上輸入它）。要將設備ID嵌入QR碼，請在此屏幕上輸入設備ID，然後單擊\"續訂\"。",
+    'qrcode.help.line5':"QR碼可能包含${appName}的設備ID（因此您無需在移動設備上輸入它）。要將設備ID嵌入QR碼，請在此屏幕上輸入設備ID，然後單擊\"續訂\"。",
 		
     'form.configuration.app.version.select.select.title':"選擇要安裝的版本",
     'form.configuration.app.version.select.version.check.off':"禁用版本檢查",
@@ -751,7 +753,7 @@ document.localization ['zh_TW'] = {
     'hint.step.4' : "在\"Devices\"選項卡中找到可用的設備ID。點擊竄改新壇以將其包含在QR碼中。",
 		
     'ie.browser.notice.1':"很遺憾，不支持Internet Explorer。",
-    'ie.browser.notice.2' : '推薦的瀏覽器，用於使用Headwind MDM-<a href ="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
+    'ie.browser.notice.2' : '推薦的瀏覽器，用於使用${appName}-<a href ="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
 		
     'form.resolved.duplicate.pkg.text1':"軟件包ID\"${pkg}\"已被下列應用程式使用。",
     'form.resolved.duplicate.pkg.text2':"您要新增新應用程式還是現有應用程式的新版本？",

@@ -721,13 +721,15 @@ document.localization ['es_ES'] = {
     'breadcrumb.application.versions': 'Versiones',
 
     'app.name': 'Headwind MDM',
+    'app.vendor.name':"h-mdm.com",
+    'app.vendor.link':"https://h-mdm.com",
     'app.description': 'es la solucion MDM open-source',
-    'app.title': 'Headwind MDM Panel Web',
+    'app.title': '${appName} Panel Web',
 
     'box.show.my.apps.only': 'Mostrar mis aplicaciones solamente',
     'configuration.app.version.upgrade.message': 'Version instalada ${installedVersion}, version disponible ${latestVersion}',
 
-    'about.line.1': 'Headwind MDM panel de control',
+    'about.line.1': '${appName} panel de control',
     'about.line.2': 'Launcher Enterprise para Android',
     'about.line.3': 'Version ${versionNumber}',
     'about.line.4': 'Plugins Instalados',
@@ -738,7 +740,7 @@ document.localization ['es_ES'] = {
     'qrcode.help.line2': 'Restaurar el dispositivo a su estado de fabrica',
     'qrcode.help.line3': 'Presiona 7 veces en la pantalla de inicio (debes entrar a el modo de escaneo QR)',
     'qrcode.help.line4': 'Sigue las instrucciones del dispositivo: acepta los terminos, conecta el Wi-Fi, y escanea este codigo QR',
-    'qrcode.help.line5': 'Este QR debe contener el ID del dispositivo de Headwind MDM (no necesitas ingresarlo en el dispositivo). Para agregar la ID del dispositivo al QR, ingresa la ID del dispositvo y presiona "Renovar".',
+    'qrcode.help.line5': 'Este QR debe contener el ID del dispositivo de ${appName} (no necesitas ingresarlo en el dispositivo). Para agregar la ID del dispositivo al QR, ingresa la ID del dispositvo y presiona "Renovar".',
 
     'form.configuration.app.version.select.select.title': 'Selecciona la version a instalar',
     'form.configuration.app.version.select.version.check.off': 'Deshabilitar la verificacion de version',

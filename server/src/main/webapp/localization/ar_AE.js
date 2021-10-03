@@ -721,13 +721,15 @@ document.localization ['ar_AE'] = {
     "breadcrumb.application.versions": 'إصدارات',
 
     "app.name": 'Headwind MDM',
+    'app.vendor.name':"h-mdm.com",
+    'app.vendor.link':"https://h-mdm.com",
     "app.description": 'هو نظام إدارة الأجهزة المحمولة مفتوح المصدر',
-    "app.title": 'Headwind MDM لوحة ويب',
+    "app.title": '${appName} لوحة ويب',
 
     "box.show.my.apps.only": 'عرض تطبيقاتي فقط',
     'config.app.version.upgrade.message': '${installVersion} الإصدار المثبت , ${latestVersion} الإصدار المتاح ',
 
-    "about.line.1": 'Headwind MDM لوحة تحكم',
+    "about.line.1": '${appName} لوحة تحكم',
     'about.line.2': 'Android مشغل المؤسسة لـ',
     'about.line.3': '${versionNumber} الإصدار',
     'about.line.4': 'الاعدادات الإضافية المثبتة',
@@ -738,7 +740,7 @@ document.localization ['ar_AE'] = {
     "qrcode.help.line2": 'إعادة ضبط الجهاز على إعدادات المصنع',
     "qrcode.help.line3": 'مخفي (QR انقر 7 مرات في أي مكان من شاشة البداية (يجب عليك إدخال وضع مسح رمز الاستجابة السريعة',
     "qrcode.help.line4": 'هذا QR اتبع إرشادات الجهاز: قبول الشروط , والاتصال بشبكة واي فاي , وامسح رمز الاستجابة السريعة',
-    'qrcode.help.line5': '(لذا لا تحتاج إلى إدخاله على جهاز محمول). لتضمين معرف الجهاز في رمز رمز الاستجابة السريعة ،أدخل معرف الجهاز على هذه الشاشة وانقر  على تجديد) Headwind MDM قد يحتوي رمز الاستجابة السريعة على معرف الجهاز',
+    'qrcode.help.line5': '(لذا لا تحتاج إلى إدخاله على جهاز محمول). لتضمين معرف الجهاز في رمز رمز الاستجابة السريعة ،أدخل معرف الجهاز على هذه الشاشة وانقر  على تجديد) ${appName} قد يحتوي رمز الاستجابة السريعة على معرف الجهاز',
     
     'form.configuration.app.version.select.select.title': 'حدد الإصدار المراد تثبيته' ,
     'form.configuration.app.version.select.version.check.off': 'تعطيل فحص الإصدار',
@@ -751,7 +753,7 @@ document.localization ['ar_AE'] = {
     'hint.step.4': 'الجهاز المتاح في علامة التبويب «الأجهزة». انقر فوق "تجديد" لتضمينه في رمز الاستجابة السريعة ID ابحث عن',
 
     'ie.browser.notice.1': ' , Internet Explorer للأسف غير مدعوم.',
-    'ie.browser.notice.2': '<a href="https://support.google.com/chrome/answer/95346؟co=GENIE.Platform٪3DDesktop">Chrome</a> - Headwind MDM المتصفح الموصى به لاستخدام',
+    'ie.browser.notice.2': '<a href="https://support.google.com/chrome/answer/95346؟co=GENIE.Platform٪3DDesktop">Chrome</a> - ${appName} المتصفح الموصى به لاستخدام',
 
     'form.resolved.duplicate.pkg.text1': '. مستخدم بالفعل بواسطة التطبيقات المدرجة أدناه "${pkg}" الحزمة ID',
     'form.resolved.duplicate.pkg.text2': 'هل تريد إضافة تطبيق جديد أم إصدار جديد من تطبيق موجود؟',

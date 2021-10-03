@@ -1,7 +1,13 @@
 <!-- Localization completed -->
 angular.module('headwind-kiosk')
-    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization) {
+    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization, rebranding) {
         $scope.login = {};
+
+        $scope.rebranding = null;
+        rebranding.query(function(value) {
+            $scope.rebranding = value;
+            $scope.ieBrowserNotice2 = localization.localize('ie.browser.notice.2').replace('${appName}', $scope.rebranding.appName);
+        });
 
         $scope.isIE = detectIE();
 

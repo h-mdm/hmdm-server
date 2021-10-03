@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .controller('QRController', function ($state, $scope, $window, $stateParams, $http,
-                                          localization, hintService, groupService, $timeout) {
+                                          localization, hintService, groupService, $timeout, rebranding) {
         $scope.size = (Math.min($window.innerWidth, $window.innerHeight) * 0.80).toFixed(0);
         $scope.deviceId = $stateParams.deviceId;
 
@@ -16,6 +16,10 @@ angular.module('headwind-kiosk')
         $scope.showQR = true;
         $scope.showHelp = false;
         $scope.helpSize = (Math.min($window.innerWidth, $window.innerHeight) * 0.80).toFixed(0);
+
+        rebranding.query(function(value) {
+            $scope.qrCodeHelpLine5 = localization.localize('qrcode.help.line5').replace('${appName}', value.appName);
+        });
 
         $scope.renew = function () {
             $scope.showQR = false;

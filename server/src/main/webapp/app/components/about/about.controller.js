@@ -1,7 +1,11 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('AboutController', function ($scope, $rootScope, $modalInstance, APP_VERSION, localization, pluginService) {
+    .controller('AboutController', function ($scope, $rootScope, $modalInstance, APP_VERSION, localization,
+                                             pluginService, rebranding) {
 
+        rebranding.query(function(value) {
+            $scope.line1Text = localization.localize('about.line.1').replace('${appName}', value.appName);
+        });
         $scope.line3Text = localization.localize('about.line.3').replace('${versionNumber}', APP_VERSION);
 
         pluginService.getAvailablePlugins(function (response) {

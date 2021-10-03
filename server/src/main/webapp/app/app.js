@@ -40,7 +40,7 @@ angular.module('headwind-kiosk',
         'pt_BR': 'pt_PT'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN'])
-    .constant("APP_VERSION", "4.05.1") // Update this value on each commit
+    .constant("APP_VERSION", "4.06.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -335,9 +335,9 @@ angular.module('headwind-kiosk',
 
         var noOpLoader = function () {
             console.log("External library has been loaded already: ", libId);
-            return new Promise((resolve) => {
+            return new Promise(function(resolve) {
                 resolve();
-            });
+            })
         };
 
         var getLoader = function (libId) {
@@ -414,7 +414,7 @@ angular.module('headwind-kiosk',
         }
     })
     .run(function ($rootScope, $state, $stateParams, authService, pluginService, $ocLazyLoad, localization, hintService,
-                   $window, $transitions) {
+                   $window, $transitions, rebranding) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
@@ -436,14 +436,20 @@ angular.module('headwind-kiosk',
             }
         });
 
-        $window.document.title = localization.localize('app.title');
+        $window.document.title = localization.localize('app.title').replace('${appName}', "MDM");
+        rebranding.query(function(value) {
+            $window.document.title = localization.localize('app.title').replace('${appName}', value.appName);
+        });
 
         $rootScope.$on('aero_LANGUAGE_SETTINGS_UPDATED', function (event, newSettings) {
             localization.onLangSettingsChange(newSettings, $rootScope);
         });
 
         $rootScope.$on('aero_LOCALE_CHANGED', function () {
-            $window.document.title = localization.localize('app.title');
+            $window.document.title = localization.localize('app.title').replace('${appName}', "MDM");
+            rebranding.query(function(value) {
+                $window.document.title = localization.localize('app.title').replace('${appName}', value.appName);
+            });
         });
 
         $rootScope.$on('aero_USER_AUTHENTICATED', function () {

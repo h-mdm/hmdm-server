@@ -26,6 +26,10 @@ import javax.inject.Singleton;
 import javax.inject.Named;
 
 import com.hmdm.persistence.domain.ApplicationType;
+import com.hmdm.rest.json.NameResponse;
+import net.glxn.qrgen.core.image.ImageType;
+import net.glxn.qrgen.javase.QRCode;
+import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import io.swagger.annotations.Api;
@@ -44,14 +48,16 @@ import com.hmdm.rest.json.UploadAppRequest;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.StringUtil;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.servlet.ServletOutputStream;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +82,11 @@ public class PublicResource {
     private String filesDirectory;
     private String baseUrl;
 
+    private String appName;
+    private String appLogo;
+    private String appVendorName;
+    private String appVendorLink;
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -88,11 +99,19 @@ public class PublicResource {
     @Inject
     public PublicResource(@Named("files.directory") String filesDirectory,
                           @Named("base.url") String baseUrl,
+                          @Named("rebranding.name") String appName,
+                          @Named("rebranding.logo") String appLogo,
+                          @Named("rebranding.vendor.name") String appVendorName,
+                          @Named("rebranding.vendor.link") String appVendorLink,
                           UnsecureDAO unsecureDAO,
                           CustomerDAO customerDAO,
                           @Named("hash.secret") String hashSecret) {
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
+        this.appName = appName;
+        this.appLogo = appLogo;
+        this.appVendorName = appVendorName;
+        this.appVendorLink = appVendorLink;
         this.unsecureDAO = unsecureDAO;
         this.customerDAO = customerDAO;
         this.hashSecret = hashSecret;
@@ -230,4 +249,52 @@ public class PublicResource {
         }
     }
 
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Get name and vendor",
+            notes = "Gets the application name and vendor for rebranding purposes."
+    )
+    @GET
+    @Path("/name")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRebranding() {
+        NameResponse nameResponse = new NameResponse();
+        nameResponse.setAppName(appName);
+        nameResponse.setVendorName(appVendorName);
+        nameResponse.setVendorLink(appVendorLink);
+        return Response.OK(nameResponse);
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Get logo",
+            notes = "Returns the rebranded logo."
+    )
+    @GET
+    @Path("/logo")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response getRebrandedLogo() {
+        try {
+            if (!appLogo.equals("")) {
+                File file = new File(appLogo);
+                if (file.exists()) {
+                    InputStream input = new FileInputStream(file);
+
+                    return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
+                        IOUtils.copy(input, output);
+                    } )
+                            .header("Cache-Control", "no-cache")
+                            .header( "Content-Type", "image/png" ).build();
+                } else {
+                    System.out.println("Not found: " + file.getAbsolutePath());
+                    return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
+                }
+            } else {
+                return javax.ws.rs.core.Response.temporaryRedirect(new URI("../images/logo.png")).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return javax.ws.rs.core.Response.serverError().build();
+        }
+    }
 }

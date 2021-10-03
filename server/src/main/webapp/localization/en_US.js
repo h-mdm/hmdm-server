@@ -721,13 +721,15 @@ document.localization ['en_US'] = {
     'breadcrumb.application.versions': 'Versions',
 
     'app.name': 'Headwind MDM',
+    'app.vendor.name':"h-mdm.com",
+    'app.vendor.link':"https://h-mdm.com",
     'app.description': 'is the open source mobile device management system',
-    'app.title': 'Headwind MDM Web Panel',
+    'app.title': '${appName} Web Panel',
 
     'box.show.my.apps.only': 'Display my applications only',
     'configuration.app.version.upgrade.message': 'Installed version ${installedVersion}, available version ${latestVersion}',
 
-    'about.line.1': 'Headwind MDM control panel',
+    'about.line.1': '${appName} control panel',
     'about.line.2': 'Enterprise launcher for Android',
     'about.line.3': 'Version ${versionNumber}',
     'about.line.4': 'Installed plugins',
@@ -738,7 +740,7 @@ document.localization ['en_US'] = {
     'qrcode.help.line2': 'Reset the device to factory settings',
     'qrcode.help.line3': 'Tap 7 times on any place of the start screen (you must enter a hidden QR code scanning mode)',
     'qrcode.help.line4': 'Follow the device instructions: accept the terms, connect to Wi-Fi, scan this QR-code',
-    'qrcode.help.line5': 'The QR code may contain the device ID for Headwind MDM (so you don\'t need to enter it on a mobile device). To embed the device ID into the QR code, enter the device ID on this screen and click "Renew".',
+    'qrcode.help.line5': 'The QR code may contain the device ID for ${appName} (so you don\'t need to enter it on a mobile device). To embed the device ID into the QR code, enter the device ID on this screen and click "Renew".',
 
     'form.configuration.app.version.select.select.title': 'Select the version to install',
     'form.configuration.app.version.select.version.check.off': 'Disable version checking',
@@ -751,7 +753,7 @@ document.localization ['en_US'] = {
     'hint.step.4': 'Find an available device ID in the «Devices» tab. Click «Renew» to include it in the QR code.',
 
     'ie.browser.notice.1': 'Unfortunately, Internet Explorer is not supported.',
-    'ie.browser.notice.2': 'Recommended Browser for Using Headwind MDM - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
+    'ie.browser.notice.2': 'Recommended browser for using ${appName} - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
 
     'form.resolved.duplicate.pkg.text1': 'Package ID "${pkg}" is already used by the applications listed below.',
     'form.resolved.duplicate.pkg.text2': 'Do you want to add a new application or a new version of an existing application?',

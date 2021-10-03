@@ -721,13 +721,15 @@ document.localization[ 'ru_RU' ] = {
     'breadcrumb.application.versions': 'Версии',
 
     'app.name': 'Headwind MDM',
+    'app.vendor.name':"h-mdm.com",
+    'app.vendor.link':"https://h-mdm.com",
     'app.description': '- система управления мобильными устройствами с открытым кодом',
-    'app.title': 'Headwind MDM - панель управления',
+    'app.title': '${appName} - панель управления',
 
     'box.show.my.apps.only': 'Показать только мои приложения',
     'configuration.app.version.upgrade.message': 'Установлена версия ${installedVersion}, доступна версия ${latestVersion}',
 
-    'about.line.1': 'Панель управления Headwind MDM',
+    'about.line.1': 'Панель управления ${appName}',
     'about.line.2': 'Оболочка для корпоративных Android-устройств',
     'about.line.3': 'Версия ${versionNumber}',
     'about.line.4': 'Используемые плагины',
@@ -738,7 +740,7 @@ document.localization[ 'ru_RU' ] = {
     'qrcode.help.line2': 'Выполните сброс к заводским настройкам',
     'qrcode.help.line3': 'Нажмите 7 раз подряд на любом месте стартового экрана (должен появиться скрытый режим сканирования QR-кода)',
     'qrcode.help.line4': 'Следуйте инструкциям устройства: примите условия использования, подключитесь к Wi-Fi, отсканируйте QR-код',
-    'qrcode.help.line5': 'Код может содержать также ID устройства в системе Headwind MDM (после настройки его не нужно будет вводить). Для включения ID устройства в QR код, введите его на этом экране и нажмите "Обновить".',
+    'qrcode.help.line5': 'Код может содержать также ID устройства в системе ${appName} (после настройки его не нужно будет вводить). Для включения ID устройства в QR код, введите его на этом экране и нажмите "Обновить".',
 
     'form.configuration.app.version.select.select.title': 'Выберите версию для установки',
     'form.configuration.app.version.select.version.check.off': 'Отключить проверку версии',
@@ -751,7 +753,7 @@ document.localization[ 'ru_RU' ] = {
     'hint.step.4': 'Найдите доступный ID во вкладке "устройства". Нажмите "Обновить", чтобы включить его в QR код.',
 
     'ie.browser.notice.1': 'К сожалению, браузер Internet Explorer не поддерживается.',
-    'ie.browser.notice.2': 'Рекомендуемый браузер для использования Headwind MDM - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
+    'ie.browser.notice.2': 'Рекомендуемый браузер для использования ${appName} - <a href="https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop">Chrome</a>.',
 
     'form.resolved.duplicate.pkg.text1': 'ID пакета "${pkg}" уже используется приложениями, указанными ниже.',
     'form.resolved.duplicate.pkg.text2': 'Вы хотите добавить новое приложение или новую версию существующего приложения?',

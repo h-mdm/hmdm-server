@@ -109,6 +109,9 @@ public class SyncResource {
     private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
     private static final String HEADER_RESPONSE_SIGNATURE = "X-Response-Signature";
 
+    private String mobileAppName;
+    private String vendor;
+
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -126,7 +129,9 @@ public class SyncResource {
                         DeviceDAO deviceDAO,
                         @Named("base.url") String baseUrl,
                         @Named("secure.enrollment") boolean secureEnrollment,
-                        @Named("hash.secret") String hashSecret) {
+                        @Named("hash.secret") String hashSecret,
+                        @Named("rebranding.mobile.name") String mobileAppName,
+                        @Named("rebranding.vendor.name") String vendor) {
         this.unsecureDAO = unsecureDAO;
         this.eventService = eventService;
         this.customerDAO = customerDAO;
@@ -134,6 +139,8 @@ public class SyncResource {
         this.baseUrl = baseUrl;
         this.secureEnrollment = secureEnrollment;
         this.hashSecret = hashSecret;
+        this.mobileAppName = mobileAppName;
+        this.vendor = vendor;
 
         Set<SyncResponseHook> allYourInterfaces = new HashSet<>();
         for (Key<?> key : injector.getAllBindings().keySet()) {
@@ -410,6 +417,14 @@ public class SyncResource {
         );
 
         data.setFiles(configurationFiles.stream().map(SyncConfigurationFile::new).collect(Collectors.toList()));
+
+        // Rebranding data
+        if (!mobileAppName.equals("")) {
+            data.setAppName(mobileAppName);
+        }
+        if (!vendor.equals("")) {
+            data.setVendor(vendor);
+        }
 
         SyncResponseInt syncResponse = data;
 

@@ -37,6 +37,11 @@ public class ConfigureModule extends AbstractModule {
     private final String aaptCommandParameter = "aapt.command";
     private final String roleOrgadminIdParameter = "role.orgadmin.id";
     private final String launcherPackageParameter = "launcher.package";
+    private final String rebrandingNameParameter = "rebranding.name";
+    private final String rebrandingVendorParameter = "rebranding.vendor.name";
+    private final String rebrandingVendorLinkParameter = "rebranding.vendor.link";
+    private final String rebrandingLogoParameter = "rebranding.logo";
+    private final String rebrandingMobileNameParameter = "rebranding.mobile.name";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -62,5 +67,18 @@ public class ConfigureModule extends AbstractModule {
             launcherPackage = Application.DEFAULT_LAUNCHER_PACKAGE;
         }
         this.bindConstant().annotatedWith(Names.named(launcherPackageParameter)).to(launcherPackage);
+
+        // Optional parameters (Guice doesn't allow to bind string to null)
+        String opt;
+        opt = this.context.getInitParameter(rebrandingNameParameter);
+        this.bindConstant().annotatedWith(Names.named(rebrandingNameParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(rebrandingVendorParameter);
+        this.bindConstant().annotatedWith(Names.named(rebrandingVendorParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(rebrandingVendorLinkParameter);
+        this.bindConstant().annotatedWith(Names.named(rebrandingVendorLinkParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(rebrandingLogoParameter);
+        this.bindConstant().annotatedWith(Names.named(rebrandingLogoParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(rebrandingMobileNameParameter);
+        this.bindConstant().annotatedWith(Names.named(rebrandingMobileNameParameter)).to(opt != null ? opt : "");
     }
 }
