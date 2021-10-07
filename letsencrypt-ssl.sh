@@ -55,4 +55,4 @@ echo "</Connector>"
 # to be restarted to load a new certificate.
 # Here we assume the service has the same name as the Tomcat directory
 # (e.g. tomcat9)
-service $TOMCAT_SERVICE restart
+/usr/sbin/service $TOMCAT_SERVICE restart
