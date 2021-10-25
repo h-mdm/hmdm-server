@@ -33,8 +33,18 @@
 
     <Parameter name="plugin.photo.enable.places" value="${plugin.photo.enable.places}"/>
 
-    <!-- A local address to which the server binds to listen on port 31000 (MQTT for Push notifications), for example, demo.h-mdm.com:31000 -->    
+    <!-- If Headwind MDM uses an embedded MQTT broker, this parameter is a
+    local address to which the server binds to listen on port 31000
+    (MQTT for Push notifications), for example, demo.h-mdm.com:31000
+    If an external MQTT server is used, this is the address of this MQTT server
+    -->
     <Parameter name="mqtt.server.uri" value="${mqtt.server.uri}"/>
+
+    <!-- Set to 1 if an external MQTT server must be used (ActiveMQ Classic is recommended) -->
+    <Parameter name="mqtt.external" value="${mqtt.external}"/>
+
+    <!-- Optional tag for the MQTT client (required if multiple Tomcat nodes are running) -->
+    <Parameter name="mqtt.client.tag" value="${mqtt.client.tag}"/>
 
 
 

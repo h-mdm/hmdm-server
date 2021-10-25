@@ -53,7 +53,11 @@ public enum ResourceAuditInfo {
     UPDATE_USER("PUT", "/rest/private/users", true, "plugin.audit.action.update.user", true),
     REMOVE_USER("DELETE", "/rest/private/users", false, "plugin.audit.action.remove.user", true),
     UPDATE_GROUP("PUT", "/rest/private/groups", true, "plugin.audit.action.update.group", true),
-    REMOVE_GROUP("DELETE", "/rest/private/groups", false, "plugin.audit.action.remove.group", true);
+    REMOVE_GROUP("DELETE", "/rest/private/groups", false, "plugin.audit.action.remove.group", true),
+    PASSWORD_CHANGED("PUT", "/rest/private/users/current", true, "plugin.audit.action.password.changed", true),
+    DEVICE_PASSWORD_RESET("PUT", "/rest/plugins/devicereset/private/password", true, "plugin.audit.action.password.reset", true),
+    DEVICE_FACTORY_RESET("PUT", "/rest/plugins/devicereset/private/reset", false, "plugin.audit.action.device.reset", false),
+    DEVICE_LOCK("PUT", "/rest/plugins/devicereset/private/lock", true, "plugin.audit.action.device.lock", true);
 
     /**
      * <p>Method for the REST resource to track audit log for.</p>

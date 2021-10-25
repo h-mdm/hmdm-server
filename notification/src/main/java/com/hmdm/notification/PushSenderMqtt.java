@@ -22,20 +22,24 @@ import java.util.Map;
 @Singleton
 public class PushSenderMqtt implements PushSender {
     private String serverUri;
+    private String clientTag;
     private DeviceDAO deviceDAO;
     private MqttClient client;
     private MemoryPersistence persistence = new MemoryPersistence();
 
     @Inject
-    public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri, DeviceDAO deviceDAO) {
+    public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri,
+                          @Named("mqtt.client.tag") String clientTag,
+                          DeviceDAO deviceDAO) {
         this.serverUri = serverUri;
+        this.clientTag = clientTag;
         this.deviceDAO = deviceDAO;
     }
 
     @Override
     public void init() {
         try {
-            client = new MqttClient("tcp://" + serverUri, "HMDMServer", persistence);
+            client = new MqttClient("tcp://" + serverUri, "HMDMServer" + clientTag, persistence);
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
             options.setAutomaticReconnect(true);

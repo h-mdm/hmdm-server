@@ -11,13 +11,17 @@ import org.slf4j.LoggerFactory;
 public class NotificationMqttTaskModule {
 
     private String serverUri;
+    private String mqttExternal;
     private BrokerService brokerService;
     private PushSender pushSender;
     private static final Logger log = LoggerFactory.getLogger(NotificationMqttTaskModule.class);
 
     @Inject
-    public NotificationMqttTaskModule(@Named("mqtt.server.uri") String serverUri, @Named("MQTT") PushSender pushSender) {
+    public NotificationMqttTaskModule(@Named("mqtt.server.uri") String serverUri,
+                                      @Named("mqtt.external") String mqttExternal,
+                                      @Named("MQTT") PushSender pushSender) {
         this.serverUri = serverUri;
+        this.mqttExternal = mqttExternal;
         this.pushSender = pushSender;
     }
 
@@ -36,6 +40,11 @@ public class NotificationMqttTaskModule {
             log.info("MQTT service not initialized (parameter mqtt.server.uri not set)");
             return false;
         }
+        if (mqttExternal.equals("1") || mqttExternal.toLowerCase().equals("true")) {
+            log.info("MQTT service not started, use external MQTT server " + serverUri);
+            return true;
+        }
+
         brokerService = new BrokerService();
         brokerService.setPersistent(false);
         brokerService.setUseJmx(false);

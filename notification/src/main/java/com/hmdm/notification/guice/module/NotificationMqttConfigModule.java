@@ -31,5 +31,17 @@ public class NotificationMqttConfigModule extends AbstractModule {
             serverUri = "";
         }
         this.bindConstant().annotatedWith(Names.named("mqtt.server.uri")).to(serverUri);
+
+        String mqttExternal = context.getInitParameter("mqtt.external");
+        if (mqttExternal == null || "".equals(mqttExternal)) {
+            mqttExternal = "0";
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.external")).to(mqttExternal);
+
+        String mqttClientTag = context.getInitParameter("mqtt.client.tag");
+        if (mqttClientTag == null) {
+            mqttClientTag = "";
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.client.tag")).to(mqttClientTag);
     }
 }

@@ -214,8 +214,8 @@ public class DeviceResource {
                         Integer id = (Integer) it.next();
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
-                            this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
-                            this.pushService.notifyDeviceOnSettingUpdate(device.getId());
+                            this.deviceDAO.updateDeviceConfiguration(id, dbDevice.getConfigurationId());
+                            this.pushService.notifyDeviceOnSettingUpdate(dbDevice.getId());
                         }
                     }
                 } else {
