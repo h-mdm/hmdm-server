@@ -364,12 +364,12 @@ public class SyncResource {
             }
         }
 
-        data.setKioskHome(configuration.getKioskHome() ? true : null);
-        data.setKioskRecents(configuration.getKioskRecents() ? true : null);
-        data.setKioskNotifications(configuration.getKioskNotifications() ? true : null);
-        data.setKioskSystemInfo(configuration.getKioskSystemInfo() ? true : null);
-        data.setKioskKeyguard(configuration.getKioskKeyguard() ? true : null);
-        data.setKioskLockButtons(configuration.getKioskLockButtons() ? true : null);
+        data.setKioskHome(configuration.getKioskHome() != null && configuration.getKioskHome() ? true : null);
+        data.setKioskRecents(configuration.getKioskRecents() != null && configuration.getKioskRecents() ? true : null);
+        data.setKioskNotifications(configuration.getKioskNotifications() != null && configuration.getKioskNotifications() ? true : null);
+        data.setKioskSystemInfo(configuration.getKioskSystemInfo() != null && configuration.getKioskSystemInfo() ? true : null);
+        data.setKioskKeyguard(configuration.getKioskKeyguard() != null && configuration.getKioskKeyguard() ? true : null);
+        data.setKioskLockButtons(configuration.getKioskLockButtons() != null && configuration.getKioskLockButtons() ? true : null);
         data.setRestrictions(configuration.getRestrictions());
 
         if (settings != null) {
