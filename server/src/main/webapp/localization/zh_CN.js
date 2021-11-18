@@ -223,6 +223,7 @@ document.localization ['zh_CN'] = {
     'form.configuration.settings.mdm.kiosk.notifications':"启用通知",
     'form.configuration.settings.mdm.kiosk.system.info':"启用状态栏信息",
     'form.configuration.settings.mdm.kiosk.keyguard':"启用屏幕锁定",
+    'form.configuration.settings.mdm.kiosk.lock.buttons': '锁定电源按钮',
     'form.configuration.settings.mdm.mobile.enrollment': '使用移动数据注册',
     'form.configuration.settings.mdm.lock.safe.settings':"锁定安全设置（WiFi，GPS等）",
     'form.configuration.settings.mdm.allowed.classes':"允许的活动",
@@ -263,6 +264,11 @@ document.localization ['zh_CN'] = {
     'form.configuration.settings.design.desktop.header':"桌面标题",
     'form.configuration.settings.design.desktop.header.no' : "没有",
     'form.configuration.settings.design.desktop.header.deviceid' : "设备编号",
+    'form.configuration.settings.design.desktop.header.description': '描述',
+    'form.configuration.settings.design.desktop.header.custom': '自定义模板',
+    'form.configuration.settings.design.desktop.header.hint': '确保将此参数发送到设备（设置 - 其他设置）',
+    'form.configuration.settings.design.desktop.header.template': '输入模板',
+    'form.configuration.settings.design.desktop.header.template.placeholder': '使用变量',
     'form.configuration.settings.design.upload': '上载',
     'form.configuration.settings.common.name' : "名称",
     'form.configuration.settings.common.name.placeholder':"输入配置名称",
@@ -534,7 +540,8 @@ document.localization ['zh_CN'] = {
     'form.settings.misc.create.new.devices':"在首次访问时新增设备",
     'form.settings.misc.new.device.config':"新设备配置",
     'form.settings.misc.new.device.group':"新设备组合",
-		
+    'form.settings.misc.send.description': '向设备发送描述',
+
     'form.settings.groups.title':"组合",
     'form.settings.groups.search.placeholder':"组合搜索",
 		

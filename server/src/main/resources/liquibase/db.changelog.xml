@@ -2167,4 +2167,26 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="17.11.21-07:32" author="seva" context="common">
+        <comment>Add desktop header template and description to settings and configurations</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN desktopHeaderTemplate TEXT;
+            ALTER TABLE settings ADD COLUMN sendDescription BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE configurations ADD COLUMN desktopHeaderTemplate TEXT;
+            ALTER TABLE configurations ADD COLUMN kioskLockButtons BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN scheduleAppUpdate BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN appUpdateFrom VARCHAR(10);
+            ALTER TABLE configurations ADD COLUMN appUpdateTo VARCHAR(10);
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN desktopHeaderTemplate;
+            ALTER TABLE settings DROP COLUMN sendDescription;
+            ALTER TABLE configurations DROP COLUMN desktopHeaderTemplate;
+            ALTER TABLE configurations DROP COLUMN kioskLockButtons;
+            ALTER TABLE configurations DROP COLUMN scheduleAppUpdate;
+            ALTER TABLE configurations DROP COLUMN appUpdateFrom;
+            ALTER TABLE configurations DROP COLUMN appUpdateTo;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -48,6 +48,8 @@ angular.module('headwind-kiosk')
 
         };
 
+        $scope.desktopHeaderTemplatePlaceholder = localization.localize('form.configuration.settings.design.desktop.header.template.placeholder') + ' deviceId, description, custom1, custom2, custom3';
+
         $scope.initCommonSettings = function () {
             clearMessages();
 

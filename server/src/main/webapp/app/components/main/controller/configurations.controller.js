@@ -300,7 +300,7 @@ angular.module('headwind-kiosk')
     })
     .controller('ConfigurationEditorController',
         function ($scope, configurationService, settingsService, $stateParams, $state, $rootScope, $window, $timeout,
-                  $transitions, localization, confirmModal, alertService, $modal, appVersionComparisonService) {
+                  $transitions, localization, confirmModal, alertService, $modal, appVersionComparisonService, settingsService) {
 
             $scope.successMessage = null;
 
@@ -315,7 +315,7 @@ angular.module('headwind-kiosk')
 
             $scope.saveButtonClass = function () {
                 return $scope.configurationForm.$dirty ? 'btn-attention' : '';
-            }
+            };
 
             $scope.uploadBackground = function () {
                 var modalInstance = $modal.open({
@@ -475,6 +475,8 @@ angular.module('headwind-kiosk')
             $scope.isRemoveOptionAvailable = function (application) {
                 return !application.system;
             };
+
+            $scope.desktopHeaderTemplatePlaceholder = localization.localize('form.configuration.settings.design.desktop.header.template.placeholder') + ' deviceId, description, custom1, custom2, custom3';
 
             var transFunction = function(trans) {
                 if ($scope.configurationForm && $scope.configurationForm.$dirty) {
@@ -1376,6 +1378,12 @@ angular.module('headwind-kiosk')
                 //     }
                 // });
             }
+
+            settingsService.getSettings(function (response) {
+                if (response.data) {
+                    $scope.settings = response.data;
+                }
+            });
 
             $scope.loadApps(configId);
         })

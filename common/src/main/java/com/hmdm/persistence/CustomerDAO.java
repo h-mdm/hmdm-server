@@ -205,6 +205,7 @@ public class CustomerDAO {
                 customerSettings.setBackgroundColor(masterSettings.getBackgroundColor());
                 customerSettings.setBackgroundImageUrl(masterSettings.getBackgroundImageUrl());
                 customerSettings.setDesktopHeader(masterSettings.getDesktopHeader());
+                customerSettings.setDesktopHeaderTemplate(masterSettings.getDesktopHeaderTemplate());
                 customerSettings.setIconSize(masterSettings.getIconSize());
                 customerSettings.setTextColor(masterSettings.getTextColor());
                 customerSettings.setCustomerId(customer.getId());

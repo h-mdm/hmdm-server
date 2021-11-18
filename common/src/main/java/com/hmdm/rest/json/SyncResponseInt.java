@@ -71,6 +71,8 @@ public interface SyncResponseInt {
 
     Boolean getKioskKeyguard();
 
+    Boolean getKioskLockButtons();
+
     String getMainApp();
 
     boolean isLockStatusBar();
@@ -80,6 +82,12 @@ public interface SyncResponseInt {
     String getSystemUpdateFrom();
 
     String getSystemUpdateTo();
+
+    Boolean getScheduleAppUpdate();
+
+    String getAppUpdateFrom();
+
+    String getAppUpdateTo();
 
     List<SyncApplicationSettingInt> getApplicationSettings();
 
@@ -138,4 +146,6 @@ public interface SyncResponseInt {
     String getAppName();
 
     String getVendor();
+
+    String getDescription();
 }

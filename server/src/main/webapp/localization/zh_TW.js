@@ -223,6 +223,7 @@ document.localization ['zh_TW'] = {
     'form.configuration.settings.mdm.kiosk.notifications':"啟用通知",
     'form.configuration.settings.mdm.kiosk.system.info':"啟用狀態欄信息",
     'form.configuration.settings.mdm.kiosk.keyguard':"啟用屏幕鎖定",
+    'form.configuration.settings.mdm.kiosk.lock.buttons': '鎖定電源按鈕',
     'form.configuration.settings.mdm.mobile.enrollment': '使用移動數據註冊',
     'form.configuration.settings.mdm.lock.safe.settings':"鎖定安全設置（WiFi，GPS等）",
     'form.configuration.settings.mdm.allowed.classes':"允許的活動",
@@ -263,6 +264,11 @@ document.localization ['zh_TW'] = {
     'form.configuration.settings.design.desktop.header':"桌面標題",
     'form.configuration.settings.design.desktop.header.no' : "沒有",
     'form.configuration.settings.design.desktop.header.deviceid' : "設備編號",
+    'form.configuration.settings.design.desktop.header.description': '描述',
+    'form.configuration.settings.design.desktop.header.custom': '自定義模板',
+    'form.configuration.settings.design.desktop.header.hint': '確保將此參數發送到設備（設置 - 其他設置）',
+    'form.configuration.settings.design.desktop.header.template': '輸入模板',
+    'form.configuration.settings.design.desktop.header.template.placeholder': '使用變量',
     'form.configuration.settings.design.upload': '上載',
     'form.configuration.settings.common.name' : "名稱",
     'form.configuration.settings.common.name.placeholder':"輸入配置名稱",
@@ -534,7 +540,8 @@ document.localization ['zh_TW'] = {
     'form.settings.misc.create.new.devices':"在首次訪問時新增設備",
     'form.settings.misc.new.device.config':"新設備配置",
     'form.settings.misc.new.device.group':"新設備組合",
-		
+    'form.settings.misc.send.description': '向設備發送描述',
+
     'form.settings.groups.title':"組合",
     'form.settings.groups.search.placeholder':"組合搜索",
 		

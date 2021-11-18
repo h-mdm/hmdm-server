@@ -50,14 +50,31 @@
                 </div>
             </div>
             <div class='form-group'>
-                <label class='col-sm-3 control-label' for="desktopHeader" localized>form.settings.design.desktop.header</label>
+                <label class='col-sm-3 control-label' for="desktopHeader" localized>form.configuration.settings.design.desktop.header</label>
                 <div class='col-sm-9'>
                     <select class='form-control' id="desktopHeader" ng-model='settings.desktopHeader'>
                         <option ng-value="'NO_HEADER'" ng-selected="settings.desktopHeader === 'NO_HEADER'"
-                                localized>form.settings.design.desktop.header.no</option>
+                                localized>form.configuration.settings.design.desktop.header.no</option>
                         <option ng-value="'DEVICE_ID'" ng-selected="settings.desktopHeader === 'DEVICE_ID'"
-                                localized>form.settings.design.desktop.header.device.id</option>
+                                localized>form.configuration.settings.design.desktop.header.deviceid</option>
+                        <option ng-value="'DESCRIPTION'" ng-selected="settings.desktopHeader === 'DESCRIPTION'"
+                                localized>form.configuration.settings.design.desktop.header.description</option>
+                        <option ng-value="'TEMPLATE'" ng-selected="settings.desktopHeader === 'TEMPLATE'"
+                                localized>form.configuration.settings.design.desktop.header.custom</option>
+                        <option ng-if="settings.customPropertyName1" ng-value="'CUSTOM1'" ng-selected="settings.desktopHeader === 'CUSTOM1'">{{settings.customPropertyName1}}</option>
+                        <option ng-if="settings.customPropertyName2" ng-value="'CUSTOM2'" ng-selected="settings.desktopHeader === 'CUSTOM2'">{{settings.customPropertyName2}}</option>
+                        <option ng-if="settings.customPropertyName3" ng-value="'CUSTOM3'" ng-selected="settings.desktopHeader === 'CUSTOM3'">{{settings.customPropertyName3}}</option>
                     </select>
+                    <div class='field-hint'  ng-if="settings.desktopHeader === 'DESCRIPTION' || settings.desktopHeader === 'CUSTOM1' || settings.desktopHeader === 'CUSTOM2' || settings.desktopHeader === 'CUSTOM3'" localized>form.configuration.settings.design.desktop.header.hint</div>
+                </div>
+            </div>
+
+            <div class='form-group' ng-if="settings.desktopHeader === 'TEMPLATE'">
+                <label class='col-sm-3 control-label' localized>form.configuration.settings.design.desktop.header.template</label>
+                <div class='col-sm-9'>
+                    <input ng-model='settings.desktopHeaderTemplate'
+                           type='text' class='form-control'
+                           placeholder='{{desktopHeaderTemplatePlaceholder}}'>
                 </div>
             </div>
             <div class='form-group'>

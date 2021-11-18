@@ -28,7 +28,12 @@ package com.hmdm.persistence.domain;
  */
 public enum DesktopHeader {
     NO_HEADER("none"),
-    DEVICE_ID("deviceId");
+    DEVICE_ID("deviceId"),
+    DESCRIPTION("description"),
+    CUSTOM1("custom1"),
+    CUSTOM2("custom2"),
+    CUSTOM3("custom3"),
+    TEMPLATE("template");
 
     /**
      * <p>A string value transmitted between the server and the device to represent this item.</p>

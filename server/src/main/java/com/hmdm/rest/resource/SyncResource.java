@@ -337,6 +337,11 @@ public class SyncResource {
             data.setSystemUpdateFrom(configuration.getSystemUpdateFrom());
             data.setSystemUpdateTo(configuration.getSystemUpdateTo());
         }
+        if (configuration.isScheduleAppUpdate()) {
+            data.setScheduleAppUpdate(true);
+            data.setAppUpdateFrom(configuration.getAppUpdateFrom());
+            data.setAppUpdateTo(configuration.getAppUpdateTo());
+        }
         data.setPasswordMode(configuration.getPasswordMode());
         data.setOrientation(configuration.getOrientation());
         data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
@@ -359,11 +364,12 @@ public class SyncResource {
             }
         }
 
-        data.setKioskHome(configuration.getKioskHome());
-        data.setKioskRecents(configuration.getKioskRecents());
-        data.setKioskNotifications(configuration.getKioskNotifications());
-        data.setKioskSystemInfo(configuration.getKioskSystemInfo());
-        data.setKioskKeyguard(configuration.getKioskKeyguard());
+        data.setKioskHome(configuration.getKioskHome() ? true : null);
+        data.setKioskRecents(configuration.getKioskRecents() ? true : null);
+        data.setKioskNotifications(configuration.getKioskNotifications() ? true : null);
+        data.setKioskSystemInfo(configuration.getKioskSystemInfo() ? true : null);
+        data.setKioskKeyguard(configuration.getKioskKeyguard() ? true : null);
+        data.setKioskLockButtons(configuration.getKioskLockButtons() ? true : null);
         data.setRestrictions(configuration.getRestrictions());
 
         if (settings != null) {
@@ -377,6 +383,10 @@ public class SyncResource {
 
             if (settings.isCustomSend3()) {
                 data.setCustom3(dbDevice.getCustom3());
+            }
+
+            if (settings.isSendDescription()) {
+                data.setDescription(dbDevice.getDescription());
             }
         }
 

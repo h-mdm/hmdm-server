@@ -27,14 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.hmdm.persistence.domain.ConfigurationFile;
+import com.hmdm.persistence.domain.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.Device;
-import com.hmdm.persistence.domain.Settings;
 import com.hmdm.util.CryptoUtil;
 
 @ApiModel(description = "The details and settings for a single device used for configuring MDM mobile application")
@@ -177,6 +173,10 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean kioskKeyguard;
 
+    @ApiModelProperty("Flag disabling power button in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskLockButtons;
+
     @ApiModelProperty("A flag indicating if status bar is locked")
     private boolean lockStatusBar;
 
@@ -194,6 +194,18 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty(value = "A finish time for system update period formatted as HH:MM. (If system update time is 2)")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String systemUpdateTo;
+
+    @ApiModelProperty(value = "A flag indicating if the application update must be scheduled")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean scheduleAppUpdate;
+
+    @ApiModelProperty(value = "A start time for app update period formatted as HH:MM.")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String appUpdateFrom;
+
+    @ApiModelProperty(value = "A finish time for app update period formatted as HH:MM.")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String appUpdateTo;
 
     @ApiModelProperty(value = "A list of application settings to apply on device")
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -229,6 +241,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String vendor;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String description;
+
     public SyncResponse() {
     }
 
@@ -238,7 +253,8 @@ public class SyncResponse implements Serializable, SyncResponseInt {
             this.textColor = settings.getTextColor();
             this.backgroundImageUrl = settings.getBackgroundImageUrl();
             this.iconSize = settings.getIconSize().getTransmittedValue();
-            this.title = settings.getDesktopHeader().getTransmittedValue();
+            this.title = settings.getDesktopHeader() == DesktopHeader.TEMPLATE ?
+                    settings.getDesktopHeaderTemplate() : settings.getDesktopHeader().getTransmittedValue();
         }
 
         if (device != null) {
@@ -263,7 +279,8 @@ public class SyncResponse implements Serializable, SyncResponseInt {
             this.textColor = settings.getTextColor();
             this.backgroundImageUrl = settings.getBackgroundImageUrl();
             this.iconSize = settings.getIconSize().getTransmittedValue();
-            this.title = settings.getDesktopHeader().getTransmittedValue();
+            this.title = settings.getDesktopHeader() == DesktopHeader.TEMPLATE ?
+                    settings.getDesktopHeaderTemplate() : settings.getDesktopHeader().getTransmittedValue();
         }
 
         if (device != null) {
@@ -450,6 +467,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     }
 
     @Override
+    public Boolean getKioskLockButtons() {
+        return kioskLockButtons;
+    }
+
+    public void setKioskLockButtons(Boolean kioskLockButtons) {
+        this.kioskLockButtons = kioskLockButtons;
+    }
+
+    @Override
     public String getMainApp() {
         return mainApp;
     }
@@ -492,6 +518,33 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setSystemUpdateTo(String systemUpdateTo) {
         this.systemUpdateTo = systemUpdateTo;
+    }
+
+    @Override
+    public Boolean getScheduleAppUpdate() {
+        return scheduleAppUpdate;
+    }
+
+    public void setScheduleAppUpdate(Boolean scheduleAppUpdate) {
+        this.scheduleAppUpdate = scheduleAppUpdate;
+    }
+
+    @Override
+    public String getAppUpdateFrom() {
+        return appUpdateFrom;
+    }
+
+    public void setAppUpdateFrom(String appUpdateFrom) {
+        this.appUpdateFrom = appUpdateFrom;
+    }
+
+    @Override
+    public String getAppUpdateTo() {
+        return appUpdateTo;
+    }
+
+    public void setAppUpdateTo(String appUpdateTo) {
+        this.appUpdateTo = appUpdateTo;
     }
 
     @Override
@@ -742,5 +795,14 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setVendor(String vendor) {
         this.vendor = vendor;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

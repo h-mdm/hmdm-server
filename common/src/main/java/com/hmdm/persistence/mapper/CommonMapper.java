@@ -48,6 +48,7 @@ public interface CommonMapper {
                     "backgroundImageUrl, " +
                     "iconSize, " +
                     "desktopHeader, " +
+                    "desktopHeaderTemplate, " +
                     "customerId" +
                     ") VALUES (" +
                     "#{backgroundColor}, " +
@@ -55,6 +56,7 @@ public interface CommonMapper {
                     "#{backgroundImageUrl}, " +
                     "#{iconSize}, " +
                     "#{desktopHeader}, " +
+                    "#{desktopHeaderTemplate}, " +
                     "#{customerId}" +
                     ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
@@ -63,7 +65,8 @@ public interface CommonMapper {
                     "textColor = EXCLUDED.textColor, " +
                     "backgroundImageUrl = EXCLUDED.backgroundImageUrl, " +
                     "iconSize = EXCLUDED.iconSize, " +
-                    "desktopHeader = EXCLUDED.desktopHeader"
+                    "desktopHeader = EXCLUDED.desktopHeader, " +
+                    "desktopHeaderTemplate = EXCLUDED.desktopHeaderTemplate"
     })
     void saveDefaultDesignSettings(Settings settings);
 
@@ -99,6 +102,7 @@ public interface CommonMapper {
                     "customSend1, " +
                     "customSend2, " +
                     "customSend3, " +
+                    "sendDescription, " +
                     "customerId" +
                     ") VALUES (" +
                     "#{createNewDevices}, " +
@@ -114,6 +118,7 @@ public interface CommonMapper {
                     "#{customSend1}, " +
                     "#{customSend2}, " +
                     "#{customSend3}, " +
+                    "#{sendDescription}, " +
                     "#{customerId}" +
                     ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
@@ -130,7 +135,8 @@ public interface CommonMapper {
                     "customMultiline3 = EXCLUDED.customMultiline3, " +
                     "customSend1 = EXCLUDED.customSend1, " +
                     "customSend2 = EXCLUDED.customSend2, " +
-                    "customSend3 = EXCLUDED.customSend3 "
+                    "customSend3 = EXCLUDED.customSend3, " +
+                    "sendDescription = EXCLUDED.sendDescription "
     })
     void saveMiscSettings(Settings settings);
 }

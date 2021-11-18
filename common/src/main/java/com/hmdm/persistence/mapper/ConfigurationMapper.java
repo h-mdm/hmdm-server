@@ -63,6 +63,7 @@ public interface ConfigurationMapper {
             "backgroundImageUrl=#{backgroundImageUrl}, " +
             "iconSize=#{iconSize}, " +
             "desktopHeader=#{desktopHeader}, " +
+            "desktopHeaderTemplate=#{desktopHeaderTemplate}, " +
             "requestUpdates=#{requestUpdates}, " +
             "pushOptions=#{pushOptions}, " +
             "keepaliveTime=#{keepaliveTime}, " +
@@ -101,12 +102,16 @@ public interface ConfigurationMapper {
             "kioskNotifications=#{kioskNotifications}, " +
             "kioskSystemInfo=#{kioskSystemInfo}, " +
             "kioskKeyguard=#{kioskKeyguard}, " +
+            "kioskLockButtons=#{kioskLockButtons}, " +
             "restrictions=#{restrictions}, " +
             "autoUpdate=#{autoUpdate}, " +
             "blockStatusBar=#{blockStatusBar}, " +
             "systemUpdateType=#{systemUpdateType}, " +
             "systemUpdateFrom=#{systemUpdateFrom}, " +
             "systemUpdateTo=#{systemUpdateTo}, " +
+            "scheduleAppUpdate=#{scheduleAppUpdate}, " +
+            "appUpdateFrom=#{appUpdateFrom}, " +
+            "appUpdateTo=#{appUpdateTo}, " +
             "defaultFilePath=#{defaultFilePath} " +
             "WHERE id=#{id}"})
     void updateConfiguration(Configuration configuration);

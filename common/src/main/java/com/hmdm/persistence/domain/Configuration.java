@@ -63,8 +63,14 @@ public class Configuration implements CustomerData, Serializable {
     private int systemUpdateType;
     @ApiModelProperty(value = "A start time for system update period formatted as HH:MM. (If system update time is 2)")
     private String systemUpdateFrom;
-    @ApiModelProperty(value = "A finish time for system update period formatted as HH:MM. (If system update time is 2)")
+    @ApiModelProperty(value = "An end time for system update period formatted as HH:MM. (If system update time is 2)")
     private String systemUpdateTo;
+    @ApiModelProperty("A flag indicating if the application update must be scheduled")
+    private boolean scheduleAppUpdate;
+    @ApiModelProperty(value = "A start time for app update period formatted as HH:MM.")
+    private String appUpdateFrom;
+    @ApiModelProperty(value = "An end time for system update period formatted as HH:MM.")
+    private String appUpdateTo;
 
     @ApiModelProperty("A flag indicating if GPS is enabled on device")
     private Boolean gps;
@@ -142,6 +148,8 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean kioskSystemInfo;
     @ApiModelProperty("Flag enabling lock screen in kiosk mode")
     private Boolean kioskKeyguard;
+    @ApiModelProperty("Flag locking power button in kiosk mode")
+    private Boolean kioskLockButtons;
     @ApiModelProperty("Additional comma separated restrictions in MDM mode")
     private String restrictions;
 
@@ -157,6 +165,8 @@ public class Configuration implements CustomerData, Serializable {
     private IconSize iconSize = SMALL;
     @ApiModelProperty("A type of desktop header to use when running MDM application")
     private DesktopHeader desktopHeader = NO_HEADER;
+    @ApiModelProperty("Desktop header template")
+    private String desktopHeaderTemplate;
 
     // An unique key used for retrieving the QR code for configuration
     @ApiModelProperty(hidden = true)
@@ -278,6 +288,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setDesktopHeader(DesktopHeader desktopHeader) {
         this.desktopHeader = desktopHeader;
+    }
+
+    public String getDesktopHeaderTemplate() {
+        return desktopHeaderTemplate;
+    }
+
+    public void setDesktopHeaderTemplate(String desktopHeaderTemplate) {
+        this.desktopHeaderTemplate = desktopHeaderTemplate;
     }
 
     public boolean isUseDefaultDesignSettings() {
@@ -442,6 +460,14 @@ public class Configuration implements CustomerData, Serializable {
         this.kioskKeyguard = kioskKeyguard;
     }
 
+    public Boolean getKioskLockButtons() {
+        return kioskLockButtons;
+    }
+
+    public void setKioskLockButtons(Boolean kioskLockButtons) {
+        this.kioskLockButtons = kioskLockButtons;
+    }
+
     public String getRestrictions() {
         return restrictions;
     }
@@ -496,6 +522,30 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setSystemUpdateTo(String systemUpdateTo) {
         this.systemUpdateTo = systemUpdateTo;
+    }
+
+    public boolean isScheduleAppUpdate() {
+        return scheduleAppUpdate;
+    }
+
+    public void setScheduleAppUpdate(boolean scheduleAppUpdate) {
+        this.scheduleAppUpdate = scheduleAppUpdate;
+    }
+
+    public String getAppUpdateFrom() {
+        return appUpdateFrom;
+    }
+
+    public void setAppUpdateFrom(String appUpdateFrom) {
+        this.appUpdateFrom = appUpdateFrom;
+    }
+
+    public String getAppUpdateTo() {
+        return appUpdateTo;
+    }
+
+    public void setAppUpdateTo(String appUpdateTo) {
+        this.appUpdateTo = appUpdateTo;
     }
 
     public List<ApplicationSetting> getApplicationSettings() {
@@ -715,6 +765,9 @@ public class Configuration implements CustomerData, Serializable {
         copy.setSystemUpdateType(getSystemUpdateType());
         copy.setSystemUpdateFrom(getSystemUpdateFrom());
         copy.setSystemUpdateTo(getSystemUpdateTo());
+        copy.setScheduleAppUpdate(isScheduleAppUpdate());
+        copy.setAppUpdateFrom(getAppUpdateFrom());
+        copy.setAppUpdateTo(getAppUpdateTo());
 
         copy.setMainAppId(getMainAppId());
         copy.setContentAppId(getContentAppId());
@@ -728,6 +781,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setKioskNotifications(getKioskNotifications());
         copy.setKioskSystemInfo(getKioskSystemInfo());
         copy.setKioskKeyguard(getKioskKeyguard());
+        copy.setKioskLockButtons(getKioskLockButtons());
 
         copy.setGps(getGps());
         copy.setBluetooth(getBluetooth());
@@ -760,6 +814,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setBackgroundImageUrl(getBackgroundImageUrl());
         copy.setIconSize(getIconSize());
         copy.setDesktopHeader(getDesktopHeader());
+        copy.setDesktopHeaderTemplate(getDesktopHeaderTemplate());
 
         copy.setDefaultFilePath(getDefaultFilePath());
 

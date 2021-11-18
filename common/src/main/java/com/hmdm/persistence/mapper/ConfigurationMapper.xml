@@ -25,25 +25,27 @@
 
     <insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
-                                    iconSize, desktopHeader, useDefaultDesignSettings, customerId, gps, bluetooth,
-                                    wifi, mobileData, usbStorage, requestUpdates,
+                                    iconSize, desktopHeader, desktopHeaderTemplate, useDefaultDesignSettings, customerId,
+                                    gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates,
                                     pushOptions, keepaliveTime, autoBrightness, brightness, manageTimeout, timeout,
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
                                     runDefaultLauncher, disableScreenshots, timeZone, allowedClasses, newServerUrl,
                                     lockSafeSettings, showWifi, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
                                     wifiSSID, wifiPassword, wifiSecurityType, mobileEnrollment, kioskHome, kioskRecents,
-                                    kioskNotifications, kioskSystemInfo, kioskKeyguard, restrictions, autoUpdate,
-                                    blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo, defaultFilePath)
+                                    kioskNotifications, kioskSystemInfo, kioskKeyguard, kioskLockButtons, restrictions, autoUpdate,
+                                    blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
+                                    scheduleAppUpdate, appUpdateFrom, appUpdateTo, defaultFilePath)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
-                #{iconSize}, #{desktopHeader}, #{useDefaultDesignSettings}, #{customerId}, #{gps}, #{bluetooth},
-                #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
+                #{iconSize}, #{desktopHeader}, #{desktopHeaderTemplate}, #{useDefaultDesignSettings}, #{customerId},
+                #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates},
                 #{pushOptions}, #{keepaliveTime}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout},
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
                 #{runDefaultLauncher}, #{disableScreenshots}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
                 #{lockSafeSettings}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
                 #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
-                                    #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{restrictions}, #{autoUpdate},
-                #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo}, #{defaultFilePath})
+                #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{kioskLockButtons}, #{restrictions}, #{autoUpdate},
+                #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo},
+                #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{defaultFilePath})
     </insert>
 
     <insert id="insertConfigurationApplications">

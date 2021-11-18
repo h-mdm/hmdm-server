@@ -50,6 +50,8 @@ public class Settings implements CustomerData, Serializable {
     private IconSize iconSize = SMALL;
     @ApiModelProperty("A type of desktop header for Default Design of mobile application")
     private DesktopHeader desktopHeader = NO_HEADER;
+    @ApiModelProperty("Desktop header template for Default Design of mobile application")
+    private String desktopHeaderTemplate;
     @ApiModelProperty(hidden = true)
     private int customerId;
 
@@ -80,10 +82,12 @@ public class Settings implements CustomerData, Serializable {
     private boolean customMultiline3;
     @ApiModelProperty("Send custom property 1 to device")
     private boolean customSend1;
-    @ApiModelProperty("Send custom property 1 to device")
+    @ApiModelProperty("Send custom property 2 to device")
     private boolean customSend2;
-    @ApiModelProperty("Send custom property 1 to device")
+    @ApiModelProperty("Send custom property 3 to device")
     private boolean customSend3;
+    @ApiModelProperty("Send description to device")
+    private boolean sendDescription;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
@@ -148,6 +152,14 @@ public class Settings implements CustomerData, Serializable {
 
     public void setDesktopHeader(DesktopHeader desktopHeader) {
         this.desktopHeader = desktopHeader;
+    }
+
+    public String getDesktopHeaderTemplate() {
+        return desktopHeaderTemplate;
+    }
+
+    public void setDesktopHeaderTemplate(String desktopHeaderTemplate) {
+        this.desktopHeaderTemplate = desktopHeaderTemplate;
     }
 
     public int getCustomerId() {
@@ -276,6 +288,14 @@ public class Settings implements CustomerData, Serializable {
 
     public void setCustomSend3(boolean customSend3) {
         this.customSend3 = customSend3;
+    }
+
+    public boolean isSendDescription() {
+        return sendDescription;
+    }
+
+    public void setSendDescription(boolean sendDescription) {
+        this.sendDescription = sendDescription;
     }
 
     public boolean isSingleCustomer() {
