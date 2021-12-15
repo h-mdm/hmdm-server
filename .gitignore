@@ -25,6 +25,7 @@ server/Dockerfile
 server/context.xml
 server/docker-compose.yml
 server/src/main/resources/docker/base/Dockerfile
+server/build.properties
 
 # Backup copies
 server/pom.xml.bak

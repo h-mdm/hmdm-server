@@ -23,8 +23,12 @@ Escape character is '^]'.
 # git clone https://gitlab.com/h-mdm/hmdm-server
 # cd hmdm-server
 
-4. If you are planning to run or debug Headwind MDM in IDE, update the contents
-of the server/build.properties file.
+4. If you are planning to run or debug Headwind MDM in IDE, create the properties
+file from the sample
+
+# cp server/build.properties.example server/build.properties
+
+and update the contents of the server/build.properties file.
 
 5. Build the source code
 
