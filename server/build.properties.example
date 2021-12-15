@@ -1,3 +1,5 @@
+# This is a sample file; copy this file to build.properties
+
 # database settings
 jdbc.url=jdbc:postgresql://localhost:5432/hmdm
 jdbc.driver=org.postgresql.Driver
@@ -5,7 +7,7 @@ jdbc.username=hmdm
 jdbc.password=hmdm
 
 # A path to a directory to store uploaded files
-files.directory=C:/temp/hmdm/files
+files.directory=D:/home/launcher/files
 
 # A base URL for deployment of this build
 base.url=http://localhost:9090
@@ -28,41 +30,38 @@ hash.secret=12345
 role.orgadmin.id=2
 
 # A path to a root directory for storing plugin files
-plugins.files.directory=C:/temp/hmdm/plugins
+plugins.files.directory=/home/launcher/plugins
 
 # A path to a file to be created by the application initializer to signal on initialization completion
-initialization.completion.signal.file=C:/temp/hmdm/initialized.txt
+initialization.completion.signal.file=/home/launcher/initialized.txt
 
 # A command for calling the aapt
 aapt.command=aapt
 
 # An URL for the file with configuration for loggers
-log4j.config=file:///C:/temp/hmdm/log4j-hmdm.xml
+log4j.config=file:///log4j-hmdm.xml
+
+# The parameters specific to Photo plugin
+plugin.photo.enable.places=true
 
 # The parameters specific to Device Log plugin
 plugin.devicelog.persistence.config.class=com.hmdm.plugins.devicelog.persistence.postgres.DeviceLogPostgresPersistenceConfiguration
 
-plugin.apuppet.server.url=https://srv.apuppet.org/web-admin/
-plugin.apuppet.secret=V8kNYqxl
-
-# MQTT notification server URI
-# If Headwind MDM uses an integrated broker, this must be a local URI (to which the broker is bound)
-# If an external MQTT server is used, this is the address of a MQTT server
+# MQTT notification server local URI
 mqtt.server.uri=localhost:31000
 
-# Set to 1 if an external MQTT server must be used (ActiveMQ Classic is recommended)
-mqtt.external=0
+# rebranding parameters
+rebranding.name=My MDM
+rebranding.vendor.name=My Company
+rebranding.vendor.link=https://mycompany.com
+# rebranding logo must be a 100x100 PNG file
+rebranding.logo=/home/launcher/logo.png
+rebranding.mobile.name=My MDM
 
-# Optional tag for the MQTT client (required if multiple Tomcat nodes are running)
-mqtt.client.tag=hmdm1
-
-# The parameters specific to Knox plugin
-
-
-smtp.host=smtp.gmail.com
-smtp.port=465
-smtp.ssl=1
-smtp.starttls=1
-smtp.username=headwind.mdm@gmail.com
-smtp.password=Xci29z#21
-smtp.from=headwind.mdm@gmail.com
+smtp.host=smtp.mailgun.org
+smtp.port=25
+smtp.ssl=0
+smtp.starttls=0
+smtp.username=myacct@example.com
+smtp.password=skcbh252235as
+smtp.from=noreply@example.com
