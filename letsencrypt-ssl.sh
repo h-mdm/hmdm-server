@@ -56,3 +56,4 @@ echo "</Connector>"
 # Here we assume the service has the same name as the Tomcat directory
 # (e.g. tomcat9)
 /usr/sbin/service $TOMCAT_SERVICE restart
+
