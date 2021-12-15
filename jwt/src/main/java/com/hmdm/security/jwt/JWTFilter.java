@@ -23,6 +23,7 @@ package com.hmdm.security.jwt;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;
 
@@ -33,6 +34,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -55,6 +57,8 @@ public class JWTFilter implements Filter {
      */
     private final TokenProvider tokenProvider;
 
+    private final UnsecureDAO userDAO;
+
     /**
      * <p>Constructs new <code>JWTFilter</code> instance using the specified authentication token provider.</p>
      *
@@ -62,8 +66,9 @@ public class JWTFilter implements Filter {
      *                      provided by incoming request.
      */
     @Inject
-    public JWTFilter(TokenProvider tokenProvider) {
+    public JWTFilter(TokenProvider tokenProvider, UnsecureDAO userDAO) {
         this.tokenProvider = tokenProvider;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -97,10 +102,16 @@ public class JWTFilter implements Filter {
         String jwt = resolveToken(httpServletRequest);
         if (jwt != null && !jwt.trim().isEmpty() && this.tokenProvider.validateToken(jwt)) {
             User authUser = this.tokenProvider.getAuthentication(jwt);
+            User dbUser = userDAO.findByLoginOrEmail(authUser.getLogin());
+            if (dbUser == null || dbUser.getAuthToken() == null ||
+                    !dbUser.getAuthToken().equals(authUser.getAuthToken())) {
+                ((HttpServletResponse)servletResponse).sendError(403);
+                return;
+            }
 
             // Set-up the security context
             try {
-                SecurityContext.init(authUser);
+                SecurityContext.init(dbUser);
                 filterChain.doFilter(servletRequest, servletResponse);
             } finally {
                 SecurityContext.release();

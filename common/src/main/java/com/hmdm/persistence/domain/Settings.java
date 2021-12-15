@@ -88,6 +88,12 @@ public class Settings implements CustomerData, Serializable {
     private boolean customSend3;
     @ApiModelProperty("Send description to device")
     private boolean sendDescription;
+    @ApiModelProperty("Request password reset to new users")
+    private boolean passwordReset;
+    @ApiModelProperty("Minimal password length for users")
+    private int passwordLength;
+    @ApiModelProperty("Password strength for users (0 - none, 1 - alphanumeric, 2 - alphanumeric + special characters")
+    private int passwordStrength;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
@@ -296,6 +302,30 @@ public class Settings implements CustomerData, Serializable {
 
     public void setSendDescription(boolean sendDescription) {
         this.sendDescription = sendDescription;
+    }
+
+    public boolean isPasswordReset() {
+        return passwordReset;
+    }
+
+    public void setPasswordReset(boolean passwordReset) {
+        this.passwordReset = passwordReset;
+    }
+
+    public int getPasswordLength() {
+        return passwordLength;
+    }
+
+    public void setPasswordLength(int passwordLength) {
+        this.passwordLength = passwordLength;
+    }
+
+    public int getPasswordStrength() {
+        return passwordStrength;
+    }
+
+    public void setPasswordStrength(int passwordStrength) {
+        this.passwordStrength = passwordStrength;
     }
 
     public boolean isSingleCustomer() {

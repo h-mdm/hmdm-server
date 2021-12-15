@@ -543,6 +543,7 @@ angular.module('headwind-kiosk')
 
             $scope.actionChanged = function (configuration) {
                 configuration.remove = (configuration.action == '2');
+                $scope.actionGroup = -1;
             };
             $scope.isInstallOptionAvailable = function (application) {
                 return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
@@ -557,6 +558,29 @@ angular.module('headwind-kiosk')
                     $scope.application[prop] = application[prop];
                 }
             }
+
+            $scope.actionGroup = -1;
+            $scope.toggleSelectAll = false;
+            $scope.selectAllChanged = function() {
+                for (var i in $scope.configurations) {
+                    $scope.configurations[i].selected = $scope.toggleSelectAll;
+                }
+            };
+
+            $scope.selectionChanged = function(configuration) {
+                $scope.toggleSelectAll = false;
+            };
+
+            $scope.actionGroupChanged = function() {
+                if ($scope.actionGroup == -1) {
+                    return;
+                }
+                for (var i in $scope.configurations) {
+                    if ($scope.configurations[i].selected && $scope.configurations[i].action != $scope.actionGroup) {
+                        $scope.configurations[i].action = $scope.actionGroup;
+                    }
+                }
+            };
 
             var loadData = function () {
                 applicationService.getConfigurations({"id": application.id}, function (response) {
@@ -888,6 +912,7 @@ angular.module('headwind-kiosk')
 
             $scope.actionChanged = function (configuration) {
                 configuration.remove = (configuration.action == '2');
+                $scope.actionGroup = -1;
             };
             $scope.isInstallOptionAvailable = function (application) {
                 return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
@@ -902,6 +927,29 @@ angular.module('headwind-kiosk')
                     $scope.applicationVersion[prop] = applicationVersion[prop];
                 }
             }
+
+            $scope.actionGroup = -1;
+            $scope.toggleSelectAll = false;
+            $scope.selectAllChanged = function() {
+                for (var i in $scope.configurations) {
+                    $scope.configurations[i].selected = $scope.toggleSelectAll;
+                }
+            };
+
+            $scope.selectionChanged = function(configuration) {
+                $scope.toggleSelectAll = false;
+            };
+
+            $scope.actionGroupChanged = function() {
+                if ($scope.actionGroup == -1) {
+                    return;
+                }
+                for (var i in $scope.configurations) {
+                    if ($scope.configurations[i].selected && $scope.configurations[i].action != $scope.actionGroup) {
+                        $scope.configurations[i].action = $scope.actionGroup;
+                    }
+                }
+            };
 
             var loadData = function () {
                 applicationService.getVersionConfigurations({"id": applicationVersion.id}, function (response) {

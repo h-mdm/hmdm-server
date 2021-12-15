@@ -37,13 +37,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import com.hmdm.guice.module.ConfigureModule;
-import com.hmdm.guice.module.EventListenerModule;
-import com.hmdm.guice.module.LiquibaseModule;
-import com.hmdm.guice.module.MainRestModule;
-import com.hmdm.guice.module.PersistenceModule;
-import com.hmdm.guice.module.PrivateRestModule;
-import com.hmdm.guice.module.PublicRestModule;
+import com.hmdm.guice.module.*;
 import com.hmdm.notification.guice.module.*;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.PluginTaskModule;
@@ -184,5 +178,7 @@ public final class Initializer extends GuiceServletContextListener {
         final EventListenerModule eventListenerModule = this.injector.getInstance(EventListenerModule.class);
         eventListenerModule.init();
 
+        final StartupTaskModule startupTaskModule = this.injector.getInstance(StartupTaskModule.class);
+        startupTaskModule.init();
     }
 }

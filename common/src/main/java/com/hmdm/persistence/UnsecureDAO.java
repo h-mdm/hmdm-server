@@ -23,13 +23,11 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.*;
 import com.hmdm.rest.json.DeviceCreateOptions;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +86,27 @@ public class UnsecureDAO {
     }
 
     public User findByLoginOrEmail(String login) {
-        return userMapper.findByLogin(login);
+        User user = userMapper.findByLogin(login);
+        if (user == null) {
+            user = userMapper.findByEmail(login);
+        }
+        return user;
+    }
+
+    public User findByEmail(String email) {
+        return userMapper.findByEmail(email);
+    }
+
+    public User findByPasswordResetToken( String token ) {
+        return userMapper.findByPasswordResetToken(token);
+    }
+
+    public List<User> findAllWithOldPassword() {
+        return userMapper.findAllWithOldPassword();
+    }
+
+    public void setUserNewPasswordUnsecure(User user ) {
+        userMapper.setNewPassword(user);
     }
 
     public Device getDeviceByNumber(String number) {

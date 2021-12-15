@@ -103,6 +103,9 @@ public interface CommonMapper {
                     "customSend2, " +
                     "customSend3, " +
                     "sendDescription, " +
+                    "passwordReset, " +
+                    "passwordLength, " +
+                    "passwordStrength, " +
                     "customerId" +
                     ") VALUES (" +
                     "#{createNewDevices}, " +
@@ -119,6 +122,9 @@ public interface CommonMapper {
                     "#{customSend2}, " +
                     "#{customSend3}, " +
                     "#{sendDescription}, " +
+                    "#{passwordReset}, " +
+                    "#{passwordLength}, " +
+                    "#{passwordStrength}, " +
                     "#{customerId}" +
                     ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
@@ -136,7 +142,10 @@ public interface CommonMapper {
                     "customSend1 = EXCLUDED.customSend1, " +
                     "customSend2 = EXCLUDED.customSend2, " +
                     "customSend3 = EXCLUDED.customSend3, " +
-                    "sendDescription = EXCLUDED.sendDescription "
+                    "sendDescription = EXCLUDED.sendDescription, " +
+                    "passwordReset = EXCLUDED.passwordReset, " +
+                    "passwordLength = EXCLUDED.passwordLength, " +
+                    "passwordStrength = EXCLUDED.passwordStrength "
     })
     void saveMiscSettings(Settings settings);
 }

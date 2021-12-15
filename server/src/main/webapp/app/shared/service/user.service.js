@@ -3,6 +3,7 @@ angular.module('headwind-kiosk')
     .factory('userService', function ($resource) {
         return $resource('rest/private/users', {}, {
             updatePassword: {url: 'rest/private/users/current', method: 'PUT'},
+            updateDetails: {url: 'rest/private/users/details', method: 'PUT'},
             update: {url: 'rest/private/users', method: 'PUT'},
             getCurrent: {url: 'rest/private/users/current', method: 'GET'},
             create: {url: 'rest/private/users/other', method: 'POST'},

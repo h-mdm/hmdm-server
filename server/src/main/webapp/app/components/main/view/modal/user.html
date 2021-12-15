@@ -14,6 +14,14 @@
         </div>
 
         <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.user.email</label>
+            <div class='col-sm-9'>
+                <input ng-model='user.email' required type='text' class='form-control'
+                       localized-placeholder='form.user.email.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.user.name</label>
             <div class='col-sm-9'>
                 <input ng-model='user.name' required type='text' class='form-control'
@@ -64,6 +72,7 @@
             <div class='col-sm-9'>
                 <input ng-model='user.confirm' type='password' class='form-control' id='confirm'
                        localized-placeholder='form.user.password.confirm.placeholder'>
+                <div class="field-hint">{{qualityMessage}}</div>
             </div>
         </div>
 

@@ -715,6 +715,9 @@ angular.module('headwind-kiosk')
                         request.systemUpdateTo = pad($scope.dates.systemUpdateTo.getHours(), 2) + ':' + pad($scope.dates.systemUpdateTo.getMinutes(), 2);
                     }
 
+                    request.appUpdateFrom = pad($scope.dates.appUpdateFrom.getHours(), 2) + ':' + pad($scope.dates.appUpdateFrom.getMinutes(), 2);
+                    request.appUpdateTo = pad($scope.dates.appUpdateTo.getHours(), 2) + ':' + pad($scope.dates.appUpdateTo.getMinutes(), 2);
+
                     if ($scope.configuration.passwordMode == 'any') {
                         request.passwordMode = null;
                     }
@@ -1271,11 +1274,11 @@ angular.module('headwind-kiosk')
             }
 
             var d1 = new Date();
-            d1.setHours(0);
+            d1.setHours(01);
             d1.setMinutes(0);
 
             var d2 = new Date();
-            d2.setHours(23);
+            d2.setHours(05);
             d2.setMinutes(59);
 
             $scope.dates = {};
@@ -1315,6 +1318,29 @@ angular.module('headwind-kiosk')
                         $scope.dates.systemUpdateFrom = d1;
                         $scope.dates.systemUpdateTo = d2;
 
+                        try {
+                            if (response.data.appUpdateFrom) {
+                                var time = response.data.appUpdateFrom;
+                                var pos = time.indexOf(':');
+                                if (pos > -1) {
+                                    d1.setHours(parseInt(time.substring(0, pos)));
+                                    d1.setMinutes(parseInt(time.substring(pos + 1)));
+                                }
+                            }
+                            if (response.data.appUpdateTo) {
+                                var time = response.data.appUpdateTo;
+                                var pos = time.indexOf(':');
+                                if (pos > -1) {
+                                    d2.setHours(parseInt(time.substring(0, pos)));
+                                    d2.setMinutes(parseInt(time.substring(pos + 1)));
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse system update times from server', e);
+                        }
+                        $scope.dates.appUpdateFrom = d1;
+                        $scope.dates.appUpdateTo = d2;
+
                         if ($scope.configuration.timeZone === null) {
                             $scope.configuration.timeZoneMode = 'default';
                         } else if ($scope.configuration.timeZone === 'auto') {
@@ -1327,6 +1353,8 @@ angular.module('headwind-kiosk')
             } else {
                 $scope.dates.systemUpdateFrom = d1;
                 $scope.dates.systemUpdateTo = d2;
+                $scope.dates.appUpdateFrom = d1;
+                $scope.dates.appUpdateTo = d2;
                 $scope.configuration.eventReceivingComponent = 'com.hmdm.launcher.AdminReceiver';
                 $scope.configuration.systemUpdateType = 0;
             }

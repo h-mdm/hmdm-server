@@ -21,7 +21,9 @@
 
 package com.hmdm.rest.filter;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;
 
@@ -41,7 +43,14 @@ public class AuthFilter implements Filter {
 
     public static final String sessionCredentials = "credentials";
 
+    private UserDAO userDAO;
+
     public AuthFilter() {
+    }
+
+    @Inject
+    public AuthFilter(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -53,6 +62,11 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // If security context is already established then let the request to continue without check
         if (SecurityContext.get() != null && SecurityContext.get().getCurrentUser().isPresent()) {
+            User user = SecurityContext.get().getCurrentUser().get();
+            if (user.isPasswordReset()) {
+                ((HttpServletResponse)servletResponse).sendError(403);
+                return;
+            }
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -72,6 +86,12 @@ public class AuthFilter implements Filter {
         // Set-up the security context
         try {
             SecurityContext.init(currentUser);
+            User dbUser = userDAO.getUserDetails(currentUser.getId());
+            if (dbUser.isPasswordReset() || dbUser.getAuthToken() == null || currentUser.getAuthToken() == null ||
+                    !currentUser.getAuthToken().equals(dbUser.getAuthToken())) {
+                ((HttpServletResponse)servletResponse).sendError(403);
+                return;
+            }
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             SecurityContext.release();

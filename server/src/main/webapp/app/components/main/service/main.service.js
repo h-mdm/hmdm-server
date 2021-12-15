@@ -6,6 +6,7 @@ angular.module('headwind-kiosk')
             updateDevice: {url: 'rest/private/devices', method: 'PUT'},
             updateDeviceDesc: {url: 'rest/private/devices/:id/description', method: 'POST'},
             removeDevice: {url: 'rest/private/devices/:id', method: 'DELETE'},
+            removeDeviceBulk: {url: 'rest/private/devices/deleteBulk', method: 'POST'},
             getDeviceApplicationSettings: {url: 'rest/private/devices/:id/applicationSettings', method: 'GET'},
             saveDeviceApplicationSettings: {url: 'rest/private/devices/:id/applicationSettings', method: 'POST'},
             notifyDeviceOnAppSettingsUpdate: {url: 'rest/private/devices/:id/applicationSettings/notify', method: 'POST'}
@@ -47,6 +48,14 @@ angular.module('headwind-kiosk')
             updateUserRolesCommonSettings: {url: 'rest/private/settings/userRoles/common', method: 'POST'},
             updateMiscSettings: {url: 'rest/private/settings/misc', method: 'POST'},
             updateLanguageSettings: {url: 'rest/private/settings/lang', method: 'POST'},
+        })
+    })
+    .factory('passwordResetService', function ($resource) {
+        return $resource('', {}, {
+            getSettings: {url: 'rest/public/passwordReset/settings/:token', method: 'GET'},
+            resetPassword: {url: 'rest/public/passwordReset/reset', method: 'POST'},
+            canRecover: {url: 'rest/public/passwordReset/canRecover', method: 'GET'},
+            recoverPassword: {url: 'rest/public/passwordReset/recover/:username', method: 'GET'}
         })
     })
     .factory('groupService', function ($resource) {

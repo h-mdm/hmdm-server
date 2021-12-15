@@ -45,17 +45,26 @@ public class User implements CustomerData, Serializable {
     private String email;
     @ApiModelProperty("A name of a user")
     private String name;
-    @ApiModelProperty("A password of a user (MD5 hash)")
+    @ApiModelProperty("A password of a user (Salted SHA1 hash)")
     private transient String password;
     @ApiModelProperty(hidden = true)
     private int customerId;
     @ApiModelProperty("A role assigned to user")
     private UserRole userRole;
-    @ApiModelProperty("A role assigned to user")
+    @ApiModelProperty("Are all devices available to user")
     private boolean allDevicesAvailable = true;
+    @ApiModelProperty("Are all configs available to user")
+    private boolean allConfigAvailable = true;
+    @ApiModelProperty("Is password reset required")
+    private boolean passwordReset = false;
+    @ApiModelProperty("Authentication token")
+    private String authToken;
+    @ApiModelProperty("Password reset token")
+    private String passwordResetToken;
 
     // Many-to-many relations
     private List<LookupItem> groups;
+    private List<LookupItem> configurations;
 
     // Helper fields which are not mapped directly to DB and are not persisted with user object
     @ApiModelProperty("An old password for user to be used for verification when changing the password")
@@ -170,12 +179,52 @@ public class User implements CustomerData, Serializable {
         this.allDevicesAvailable = allDevicesAvailable;
     }
 
+    public boolean isAllConfigAvailable() {
+        return allConfigAvailable;
+    }
+
+    public void setAllConfigAvailable(boolean allConfigAvailable) {
+        this.allConfigAvailable = allConfigAvailable;
+    }
+
+    public boolean isPasswordReset() {
+        return passwordReset;
+    }
+
+    public void setPasswordReset(boolean passwordReset) {
+        this.passwordReset = passwordReset;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+
     public List<LookupItem> getGroups() {
         return groups;
     }
 
     public void setGroups(List<LookupItem> groups) {
         this.groups = groups;
+    }
+
+    public List<LookupItem> getConfigurations() {
+        return configurations;
+    }
+
+    public void setConfigurations(List<LookupItem> configurations) {
+        this.configurations = configurations;
     }
 
     public String toString() {

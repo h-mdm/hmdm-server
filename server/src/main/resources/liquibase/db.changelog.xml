@@ -2189,4 +2189,35 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="29.11.21-10:44" author="seva" context="common">
+        <comment>Column,new: settings#passwordStrength</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN passwordReset BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE settings ADD COLUMN passwordLength INT NOT NULL DEFAULT 0;
+            ALTER TABLE settings ADD COLUMN passwordStrength INT NOT NULL DEFAULT 0;
+            ALTER TABLE users ADD COLUMN passwordReset BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE customers ADD COLUMN email varchar(50);
+            ALTER TABLE users ALTER COLUMN password TYPE varchar(40);
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN passwordReset;
+            ALTER TABLE settings DROP COLUMN passwordLength;
+            ALTER TABLE settings DROP COLUMN passwordStrength;
+            ALTER TABLE users DROP COLUMN passwordReset;
+            ALTER TABLE customers DROP COLUMN email;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="05.12.21-18:57" author="seva" context="common">
+        <comment>Column,new: users#token</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN authToken varchar(40);
+            ALTER TABLE users ADD COLUMN passwordResetToken varchar(40);
+        </sql>
+        <rollback>
+            ALTER TABLE users DROP COLUMN authToken;
+            ALTER TABLE users DROP COLUMN passwordResetToken;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

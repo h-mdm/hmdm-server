@@ -24,7 +24,11 @@ package com.hmdm.rest.resource;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.hmdm.persistence.CommonDAO;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.util.PasswordUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,6 +65,8 @@ public class UserResource {
     private static final String sessionCredentials = "credentials";
 
     private UserDAO userDAO;
+    private CommonDAO settingsDAO;
+    private UnsecureDAO unsecureDAO;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -72,8 +78,10 @@ public class UserResource {
      * <p>Constructs new <code>UserResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public UserResource(UserDAO userDAO) {
+    public UserResource(UserDAO userDAO, CommonDAO settingsDAO, UnsecureDAO unsecureDAO) {
         this.userDAO = userDAO;
+        this.settingsDAO = settingsDAO;
+        this.unsecureDAO = unsecureDAO;
     }
 
     // =================================================================================================================
@@ -152,8 +160,15 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePassword(User user) {
-        User dbUser = userDAO.findByLoginOrEmail(user.getLogin());
-        return updatePassword(dbUser, user);
+        return SecurityContext.get().getCurrentUser().map(u -> {
+            if (u.getId() != user.getId()) {
+                return Response.PERMISSION_DENIED();
+            }
+
+            User dbUser = userDAO.findByLoginOrEmail(user.getLogin());
+            return updatePassword(dbUser, user);
+
+        }).orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================
@@ -165,27 +180,55 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(User user) {
-        try {
-            if (user.getId() == null) {
-                if (user.getNewPassword() == null) {
-                    return Response.ERROR("error.password.empty");
-                }
-                user.setPassword(user.getNewPassword());
-                user.setCustomerId(SecurityContext.get().getCurrentUser().get().getCustomerId());
-                this.userDAO.insert(user);
-            } else {
-                this.userDAO.updateUserMainDetails(user);
-                if (user.getNewPassword() != null && !user.getNewPassword().isEmpty()) {
-                    user.setPassword(user.getNewPassword());
-                    this.userDAO.updatePassword(user);
-                }
+        return SecurityContext.get().getCurrentUser().map(u -> {
+            if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                 return Response.PERMISSION_DENIED();
             }
+            try {
+                String userEmail = user.getEmail();
+                if (userEmail != null && !userEmail.equals("")) {
+                    User dbUser = unsecureDAO.findByEmail(userEmail);
+                    if (dbUser != null && dbUser.getId() != user.getId()) {
+                        return Response.ERROR("error.duplicate.email");
+                    }
+                }
+                Settings settings = settingsDAO.getSettings();
+                if (user.getId() == null) {
+                    // Password is required for new users only
+                    if (user.getNewPassword() == null) {
+                        return Response.ERROR("error.password.empty");
+                    }
+                    user.setCustomerId(SecurityContext.get().getCurrentUser().get().getCustomerId());
+                    updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
+                    this.userDAO.insert(user);
+                } else {
+                    this.userDAO.updateUserMainDetails(user);
+                    // Update password only if it's specified
+                    if (user.getNewPassword() != null && !user.getNewPassword().isEmpty()) {
+                        updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
+                        this.userDAO.updatePassword(user);
+                    }
+                }
 
-            return Response.OK();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.ERROR("error.duplicate.login");
+                return Response.OK();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.ERROR("error.duplicate.login");
+            }
+        }).orElse(Response.PERMISSION_DENIED());
+    }
+
+    private User updatePasswordWithReset(User user, String password, boolean reset) {
+        user.setPassword(PasswordUtil.getHashFromMd5(password));
+        user.setAuthToken(PasswordUtil.generateToken());
+        if (reset) {
+            user.setPasswordReset(true);
+            user.setPasswordResetToken(PasswordUtil.generateToken());
+        } else {
+            user.setPasswordReset(false);
+            user.setPasswordResetToken(null);
         }
+        return user;
     }
 
     // =================================================================================================================
@@ -198,12 +241,54 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") @ApiParam("User ID") int id) {
-        try {
-            userDAO.deleteUser(id);
-            return Response.OK();
-        } catch (Exception e) {
-            return Response.ERROR(e.getMessage());
-        }
+        return SecurityContext.get().getCurrentUser().map(u -> {
+            if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                return Response.PERMISSION_DENIED();
+            }
+            try {
+                userDAO.deleteUser(id);
+                return Response.OK();
+            } catch (Exception e) {
+                return Response.ERROR(e.getMessage());
+            }
+        }).orElse(Response.PERMISSION_DENIED());
+    }
+
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Update user's details",
+            notes = "Update user's name and email."
+    )
+    @PUT
+    @Path("/details")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUserDetails(User user) {
+        return SecurityContext.get().getCurrentUser().map(u -> {
+            User dbUser = userDAO.getUserDetails(user.getId());
+            if (dbUser == null) {
+                return Response.ERROR("error.user.not.found");
+            }
+            if (user.getEmail() == null || user.getEmail().trim().equals("")) {
+                dbUser.setEmail("");
+            } else if (!user.getEmail().equalsIgnoreCase(dbUser.getEmail())) {
+                // Email must be unique
+                User user2 = unsecureDAO.findByEmail(user.getEmail());
+                if (user2 != null) {
+                    return Response.ERROR("error.duplicate.email");
+                }
+                dbUser.setEmail(user.getEmail());
+            }
+            dbUser.setName(user.getName());
+            try {
+                userDAO.updateUserMainDetails(dbUser);
+                return Response.OK("success.operation.completed", dbUser);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.INTERNAL_ERROR();
+            }
+        }).orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================
@@ -249,6 +334,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePasswordBySuperAdmin(User user) {
         if (SecurityContext.get().isSuperAdmin()) {
+            user.setNewPassword(PasswordUtil.getHashFromMd5(user.getNewPassword()));
             userDAO.updatePasswordBySuperAdmin(user);
             return Response.OK("success.operation.completed");
         } else {
@@ -292,11 +378,19 @@ public class UserResource {
     }
 
     private Response updatePassword(User dbUser, User user) {
-        if (user.getNewPassword() == null || user.getOldPassword() == null || !dbUser.getPassword().equalsIgnoreCase(user.getOldPassword())) {
+        if (user.getNewPassword() == null || user.getOldPassword() == null ||
+                !PasswordUtil.passwordMatch(user.getOldPassword(), dbUser.getPassword())) {
             return Response.ERROR("error.password.wrong");
         }
 
-        dbUser.setPassword(user.getNewPassword());
+        if (user.getNewPassword() == null || user.getNewPassword().isEmpty()) {
+            return Response.ERROR("error.password.empty");
+        }
+
+        dbUser.setPassword(PasswordUtil.getHashFromMd5(user.getNewPassword()));
+        dbUser.setAuthToken(PasswordUtil.generateToken());
+        dbUser.setPasswordReset(false);
+        dbUser.setPasswordResetToken(null);
         userDAO.updatePassword(dbUser);
 
         return Response.OK("success.operation.completed", dbUser);

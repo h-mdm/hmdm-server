@@ -775,6 +775,23 @@ angular.module('headwind-kiosk')
             });
         };
 
+        $scope.confirmBulkDelete = function() {
+            let localizedText = localization.localize('question.delete.device.bulk');
+            confirmModal.getUserConfirmation(localizedText, function () {
+                var ids = [];
+                for (var i = 0; i < $scope.devices.length; i++) {
+                    if ($scope.devices[i].selected) {
+                        ids.push($scope.devices[i].id);
+                    }
+                }
+                deviceService.removeDeviceBulk({ids: ids}, function () {
+                    $scope.search();
+                    // Reload settings because the device amount may be changed
+                    loadCommonSettings();
+                });
+            });
+        };
+
         $scope.editDevice = function (device) {
             var modalInstance = $modal.open({
                 templateUrl: 'app/components/main/view/modal/device.html',

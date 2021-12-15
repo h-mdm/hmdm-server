@@ -24,6 +24,7 @@ package com.hmdm.rest.resource;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.User;
@@ -65,6 +66,7 @@ public class CustomerResource {
 
     private static final String sessionCredentials = "credentials";
     private CustomerDAO customerDAO;
+    private UnsecureDAO unsecureDAO;
     private UserDAO userDAO;
 
     public CustomerResource() {
@@ -74,8 +76,9 @@ public class CustomerResource {
      * <p>Constructs new <code>CustomerResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public CustomerResource(CustomerDAO customerDAO, UserDAO userDAO) {
+    public CustomerResource(CustomerDAO customerDAO, UnsecureDAO unsecureDAO, UserDAO userDAO) {
         this.customerDAO = customerDAO;
+        this.unsecureDAO = unsecureDAO;
         this.userDAO = userDAO;
     }
 
@@ -125,19 +128,30 @@ public class CustomerResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCustomer(Customer customer) {
         try {
-            Customer dbCustomer = this.customerDAO.getCustomerByName(customer.getName());
+            Customer dbCustomer = customerDAO.getCustomerByName(customer.getName());
             if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
                 return Response.DUPLICATE_ENTITY("error.duplicate.customer.name");
-            } else {
-                if (customer.getId() == null) {
-                    String adminCredentials = this.customerDAO.insertCustomer(customer);
-                    Map<String, String> result = new HashMap<>();
-                    result.put("adminCredentials", adminCredentials);
-                    return Response.OK(result);
-                } else {
-                    this.customerDAO.updateCustomer(customer);
-                    return Response.OK();
+            }
+            if (customer.getEmail() != null && !customer.getEmail().trim().equals("")) {
+                dbCustomer = customerDAO.getCustomerByEmail(customer.getEmail());
+                if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
+                    return Response.DUPLICATE_ENTITY("error.duplicate.email");
                 }
+
+                User dbUser = unsecureDAO.findByEmail(customer.getEmail());
+                if (dbUser != null && (customer.getId() == null || dbUser.getCustomerId() != customer.getId())) {
+                    return Response.DUPLICATE_ENTITY("error.duplicate.email");
+                }
+            }
+
+            if (customer.getId() == null) {
+                String adminCredentials = this.customerDAO.insertCustomer(customer);
+                Map<String, String> result = new HashMap<>();
+                result.put("adminCredentials", adminCredentials);
+                return Response.OK(result);
+            } else {
+                this.customerDAO.updateCustomer(customer);
+                return Response.OK();
             }
         } catch (Exception e) {
             log.error("Unexpected error when saving customer account {}", customer, e);

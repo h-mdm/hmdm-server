@@ -214,7 +214,7 @@ public class DeviceResource {
                         Integer id = (Integer) it.next();
                         dbDevice = this.deviceDAO.getDeviceById(id);
                         if (dbDevice != null) {
-                            this.deviceDAO.updateDeviceConfiguration(id, dbDevice.getConfigurationId());
+                            this.deviceDAO.updateDeviceConfiguration(id, device.getConfigurationId());
                             this.pushService.notifyDeviceOnSettingUpdate(dbDevice.getId());
                         }
                     }
@@ -249,6 +249,36 @@ public class DeviceResource {
         }
 
         this.deviceDAO.removeDeviceById(id);
+        return Response.OK();
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Delete bulk devices",
+            notes = "Delete multiple devices at once"
+    )
+    @POST
+    @Path("/deleteBulk")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeBulkDevices(Device device) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!(canEditDevices)) {
+            log.error("Unauthorized attempt to delete devices",
+                    SecurityException.onCustomerDataAccessViolation(0, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
+        if (device.getIds() != null) {
+            // Device IDs are transferred in the "ids" parameter
+            Iterator it = device.getIds().iterator();
+
+            while (it.hasNext()) {
+                Integer id = (Integer) it.next();
+                this.deviceDAO.removeDeviceById(id);
+            }
+        }
         return Response.OK();
     }
 

@@ -34,9 +34,11 @@ import java.util.List;
 
 public interface UserMapper {
 
-    void update(User user);
-
     User findByLogin(@Param("login") String login);
+
+    User findByEmail(@Param("email") String email);
+
+    User findByPasswordResetToken(@Param("token") String token);
 
     User findById(@Param("userId") Integer userId);
 
@@ -44,18 +46,28 @@ public interface UserMapper {
 
     List<User> findAllByFilter(@Param("customerId") Integer customerId, @Param("value") String value);
 
-    @Insert({"INSERT INTO users (login, email, name, password, customerId, userRoleId, allDevicesAvailable) " +
-            "VALUES (#{login}, #{email}, #{name}, #{password}, #{customerId}, #{userRole.id}, #{allDevicesAvailable})"})
+    List<User> findAllWithOldPassword();
+
+    @Insert({"INSERT INTO users (login, email, name, password, customerId, userRoleId, " +
+            "allDevicesAvailable, allConfigAvailable, passwordReset, authToken, passwordResetToken) " +
+            "VALUES (#{login}, #{email}, #{name}, #{password}, #{customerId}, #{userRole.id}, " +
+            "#{allDevicesAvailable}, #{allConfigAvailable}, #{passwordReset}, #{authToken}, #{passwordResetToken})"})
     @SelectKey( statement = "SELECT currval('users_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insert(User user);
 
     @Update({"UPDATE users " +
-            "SET name = #{name}, login=#{login}, email=#{email}, userRoleId=#{userRole.id}, allDevicesAvailable=#{allDevicesAvailable} " +
+            "SET name = #{name}, login=#{login}, email=#{email}, userRoleId=#{userRole.id}, allDevicesAvailable=#{allDevicesAvailable}, " +
+            "allConfigAvailable=#{allConfigAvailable}, passwordReset=#{passwordReset} " +
             "WHERE id=#{id}"})
     void updateUserMainDetails(User user);
 
-    @Update({"UPDATE users SET password=#{newPassword} WHERE id=#{id}"})
+    @Update({"UPDATE users SET password=#{password}, passwordReset=#{passwordReset}, " +
+            "authToken=#{authToken}, passwordResetToken=#{passwordResetToken} WHERE id=#{id}"})
     void updatePassword(User user);
+
+    @Update({"UPDATE users SET password=#{newPassword}, passwordReset=#{passwordReset}, " +
+            "authToken=#{authToken}, passwordResetToken=#{passwordResetToken} WHERE id=#{id}"})
+    void setNewPassword(User user);
 
     @Delete({"DELETE FROM users WHERE id=#{id} AND userRoleId <> 1"})
     void deleteUser(User user);
@@ -68,6 +80,13 @@ public interface UserMapper {
     void removeDeviceGroupsAccessByUserId(@Param("customerId") int customerId, @Param("id") Integer userId);
 
     void insertUserDeviceGroupsAccess(@Param("id") Integer userId, @Param("groups") List<Integer> groups);
+
+    @Delete({"DELETE FROM userConfigurationAccess " +
+            "WHERE userId=#{id} " +
+            "AND configurationId IN (SELECT configurations.id FROM configurations WHERE configurations.customerId=#{customerId})"})
+    void removeConfigurationAccessByUserId(@Param("customerId") int customerId, @Param("id") Integer userId);
+
+    void insertUserConfigurationAccess(@Param("id") Integer userId, @Param("configurations") List<Integer> configurations);
 
     @Select("SELECT hintKey FROM userHints WHERE userId = #{id}")
     List<String> getShownHints(@Param("id") Integer userId);

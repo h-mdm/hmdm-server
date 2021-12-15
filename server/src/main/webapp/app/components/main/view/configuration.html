@@ -294,6 +294,24 @@
                         </div>
                     </div>
 
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.system.schedule.app.update</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.scheduleAppUpdate' name="scheduleAppUpdate" type='checkbox' class='form-control common-checkbox'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group' ng-if="configuration.scheduleAppUpdate">
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.system.app.update.time</label>
+                        <div class='col-sm-9 three-state'>
+                            <div class="col-sm-4">
+                                <timepicker ng-model='dates.appUpdateFrom' show-meridian='false'></timepicker>
+                            </div>
+                            <div class="col-sm-4">
+                                <timepicker ng-model='dates.appUpdateTo' show-meridian='false'></timepicker>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' for="passwordMode-c"

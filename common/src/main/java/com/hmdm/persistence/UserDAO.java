@@ -50,7 +50,13 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public User findByLoginOrEmail( String login ) {
-        return getSingleRecord(() -> mapper.findByLogin( login ), SecurityException::onUserAccessViolation);
+        return getSingleRecord(() -> {
+            User user = mapper.findByLogin(login);
+            if (user == null) {
+                user = mapper.findByEmail(login);
+            }
+            return user;
+        }, SecurityException::onUserAccessViolation);
     }
 
     public User getUserDetails( int id ) {
@@ -60,13 +66,13 @@ public class UserDAO extends AbstractDAO<User> {
 
     @Transactional
     public void updatePassword(User user ) {
-        updateRecord(user, this.mapper::update, SecurityException::onUserAccessViolation);
+        updateRecord(user, this.mapper::updatePassword, SecurityException::onUserAccessViolation);
     }
 
     @Transactional
     public void updatePasswordBySuperAdmin(User user ) {
         if (SecurityContext.get().isSuperAdmin()) {
-            this.mapper.updatePassword(user);
+            this.mapper.setNewPassword(user);
         } else {
             throw new IllegalArgumentException("Super-admin is allowed only");
         }
@@ -106,7 +112,7 @@ public class UserDAO extends AbstractDAO<User> {
     public void deleteUser(int id) {
         SecurityContext.get().getCurrentUser().ifPresent(current -> {
             if (current.getId() == id) {
-                throw new IllegalArgumentException("Нельзя удалить свою учётную запись");
+                throw new IllegalArgumentException("Can't remove self");
             } else {
                 updateById(id, mapper::findById, this.mapper::deleteUser, SecurityException::onUserAccessViolation);
             }

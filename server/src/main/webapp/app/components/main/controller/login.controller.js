@@ -1,6 +1,6 @@
 <!-- Localization completed -->
 angular.module('headwind-kiosk')
-    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization, rebranding) {
+    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization, rebranding, passwordResetService) {
         $scope.login = {};
 
         $scope.rebranding = null;
@@ -9,12 +9,22 @@ angular.module('headwind-kiosk')
             $scope.ieBrowserNotice2 = localization.localize('ie.browser.notice.2').replace('${appName}', $scope.rebranding.appName);
         });
 
+        passwordResetService.canRecover(function (response) {
+            if (response.status === 'OK') {
+                $scope.canRecover = true;
+            }
+        });
+
         $scope.isIE = detectIE();
 
         var loginHandler = function (response) {
             if (response.status === 'OK') {
-                $state.transitionTo('main');
-                $rootScope.$emit('aero_USER_AUTHENTICATED');
+                if (response.data.passwordReset) {
+                    $state.transitionTo('passwordReset', {"token": response.data.passwordResetToken});
+                } else {
+                    $state.transitionTo('main');
+                    $rootScope.$emit('aero_USER_AUTHENTICATED');
+                }
             } else if (response.status === 'ERROR') {
                 $scope.errorMessage = localization.localize('login.password.incorrect');
             }
@@ -24,7 +34,11 @@ angular.module('headwind-kiosk')
             authService.login($scope.login.username, md5($scope.login.password).toUpperCase(), loginHandler);
         };
 
-        /**
+        $scope.recoverPassword = function() {
+            $state.transitionTo('passwordRecovery');
+        };
+
+            /**
          * detect IE
          * returns version of IE or false, if browser is not Internet Explorer
          */

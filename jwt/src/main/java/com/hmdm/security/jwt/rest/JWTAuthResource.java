@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.util.BackgroundTaskRunnerService;
+import com.hmdm.util.PasswordUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -112,20 +113,25 @@ public class JWTAuthResource {
     @Produces( MediaType.APPLICATION_JSON )
     public Response login(UserCredentials credentials){
         try {
-            if ( credentials.getLogin() == null || credentials.getPassword() == null ) {
+            if (credentials.getLogin() == null || credentials.getPassword() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            User user = userDAO.findByLoginOrEmail( credentials.getLogin() );
-            if ( user == null ) {
+            User user = userDAO.findByLoginOrEmail(credentials.getLogin());
+            if (user == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
-            } else if ( !credentials.getPassword().equalsIgnoreCase( user.getPassword() ) ) {
+            } else if (!PasswordUtil.passwordMatch(credentials.getPassword(), user.getPassword())) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             } else {
                 this.taskRunner.submitTask(() -> {
                     this.customerDAO.recordLastLoginTime(user.getCustomerId(), System.currentTimeMillis());
                 });
 
+                if (user.getAuthToken() == null || user.getAuthToken().length() == 0) {
+                    user.setAuthToken(PasswordUtil.generateToken());
+                    user.setNewPassword(user.getPassword());        // copy value for setUserNewPasswordUnsecure
+                    userDAO.setUserNewPasswordUnsecure(user);
+                }
                 user.setPassword(null);
 
                 String token = tokenProvider.createToken(user, false);

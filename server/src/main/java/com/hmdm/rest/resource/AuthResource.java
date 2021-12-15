@@ -23,10 +23,12 @@ package com.hmdm.rest.resource;
 
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.UserDAO;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.util.BackgroundTaskRunnerService;
+import com.hmdm.util.PasswordUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -91,7 +93,8 @@ public class AuthResource {
             return Response.ERROR();
         }
 
-        if ( !credentials.getPassword().equalsIgnoreCase( user.getPassword() ) ) {
+        // Web app sends MD5 hash, we need to re-hash it to compare with the DB value
+        if (!PasswordUtil.passwordMatch(credentials.getPassword(), user.getPassword())) {
             Thread.sleep(1000);
             return Response.ERROR();
         }
@@ -103,6 +106,12 @@ public class AuthResource {
 
             HttpSession userSession = req.getSession();
             userSession.setAttribute( sessionCredentials, user );
+
+            if (user.getAuthToken() == null || user.getAuthToken().length() == 0) {
+                user.setAuthToken(PasswordUtil.generateToken());
+                user.setNewPassword(user.getPassword());        // copy value for setUserNewPasswordUnsecure
+                userDAO.setUserNewPasswordUnsecure(user);
+            }
 
             user.setPassword(null);
 

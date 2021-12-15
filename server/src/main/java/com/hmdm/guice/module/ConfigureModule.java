@@ -42,6 +42,13 @@ public class ConfigureModule extends AbstractModule {
     private final String rebrandingVendorLinkParameter = "rebranding.vendor.link";
     private final String rebrandingLogoParameter = "rebranding.logo";
     private final String rebrandingMobileNameParameter = "rebranding.mobile.name";
+    private final String smtpHostParameter = "smtp.host";
+    private final String smtpPortParameter = "smtp.port";
+    private final String smtpSslParameter = "smtp.ssl";
+    private final String smtpStartTlsParameter = "smtp.starttls";
+    private final String smtpUsernameParameter = "smtp.username";
+    private final String smtpPasswordParameter = "smtp.password";
+    private final String smtpFromParameter = "smtp.from";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -70,6 +77,8 @@ public class ConfigureModule extends AbstractModule {
 
         // Optional parameters (Guice doesn't allow to bind string to null)
         String opt;
+
+        // Rebranding
         opt = this.context.getInitParameter(rebrandingNameParameter);
         this.bindConstant().annotatedWith(Names.named(rebrandingNameParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingVendorParameter);
@@ -80,5 +89,23 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(rebrandingLogoParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingMobileNameParameter);
         this.bindConstant().annotatedWith(Names.named(rebrandingMobileNameParameter)).to(opt != null ? opt : "");
+
+        // SMTP
+        opt = this.context.getInitParameter(smtpHostParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpHostParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(smtpPortParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpPortParameter)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 25);
+        opt = this.context.getInitParameter(smtpSslParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpSslParameter)).to(
+                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        opt = this.context.getInitParameter(smtpStartTlsParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpStartTlsParameter)).to(
+                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        opt = this.context.getInitParameter(smtpUsernameParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpUsernameParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(smtpPasswordParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpPasswordParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(smtpFromParameter);
+        this.bindConstant().annotatedWith(Names.named(smtpFromParameter)).to(opt != null ? opt : "");
     }
 }

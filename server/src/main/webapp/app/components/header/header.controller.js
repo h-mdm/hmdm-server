@@ -48,7 +48,7 @@ angular.module( 'headwind-kiosk' )
     $scope.getUserName = function() { return authService.getUserName(); };
     $scope.isAuth = function() { return authService.isLoggedIn() && document.URL.indexOf( 'invoice' ) === -1; };
     $scope.isHidden = function() {
-        return $state.current.name === 'qr';
+        return $state.current.name === 'qr' || $state.current.name === 'passwordReset';
     };
 
     $scope.isSuperAdmin = function() {

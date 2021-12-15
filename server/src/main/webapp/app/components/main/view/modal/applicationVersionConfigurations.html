@@ -18,8 +18,45 @@
             <div class='col-sm-9'>
                 <div class='configurations-videos panel panel-default'>
                     <div class='panel-body'>
+
+                        <div class="form-group">
+                            <div class="col-sm-1">
+                                <input type="checkbox" style="margin-top: 12px" ng-model="toggleSelectAll" ng-change="selectAllChanged()">
+                            </div>
+                            <div class="col-sm-5">
+                                <select id='actionGroup'
+                                        ng-change="actionGroupChanged()"
+                                        ng-model="actionGroup" name="actionGroup"
+                                        class="form-control col-sm-4">
+                                    <option ng-value="-1" ng-selected="actionGroup == -1" localized>form.configuration.apps.action.select</option>
+                                    <option ng-value="1" ng-selected="actionGroup == 1"
+                                            ng-if="!isInstallOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.permit</option>
+                                    <option ng-value="1" ng-selected="actionGroup == 1"
+                                            ng-if="isInstallOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.install</option>
+                                    <option ng-value="0" ng-selected="actionGroup == 0"
+                                            ng-if="!isInstallOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.prohibit</option>
+                                    <option ng-value="0" ng-selected="actionGroup == 0"
+                                            ng-if="isInstallOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.not.install</option>
+                                    <option ng-value="2" ng-selected="actionGroup == 2"
+                                            ng-if="isRemoveOptionAvailable(application)"
+                                            localized>form.configuration.apps.action.delete</option>
+                                </select>
+                            </div>
+                            <div class='col-sm-6'></div>
+                        </div>
+
+                        <hr style="margin-top: 0; margin-bottom: 15px">
+
                         <div ng-repeat='configuration in configurations | orderBy: "name"' class="form-group">
-                            <div class="col-sm-6">
+                            <div class="col-sm-1">
+                                <input type="checkbox" style="margin-top: 12px" ng-model="configuration.selected"
+                                       ng-change="selectionChanged(configuration)">
+                            </div>
+                            <div class="col-sm-5">
                                 <select id='action{{configuration.configurationId}}'
                                         ng-change="actionChanged(configuration)"
                                         ng-model="configuration.action" name="action{{configuration.configurationId}}"

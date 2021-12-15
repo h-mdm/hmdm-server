@@ -48,4 +48,13 @@
 
 
 
+    <!-- Email parameters are necessary for password recovery -->
+    <Parameter name="smtp.host" value="${smtp.host}"/>
+    <Parameter name="smtp.port" value="${smtp.port}"/>
+    <Parameter name="smtp.ssl" value="${smtp.ssl}"/>
+    <Parameter name="smtp.starttls" value="${smtp.starttls}"/>
+    <Parameter name="smtp.username" value="${smtp.username}"/>
+    <Parameter name="smtp.password" value="${smtp.password}"/>
+    <Parameter name="smtp.from" value="${smtp.from}"/>
+
 </Context>

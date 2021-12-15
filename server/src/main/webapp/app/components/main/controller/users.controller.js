@@ -88,7 +88,8 @@ angular.module('headwind-kiosk')
         $scope.init();
     })
     //*******************************************************************************************************************
-    .controller('UserModalController', function ($scope, $modalInstance, userService, user, groupService, localization) {
+    .controller('UserModalController', function ($scope, $modalInstance, userService, user, groupService,
+                                                 localization, settingsService, passwordService) {
         $scope.groupsList = [];
 
         groupService.getAllGroups(function (response) {
@@ -96,6 +97,13 @@ angular.module('headwind-kiosk')
             $scope.groupsList = response.data.map(function (group) {
                 return {id: group.id, label: group.name};
             });
+        });
+
+        settingsService.getSettings(function (response) {
+            if (response.data) {
+                $scope.settings = response.data;
+                $scope.qualityMessage = passwordService.qualityMessage($scope.settings.passwordLength, $scope.settings.passwordStrength);
+            }
         });
 
         $scope.groupsSelection = (user.groups || []).map(function (group) {
@@ -140,6 +148,10 @@ angular.module('headwind-kiosk')
             if (($scope.user.newPassword || $scope.user.confirm) && $scope.user.newPassword !== $scope.user.confirm) {
                 resetMessages();
                 $scope.errorMessage = localization.localize('error.mismatch.password');
+            } else if (($scope.user.newPassword || $scope.user.confirm) &&
+                !passwordService.checkQuality($scope.user.newPassword, $scope.settings.passwordLength, $scope.settings.passwordStrength)) {
+                resetMessages();
+                $scope.errorMessage = localization.localize('error.password.weak');
             } else if (!$scope.user.login) {
                 resetMessages();
                 $scope.errorMessage = localization.localize('error.empty.user.login');

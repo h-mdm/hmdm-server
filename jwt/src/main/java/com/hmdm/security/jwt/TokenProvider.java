@@ -50,7 +50,7 @@ public class TokenProvider {
      */
     private final Logger log = LoggerFactory.getLogger("JWTAuth");
 
-    private static final String DATA_KEY = "data";
+    private static final String TOKEN_KEY = "token";
 
     /**
      * <p>A secret key (configurable) which is used for JWT tokens generation.</p>
@@ -84,9 +84,6 @@ public class TokenProvider {
      * @return a generated JWT token which can be used for further authentications of the specified principal.
      */
     public String createToken(User user, Boolean rememberMe) throws IOException {
-        user.setPassword(null);
-        String data = new ObjectMapper().writeValueAsString(user);
-
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -97,7 +94,7 @@ public class TokenProvider {
 
         return Jwts.builder()
             .setSubject(user.getLogin())
-            .claim(DATA_KEY, data)
+            .claim(TOKEN_KEY, user.getAuthToken())
             .signWith(SignatureAlgorithm.HS512, secretKey)
             .setExpiration(validity)
             .compact();
@@ -106,30 +103,33 @@ public class TokenProvider {
     /**
      * <p>Parses the specified JWT token into authenticated principal.</p>
      *
-     * @param token a JWT token to be parsed.
+     * @param jwtToken a JWT token to be parsed.
      * @return an authenticated principal presentation constructed from the data provided by specified token.
      */
-    User getAuthentication(String token) throws IOException {
+    User getAuthentication(String jwtToken) throws IOException {
         Claims claims = Jwts.parser()
             .setSigningKey(secretKey)
-            .parseClaimsJws(token)
+            .parseClaimsJws(jwtToken)
             .getBody();
 
-        String data = claims.get(DATA_KEY).toString();
-        User principal = new ObjectMapper().readValue(data, User.class);
+        String login = claims.getSubject();
+        String authToken = claims.get(TOKEN_KEY).toString();
+        User user = new User();
+        user.setLogin(login);
+        user.setAuthToken(authToken);
 
-        return principal;
+        return user;
     }
 
     /**
      * <p>Validates the specified authentication token provided by the client.</p>
      *
-     * @param authToken an authentication token to be validated.
+     * @param jwtToken a JWT authentication token to be validated.
      * @return <code>true</code> if specified token is valid; <code>false</code> otherwise.
      */
-    boolean validateToken(String authToken) {
+    boolean validateToken(String jwtToken) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return true;
         } catch (SignatureException e) {
             log.info("Invalid JWT signature.");

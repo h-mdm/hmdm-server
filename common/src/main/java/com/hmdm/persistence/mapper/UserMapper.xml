@@ -48,23 +48,28 @@
         <id property="id" column="id" />
         <id property="name" column="name" />
         <id property="login" column="login" />
+        <id property="email" column="email" />
         <id property="customerId" column="customerId" />
         <id property="masterCustomer" column="masterCustomer" />
         <id property="allDevicesAvailable" column="allDevicesAvailable" />
+        <id property="allConfigAvailable" column="allConfigAvailable" />
+        <id property="passwordReset" column="passwordReset" />
+        <id property="authToken" column="authToken" />
+        <id property="passwordResetToken" column="passwordResetToken" />
         <association property="userRole" resultMap="userRoleLite"/>
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>
             <result property="name" column="groupName"/>
+        </collection>
+        <collection property="configurations" ofType="com.hmdm.rest.json.LookupItem">
+            <result property="id" column="configurationId"/>
+            <result property="name" column="configurationName"/>
         </collection>
     </resultMap>
 
     <resultMap id="userFull" type="User" extends="userLite">
         <id property="password" column="password" />
     </resultMap>
-
-    <update id="update" parameterType="User">
-        UPDATE users SET password = #{password} WHERE id=#{id}
-    </update>
 
     <select id="getPermissionsList" resultMap="permissionFull">
         SELECT *
@@ -94,7 +99,8 @@
                permissions.id AS permission_id,
                permissions.name AS permission_name,
                permissions.superadmin AS permission_super_admin,
-               groups.id AS groupId, groups.name AS groupName
+               groups.id AS groupId, groups.name AS groupName,
+               configurations.id AS configurationId, configurations.name AS configurationName
         FROM users
                  INNER JOIN customers ON customers.id = users.customerId
                  INNER JOIN userRoles ON userRoles.id = users.userRoleId
@@ -102,11 +108,23 @@
                  LEFT JOIN permissions ON urp.permissionid = permissions.id
                  LEFT JOIN userDeviceGroupsAccess ON users.id = userDeviceGroupsAccess.userId
                  LEFT JOIN groups ON userDeviceGroupsAccess.groupId = groups.id
+                 LEFT JOIN userConfigurationAccess ON users.id = userConfigurationAccess.userId
+                 LEFT JOIN configurations ON userConfigurationAccess.configurationId = configurations.id
     </sql>
 
     <select id="findByLogin" resultMap="userFull">
         <include refid="userDataSelect"/>
         WHERE lower(users.login) = lower(#{login})
+    </select>
+
+    <select id="findByEmail" resultMap="userFull">
+        <include refid="userDataSelect"/>
+        WHERE lower(users.email) = lower(#{email})
+    </select>
+
+    <select id="findByPasswordResetToken" resultMap="userLite">
+        <include refid="userDataSelect"/>
+        WHERE users.passwordResetToken = #{token}
     </select>
 
     <select id="findById" resultMap="userLite">
@@ -117,6 +135,12 @@
     <select id="findAll" resultMap="userLite">
         <include refid="userDataSelect"/>
         WHERE users.customerId = #{customerId}
+    </select>
+
+    <!-- Select users with MD5 unsalted pass -->
+    <select id="findAllWithOldPassword" resultMap="userFull">
+        <include refid="userDataSelect"/>
+        WHERE LENGTH(users.password) = 32
     </select>
 
     <select id="findAllByFilter" resultMap="userLite">
@@ -130,6 +154,14 @@
         <foreach item="groupId" index="index" collection="groups"
                  open="" separator="," close="">
             (#{id}, #{groupId})
+        </foreach>
+    </insert>
+
+    <insert id="insertUserConfigurationAccess">
+        INSERT INTO userConfigurationAccess (userId, configurationId) VALUES
+        <foreach item="configurationId" index="index" collection="configurations"
+                 open="" separator="," close="">
+            (#{id}, #{configurationId})
         </foreach>
     </insert>
 

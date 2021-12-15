@@ -40,7 +40,7 @@ angular.module('headwind-kiosk',
         'pt_BR': 'pt_PT'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN'])
-    .constant("APP_VERSION", "4.08.2") // Update this value on each commit
+    .constant("APP_VERSION", "5.03.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -251,6 +251,16 @@ angular.module('headwind-kiosk',
                 url: '/control-panel',
                 templateUrl: 'app/components/control-panel/view/panel.html',
                 controller: 'ControlPanelController'
+            })
+            .state('passwordReset', {
+                url: '/passwordReset/{token}',
+                templateUrl: 'app/components/main/view/passwordReset.html',
+                controller: 'PasswordResetController'
+            })
+            .state('passwordRecovery', {
+                url: '/passwordRecovery',
+                templateUrl: 'app/components/main/view/passwordRecovery.html',
+                controller: 'PasswordRecoveryController'
             })
     })
 
@@ -468,15 +478,14 @@ angular.module('headwind-kiosk',
         $transitions.onStart({ }, function(trans) {
             hintService.onStateChangeStart();
 
-            if (trans.to().name !== 'password_recovery' && trans.to().name !== 'qr') {
+            if (trans.to().name !== 'passwordRecovery' && trans.to().name !== 'passwordReset' && trans.to().name !== 'qr') {
                 if (!authService.isLoggedIn() && trans.to().name !== 'login') {
                     hintService.onLogout();
                     return trans.router.stateService.target('login');
                 }
             }
 
-            if (authService.isLoggedIn() &&
-                (trans.to().name === 'login' || trans.to().name === 'password_recovery')) {
+            if (authService.isLoggedIn() && trans.to().name === 'login') {
                 return trans.router.stateService.target('main');
             }
         });

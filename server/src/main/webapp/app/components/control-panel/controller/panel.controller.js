@@ -166,7 +166,7 @@ angular.module('headwind-kiosk')
         }
     })
     .controller("CustomerPasswordModalController", function ($scope, customer, alertService, userService, $modalInstance,
-                                                     localization) {
+                                                     localization, settingsService, passwordService) {
         var resetMessages = function () {
             $scope.errorMessage = '';
             $scope.completeMessage = '';
@@ -177,6 +177,13 @@ angular.module('headwind-kiosk')
 
         $scope.user = {};
         $scope.users = [];
+
+        settingsService.getSettings(function (response) {
+            if (response.data) {
+                $scope.settings = response.data;
+                $scope.qualityMessage = passwordService.qualityMessage($scope.settings.passwordLength, $scope.settings.passwordStrength);
+            }
+        });
 
         userService.getAllBySuperAdmin({customerId: customer.id}, function (response) {
             if (response.status === 'OK') {
@@ -201,6 +208,8 @@ angular.module('headwind-kiosk')
                 $scope.errorMessage = localization.localize('error.empty.password.confirm');
             } else if ($scope.user.newPassword !== $scope.user.confirm) {
                 $scope.errorMessage = localization.localize('error.mismatch.password');
+            } else if (!passwordService.checkQuality($scope.user.newPassword, $scope.settings.passwordLength, $scope.settings.passwordStrength)) {
+                $scope.errorMessage = localization.localize('error.password.weak');
             } else {
                 var user = {};
                 for (var p in $scope.user) {

@@ -33,6 +33,7 @@ import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.rest.json.CustomerSearchRequest;
 import com.hmdm.rest.json.PaginatedData;
+import com.hmdm.util.PasswordUtil;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,8 +71,6 @@ import java.util.stream.Stream;
 public class CustomerDAO {
 
     private final Logger log = LoggerFactory.getLogger(CustomerDAO.class);
-
-    private final Random random = new Random();
 
     private final CustomerMapper mapper;
     private final ConfigurationMapper configurationMapper;
@@ -161,6 +159,13 @@ public class CustomerDAO {
         return this.mapper.findCustomerByName(name);
     }
 
+    public Customer getCustomerByEmail(String email) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("get the customer by email " + email);
+        }
+        return this.mapper.findCustomerByEmail(email);
+    }
+
     private static final String[] DEFAULT_DEVICE_SUFFIXES = {"001", "002", "003"};
 
     public String insertCustomer(Customer customer) {
@@ -179,17 +184,25 @@ public class CustomerDAO {
             customer.setFilesDir(customerFilesDir.getName());
             this.mapper.insert(customer);
 
+            final Settings masterSettings = this.settingDAO.getSettings();
+
             // Create a customer admin record
-            String password = generatePassword();
+            String password = PasswordUtil.generatePassword(masterSettings.getPasswordLength(), masterSettings.getPasswordStrength());
 
             UserRole orgAdminRole = new UserRole();
             orgAdminRole.setId(this.orgAdminRoleId);
 
             User user = new User();
             user.setCustomerId(customer.getId());
-            user.setPassword(CryptoUtil.getMD5String(password));
+            user.setPassword(PasswordUtil.getHashFromRaw(password));
+            user.setAuthToken(PasswordUtil.generateToken());
+            if (masterSettings.isPasswordReset()) {
+                user.setPasswordReset(true);
+                user.setPasswordResetToken(PasswordUtil.generateToken());
+            }
             user.setLogin(transliterate(customer.getName()));
             user.setName(customer.getName());
+            user.setEmail(customer.getEmail());
             user.setUserRole(orgAdminRole);
 
             userDAO.insert(user);
@@ -200,8 +213,6 @@ public class CustomerDAO {
             Settings customerSettings = new Settings();
 
             if (customer.isCopyDesign()) {
-                final Settings masterSettings = this.settingDAO.getSettings();
-
                 customerSettings.setBackgroundColor(masterSettings.getBackgroundColor());
                 customerSettings.setBackgroundImageUrl(masterSettings.getBackgroundImageUrl());
                 customerSettings.setDesktopHeader(masterSettings.getDesktopHeader());
@@ -333,21 +344,6 @@ public class CustomerDAO {
                 case(' '): b.append("_");break;
                 default: b.append(c);
             }
-        }
-
-        return b.toString();
-    }
-
-    private String generatePassword() {
-        int n;
-        do {
-            n = this.random.nextInt(10);
-        } while (n < 5);
-
-        StringBuilder b = new StringBuilder();
-
-        for (int i = 0; i < n; i++) {
-            b.append(this.random.nextInt(10));
         }
 
         return b.toString();

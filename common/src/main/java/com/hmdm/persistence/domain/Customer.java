@@ -36,6 +36,7 @@ public class Customer implements Serializable {
 
     private Integer id;
     private String name;
+    private String email;
     private String description;
     private String filesDir;
     private boolean master = false;
@@ -106,6 +107,14 @@ public class Customer implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDescription() {
@@ -230,6 +239,7 @@ public class Customer implements Serializable {
         return "Customer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
                 ", filesDir='" + filesDir + '\'' +
                 ", master=" + master +
