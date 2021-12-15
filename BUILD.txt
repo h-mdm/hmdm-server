@@ -3,7 +3,7 @@ Headwind MDM: a corporate launcher for Android
 =    BUILD INSTRUCTIONS FOR THE WEB PANEL    =
 ==============================================
 
-This instruction has been tested on Ubuntu Linux 18.04 LTS.
+This instruction has been tested on Ubuntu Linux 20.04 LTS.
 
 1. Install required software
 
