@@ -4,7 +4,7 @@
 # Tested on Ubuntu Linux 18.04 - 20.10, Ubuntu 20.04 is recommended
 #
 REPOSITORY_BASE=https://h-mdm.com/files
-CLIENT_VERSION=4.01
+CLIENT_VERSION=4.17
 DEFAULT_SQL_HOST=localhost
 DEFAULT_SQL_PORT=5432
 DEFAULT_SQL_BASE=hmdm
@@ -23,6 +23,15 @@ DEFAULT_PORT=""
 TEMP_DIRECTORY="/tmp"
 TEMP_SQL_FILE="$TEMP_DIRECTORY/hmdm_init.sql"
 TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
+
+ADMIN_EMAIL=
+SMTP_HOST=
+SMTP_PORT=
+SMTP_SSL=0
+SMTP_STARTTLS=0
+SMTP_USERNAME=
+SMTP_PASSWORD=
+SMTP_FROM=
 
 install_soft() {
     read -e -p "Install missing package(s) automatically? (Y/n)?" -n 1 -r
@@ -251,7 +260,26 @@ while [ -z $BASE_DOMAIN ]; do
 done
 read -e -p "Port (e.g. 8080, leave empty for default ports 80 or 443): " -i "$DEFAULT_PORT" PORT
 read -e -p "Project path on server (e.g. /hmdm) or ROOT: " -i "$DEFAULT_BASE_PATH" BASE_PATH
-read -e -p "Tomcat virtual host [$TOMCAT_HOST]: " -i "$TOMCAT_HOST" TOMCAT_HOST
+
+# Nobody changes it!
+# read -e -p "Tomcat virtual host [$TOMCAT_HOST]: " -i "$TOMCAT_HOST" TOMCAT_HOST
+
+# HTTPS via LetsEncrypt
+echo
+echo "To enable password recovery function, Headwind MDM must be connected to SMTP."
+echo "Password recovery is an optional but recommended feature."
+read -e -p "Setup SMTP credentials [Y/n]?: " -i "Y" REPLY
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    read -e -p "E-mail of the admin account: " ADMIN_EMAIL
+    read -e -p "SMTP host (e.g. smtp.gmail.com): " SMTP_HOST
+    read -e -p "SMTP port (e.g. 25, 465, or 587): " SMTP_PORT
+    read -e -p "Use SSL (1 - use, 0 - not use): " -i "0" SMTP_SSL
+    read -e -p "Use STARTTLS (1 - use, 0 - not use): " -i "0" SMTP_STARTTLS
+    read -e -p "SMTP username (leave empty if no auth required): " SMTP_USERNAME
+    read -e -p "SMTP password (leave empty if no auth required): " SMTP_PASSWORD
+    read -e -p "Sender e-mail address: " SMTP_FROM
+fi
 
 TOMCAT_DEPLOY_PATH=$BASE_PATH
 if [ "$BASE_PATH" == "ROOT" ]; then
@@ -300,7 +328,7 @@ if [ ! -d $TOMCAT_CONFIG_PATH ]; then
     chown root:$TOMCAT_USER $TOMCAT_CONFIG_PATH
     chmod 755 $TOMCAT_CONFIG_PATH
 fi
-cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_DOMAIN_|$BASE_DOMAIN|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
+cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_DOMAIN_|$BASE_DOMAIN|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g; s|_SMTP_HOST_|$SMTP_HOST|g; s|_SMTP_PORT_|$SMTP_PORT|g;  s|_SMTP_SSL_|$SMTP_SSL|g; s|_SMTP_STARTTLS_|$SMTP_STARTTLS|g; s|_SMTP_USERNAME_|$SMTP_USERNAME|g; s|_SMTP_PASSWORD_|$SMTP_PASSWORD|g; s|_SMTP_FROM_|$SMTP_FROM|g;" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 if [ "$?" -ne 0 ]; then
     echo "Failed to create a Tomcat config file $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml!"
     exit 1
@@ -337,7 +365,7 @@ fi
 echo "Deployment successful, initializing the database..."
 
 # Initialize database
-cat ./install/sql/hmdm_init.$LANGUAGE.sql | sed "s|_HMDM_BASE_|$LOCATION|g; s|_HMDM_VERSION_|$CLIENT_VERSION|g; s|_HMDM_APK_|$CLIENT_APK|g" > $TEMP_SQL_FILE
+cat ./install/sql/hmdm_init.$LANGUAGE.sql | sed "s|_HMDM_BASE_|$LOCATION|g; s|_HMDM_VERSION_|$CLIENT_VERSION|g; s|_HMDM_APK_|$CLIENT_APK|g; s|_ADMIN_EMAIL_|$ADMIN_EMAIL|g;" > $TEMP_SQL_FILE
 cat $TEMP_SQL_FILE | psql $PSQL_CONNSTRING > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
     echo "ERROR: failed to execute SQL script!"
@@ -375,7 +403,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     echo "cp $TOMCAT_HOME/conf/server.xml~ $TOMCAT_HOME/conf/server.xml"
     echo "======================================"
     echo
-    read -e -p "Update Tomcaxt config automatically [Y/n]?: " -i "Y" REPLY
+    read -e -p "Update Tomcat config automatically [Y/n]?: " -i "Y" REPLY
     if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         cp $TOMCAT_HOME/conf/server.xml $TOMCAT_HOME/conf/server.xml~
 	# EPIC MAGIC!!!

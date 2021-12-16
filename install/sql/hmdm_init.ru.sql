@@ -1,4 +1,4 @@
-UPDATE users SET email='info@h-mdm.com' WHERE id=1;
+UPDATE users SET email='_ADMIN_EMAIL_' WHERE id=1;
 
 INSERT INTO settings (id, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, customerid, usedefaultlanguage, language) VALUES (1, '#1c40e3', '#fcfcfc', NULL, 'SMALL', 'NO_HEADER', 1, true, NULL);
 

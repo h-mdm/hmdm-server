@@ -43,4 +43,14 @@
 
     <!-- MQTT notification service parameters -->
     <Parameter name="mqtt.server.uri" value="_BASE_DOMAIN_:31000"/>
+
+    <!-- Email parameters are necessary for password recovery -->
+    <Parameter name="smtp.host" value="_SMTP_HOST_"/>
+    <Parameter name="smtp.port" value="_SMTP_PORT_"/>
+    <Parameter name="smtp.ssl" value="_SMTP_SSL_"/>
+    <Parameter name="smtp.starttls" value="_SMTP_STARTTLS_"/>
+    <Parameter name="smtp.username" value="_SMTP_USERNAME_"/>
+    <Parameter name="smtp.password" value="_SMTP_PASSWORD_"/>
+    <Parameter name="smtp.from" value="_SMTP_FROM_"/>
+
 </Context>

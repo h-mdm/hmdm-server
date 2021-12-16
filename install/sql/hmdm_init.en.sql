@@ -3,7 +3,7 @@ UPDATE userroles SET name='Admin', description='Full access to the control panel
 UPDATE userroles SET name='User', description='Limited access to the control panel' WHERE id=3;
 UPDATE userroles SET name='Observer', description='Read-only access to the control panel' WHERE id=100;
 
-UPDATE users SET email='info@h-mdm.com' WHERE id=1;
+UPDATE users SET email='_ADMIN_EMAIL_' WHERE id=1;
 
 UPDATE groups SET name='General' WHERE id=1;
 
