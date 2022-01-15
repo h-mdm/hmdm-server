@@ -119,6 +119,10 @@ public interface DeviceMapper {
     void updateDeviceDescription(@Param("deviceId") Integer deviceId,
                                  @Param("description") String newDeviceDesc);
 
+    @Update({"UPDATE devices SET fastSearch = RIGHT(number, #{fastSearchChars}) WHERE fastSearch IS NULL " +
+            " OR LENGTH(fastSearch) != #{fastSearchChars}"})
+    void updateFastSearch(@Param("fastSearchChars") Integer fastSearchChars);
+
     List<Group> getAllGroups(@Param("customerId") int customerId,
                              @Param("userId") Integer userId);
 

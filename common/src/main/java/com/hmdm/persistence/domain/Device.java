@@ -89,6 +89,8 @@ public class Device implements CustomerData, Serializable {
     private String statusCode;
     @ApiModelProperty("Old device number, used when the number is changed")
     private String oldNumber;
+    @ApiModelProperty("Last characters of the device number used for fast search")
+    private String fastSearch;
 
     public Device() {
     }
@@ -291,6 +293,26 @@ public class Device implements CustomerData, Serializable {
         this.oldNumber = oldNumber;
     }
 
+    public String getFastSearch() {
+        return fastSearch;
+    }
+
+    public void setFastSearch(String fastSearch) {
+        this.fastSearch = fastSearch;
+    }
+
+    public void updateFastSearch(int chars) {
+        if (number == null) {
+            fastSearch = null;
+            return;
+        }
+        if (number.length() <= chars) {
+            fastSearch = number;
+            return;
+        }
+        fastSearch = number.substring(number.length() - chars, number.length());
+    }
+
     @Override
     public String toString() {
         return "Device{" +
@@ -318,6 +340,7 @@ public class Device implements CustomerData, Serializable {
                 ", launcherVersion='" + launcherVersion + '\'' +
                 ", statusCode='" + statusCode + '\'' +
                 ", oldNumber='" + oldNumber + '\'' +
+                ", fastSearch='" + fastSearch + '\'' +
                 '}';
     }
 }

@@ -49,6 +49,7 @@ public class ConfigureModule extends AbstractModule {
     private final String smtpUsernameParameter = "smtp.username";
     private final String smtpPasswordParameter = "smtp.password";
     private final String smtpFromParameter = "smtp.from";
+    private final String deviceFastSearchCharsParameter = "device.fast.search.chars";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -107,5 +108,9 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(smtpPasswordParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(smtpFromParameter);
         this.bindConstant().annotatedWith(Names.named(smtpFromParameter)).to(opt != null ? opt : "");
+
+        // Other
+        opt = this.context.getInitParameter(deviceFastSearchCharsParameter);
+        this.bindConstant().annotatedWith(Names.named(deviceFastSearchCharsParameter)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 5);
     }
 }

@@ -1,25 +1,65 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, confirmModal, deviceService,
-                                                  groupService, settingsService, authService, pluginService, $window,
-                                                  configurationService, alertService,
+    .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, $cookies, $window,
+                                                  confirmModal, deviceService, groupService, settingsService,
+                                                  authService, pluginService, configurationService, alertService,
                                                   spinnerService, localization) {
-        $scope.searchParams = {};
-        $scope.selection = {
-            all: false,
-            groupId: -1,
-            configurationId: -1
+
+        var saveDeviceSearchParams = function() {
+            var expireDate = new Date();
+            expireDate.setTime(expireDate.getTime() + 600);
+            expireDate.setDate(expireDate.getDate());
+
+            var searchData = {
+                searchParams: $scope.searchParams,
+                paging: $scope.paging,
+                additionalParams: $scope.additionalParams,
+                selection: $scope.selection
+            };
+
+            $cookies.put('deviceSearch', JSON.stringify(searchData));
         };
+
+        var restoreDeviceSearchParams = function() {
+            if ($cookies.get('deviceSearch')) {
+                var deviceSearch = JSON.parse($cookies.get('deviceSearch'));
+                $scope.searchParams = deviceSearch.searchParams;
+                $scope.paging = deviceSearch.paging;
+                $scope.additionalParams = deviceSearch.additionalParams;
+                $scope.selection = deviceSearch.selection;
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        if (!restoreDeviceSearchParams()) {
+            $scope.searchParams = {};
+            $scope.selection = {
+                all: false,
+                groupId: -1,
+                configurationId: -1
+            };
+
+            $scope.additionalParams = {
+                enabled: false,
+                dateFrom: null,
+                dateTo: null,
+                launcherVersion: '',
+                installationStatus: null
+            };
+
+            $scope.paging = {
+                pageNum: 1,
+                pageSize: 50,
+                totalItems: 0,
+                sortBy: null,
+                sortAsc: true
+            };
+        }
+
         $scope.localization = localization;
         $scope.dateFormat = localization.localize('devices.date.format');
-
-        $scope.additionalParams = {
-            enabled: false,
-            dateFrom: null,
-            dateTo: null,
-            launcherVersion: '',
-            installationStatus: null
-        };
 
         $scope.toggleAdditionalParams = function () {
             $scope.additionalParams.enabled = !$scope.additionalParams.enabled;
@@ -56,14 +96,6 @@ angular.module('headwind-kiosk')
             {id: 'VERSION_MISMATCH', name: localization.localize('form.devices.selection.install.status.version.mismatch')},
             {id: 'FAILURE', name: localization.localize('form.devices.selection.install.status.failure')}
         ];
-
-        $scope.paging = {
-            pageNum: 1,
-            pageSize: 50,
-            totalItems: 0,
-            sortBy: null,
-            sortAsc: true
-        };
 
         $scope.firstRecord = function() {
             if ($scope.paging.totalItems == 0) {
@@ -203,7 +235,6 @@ angular.module('headwind-kiosk')
         $scope.init = function () {
             $rootScope.settingsTabActive = false;
             $rootScope.pluginsTabActive = false;
-            $scope.paging.pageNum = 1;
             $scope.search();
         };
 
@@ -214,6 +245,8 @@ angular.module('headwind-kiosk')
                 console.log("Skipping device search since a previous search is pending", new Error());
                 return;
             }
+
+            saveDeviceSearchParams();
 
             $scope.errorMessage = undefined;
 
@@ -239,7 +272,8 @@ angular.module('headwind-kiosk')
                 pageNum: $scope.paging.pageNum,
                 pageSize: $scope.paging.pageSize,
                 sortBy: $scope.paging.sortBy,
-                sortDir: $scope.paging.sortAsc ? "ASC" : "DESC"
+                sortDir: $scope.paging.sortAsc ? "ASC" : "DESC",
+                fastSearch: $scope.searchParams.fastSearch
             };
 
             if ($scope.additionalParams.enabled) {

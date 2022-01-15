@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.*;
@@ -51,14 +52,15 @@ public class DeviceDAO extends AbstractDAO<Device> {
 
     private final Set<DeviceListHook> deviceListHooks;
     private final EventService eventService;
-
+    private final int fastSearchChars;
 
     @Inject
     public DeviceDAO(DeviceMapper mapper, ApplicationSettingDAO applicationSettingDAO, Injector injector,
-                     EventService eventService) {
+                     EventService eventService, @Named("device.fast.search.chars") int fastSearchChars) {
         this.mapper = mapper;
         this.applicationSettingDAO = applicationSettingDAO;
         this.eventService = eventService;
+        this.fastSearchChars = fastSearchChars;
 
         // TODO : Such a logic needs to be extracted into some utility service
         Set<DeviceListHook> hooks = new HashSet<>();
@@ -158,6 +160,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     @Transactional
     public void insertDevice(Device device) {
         insertRecord(device, d -> {
+            d.updateFastSearch(fastSearchChars);
             this.mapper.insertDevice(d);
             if (d.getGroups() != null && !d.getGroups().isEmpty()) {
                 this.mapper.insertDeviceGroups(
@@ -179,6 +182,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     public void updateDevice(Device device) {
         updateById(device.getId(), this.mapper::getDeviceById, dbDevice -> {
             device.setCustomerId(dbDevice.getCustomerId());
+            device.updateFastSearch(fastSearchChars);
 
             final Integer currentUserId = SecurityContext.get().getCurrentUser().get().getId();
             this.mapper.updateDevice(device);

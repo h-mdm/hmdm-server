@@ -802,6 +802,7 @@ document.localization[ 'ru_RU' ] = {
     'form.devices.label.installation.status': 'Статус установки',
     "format.devices.date.createTime": "dd/MM/yyyy HH:mm:ss",
     "format.devices.date.datePicker": "dd-MM-yyyy",
+    'form.devices.fast.search': 'Быстрый поиск по номеру',
 
     'form.devices.selection.install.status.default': 'Статус установки ...',
     'form.devices.selection.install.status.all': 'Все',

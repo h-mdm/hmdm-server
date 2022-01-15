@@ -802,7 +802,8 @@ document.localization ['zh_CN'] = {
     'form.devices.label.installation.status':"安装状态",
     'format.devices.date.createTime':"dd/MM/yyyy HH:mm:ss",
     'format.devices.date.datePicker':"dd-MM-yyyy",
-		
+    'form.devices.fast.search': '按号码快速搜索',
+
     'form.devices.selection.install.status.default':"安装状态...",
     'form.devices.selection.install.status.all' : "所有",
     'form.devices.selection.install.status.success' : "成功",

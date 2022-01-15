@@ -53,6 +53,7 @@
         <result property="custom2" column="custom2"/>
         <result property="custom3" column="custom3"/>
         <result property="oldNumber" column="oldNumber"/>
+        <result property="fastSearch" column="fastSearch"/>
 
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>
@@ -62,15 +63,16 @@
 
     <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO devices(number, description, lastUpdate, configurationId,
-            imei, phone, customerId, custom1, custom2, custom3, oldNumber)
+            imei, phone, customerId, custom1, custom2, custom3, oldNumber, fastSearch)
         VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId},
-            #{imei}, #{phone}, #{customerId}, #{custom1}, #{custom2}, #{custom3}, #{oldNumber});
+            #{imei}, #{phone}, #{customerId}, #{custom1}, #{custom2}, #{custom3}, #{oldNumber}, #{fastSearch});
     </insert>
 
     <update id="updateDevice" parameterType="Device">
         UPDATE devices SET number = #{number}, description = #{description},
                            configurationId = #{configurationId}, imei = #{imei}, phone = #{phone},
-                           custom1=#{custom1}, custom2=#{custom2}, custom3=#{custom3}, oldNumber=#{oldNumber} WHERE id = #{id}
+                           custom1=#{custom1}, custom2=#{custom2}, custom3=#{custom3},
+                           oldNumber=#{oldNumber}, fastSearch=#{fastSearch} WHERE id = #{id}
     </update>
 
     <sql id="allowedDevicesSelect">
@@ -80,12 +82,16 @@
         SELECT
                devices.id AS deviceId,
                devices.number AS deviceNumber,
+        <if test="value != null &amp;&amp; !fastSearch">
         (
             COALESCE(CASE WHEN devices.number ILIKE #{value} THEN 16 END, 0) +
             COALESCE(CASE WHEN devices.imei ILIKE #{value} THEN 8 END, 0) +
             COALESCE(CASE WHEN devices.phone ILIKE #{value} THEN 4 END, 0) +
             COALESCE(CASE WHEN devices.description ILIKE #{value} THEN 2 END, 0)
-        )          AS searchPriority,
+            )
+        </if>
+        <if test="value == null || fastSearch">0</if>
+        AS searchPriority,
         (
             CASE
                 WHEN 'STATUS' = #{sortBy} THEN
@@ -125,7 +131,7 @@
         LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
         WHERE devices.customerId = #{customerId}
         AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
-        <if test="value != null">
+        <if test="value != null &amp;&amp; !fastSearch">
             AND (
             devices.number ILIKE #{value}
             OR devices.description ILIKE #{value}
@@ -140,6 +146,12 @@
             OR devices.oldNumber ILIKE #{value}
             OR configurations.name ILIKE #{value}
             OR groups.name ILIKE #{value}
+            )
+        </if>
+        <if test="value != null &amp;&amp; fastSearch">
+            AND (
+            devices.number = #{value}
+            OR devices.fastSearch = #{value}
             )
         </if>
         <if test="imeiChanged">
@@ -185,7 +197,7 @@
     <select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
-               devices.custom1, devices.custom2, devices.custom3, devices.oldNumber,
+               devices.custom1, devices.custom2, devices.custom3, devices.oldNumber, devices.fastSearch,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName,
                applications.pkg AS launcherPkg,
@@ -219,7 +231,7 @@
         LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
         WHERE devices.customerId = #{customerId}
         AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
-        <if test="value != null">
+        <if test="value != null &amp;&amp; !fastSearch">
             AND (
             devices.number ILIKE #{value}
             OR devices.description ILIKE #{value}
@@ -228,12 +240,18 @@
             OR devices.info::json -&gt;&gt; 'imei' ILIKE #{value}
             OR devices.info::json -&gt;&gt; 'phone' ILIKE #{value}
             OR devices.info::json -&gt;&gt; 'model' ILIKE #{value}
-            OR configurations.name ILIKE #{value}
-            OR groups.name ILIKE #{value}
             OR devices.custom1 ILIKE #{value}
             OR devices.custom2 ILIKE #{value}
             OR devices.custom3 ILIKE #{value}
             OR devices.oldNumber ILIKE #{value}
+            OR configurations.name ILIKE #{value}
+            OR groups.name ILIKE #{value}
+            )
+        </if>
+        <if test="value != null &amp;&amp; fastSearch">
+            AND (
+            devices.number = #{value}
+            OR devices.fastSearch = #{value}
             )
         </if>
         <if test="imeiChanged">

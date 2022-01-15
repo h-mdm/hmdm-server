@@ -459,4 +459,8 @@ public class UnsecureDAO {
 
         return getDeviceByNumber(deviceId);
     }
+
+    public void updateDeviceFastSearch(int fastSearchChars) {
+        deviceMapper.updateFastSearch(fastSearchChars);
+    }
 }

@@ -103,11 +103,22 @@ public class DeviceSearchRequest implements Serializable {
     @ApiModelProperty("A filter for recent IMEI change")
     private boolean imeiChanged;
 
+    /**
+     * <p>A flag of fast searching by device number.</p>
+     */
+    @ApiModelProperty("Flag of fast searching by device number")
+    private boolean fastSearch;
+
     public DeviceSearchRequest() {
     }
 
     public String getValue() {
-        return this.value != null && !this.value.trim().isEmpty() ? "%" + this.value + "%" : null;
+        String v = this.value != null && !this.value.trim().isEmpty() ? this.value : null;
+        if (!fastSearch && v != null) {
+            return "%" + v + "%";
+        } else {
+            return v;
+        }
     }
 
     public void setValue(String value) {
@@ -216,6 +227,14 @@ public class DeviceSearchRequest implements Serializable {
 
     public void setImeiChanged(boolean imeiChanged) {
         this.imeiChanged = imeiChanged;
+    }
+
+    public boolean isFastSearch() {
+        return fastSearch;
+    }
+
+    public void setFastSearch(boolean fastSearch) {
+        this.fastSearch = fastSearch;
     }
 
     public long getDateFromMillis() {

@@ -50,6 +50,9 @@ plugin.devicelog.persistence.config.class=com.hmdm.plugins.devicelog.persistence
 # MQTT notification server local URI
 mqtt.server.uri=localhost:31000
 
+# Fast device search by last characters, here's the length
+device.fast.search.chars=5
+
 # rebranding parameters
 rebranding.name=My MDM
 rebranding.vendor.name=My Company

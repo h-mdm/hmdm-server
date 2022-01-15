@@ -802,6 +802,7 @@ document.localization ['en_US'] = {
     'form.devices.label.installation.status': 'Installation status',
     "format.devices.date.createTime": "dd/MM/yyyy HH:mm:ss",
     "format.devices.date.datePicker": "dd-MM-yyyy",
+    'form.devices.fast.search': 'Fast search by number',
 
     'form.devices.selection.install.status.default': 'Installation status ...',
     'form.devices.selection.install.status.all': 'All',

@@ -2220,4 +2220,18 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="14.01.2-16:24" author="seva" context="common">
+        <comment>Column,new: devices#fastSearch Indexes,new: devices#number, fastSearch</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN fastSearch VARCHAR(100);
+            CREATE INDEX devices_number_idx ON devices (number);
+            CREATE INDEX devices_fastSearch_idx ON devices (fastSearch);
+        </sql>
+        <rollback>
+            DROP INDEX devices_number_idx;
+            DROP INDEX devices_fastSearch_idx;
+            ALTER TABLE devices DROP COLUMN fastSearch;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

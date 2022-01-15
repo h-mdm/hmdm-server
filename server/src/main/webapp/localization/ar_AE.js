@@ -802,6 +802,7 @@ document.localization ['ar_AE'] = {
     "form.devices.label.installation.status": 'حالة التثبيت',
     "format.devices.date.createTime": 'dd/MM/yyyy HH:mm:ss',
     "format.devices.date.datePicker": 'dd-MM-yyyy',
+    'form.devices.fast.search': 'البحث السريع عن طريق الرقم',
 
     'form.devices.selection.install.status.default': '... حالة التثبيت',
     'form.devices.selection.install.status.all': 'الكل',

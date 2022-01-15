@@ -52,6 +52,7 @@ angular.module('headwind-kiosk')
 
                 user = undefined;
                 $cookies.remove('user');
+                $cookies.remove('deviceSearch');
             },
 
             update: function (newUser) {

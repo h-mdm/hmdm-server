@@ -107,6 +107,12 @@
 
         <div class='col-sm-7 text-right margin-bottom'>
             <button type='button' class='btn btn-default' style="float: left" ng-click='initSearch()' localized>button.search</button>
+
+            <input type="checkbox"
+                   ng-model='searchParams.fastSearch'
+            style="float: left; margin: 10px 10px 10px 30px">
+            <span style="float: left; margin: 7px 0 0 0" localized>form.devices.fast.search</span>
+
             <span class="btn-group dropdown" ng-if="hasPermission('edit_devices')">
                     <button id="group-actions-button" type="button"
                             class="btn btn-default dropdown-toggle" ng-disabled='isNotSelected()' localized>button.group.action</button>
