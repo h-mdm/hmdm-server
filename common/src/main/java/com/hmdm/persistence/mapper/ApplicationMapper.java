@@ -417,8 +417,8 @@ public interface ApplicationMapper {
     int recheckConfigurationContentApplication(@Param("configurationId") Integer configurationId);
 
     @Update("UPDATE configurations " +
-            "SET kioskMode = NOT configurations.contentAppId IS NULL " +
-            "WHERE configurations.customerId = #{customerId}")
+            "SET kioskMode = false " +
+            "WHERE configurations.customerId = #{customerId} AND configurations.contentAppId IS NULL")
     int recheckConfigurationKioskModes(@Param("customerId") Integer customerId);
 
     @Update("UPDATE configurations " +

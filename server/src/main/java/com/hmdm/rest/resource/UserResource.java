@@ -55,6 +55,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Api(tags = {"User"}, authorizations = {@Authorization("Bearer Token")})
@@ -192,7 +193,7 @@ public class UserResource {
                         return Response.ERROR("error.duplicate.email");
                     }
                 }
-                Settings settings = settingsDAO.getSettings();
+                Settings settings = Optional.ofNullable(settingsDAO.getSettings()).orElse(new Settings());
                 if (user.getId() == null) {
                     // Password is required for new users only
                     if (user.getNewPassword() == null) {

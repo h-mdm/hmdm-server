@@ -32,6 +32,7 @@ import com.hmdm.rest.json.CustomerSearchRequest;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
+import com.hmdm.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,6 +214,21 @@ public class CustomerResource {
                     if ( session != null ) {
                         session.invalidate();
                     }
+
+                    // If the org admin didn't log in, we need to generate a token for him
+                    if (orgAdmin.getAuthToken() == null || orgAdmin.getAuthToken().length() == 0) {
+                        // findOrgAdmin() doesn't return password, so we need to get the user's password
+                        User user = unsecureDAO.findByLoginOrEmail(orgAdmin.getLogin());
+                        user.setAuthToken(PasswordUtil.generateToken());
+                        user.setNewPassword(user.getPassword());        // copy value for setUserNewPasswordUnsecure
+                        unsecureDAO.setUserNewPasswordUnsecure(user);
+                        orgAdmin.setAuthToken(user.getAuthToken());
+                    }
+
+                    // Notice: impersonation doesn't work if the password reset token is set
+                    // An alternative would be to clear the password reset token, but it seems to be less secure
+                    // So let's disable impersonation before the user resets his password by now
+                    // The same behavior will be in users/impersonate (called by the org admin)
 
                     orgAdmin.setPassword(null);
 

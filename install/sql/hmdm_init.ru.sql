@@ -67,9 +67,28 @@ INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestver
     (55, 'com.miui.msa.global', 'MIUI Менеджер разрешений', false, 1, true, 10054, false),
     (56, 'com.miui.securitycenter', 'MIUI Центр безопасности', false, 1, true, 10055, false),
     (57, 'com.xiaomi.discover', 'Xiaomi Обновления', false, 1, true, 10056, false),
-    (58, 'com.google.android.permissioncontroller', 'Контроллер разрешений', false, 1, true, 10057, false);
-
-SELECT pg_catalog.setval('public.applications_id_seq', 58, true);
+    (58, 'com.google.android.permissioncontroller', 'Контроллер разрешений', false, 1, true, 10057, false),
+	(59, 'com.samsung.accessibility', 'Samsung Accessibility', false, 1, true, 10058, false),
+	(60, 'com.android.updater', 'System Update Service', false, 1, true, 10059, false),
+	(61, 'com.android.printspooler', 'Print Service', false, 1, true, 10060, false),
+	(62, 'com.google.android.documentsui', 'Расширение File Manager (Google)', false, 1, true, 10061, false),
+	(63, 'com.google.android.contacts', 'Контакты (Google)', true, 1, true, 10062, false),
+	(64, 'com.google.android.dialer', 'Телефон (Google)', true, 1, true, 10063, false),
+	(65, 'com.samsung.android.app.notes', 'Заметки Samsung', true, 1, true, 10064, false),
+	(66, 'com.hmdglobal.camera2', 'Камера Nokia (новая)', true, 1, true, 10065, false),
+	(67, 'com.hmdglobal.app.camera', 'Камера Nokia', true, 1, true, 10066, false),
+	(68, 'com.samsung.android.dialer', 'Телефон Samsung', true, 1, true, 10067, false),
+	(69, 'com.samsung.android.app.contacts', 'Контакты Samsung', true, 1, true, 10068, false),
+	(70, 'com.samsung.android.messaging', 'Сообщения Samsung', false, 1, true, 10069, false),
+	(71, 'com.sec.android.app.launcher', 'Samsung Launcher (для Недавних)', false, 1, true, 10070, false),
+	(72, 'com.google.android.apps.photos', 'Галерея (Google)', true, 1, true, 10071, false),
+	(73, 'com.google.android.apps.nbu.files', 'Менеджер файлов (Google)', true, 1, true, 10072, false),
+	(74, 'com.android.settings.intelligence', 'Поиск настроек Samsung', false, 1, true, 10073, false),
+	(75, 'com.huawei.bluetooth', 'Huawei Bluetooth', false, 1, true, 10074, false),
+	(76, 'com.google.android.gms.setup', 'Настройка Google Services', false, 1, true, 10075, false),
+	(77, 'com.samsung.android.app.telephonyui', 'Samsung Телефония', false, 1, true, 10076, false);
+	
+SELECT pg_catalog.setval('public.applications_id_seq', 77, true);
 
 INSERT INTO applicationversions (id, applicationid, version, url) VALUES 
     (10000, 1, '0', NULL),
@@ -126,9 +145,28 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10054, 55, '0', NULL),
     (10055, 56, '0', NULL),
     (10056, 57, '0', NULL),
-    (10057, 58, '0', NULL);
+    (10057, 58, '0', NULL),
+	(10058, 59, '0', NULL),
+    (10059, 60, '0', NULL),
+    (10060, 61, '0', NULL),
+    (10061, 62, '0', NULL),
+    (10062, 63, '0', NULL),
+    (10063, 64, '0', NULL),
+    (10064, 65, '0', NULL),
+    (10065, 66, '0', NULL),
+    (10066, 67, '0', NULL),
+    (10067, 68, '0', NULL),
+    (10068, 69, '0', NULL),
+    (10069, 70, '0', NULL),
+    (10070, 71, '0', NULL),
+    (10071, 72, '0', NULL),
+    (10072, 73, '0', NULL),
+    (10073, 74, '0', NULL),
+    (10074, 75, '0', NULL),
+    (10075, 76, '0', NULL),
+    (10076, 77, '0', NULL);
     
-SELECT pg_catalog.setval('public.applicationversions_id_seq', 10057, true);
+SELECT pg_catalog.setval('public.applicationversions_id_seq', 10076, true);
 
 ALTER TABLE applications ADD CONSTRAINT applications_latestversion_fkey FOREIGN KEY (latestversion) REFERENCES applicationversions(id) ON DELETE SET NULL;
 
@@ -218,9 +256,24 @@ INSERT INTO configurationapplications (id, configurationid, applicationid, remov
     (78, 2, 54, false, false, 10053),
     (79, 2, 55, false, false, 10054),
     (80, 2, 56, false, false, 10055),
-    (81, 2, 57, false, false, 10056);
+    (81, 2, 57, false, false, 10056),
+	(82, 1, 59, false, false, 10058),
+    (83, 1, 60, false, false, 10059),
+    (84, 1, 61, false, false, 10060),
+    (85, 1, 62, false, false, 10061),
+    (86, 1, 63, false, true, 10062),
+    (87, 1, 64, false, true, 10063),
+    (88, 1, 66, false, true, 10065),
+    (89, 1, 67, false, true, 10066),
+    (90, 1, 68, false, true, 10067),
+    (91, 1, 69, false, true, 10068),
+    (92, 1, 71, false, false, 10070),
+    (93, 1, 74, false, false, 10073),
+    (94, 1, 75, false, false, 10074),
+    (95, 1, 76, false, false, 10075),
+    (96, 1, 77, false, false, 10076);
     
-SELECT pg_catalog.setval('public.configurationapplications_id_seq', 81, true);
+SELECT pg_catalog.setval('public.configurationapplications_id_seq', 96, true);
 
 INSERT INTO devices (id, number, description, lastupdate, configurationid, oldconfigurationid, info, imei, phone, customerid) VALUES (1, 'h0001', 'Мое первое Android-устройство', 0, 1, NULL, NULL, NULL, NULL, 1);
 

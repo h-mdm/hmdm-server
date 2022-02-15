@@ -92,6 +92,10 @@ public class AuthFilter implements Filter {
                 ((HttpServletResponse)servletResponse).sendError(403);
                 return;
             }
+            // Avoid cookie-based penetration
+            // Changing user data in cookies may be used, for example, to elevate user's permissions to admin
+            SecurityContext.release();
+            SecurityContext.init(dbUser);
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             SecurityContext.release();
