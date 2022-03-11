@@ -189,7 +189,7 @@ public class UserResource {
                 String userEmail = user.getEmail();
                 if (userEmail != null && !userEmail.equals("")) {
                     User dbUser = unsecureDAO.findByEmail(userEmail);
-                    if (dbUser != null && dbUser.getId() != user.getId()) {
+                    if (dbUser != null && !dbUser.getId().equals(user.getId())) {
                         return Response.ERROR("error.duplicate.email");
                     }
                 }

@@ -86,6 +86,13 @@ public class DownloadFilesServlet extends HttpServlet {
 
         File file = new File(String.format("%s/%s", this.filesDirectory, path));
         if (file.exists()) {
+
+            String range = req.getHeader("Range");
+            if (range != null && range.startsWith("bytes=")) {
+                sendPartialContent(range.substring(6), file, resp);
+                return;
+            }
+
             try (InputStream input = new FileInputStream(file);
                  ServletOutputStream outputStream = resp.getOutputStream()) {
                 long length = file.length();
@@ -105,5 +112,39 @@ public class DownloadFilesServlet extends HttpServlet {
             resp.sendError(404);
         }
 
+    }
+
+    private void sendPartialContent(String rangeStr, File file, HttpServletResponse resp) {
+        try {
+            String[] range = rangeStr.split("-");
+            Long start = Long.parseLong(range[0]);
+            Long end = null;
+            if (range.length > 1) {
+                end = Long.parseLong(range[1]);
+            }
+            InputStream input = new FileInputStream(file);
+            ServletOutputStream outputStream = resp.getOutputStream();
+            long length = file.length();
+            if (end == null) {
+                end = length;
+            }
+
+            resp.setStatus(206);
+            resp.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + length);
+            long contentLength = end - start;
+            if (length <= 2147483647L) {
+                resp.setContentLength((int)contentLength);
+            } else {
+                resp.addHeader("Content-Length", Long.toString(contentLength));
+            }
+
+            input.skip(start);
+
+            IOUtils.copy(input, outputStream, contentLength);
+            outputStream.flush();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
