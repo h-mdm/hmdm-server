@@ -47,6 +47,16 @@ public class SecurityException extends RuntimeException {
     }
 
     /**
+     * <p>Constructs an exception to be thrown in case an unauthorized access to specified customerData is detected.</p>
+     *
+     * @param customerData a source of the exception.
+     * @return a security exception to be thrown.
+     */
+    public static SecurityException onCustomerDataAccessViolation(CustomerData customerData) {
+        return onCustomerDataAccessViolation(customerData.getCustomerId(), customerData.getId(), "generic");
+    }
+
+    /**
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified application is detected. </p>
      *
      * @param application a source of the exception.

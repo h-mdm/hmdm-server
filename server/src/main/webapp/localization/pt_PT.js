@@ -277,7 +277,7 @@ document.localization ['pt_PT'] = {
     'form.configuration.settings.design.desktop.header.deviceid': 'ID do dispositivo',
     'form.configuration.settings.design.desktop.header.description': 'Descrição',
     'form.configuration.settings.design.desktop.header.custom': 'Modelo personalizado',
-    'form.configuration.settings.design.desktop.header.hint': 'Certifique-se de que este parâmetro seja enviado aos dispositivos (Configurações - Outras configurações)',
+    'form.configuration.settings.design.desktop.header.hint': 'Certifique-se de que este parâmetro seja enviado aos dispositivos (Configurações - Opções gerais e de idioma)',
     'form.configuration.settings.design.desktop.header.template': 'Insira o modelo',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Use variáveis',
     'form.configuration.settings.design.upload': 'Upload',

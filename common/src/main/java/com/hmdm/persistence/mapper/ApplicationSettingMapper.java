@@ -42,10 +42,28 @@ public interface ApplicationSettingMapper {
     @Select("SELECT appSettings.*, " +
             "       applications.pkg AS applicationPkg, " +
             "       applications.name AS applicationName " +
+            "FROM configurationApplicationSettings appSettings " +
+            "INNER JOIN applications ON applications.id = appSettings.applicationID " +
+            "WHERE appSettings.extRefId = #{id} " +
+            "AND applications.pkg = #{pkg} ")
+    List<ApplicationSetting> getConfigAppSettings(@Param("id") int configurationId, @Param("pkg") String pkg);
+
+    @Select("SELECT appSettings.*, " +
+            "       applications.pkg AS applicationPkg, " +
+            "       applications.name AS applicationName " +
             "FROM deviceApplicationSettings appSettings " +
             "INNER JOIN applications ON applications.id = appSettings.applicationID " +
             "WHERE appSettings.extRefId = #{id}")
     List<ApplicationSetting> getApplicationSettingsByDeviceId(@Param("id") int deviceId);
+
+    @Select("SELECT appSettings.*, " +
+            "       applications.pkg AS applicationPkg, " +
+            "       applications.name AS applicationName " +
+            "FROM deviceApplicationSettings appSettings " +
+            "INNER JOIN applications ON applications.id = appSettings.applicationID " +
+            "WHERE appSettings.extRefId = #{id} " +
+            "AND applications.pkg = #{pkg} ")
+    List<ApplicationSetting> getDeviceAppSettings(@Param("id") int deviceId, @Param("pkg") String pkg);
 
     @Delete("DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId} AND name=#{name}")
     void deleteApplicationSettingByName(@Param("configurationId") int configurationId,

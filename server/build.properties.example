@@ -41,9 +41,6 @@ aapt.command=aapt
 # An URL for the file with configuration for loggers
 log4j.config=file:///log4j-hmdm.xml
 
-# The parameters specific to Photo plugin
-plugin.photo.enable.places=true
-
 # The parameters specific to Device Log plugin
 plugin.devicelog.persistence.config.class=com.hmdm.plugins.devicelog.persistence.postgres.DeviceLogPostgresPersistenceConfiguration
 
@@ -52,14 +49,6 @@ mqtt.server.uri=localhost:31000
 
 # Fast device search by last characters, here's the length
 device.fast.search.chars=5
-
-# rebranding parameters
-rebranding.name=My MDM
-rebranding.vendor.name=My Company
-rebranding.vendor.link=https://mycompany.com
-# rebranding logo must be a 100x100 PNG file
-rebranding.logo=/home/launcher/logo.png
-rebranding.mobile.name=My MDM
 
 smtp.host=smtp.mailgun.org
 smtp.port=25

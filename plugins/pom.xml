@@ -41,7 +41,9 @@
         <module>platform</module>
         <module>devicelog</module>
         <module>audit</module>
+        <module>deviceinfo</module>
         <module>messaging</module>
+        <module>push</module>
     </modules>
 
     <dependencies>

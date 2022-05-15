@@ -278,7 +278,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.design.desktop.header.deviceid': 'ID устройства',
     'form.configuration.settings.design.desktop.header.description': 'Описание',
     'form.configuration.settings.design.desktop.header.custom': 'Шаблон',
-    'form.configuration.settings.design.desktop.header.hint': 'Проверьте, что параметр отправляется на устройства (Настройки - Другие настройки)',
+    'form.configuration.settings.design.desktop.header.hint': 'Проверьте, что параметр отправляется на устройства (Настройки - Общие и языковые настройки)',
     'form.configuration.settings.design.desktop.header.template': 'Введите шаблон',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Используйте переменные',
     'form.configuration.settings.design.upload': 'Загрузить',

@@ -278,7 +278,7 @@ document.localization ['ar_AE'] = {
     "form.configuration.settings.design.desktop.header.deviceid": 'معرف الجهاز',
     'form.configuration.settings.design.desktop.header.description': 'وصف',
     'form.configuration.settings.design.desktop.header.custom': 'نموذج مخصص',
-    'form.configuration.settings.design.desktop.header.hint': 'تأكد من إرسال هذه المعلمة إلى الأجهزة (الإعدادات - إعدادات أخرى)',
+    'form.configuration.settings.design.desktop.header.hint': 'تأكد من إرسال هذه المعلمة إلى الأجهزة (الإعدادات - الإعدادات العامة وإعدادات اللغة)',
     'form.configuration.settings.design.desktop.header.template': 'أدخل القالب',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'استخدم المتغيرات',
     'form.configuration.settings.design.upload': 'تحميل',

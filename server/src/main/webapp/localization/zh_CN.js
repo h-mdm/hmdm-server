@@ -278,7 +278,7 @@ document.localization ['zh_CN'] = {
     'form.configuration.settings.design.desktop.header.deviceid' : "设备编号",
     'form.configuration.settings.design.desktop.header.description': '描述',
     'form.configuration.settings.design.desktop.header.custom': '自定义模板',
-    'form.configuration.settings.design.desktop.header.hint': '确保将此参数发送到设备（设置 - 其他设置）',
+    'form.configuration.settings.design.desktop.header.hint': '确保将此参数发送到设备（设置 - 常规和语言选项）',
     'form.configuration.settings.design.desktop.header.template': '输入模板',
     'form.configuration.settings.design.desktop.header.template.placeholder': '使用变量',
     'form.configuration.settings.design.upload': '上载',

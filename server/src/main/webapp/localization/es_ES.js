@@ -278,7 +278,7 @@ document.localization ['es_ES'] = {
     'form.configuration.settings.design.desktop.header.deviceid': 'ID del Dispositivo',
     'form.configuration.settings.design.desktop.header.description': 'Descripción',
     'form.configuration.settings.design.desktop.header.custom': 'Plantilla personalizada',
-    'form.configuration.settings.design.desktop.header.hint': 'Asegúrese de que este parámetro se envíe a los dispositivos (Configuración - Otras configuraciones)',
+    'form.configuration.settings.design.desktop.header.hint': 'Asegúrese de que este parámetro se envíe a los dispositivos (Configuración - Opciones general y de idioma)',
     'form.configuration.settings.design.desktop.header.template': 'Ingrese la plantilla',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Usar variables',
     'form.configuration.settings.design.upload': 'Subir',

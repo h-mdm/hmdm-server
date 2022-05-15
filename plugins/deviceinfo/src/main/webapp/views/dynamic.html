@@ -1,0 +1,292 @@
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<div class="content-wrapper width-1000">
+
+    <div ncy-breadcrumb></div>
+
+    <div class="text-center row">
+        <h4 localized>plugin.deviceinfo.dynamic.tab.title</h4>
+        <h4>{{formData.deviceNumber}}</h4>
+    </div>
+
+    <div class='form-group' ng-if='errorMessage'>
+        <div class='error'><span>{{errorMessage}}</span></div>
+    </div>
+
+    <div>
+        <span class='pointer glyphicon'
+            ng-class="{'glyphicon-chevron-down': collapseState.main, 'glyphicon-chevron-up': !collapseState.main}"
+            ng-click="toggleParamsVisibility('main')"></span>
+        <h4 class='pointer collapse-control' style="display: inline"
+            ng-click="toggleParamsVisibility('main')" localized>plugin.deviceinfo.dynamic.params.all</h4>
+    </div>
+
+    <sarsha-spinner name="spinner2">
+        <div class="spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+    </sarsha-spinner>
+
+    <form class="form-horizontal margin-top" ng-show="!collapseState.main">
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class='form-group'>
+                    <div class="col-sm-4">
+                        <label for="fixedInterval" localized>plugin.deviceinfo.dynamic.period</label>
+                    </div>
+                    <div class='col-sm-8'>
+                        <select id="fixedInterval" class='form-control'
+                                ng-model="formData.fixedInterval" ng-change="fixedIntervalSelected()">
+                            <option ng-value='3600' ng-selected="formData.fixedInterval === 3600" localized>plugin.deviceinfo.dynamic.period.1</option>
+                            <option ng-value='6 * 3600' ng-selected="formData.fixedInterval === 6 * 3600" localized>plugin.deviceinfo.dynamic.period.6</option>
+                            <option ng-value='24 * 3600' ng-selected="formData.fixedInterval === 24 * 3600" localized>plugin.deviceinfo.dynamic.period.24</option>
+                            <option ng-value='48 * 3600' ng-selected="formData.fixedInterval === 48 * 3600" localized>plugin.deviceinfo.dynamic.period.48</option>
+                            <option ng-value='-1' ng-selected="formData.fixedInterval === -1" localized>plugin.deviceinfo.dynamic.period.any</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3" ng-if="!formData.useFixedInterval">
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='{{dateFormat}}'
+                           localized-placeholder="search.placeholder.from"
+                           ng-model='formData.dateFrom' is-open='openDatePickers.dateFrom' show-button-bar='false'
+                           ng-change="timeParamsChanged()"
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar( $event, true )'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-sm-3" ng-if="!formData.useFixedInterval">
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.to"
+                           ng-model='formData.dateTo' is-open='openDatePickers.dateTo' show-button-bar='false'
+                           ng-change="timeParamsChanged()"
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar( $event, false )'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-sm-2 text-left">
+                <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+            </div>
+        </div>
+
+        <div class="row" ng-if="!formData.useFixedInterval">
+            <div class="col-sm-offset-4 col-sm-3">
+                <div class='min-padding time-picker'>
+                    <timepicker ng-model='formData.timeFrom' show-meridian='false' show-seconds="true"
+                                ng-change="timeParamsChanged()"
+                                show-spinners="false" arrowkeys="true"></timepicker>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class='min-padding time-picker'>
+                    <timepicker ng-model='formData.timeTo' show-meridian='false' show-seconds="true"
+                                ng-change="timeParamsChanged()"
+                                show-spinners="false" arrowkeys="true"></timepicker>
+                </div>
+            </div>
+        </div>
+
+        <div class="row margin-top">
+            <div class="col-sm-4">
+                <span class='pointer glyphicon'
+                      ng-class="{'glyphicon-chevron-down': collapseState.device, 'glyphicon-chevron-up': !collapseState.device}"
+                      ng-click="toggleParamsVisibility('device')"></span>
+                <h4 class='pointer collapse-control'
+                    ng-click="toggleParamsVisibility('device')" localized>plugin.deviceinfo.title.group.device</h4>
+            </div>
+            <div class="col-sm-4">
+                <span class='pointer glyphicon'
+                      ng-class="{'glyphicon-chevron-down': collapseState.wifi, 'glyphicon-chevron-up': !collapseState.wifi}"
+                      ng-click="toggleParamsVisibility('wifi')"></span>
+                <h4 class='pointer collapse-control'
+                    ng-click="toggleParamsVisibility('wifi')" localized>plugin.deviceinfo.title.group.wifi</h4>
+            </div>
+            <div class="col-sm-4">
+                <span class='pointer glyphicon'
+                      ng-class="{'glyphicon-chevron-down': collapseState.gps, 'glyphicon-chevron-up': !collapseState.gps}"
+                      ng-click="toggleParamsVisibility('gps')"></span>
+                <h4 class='pointer collapse-control'
+                    ng-click="toggleParamsVisibility('gps')" localized>plugin.deviceinfo.title.group.gps</h4>
+            </div>
+        </div>
+
+        <div class="row margin-top">
+            <div class="col-sm-4">
+                <div class="form-group" ng-repeat="fieldName in deviceFields" ng-show="!collapseState.device">
+                    <div class="col-sm-6">
+                        <label for="device_box_{{fieldName}}">
+                            {{('plugin.deviceinfo.title.group.' + fieldName) | localize}}
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="device_box_{{fieldName}}"
+                               ng-change="fieldsSelectionChanged()"
+                               ng-model="fieldsSelection[fieldName]"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group" ng-repeat="fieldName in wifiFields" ng-show="!collapseState.wifi">
+                    <div class="col-sm-6">
+                        <label for="wifi_box_{{fieldName}}">
+                            {{('plugin.deviceinfo.title.group.' + fieldName) | localize}}
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="wifi_box_{{fieldName}}"
+                               ng-change="fieldsSelectionChanged()"
+                               ng-model="fieldsSelection[fieldName]"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group" ng-repeat="fieldName in gpsFields" ng-show="!collapseState.gps">
+                    <div class="col-sm-6">
+                        <label for="gps_box_{{fieldName}}">
+                            {{('plugin.deviceinfo.title.group.' + fieldName) | localize}}
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="gps_box_{{fieldName}}"
+                               ng-change="fieldsSelectionChanged()"
+                               ng-model="fieldsSelection[fieldName]"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row margin-top">
+            <div class="col-sm-4">
+                <span class='pointer glyphicon'
+                      ng-class="{'glyphicon-chevron-down': collapseState.mobile1, 'glyphicon-chevron-up': !collapseState.mobile1}"
+                      ng-click="toggleParamsVisibility('mobile1')"></span>
+                <h4 class='pointer collapse-control'
+                    ng-click="toggleParamsVisibility('mobile1')" localized>plugin.deviceinfo.title.group.mobile1</h4>
+            </div>
+            <div class="col-sm-4">
+                <span class='pointer glyphicon'
+                      ng-class="{'glyphicon-chevron-down': collapseState.mobile2, 'glyphicon-chevron-up': !collapseState.mobile2}"
+                      ng-click="toggleParamsVisibility('mobile2')"></span>
+                <h4 class='pointer collapse-control'
+                    ng-click="toggleParamsVisibility('mobile2')" localized>plugin.deviceinfo.title.group.mobile2</h4>
+            </div>
+        </div>
+
+        <div class="row margin-top">
+            <div class="col-sm-4">
+                <div class="form-group" ng-repeat="fieldName in mobile1Fields" ng-show="!collapseState.mobile1">
+                    <div class="col-sm-6">
+                        <label for="mobile1_box_{{fieldName}}">
+                            {{('plugin.deviceinfo.title.group.' + fieldName) | localize}}
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="mobile1_box_{{fieldName}}"
+                               ng-change="fieldsSelectionChanged()"
+                               ng-model="fieldsSelection[fieldName]"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group" ng-repeat="fieldName in mobile2Fields" ng-show="!collapseState.mobile2">
+                    <div class="col-sm-6">
+                        <label for="mobile2_box_{{fieldName}}">
+                            {{('plugin.deviceinfo.title.group.' + fieldName) | localize}}
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="mobile2_box_{{fieldName}}"
+                               ng-change="fieldsSelectionChanged()"
+                               ng-model="fieldsSelection[fieldName]"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-left margin-top">
+        <button type='submit' class='btn btn-default' ng-click='doExport()' ng-disabled="loading"
+                localized>button.plugin.deviceinfo.export</button>
+    </div>
+
+    <div class="text-center margin-top" ng-if="formData.totalItems > formData.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='formData.pageNum'
+                total-items='formData.totalItems'
+                items-per-page='formData.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+
+    <div ng-if="data" class="row margin-top-40">
+        <div class="col-sm-12">
+            <table class="table">
+                <tr>
+                    <th localized>plugin.deviceinfo.title.time</th>
+                    <th ng-repeat="fieldName in allFields" ng-if="fieldsSelection[fieldName] === true">
+                        {{('plugin.deviceinfo.title.group.' + fieldName) | localize}}
+                    </th>
+                </tr>
+
+                <tr ng-repeat="record in data" ng-init="item = parseDynamicInfoRecord(record)">
+                    <td>{{record.latestUpdateTime | date:'dd.MM.yy HH:mm:ss'}}</td>
+
+                    <td ng-repeat="fieldName in allFields" ng-if="fieldsSelection[fieldName] === true">
+                        <span ng-if="item[fieldName].isBoolean">{{('plugin.deviceinfo.boolean.' + item[fieldName].value) | localize}}</span>
+                        <span ng-if="item[fieldName].isEnumerated">{{('plugin.deviceinfo.state.' + fieldName + '.' + item[fieldName].value) | localize}}</span>
+                        <span ng-if="!item[fieldName].isBoolean && !item[fieldName].isEnumerated">{{item[fieldName].value}}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center" ng-if="formData.totalItems > formData.pageSize">
+        <pagination
+                boundary-links='true' class='pagination-sm'
+                max-size='3'
+                ng-model='formData.pageNum'
+                total-items='formData.totalItems'
+                items-per-page='formData.pageSize'
+                previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                last-text='&raquo;'></pagination>
+    </div>
+</div>

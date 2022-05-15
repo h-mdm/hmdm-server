@@ -278,7 +278,7 @@ document.localization ['en_US'] = {
     'form.configuration.settings.design.desktop.header.deviceid': 'Device ID',
     'form.configuration.settings.design.desktop.header.description': 'Description',
     'form.configuration.settings.design.desktop.header.custom': 'Custom template',
-    'form.configuration.settings.design.desktop.header.hint': 'Make sure this parameter is sent to devices (Settings - Other settings)',
+    'form.configuration.settings.design.desktop.header.hint': 'Make sure this parameter is sent to devices (Settings - General and language settings)',
     'form.configuration.settings.design.desktop.header.template': 'Enter the template',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Use variables',
     'form.configuration.settings.design.upload': 'Upload',

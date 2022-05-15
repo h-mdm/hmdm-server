@@ -40,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -245,13 +246,23 @@ public class FilesResource {
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
                                 @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         try {
-            File uploadFile = File.createTempFile(fileDetail.getFileName().replace(' ', '_') + DELIMITER, ".temp");
+            // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
+            // it to UTF_8 and enable non-ASCII characters
+            // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
+            String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            String adjustedFileName = fileName
+                    .replace(' ', '_')
+                    .replace('+', '_')          // Not valid in URL
+                    .replace('%', '_')          // Not valid in URL
+                    .replace("(", "")           // These characters are used by Windows when a file is downloaded twice
+                    .replace(")", "");
+            File uploadFile = File.createTempFile(adjustedFileName + DELIMITER, ".temp");
             writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
 
             FileUploadResult result = new FileUploadResult();
             result.setServerPath(uploadFile.getAbsolutePath());
 
-            if (fileDetail.getFileName().endsWith("apk")) {
+            if (fileName.endsWith("apk")) {
                 final APKFileDetails apkFileDetails;
                 apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
                 result.setFileDetails(apkFileDetails);

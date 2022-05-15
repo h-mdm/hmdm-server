@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="deviceinfo.changelog.xml">
+
+    <!--
+    The change set IDs MUST start with "plugin-<plugin identifier>" followed by dash symbol ALWAYS.
+    The database object names declared by plugin MUST always start with "plugin_<plugin identifier>" followed by underscore
+    symbol.
+    -->
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-13:34" author="isv" context="common">
+        <comment>Plugin,new: deviceinfo</comment>
+        <sql>
+            INSERT INTO plugins (
+            identifier, name, description,
+            javascriptModuleFile,
+            functionsViewTemplate,
+            settingsViewTemplate,
+            namelocalizationkey,
+            settingsPermission, functionsPermission, deviceFunctionsPermission,
+            enabledForDevice
+            )
+            VALUES (
+            'deviceinfo', 'Детальная информация', 'Детальная и динамическая информация об устройствах',
+            'app/components/plugins/deviceinfo/deviceinfo.module.js',
+            'app/components/plugins/deviceinfo/views/info.html',
+            'app/components/plugins/deviceinfo/views/settings.html',
+            'plugin.deviceinfo.localization.key.name',
+            'plugin_deviceinfo_access',
+            'plugin_deviceinfo_access',
+            'plugin_deviceinfo_access',
+            TRUE
+            );
+        </sql>
+        <rollback>
+            DELETE FROM plugins WHERE identifier = 'deviceinfo';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-13:36" author="isv" context="common">
+        <comment>Permission,new: plugin_deviceinfo_access</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('plugin_deviceinfo_access', 'Имеет доступ к детальной и динамической информации об устройствах');
+            INSERT INTO userRolePermissions (roleId, permissionId)
+                SELECT id, currval('permissions_id_seq')
+                FROM userroles;
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'plugin_deviceinfo_access';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-13:38" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_settings</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_settings (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_settings_pr_key PRIMARY KEY,
+                customerId INT NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
+                dataPreservePeriod INT NOT NULL DEFAULT 30
+            );
+
+            ALTER TABLE plugin_deviceinfo_settings ADD CONSTRAINT plugin_deviceinfo_settings_customer_unique UNIQUE (customerId);
+        </sql>
+        <rollback>
+            ALTER TABLE plugin_deviceinfo_settings DROP CONSTRAINT plugin_deviceinfo_settings_customer_unique;
+            DROP TABLE plugin_deviceinfo_settings;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-15:28" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_deviceParams</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_deviceParams (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_deviceParams_pr_key PRIMARY KEY,
+                deviceId INT NOT NULL REFERENCES devices (id) ON DELETE CASCADE,
+                customerId INT NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
+                ts BIGINT NOT NULL
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_deviceinfo_deviceParams;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-15:31" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_deviceParams_device</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_deviceParams_device (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_deviceParams_device_pr_key PRIMARY KEY,
+                recordId INT NOT NULL UNIQUE REFERENCES plugin_deviceinfo_deviceParams (id) ON DELETE CASCADE,
+                batteryLevel INT,
+                batteryCharging VARCHAR(20),
+                ip VARCHAR(50),
+                keyguard BOOLEAN,
+                ringVolume INT,
+                wifi BOOLEAN,
+                mobileData BOOLEAN,
+                gps BOOLEAN,
+                bluetooth BOOLEAN
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_deviceinfo_deviceParams_device;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-16:02" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_deviceParams_wifi</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_deviceParams_wifi (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_deviceParams_wifi_pr_key PRIMARY KEY,
+                recordId INT NOT NULL UNIQUE REFERENCES plugin_deviceinfo_deviceParams (id) ON DELETE CASCADE,
+                rssi INT,
+                ssid VARCHAR(500),
+                security VARCHAR(500),
+                state VARCHAR(20),
+                ip VARCHAR(50),
+                tx BIGINT,
+                rx BIGINT
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_deviceinfo_deviceParams_wifi;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-16:29" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_deviceParams_gps</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_deviceParams_gps (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_deviceParams_gps_pr_key PRIMARY KEY,
+                recordId INT NOT NULL UNIQUE REFERENCES plugin_deviceinfo_deviceParams (id) ON DELETE CASCADE,
+                state VARCHAR(20),
+                lat DOUBLE PRECISION,
+                lon DOUBLE PRECISION,
+                alt DOUBLE PRECISION,
+                speed DOUBLE PRECISION,
+                course DOUBLE PRECISION
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_deviceinfo_deviceParams_gps;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-16:48" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_deviceParams_mobile</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_deviceParams_mobile (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_deviceParams_mobile_pr_key PRIMARY KEY,
+                recordId INT NOT NULL UNIQUE REFERENCES plugin_deviceinfo_deviceParams (id) ON DELETE CASCADE,
+                rssi INT,
+                carrier VARCHAR(50),
+                data BOOLEAN,
+                ip VARCHAR(50),
+                state VARCHAR(20),
+                simState VARCHAR(20),
+                tx BIGINT,
+                rx BIGINT
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_deviceinfo_deviceParams_mobile;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-22.10.2019-16:49" author="isv" context="common">
+        <comment>Table,new: plugin_deviceinfo_deviceParams_mobile2</comment>
+        <sql>
+            CREATE TABLE plugin_deviceinfo_deviceParams_mobile2 (
+                id serial NOT NULL CONSTRAINT plugin_deviceinfo_deviceParams_mobile2_pr_key PRIMARY KEY,
+                recordId INT NOT NULL UNIQUE REFERENCES plugin_deviceinfo_deviceParams (id) ON DELETE CASCADE,
+                rssi INT,
+                carrier VARCHAR(50),
+                data BOOLEAN,
+                ip VARCHAR(50),
+                state VARCHAR(20),
+                simState VARCHAR(20),
+                tx BIGINT,
+                rx BIGINT
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_deviceinfo_deviceParams_mobile2;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-29.10.2019-14:03" author="isv" context="common">
+        <comment>Columns,new: plugin_deviceinfo_settings#sendData,intervalMins</comment>
+        <sql>
+            ALTER TABLE plugin_deviceinfo_settings ADD COLUMN sendData BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE plugin_deviceinfo_settings ADD COLUMN intervalMins INT NOT NULL DEFAULT 15;
+        </sql>
+        <rollback>
+            ALTER TABLE plugin_deviceinfo_settings DROP COLUMN intervalMins;
+            ALTER TABLE plugin_deviceinfo_settings DROP COLUMN sendData;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-26.01.2021-13:23" author="seva" context="common">
+        <comment>Columns,new: plugin_deviceinfo_deviceparams_device#usbStorage,memoryTotal,memoryAvailable</comment>
+        <sql>
+            ALTER TABLE plugin_deviceinfo_deviceparams_device ADD COLUMN usbStorage BOOLEAN;
+            ALTER TABLE plugin_deviceinfo_deviceparams_device ADD COLUMN memoryTotal INT;
+            ALTER TABLE plugin_deviceinfo_deviceparams_device ADD COLUMN memoryAvailable INT;
+        </sql>
+        <rollback>
+            ALTER TABLE plugin_deviceinfo_deviceparams_device DROP COLUMN usbStorage;
+            ALTER TABLE plugin_deviceinfo_deviceparams_device DROP COLUMN memoryTotal;
+            ALTER TABLE plugin_deviceinfo_deviceparams_device DROP COLUMN memoryAvailable;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -50,6 +50,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 /**
@@ -110,8 +111,11 @@ public class ConfigurationFileResource {
                     if (!customerFilesDirectory.exists()) {
                         customerFilesDirectory.mkdirs();
                     }
-
-                    File configFile = new File(customerFilesDirectory, fileDetail.getFileName());
+                    // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
+                    // it to UTF_8 and enable non-ASCII characters
+                    // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
+                    String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                    File configFile = new File(customerFilesDirectory, fileName);
 
                     if (configFile.exists()) {
                         logger.warn("The file already exists and will be overwritten: {}", configFile.getAbsolutePath());

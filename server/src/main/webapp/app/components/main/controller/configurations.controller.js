@@ -66,7 +66,7 @@ angular.module('headwind-kiosk')
 
         $scope.addConfiguration = function() {
             confirmModal.getUserConfirmation(localization.localize('configuration.add.warning'), function () {
-                $scope.editConfiguration({});
+                $scope.editConfiguration({"id": 0});
             });
         };
 
@@ -1283,7 +1283,7 @@ angular.module('headwind-kiosk')
 
             $scope.dates = {};
 
-            if (configId) {
+            if (configId != 0) {
                 configurationService.getById({"id": configId}, function (response) {
                     if (response.data) {
                         $scope.configuration = response.data;

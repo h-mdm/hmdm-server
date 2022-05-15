@@ -54,6 +54,14 @@ public class ApplicationSettingDAO {
         return this.mapper.getApplicationSettingsByDeviceId(deviceId);
     }
 
+    public List<ApplicationSetting> getConfigAppSettings(int configId, String pkg) {
+        return this.mapper.getConfigAppSettings(configId, pkg);
+    }
+
+    public List<ApplicationSetting> getDeviceAppSettings(int deviceId, String pkg) {
+        return this.mapper.getDeviceAppSettings(deviceId, pkg);
+    }
+
     public void insertApplicationSetting(int configurationId, ApplicationSetting setting) {
         this.mapper.deleteApplicationSettingByName(configurationId, setting.getApplicationId(), setting.getName());
         this.mapper.insertApplicationSetting(configurationId, setting);

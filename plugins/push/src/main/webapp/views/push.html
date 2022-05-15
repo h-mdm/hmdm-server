@@ -1,0 +1,133 @@
+<!-- Localization completed -->
+<div class="width-1000" ng-controller="PluginPushTabController">
+    <div class="text-center">
+        <h4 localized>plugin.push.tab.title</h4>
+    </div>
+
+    <div>
+        <div class='form-group'>
+            <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+        </div>
+        <div class='form-group'>
+            <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+        </div>
+
+        <div class='form-group'>
+            <div class="col-sm-3">
+                <input type="text"
+                       ng-model="paging.deviceFilter"
+                       ng-enter='search()'
+                       localized-placeholder="search.placeholder.device"
+                       autocomplete="off"
+                       class="form-control"
+                       typeahead="device for device in getDevices($viewValue)"
+                       typeahead-loading="loadingDevices"
+                       typeahead-wait-ms="300"
+                       typeahead-focus-first="false"
+                       typeahead-input-formatter="deviceLookupFormatter($model)"
+                       typeahead-no-results="noResults">
+            </div>
+            <div class="col-sm-3">
+                &nbsp;
+            </div>
+            <div class="col-sm-6">
+                <input type="text"
+                       ng-model="paging.messageFilter"
+                       ng-enter='search()'
+                       localized-placeholder="search.placeholder.message"
+                       class="form-control">
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div class="form-group">
+            <div class='col-sm-3'>
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.from"
+                           ng-model='paging.dateFrom' is-open='openDatePickers.dateFrom' show-button-bar='false'
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar( $event, true )'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+            <div class='col-sm-3'>
+                <div class='min-padding date-picker date-picker-input'>
+                    <input class='form-control' datepicker-popup='{{dateFormat}}' localized-placeholder="search.placeholder.to"
+                           ng-model='paging.dateTo' is-open='openDatePickers.dateTo' show-button-bar='false'
+                           datepicker-options='datePickerOptions'/>
+                </div>
+                <div class='min-padding date-picker date-picker-button'>
+                    <button type='button' class='btn btn-default' ng-click='openDateCalendar( $event, false )'>
+                        <span class='glyphicon glyphicon-calendar'></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class='col-sm-3 text-right'>
+                <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+                <button type='button' class='btn btn-default' ng-click='newMessage()' localized>plugin.push.button.newMessage</button>
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+        <br/>
+
+        <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+            <pagination
+                    boundary-links='true' class='pagination-sm'
+                    max-size='3'
+                    ng-model='paging.pageNum'
+                    total-items='paging.totalItems'
+                    items-per-page='paging.pageSize'
+                    previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                    last-text='&raquo;'></pagination>
+        </div>
+
+        <table ng-if='messages && messages.length > 0' class='table'>
+            <thead>
+            <tr>
+                <th ng-click='sortByCreateTime()'>
+                    <span localized>table.heading.plugin.push.dateTime</span>
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                </th>
+                <th ng-click='sortByDeviceNumber()'>
+                    <span localized>table.heading.plugin.push.deviceNumber</span>
+                    <span ng-if='paging.sortValue === "deviceNumber"' class="glyphicon glyphicon-sort-by-attributes"></span>
+                </th>
+                <th localized>table.heading.plugin.push.messageType</th>
+                <th localized>table.heading.plugin.push.payload</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat='message in messages'>
+                <td>{{message.ts | date:createTimeFormat}}</td>
+                <td>{{message.deviceNumber}}</td>
+                <td>{{message.messageType}}</td>
+                <td>{{message.payload}}</td>
+                <td>&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div ng-if='messages && messages.length === 0' class='center' localized>notfound.common.plugin.push.messages</div>
+
+        <div class="text-center" ng-if="paging.totalItems > paging.pageSize">
+            <pagination
+                    boundary-links='true' class='pagination-sm'
+                    max-size='3'
+                    ng-model='paging.pageNum'
+                    total-items='paging.totalItems'
+                    items-per-page='paging.pageSize'
+                    previous-text='&lsaquo;' next-text='&rsaquo;' first-text='&laquo;'
+                    last-text='&raquo;'></pagination>
+        </div>
+
+    </div>
+</div>

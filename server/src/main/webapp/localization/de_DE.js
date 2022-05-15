@@ -278,7 +278,7 @@ document.localization ['de_DE'] = {
     'form.configuration.settings.design.desktop.header.deviceid': 'Geräte-ID',
     'form.configuration.settings.design.desktop.header.description': 'Beschreibung',
     'form.configuration.settings.design.desktop.header.custom': 'Benutzerdefinierte Vorlage',
-    'form.configuration.settings.design.desktop.header.hint': 'Stellen Sie sicher, dass dieser Parameter an Geräte gesendet wird (Einstellungen - Andere Einstellungen)',
+    'form.configuration.settings.design.desktop.header.hint': 'Stellen Sie sicher, dass dieser Parameter an Geräte gesendet wird (Einstellungen - Allgemeine- und Spracheinstellungen)',
     'form.configuration.settings.design.desktop.header.template': 'Vorlage',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Variablen verwenden',
     'form.configuration.settings.design.upload': 'Hochladen',

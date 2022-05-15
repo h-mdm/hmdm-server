@@ -1,0 +1,29 @@
+<!-- Localization completed -->
+<div class="width-1000" ng-controller="PluginPushSettingsController">
+    <div class="text-center">
+        <h4 localized>plugin.push.settings.title</h4>
+    </div>
+
+    <div>
+        <form class='form-horizontal'>
+            <div class='form-group'>
+                <div ng-show='errorMessage' class='error'><span>{{errorMessage}}</span></div>
+            </div>
+            <div class='form-group'>
+                <div ng-show='successMessage' class='success'><span>{{successMessage}}</span></div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-4 control-label' for="c0" localized>plugin.push.settings.message.purge.period</label>
+                <div class='col-sm-1'>
+                    <input id="c0" ng-model='settings.pushPurgePeriod' type='number' min="1" class='form-control'/>
+                </div>
+                <div class='col-sm-7 padding-left'>
+                    <button type='submit' class='btn btn-default' ng-click='purge()' localized>plugin.push.settings.message.purge.button</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+

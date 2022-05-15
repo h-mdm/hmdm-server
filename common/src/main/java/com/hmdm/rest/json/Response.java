@@ -131,6 +131,10 @@ public class Response implements Serializable {
         return ERROR("error.permission.denied", null);
     }
 
+    public static Response OBJECT_NOT_FOUND_ERROR() {
+        return ERROR("error.notfound.object", null);
+    }
+
     public static Response DEVICE_NOT_FOUND_ERROR() {
         return ERROR("error.notfound.device", null);
     }

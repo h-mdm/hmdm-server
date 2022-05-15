@@ -1,0 +1,303 @@
+<div class="width-1000" ng-controller="PluginDeviceInfoController">
+    <div class="text-center row">
+        <h4 localized>plugin.deviceinfo.tab.title</h4>
+    </div>
+
+    <div class='form-group' ng-if='errorMessage'>
+        <div class='error'><span>{{errorMessage}}</span></div>
+    </div>
+
+    <form class="form-horizontal row">
+        <div class="col-sm-8">
+            <input type="text"
+                   ng-model="formData.deviceNumber"
+                   ng-enter='search()'
+                   localized-placeholder="search.placeholder.device"
+                   autocomplete="off"
+                   class="form-control"
+                   typeahead="address for address in searchDevices($viewValue)"
+                   typeahead-loading="loadingDevices"
+                   typeahead-wait-ms="300"
+                   typeahead-focus-first="false"
+                   typeahead-input-formatter="deviceLookupFormatter($model)"
+                   typeahead-no-results="noResults">
+        </div>
+
+        <div class="col-sm-4 text-right">
+            <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
+            <button type='button' class='btn btn-default' ng-if="deviceInfo"
+                    ng-click='viewDynamicData()' localized>button.plugin.deviceinfo.dynamic</button>
+        </div>
+    </form>
+
+    <div ng-if="deviceInfo" class="row margin-top-40">
+        <div ng-class="{'col-sm-5': latestDynamicData, 'col-sm-12': !latestDynamicData}">
+            <table class='table'>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.time</th>
+                    <td>
+                        {{deviceInfo.latestUpdateTime | date:'dd.MM.yy HH:mm:ss'}}
+                        <span ng-if="deviceInfo.latestUpdateTime">
+                            ({{deviceInfo.latestUpdateInterval}}
+                            {{('plugin.deviceinfo.enum.time.' + deviceInfo.latestUpdateIntervalType) | localize}})
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.deviceNumber</th>
+                    <td>{{deviceInfo.deviceNumber}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.description</th>
+                    <td ng-bind-html="formatMultiLine(deviceInfo.description)"></td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.groups</th>
+                    <td>
+                        <span ng-repeat="group in deviceInfo.groups">
+                            {{group.name}}<br/>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.imei.required</th>
+                    <td>{{deviceInfo.imeiRequired}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.imei</th>
+                    <td>{{deviceInfo.imeiActual}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.phone.required</th>
+                    <td>{{deviceInfo.phoneNumberRequired}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.phone</th>
+                    <td>{{deviceInfo.phoneNumberActual}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.iccid</th>
+                    <td>{{deviceInfo.iccid}}</td>
+                </tr>
+                <tr ng-if="deviceInfo.imsi">
+                    <th localized>plugin.deviceinfo.title.imsi</th>
+                    <td>{{deviceInfo.imsi}}</td>
+                </tr>
+                <tr ng-if="deviceInfo.imei2">
+                    <th localized>plugin.deviceinfo.title.imei2</th>
+                    <td>{{deviceInfo.imei2}}</td>
+                </tr>
+                <tr ng-if="deviceInfo.phone2">
+                    <th localized>plugin.deviceinfo.title.phone2</th>
+                    <td>{{deviceInfo.phone2}}</td>
+                </tr>
+                <tr ng-if="deviceInfo.iccid2">
+                    <th localized>plugin.deviceinfo.title.iccid2</th>
+                    <td>{{deviceInfo.iccid2}}</td>
+                </tr>
+                <tr ng-if="deviceInfo.imsi2">
+                    <th localized>plugin.deviceinfo.title.imsi2</th>
+                    <td>{{deviceInfo.imsi}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.serial</th>
+                    <td>{{deviceInfo.serial}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.cpu</th>
+                    <td>{{deviceInfo.cpu}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.permission.1</th>
+                    <td>
+                        <span ng-class="{'device-data-mismatch': !deviceInfo.adminPermission}">
+                            {{('plugin.deviceinfo.title.permission.' + deviceInfo.adminPermission) | localize}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.permission.2</th>
+                    <td>
+                        <span ng-class="{'device-data-mismatch': !deviceInfo.overlapPermission}">
+                            {{('plugin.deviceinfo.title.permission.' + deviceInfo.overlapPermission) | localize}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.permission.3</th>
+                    <td>
+                        <span ng-class="{'device-data-mismatch': !deviceInfo.historyPermission}">
+                            {{('plugin.deviceinfo.title.permission.' + deviceInfo.historyPermission) | localize}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.permission.4</th>
+                    <td>
+                        <span>
+                            {{('plugin.deviceinfo.title.permission.' + !!deviceInfo.accessibilityPermission) | localize}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.model</th>
+                    <td>{{deviceInfo.model}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.os.version</th>
+                    <td>{{deviceInfo.osVersion}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.battery.level</th>
+                    <td ng-class="{'device-data-mismatch': deviceInfo.batteryLevel < 20}">
+                        {{deviceInfo.batteryLevel ? (deviceInfo.batteryLevel + '%') : undefined}}
+                    </td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.mdm.mode</th>
+                    <td ng-if="deviceInfo.mdmMode !== undefined">{{('plugin.deviceinfo.boolean.' + deviceInfo.mdmMode) | localize}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.launcher.type</th>
+                    <td>{{deviceInfo.launcherType}}</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.default.launcher</th>
+                    <td ng-class="{'device-data-mismatch': deviceInfo.defaultLauncher === false}">{{deviceInfo.launcherPackage}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-sm-offset-2 col-sm-5" ng-if="latestDynamicData">
+            <table class='table'>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.time</th>
+                    <td>
+                        {{latestDynamicData.latestUpdateTime | date:'dd.MM.yy HH:mm:ss'}}
+                        <span ng-if="latestDynamicData.latestUpdateTime">
+                            ({{latestDynamicData.latestUpdateInterval}}
+                            {{('plugin.deviceinfo.enum.time.' + latestDynamicData.latestUpdateIntervalType) | localize}})
+                        </span>
+                    </td>
+                </tr>
+
+                <!-- Main -->
+                <tr ng-if="dynamicDeviceData.deviceDataIncluded.value">
+                    <th colspan="2" localized class="text-center">plugin.deviceinfo.title.group.device</th>
+                </tr>
+                <tr ng-repeat="field in dynamicDataDeviceFieldsOrder"
+                    ng-if="dynamicDeviceData && dynamicDeviceData.hasOwnProperty(field)"
+                    ng-init="item = dynamicDeviceData[field]">
+                    <th>{{('plugin.deviceinfo.title.group.' + item.name) | localize}}</th>
+                    <td ng-if="item.isBoolean">
+                        {{('plugin.deviceinfo.boolean.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="!item.isBoolean">
+                        {{item.value}}
+                    </td>
+                </tr>
+
+                <!-- Wi-Fi -->
+                <tr ng-if="dynamicWifiData.wifiDataIncluded.value">
+                    <th colspan="2" localized class="text-center">plugin.deviceinfo.title.group.wifi</th>
+                </tr>
+                <tr ng-repeat="field in dynamicDataWifiFieldsOrder"
+                    ng-if="dynamicWifiData && dynamicWifiData.hasOwnProperty(field)"
+                    ng-init="item = dynamicWifiData[field]">
+                    <th>{{('plugin.deviceinfo.title.group.' + item.name) | localize}}</th>
+                    <td ng-if="item.isBoolean">
+                        {{('plugin.deviceinfo.boolean.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="item.isEnumerated">
+                        {{('plugin.deviceinfo.state.' + field + '.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="!item.isBoolean && !item.isEnumerated">
+                        {{item.value}}
+                    </td>
+                </tr>
+
+                <!-- GPS -->
+                <tr ng-if="dynamicGpsData.gpsDataIncluded.value">
+                    <th colspan="2" localized class="text-center">plugin.deviceinfo.title.group.gps</th>
+                </tr>
+                <tr ng-repeat="field in dynamicDataGpsFieldsOrder"
+                    ng-if="dynamicGpsData && dynamicGpsData.hasOwnProperty(field)"
+                    ng-init="item = dynamicGpsData[field]">
+                    <th>{{('plugin.deviceinfo.title.group.' + item.name) | localize}}</th>
+                    <td ng-if="item.isBoolean">
+                        {{('plugin.deviceinfo.boolean.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="item.isEnumerated">
+                        {{('plugin.deviceinfo.state.' + field + '.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="!item.isBoolean && !item.isEnumerated">
+                        {{item.value}}
+                    </td>
+                </tr>
+
+                <!-- Mobile #1 -->
+                <tr ng-if="dynamicMobile1Data.mobile1DataIncluded.value">
+                    <th colspan="2" localized class="text-center">plugin.deviceinfo.title.group.mobile1</th>
+                </tr>
+                <tr ng-repeat="field in dynamicDataMobile1FieldsOrder"
+                    ng-if="dynamicMobile1Data && dynamicMobile1Data.hasOwnProperty(field)"
+                    ng-init="item = dynamicMobile1Data[field]">
+                    <th>{{('plugin.deviceinfo.title.group.' + item.name) | localize}}</th>
+                    <td ng-if="item.isBoolean">
+                        {{('plugin.deviceinfo.boolean.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="item.isEnumerated">
+                        {{('plugin.deviceinfo.state.' + field + '.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="!item.isBoolean && !item.isEnumerated">
+                        {{item.value}}
+                    </td>
+                </tr>
+
+                <!-- Mobile #2 -->
+                <tr ng-if="dynamicMobile2Data.mobile2DataIncluded.value">
+                    <th colspan="2" localized class="text-center">plugin.deviceinfo.title.group.mobile2</th>
+                </tr>
+                <tr ng-repeat="field in dynamicDataMobile2FieldsOrder"
+                    ng-if="dynamicMobile2Data && dynamicMobile2Data.hasOwnProperty(field)"
+                    ng-init="item = dynamicMobile2Data[field]">
+                    <th>{{('plugin.deviceinfo.title.group.' + item.name) | localize}}</th>
+                    <td ng-if="item.isBoolean">
+                        {{('plugin.deviceinfo.boolean.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="item.isEnumerated">
+                        {{('plugin.deviceinfo.state.' + field + '.' + item.value) | localize}}
+                    </td>
+                    <td ng-if="!item.isBoolean && !item.isEnumerated">
+                        {{item.value}}
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+    <div ng-if="deviceInfo" class="row margin-top-40">
+        <div class="text-center">
+            <h5 localized>plugin.deviceinfo.title.apps.status</h5>
+        </div>
+        
+        <table class="table">
+            <tr>
+                <th localized>plugin.deviceinfo.title.apps.name</th>
+                <th localized>plugin.deviceinfo.title.apps.pkg</th>
+                <th localized>plugin.deviceinfo.title.apps.ver1</th>
+                <th localized>plugin.deviceinfo.title.apps.ver2</th>
+            </tr>
+
+            <tr ng-repeat="app in deviceInfo.applications">
+                <td>{{app.applicationName}}</td>
+                <td>{{app.applicationPkg}}</td>
+                <td ng-class="{'device-data-mismatch': !app.versionValid}">{{app.versionInstalled}}</td>
+                <td ng-class="{'device-data-mismatch': !app.versionInstalled && app.versionRequired !== '0'}">{{app.versionRequired}}</td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
