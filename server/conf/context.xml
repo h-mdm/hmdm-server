@@ -60,4 +60,6 @@
     <Parameter name="smtp.password" value="${smtp.password}"/>
     <Parameter name="smtp.from" value="${smtp.from}"/>
 
+    <Parameter name="sql.init.script.path" value="${sql.init.script.path}"/>
+
 </Context>

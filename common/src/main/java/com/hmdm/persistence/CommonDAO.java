@@ -87,4 +87,12 @@ public class CommonDAO extends AbstractDAO<Settings> {
             throw SecurityException.onAdminDataAccessViolation("save customer settings");
         }
     }
+
+    public boolean isDatabaseInitialized() {
+        return mapper.getSettingsCount() > 0;
+    }
+
+    public void executeRawQuery(String query) {
+        mapper.executeRawQuery(query);
+    }
 }

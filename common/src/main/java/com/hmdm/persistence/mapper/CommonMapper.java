@@ -25,6 +25,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import com.hmdm.persistence.domain.Settings;
+import org.apache.ibatis.annotations.SelectProvider;
 
 public interface CommonMapper {
     @Select({"SELECT * " +
@@ -148,4 +149,10 @@ public interface CommonMapper {
                     "passwordStrength = EXCLUDED.passwordStrength "
     })
     void saveMiscSettings(Settings settings);
+
+    @Select({"SELECT COUNT(*) FROM settings"})
+    int getSettingsCount();
+
+    @Insert({"${query}"})
+    void executeRawQuery(String query);
 }

@@ -50,6 +50,7 @@ public class ConfigureModule extends AbstractModule {
     private final String smtpPasswordParameter = "smtp.password";
     private final String smtpFromParameter = "smtp.from";
     private final String deviceFastSearchCharsParameter = "device.fast.search.chars";
+    private final String sqlInitScriptPath = "sql.init.script.path";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -112,5 +113,7 @@ public class ConfigureModule extends AbstractModule {
         // Other
         opt = this.context.getInitParameter(deviceFastSearchCharsParameter);
         this.bindConstant().annotatedWith(Names.named(deviceFastSearchCharsParameter)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 5);
+        opt = this.context.getInitParameter(sqlInitScriptPath);
+        this.bindConstant().annotatedWith(Names.named(sqlInitScriptPath)).to(opt != null ? opt : "");
     }
 }
