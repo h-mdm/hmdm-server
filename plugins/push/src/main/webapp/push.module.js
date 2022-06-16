@@ -171,7 +171,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         $scope.newMessage = function (message) {
             var modalInstance = $modal.open({
                 templateUrl: 'app/components/plugins/push/views/push.modal.html',
-                controller: 'NewMessageController',
+                controller: 'NewPushMessageController',
                 resolve: {
                     message: function () {
                         return message;
@@ -251,7 +251,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             });
         };
     })
-    .controller('NewMessageController', function ($scope, $rootScope, $modalInstance, configurationService, groupService,
+    .controller('NewPushMessageController', function ($scope, $rootScope, $modalInstance, configurationService, groupService,
                                                   confirmModal, localization, pluginPushService, getDevicesService) {
 
         $scope.sending = false;

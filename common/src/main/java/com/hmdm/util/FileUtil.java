@@ -116,7 +116,10 @@ public final class FileUtil {
 
     public static String translateURLToLocalFilePath(Customer customer, String url, String baseUrl) {
         final String prefixWithoutCustomer = baseUrl + "/files/";
-        final String prefix = prefixWithoutCustomer + customer.getFilesDir() + "/";
+        String prefix = prefixWithoutCustomer;
+        if (customer.getFilesDir() != null && !customer.getFilesDir().isEmpty()) {
+            prefix += customer.getFilesDir() + "/";
+        }
         if (url.startsWith(prefix)) {
             final String path = url.substring(prefixWithoutCustomer.length());
             return path.replace("/", File.separator);
@@ -135,5 +138,14 @@ public final class FileUtil {
     public static boolean deleteFile(String baseDirectory, String path) {
         final File fileToDelete = new File(baseDirectory, path);
         return fileToDelete.delete();
+    }
+
+    public static String createFileUrl(String baseUrl, String customerDir, String fileName) {
+        String url = baseUrl + "/files/";
+        if (customerDir != null && !customerDir.equals("")) {
+            url += customerDir + "/";
+        }
+        url += fileName;
+        return url;
     }
 }

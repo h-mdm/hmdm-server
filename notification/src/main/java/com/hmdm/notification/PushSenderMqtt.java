@@ -3,10 +3,12 @@ package com.hmdm.notification;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.hmdm.notification.guice.module.NotificationMqttTaskModule;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.Device;
+import com.hmdm.util.CryptoUtil;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -23,6 +25,8 @@ import java.util.Map;
 public class PushSenderMqtt implements PushSender {
     private String serverUri;
     private String clientTag;
+    private boolean mqttAuth;
+    private String hashSecret;
     private DeviceDAO deviceDAO;
     private MqttClient client;
     private MemoryPersistence persistence = new MemoryPersistence();
@@ -30,9 +34,13 @@ public class PushSenderMqtt implements PushSender {
     @Inject
     public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri,
                           @Named("mqtt.client.tag") String clientTag,
+                          @Named("mqtt.auth") boolean mqttAuth,
+                          @Named("hash.secret") String hashSecret,
                           DeviceDAO deviceDAO) {
         this.serverUri = serverUri;
         this.clientTag = clientTag;
+        this.mqttAuth = mqttAuth;
+        this.hashSecret = hashSecret;
         this.deviceDAO = deviceDAO;
     }
 
@@ -43,6 +51,10 @@ public class PushSenderMqtt implements PushSender {
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
             options.setAutomaticReconnect(true);
+            if (mqttAuth) {
+                options.setUserName(NotificationMqttTaskModule.MQTT_USERNAME);
+                options.setPassword(CryptoUtil.getSHA1String(NotificationMqttTaskModule.MQTT_USERNAME + hashSecret).toCharArray());
+            }
             client.connect(options);
         } catch (Exception e) {
             e.printStackTrace();

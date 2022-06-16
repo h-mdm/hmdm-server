@@ -57,6 +57,7 @@ import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.CryptoUtil;
+import com.hmdm.util.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -285,7 +286,7 @@ public class SyncResource {
             final String icon = app.getIcon();
             if (icon != null) {
                 if (!icon.trim().isEmpty()) {
-                    String iconUrl = String.format("%s/files/%s/%s", this.baseUrl,
+                    String iconUrl = FileUtil.createFileUrl(this.baseUrl,
                             URLEncoder.encode(customer.getFilesDir(), "UTF8"),
                             URLEncoder.encode(icon, "UTF8"));
                     app.setIcon(iconUrl);
@@ -415,12 +416,7 @@ public class SyncResource {
                     if (file.getExternalUrl() != null) {
                         file.setUrl(file.getExternalUrl());
                     } else if (file.getFilePath() != null) {
-                        final String url;
-                        if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
-                            url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + file.getFilePath();
-                        } else {
-                            url = this.baseUrl + "/files/" + file.getFilePath();
-                        }
+                        final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), file.getFilePath());
                         file.setUrl(url);
                     }
                 }
@@ -451,10 +447,11 @@ public class SyncResource {
 
         response.setHeader(HEADER_IP_ADDRESS, request.getRemoteAddr());
 
-        if (secureEnrollment) {
+        // Always add signature to enable "soft" security implementation
+//        if (secureEnrollment) {
             // Add a signature to avoid MITM attack
             response.setHeader(HEADER_RESPONSE_SIGNATURE, CryptoUtil.getDataSignature(hashSecret, syncResponse));
-        }
+//        }
 
         return Response.OK(syncResponse);
 

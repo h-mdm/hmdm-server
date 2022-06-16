@@ -49,6 +49,10 @@
     <!-- Optional tag for the MQTT client (required if multiple Tomcat nodes are running) -->
     <Parameter name="mqtt.client.tag" value="${mqtt.client.tag}"/>
 
+    <!-- Optional tag for MQTT authentication for more security 
+         (supported by Headwind MDM launcher v5.05 and above) -->
+    <Parameter name="mqtt.auth" value="${mqtt.auth}"/>
+
 
 
     <!-- Email parameters are necessary for password recovery -->

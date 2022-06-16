@@ -30,6 +30,7 @@ import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 import com.hmdm.util.CryptoUtil;
+import com.hmdm.util.FileUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.log4j.lf5.util.StreamUtils;
@@ -134,12 +135,7 @@ public class ConfigurationFileResource {
                     // Calculate checksum
                     final String checksum = CryptoUtil.calculateChecksum(Files.newInputStream(configFile.toPath()));
                     uploadedFile.setChecksum(checksum);
-                    final String url;
-                    if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
-                        url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + configFile.getName();
-                    } else {
-                        url = this.baseUrl + "/files/" + configFile.getName();
-                    }
+                    final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), configFile.getName());
                     uploadedFile.setUrl(url);
 
                     return Response.OK(uploadedFile);

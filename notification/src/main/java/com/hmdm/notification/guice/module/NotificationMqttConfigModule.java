@@ -43,5 +43,11 @@ public class NotificationMqttConfigModule extends AbstractModule {
             mqttClientTag = "";
         }
         this.bindConstant().annotatedWith(Names.named("mqtt.client.tag")).to(mqttClientTag);
+
+        String mqttAuthTag = this.context.getInitParameter("mqtt.auth");
+        this.bindConstant().annotatedWith(Names.named("mqtt.auth")).to(
+                mqttAuthTag != null && (mqttAuthTag.equals("1") || mqttAuthTag.equalsIgnoreCase("true"))
+        );
+
     }
 }

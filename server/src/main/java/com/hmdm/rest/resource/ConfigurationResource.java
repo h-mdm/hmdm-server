@@ -34,6 +34,7 @@ import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.UpgradeConfigurationApplicationRequest;
+import com.hmdm.util.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -312,12 +313,7 @@ public class ConfigurationResource {
                     if (file.getExternalUrl() != null) {
                         file.setUrl(file.getExternalUrl());
                     } else if (file.getFilePath() != null) {
-                        final String url;
-                        if (customer.getFilesDir() != null && !customer.getFilesDir().trim().isEmpty()) {
-                            url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + file.getFilePath();
-                        } else {
-                            url = this.baseUrl + "/files/" + file.getFilePath();
-                        }
+                        final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), file.getFilePath());
                         file.setUrl(url);
                     }
                 });

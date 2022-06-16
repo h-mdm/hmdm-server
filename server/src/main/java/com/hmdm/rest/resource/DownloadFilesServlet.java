@@ -35,12 +35,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hmdm.notification.rest.NotificationResource;
+import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.rest.json.Response;
 import com.hmdm.util.CryptoUtil;
 import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class DownloadFilesServlet extends HttpServlet {
+    private final ApplicationDAO applicationDAO;
     private final String filesDirectory;
     private final File baseDirectory;
 
@@ -49,10 +54,14 @@ public class DownloadFilesServlet extends HttpServlet {
 
     private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
 
+    private static final Logger log = LoggerFactory.getLogger(DownloadFilesServlet.class);
+
     @Inject
-    public DownloadFilesServlet(@Named("files.directory") String filesDirectory,
+    public DownloadFilesServlet(ApplicationDAO applicationDAO,
+                                @Named("files.directory") String filesDirectory,
                                 @Named("secure.enrollment") boolean secureEnrollment,
                                 @Named("hash.secret") String hashSecret) {
+        this.applicationDAO = applicationDAO;
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
         this.secureEnrollment = secureEnrollment;
@@ -68,15 +77,17 @@ public class DownloadFilesServlet extends HttpServlet {
         int index = path.indexOf("/files/", 0) + "/files/".length();
         path = path.substring(index);
 
-        if (secureEnrollment) {
+        if (secureEnrollment && !applicationDAO.isMainApp(req.getRequestURL().toString())) {
             String signature = req.getHeader(HEADER_ENROLLMENT_SIGNATURE);
             if (signature == null) {
+                log.warn("No signature for file request " + path);
                 resp.sendError(403);
                 return;
             }
             try {
                 String goodSignature = CryptoUtil.getSHA1String(hashSecret + path);
                 if (!signature.equalsIgnoreCase(goodSignature)) {
+                    log.warn("Wrong signature for file request " + path + ": " + signature + " Should be: " + goodSignature);
                     resp.sendError(403);
                     return;
                 }

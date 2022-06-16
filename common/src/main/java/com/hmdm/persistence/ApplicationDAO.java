@@ -135,7 +135,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 // If URL is not specified explicitly for new app then set the application URL to reference to that
                 // file
                 if ((application.getUrl() == null || application.getUrl().trim().isEmpty())) {
-                    application.setUrl(this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName());
+                    application.setUrl(FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), movedFile.getName()));
                 }
 
                 application.setPkg(apkFileDetails.getPkg());
@@ -835,7 +835,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 // If URL is not specified explicitly for new app then set the application URL to reference to that
                 // file
                 if ((applicationVersion.getUrl() == null || applicationVersion.getUrl().trim().isEmpty())) {
-                    String url = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName();
+                    String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), movedFile.getName());
                     if (StringUtil.isEmpty(apkFileDetails.getArch())) {
                         applicationVersion.setSplit(false);
                         applicationVersion.setUrl(url);
@@ -916,6 +916,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         // customer
         final String currentApplicationUrl = appVersion.getUrl();
         if (currentApplicationUrl != null) {
+            // Here customer.getFilesDir() is not supposed to be empty because
+            // this method works in a multi-tenant mode only
             final String currentCustomerFileDirUrlPart = "/" + appCustomer.getFilesDir() + "/";
             int pos = currentApplicationUrl.indexOf(currentCustomerFileDirUrlPart);
             if (pos >= 0) {
@@ -992,16 +994,12 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         return new ArrayList<>();
     }
 
-    public String ddd(Customer customer, String fileName) {
-        return this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileName;
-    }
-
     public boolean isFileUsed(Customer customer, String fileDirPath, String fileName) {
         final String appFileUrl;
         if (fileDirPath == null || fileDirPath.trim().isEmpty()) {
-            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileName;
+            appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileName);
         } else {
-            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileDirPath.replace('\\', '/') + fileName;
+            appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileDirPath.replace('\\', '/') + fileName);
         }
 
         final boolean used = this.mapper.countAllApplicationsByUrl(customer.getId(), appFileUrl) > 0;
@@ -1012,11 +1010,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     public List<String> getUsingApps(Customer customer, String fileDirPath, String fileName) {
         final String appFileUrl;
         if (fileDirPath == null || fileDirPath.trim().isEmpty()) {
-            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileName;
+            appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileName);
         } else {
-            appFileUrl = this.baseUrl + "/files/" + customer.getFilesDir() + "/" + fileDirPath.replace('\\', '/') + fileName;
+            appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileDirPath.replace('\\', '/') + fileName);
         }
 
         return this.mapper.getUsingApps(customer.getId(), appFileUrl);
+    }
+
+    public boolean isMainApp(String url) {
+        List<Long> mainApps = mapper.getMainAppWithUrl(url);
+        return mainApps.size() > 0;
     }
 }

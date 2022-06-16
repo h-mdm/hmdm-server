@@ -126,7 +126,7 @@ public interface ApplicationMapper {
 
     @Select({SELECT_BASE +
             "WHERE (customerId = #{customerId})" +
-            "AND (applicationVersions.url=#{url}) " +
+            "AND (applicationVersions.url=#{url} OR applicationVersions.urlarmeabi=#{url} OR applicationVersions.urlarm64=#{url}) " +
             "ORDER BY applications.name"})
     List<Application> getAllApplicationsByUrl(@Param("customerId") int customerId, @Param("url") String url);
 
@@ -515,4 +515,10 @@ public interface ApplicationMapper {
             "WHERE (applications.customerId = #{customerId})" +
             "AND (applicationVersions.url=#{url}) "})
     List<String> getUsingApps(@Param("customerId") int customerId, @Param("url") String url);
+
+    @Select({"SELECT applicationVersions.id FROM applicationVersions " +
+            "INNER JOIN configurations ON configurations.mainAppId=applicationVersions.id " +
+            "WHERE applicationVersions.url=#{url} " +
+            "LIMIT 1 "})
+    List<Long> getMainAppWithUrl(@Param("url") String url);
 }
