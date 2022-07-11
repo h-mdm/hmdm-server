@@ -63,6 +63,7 @@
   "plugin.deviceinfo.title.model": "Modell",
   "plugin.deviceinfo.title.os.version": "OS Version",
   "plugin.deviceinfo.title.mdm.mode": "MDM-Modus",
+  "plugin.deviceinfo.title.kiosk.mode": "Kiosk-Modus",
   "plugin.deviceinfo.title.launcher.type": "Launcher-Variante",
   "plugin.deviceinfo.title.default.launcher": "Standard-Launcher",
   "plugin.deviceinfo.title.imei2": "2. SIM IMEI",

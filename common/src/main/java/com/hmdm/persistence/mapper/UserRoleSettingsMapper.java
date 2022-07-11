@@ -56,6 +56,11 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedLauncherVersion," +
                     "columnDisplayedBatteryLevel," +
                     "columnDisplayedDefaultLauncher," +
+                    "columnDisplayedMdmMode," +
+                    "columnDisplayedKioskMode," +
+                    "columnDisplayedAndroidVersion," +
+                    "columnDisplayedEnrollmentDate," +
+                    "columnDisplayedSerial," +
                     "columnDisplayedCustom1," +
                     "columnDisplayedCustom2," +
                     "columnDisplayedCustom3," +
@@ -77,6 +82,11 @@ public interface UserRoleSettingsMapper {
                     "#{columnDisplayedLauncherVersion}," +
                     "#{columnDisplayedBatteryLevel}," +
                     "#{columnDisplayedDefaultLauncher}," +
+                    "#{columnDisplayedMdmMode}," +
+                    "#{columnDisplayedKioskMode}," +
+                    "#{columnDisplayedAndroidVersion}," +
+                    "#{columnDisplayedEnrollmentDate}," +
+                    "#{columnDisplayedSerial}," +
                     "#{columnDisplayedCustom1}," +
                     "#{columnDisplayedCustom2}," +
                     "#{columnDisplayedCustom3}," +
@@ -100,6 +110,11 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedLauncherVersion = EXCLUDED.columnDisplayedLauncherVersion, " +
                     "columnDisplayedBatteryLevel = EXCLUDED.columnDisplayedBatteryLevel, " +
                     "columnDisplayedDefaultLauncher = EXCLUDED.columnDisplayedDefaultLauncher, " +
+                    "columnDisplayedMdmMode = EXCLUDED.columnDisplayedMdmMode, " +
+                    "columnDisplayedKioskMode = EXCLUDED.columnDisplayedKioskMode, " +
+                    "columnDisplayedAndroidVersion = EXCLUDED.columnDisplayedAndroidVersion, " +
+                    "columnDisplayedEnrollmentDate = EXCLUDED.columnDisplayedEnrollmentDate, " +
+                    "columnDisplayedSerial = EXCLUDED.columnDisplayedSerial, " +
                     "columnDisplayedCustom1 = EXCLUDED.columnDisplayedCustom1, " +
                     "columnDisplayedCustom2 = EXCLUDED.columnDisplayedCustom2, " +
                     "columnDisplayedCustom3 = EXCLUDED.columnDisplayedCustom3"

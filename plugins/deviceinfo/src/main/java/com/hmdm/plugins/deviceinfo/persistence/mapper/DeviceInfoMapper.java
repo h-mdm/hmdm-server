@@ -215,6 +215,7 @@ public interface DeviceInfoMapper {
             "    devices.info::json ->> 'androidVersion' AS osVersion, " +
             "    devices.info::json ->> 'batteryLevel' AS batteryLevel," +
             "    devices.info::json ->> 'mdmMode' AS mdmMode," +
+            "    devices.info::json ->> 'kioskMode' AS kioskMode," +
             "    devices.info::json ->> 'launcherType' AS launcherType," +
             "    devices.info::json ->> 'launcherPackage' AS launcherPackage," +
             "    devices.info::json ->> 'defaultLauncher' AS defaultLauncher," +

@@ -145,6 +145,31 @@ public class DeviceView {
         return device.getGroups();
     }
 
+    @ApiModelProperty("A flag indicating if MDM mode is activated on the device")
+    public Boolean getMdmMode() {
+        return device.getMdmMode();
+    }
+
+    @ApiModelProperty("A flag indicating if kiosk mode is activated on the device")
+    public Boolean getKioskMode() {
+        return device.getKioskMode();
+    }
+
+    @ApiModelProperty("Version of Android OS on the device")
+    public String getAndroidVersion() {
+        return device.getAndroidVersion();
+    }
+
+    @ApiModelProperty("Date and time of the device enrollment")
+    public Long getEnrollTime() {
+        return device.getEnrollTime();
+    }
+
+    @ApiModelProperty("Device serial number")
+    public String getSerial() {
+        return device.getSerial();
+    }
+
     @ApiModelProperty("A version number for Launcher application installed on device")
     public String getLauncherVersion() {
         return device.getLauncherVersion();

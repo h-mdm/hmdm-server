@@ -91,6 +91,16 @@ public class Device implements CustomerData, Serializable {
     private String oldNumber;
     @ApiModelProperty("Last characters of the device number used for fast search")
     private String fastSearch;
+    @ApiModelProperty(hidden = true)
+    private Boolean mdmMode;
+    @ApiModelProperty(hidden = true)
+    private Boolean kioskMode;
+    @ApiModelProperty(hidden = true)
+    private String androidVersion;
+    @ApiModelProperty(hidden = true)
+    private Long enrollTime;
+    @ApiModelProperty(hidden = true)
+    private String serial;
 
     public Device() {
     }
@@ -293,6 +303,46 @@ public class Device implements CustomerData, Serializable {
         this.oldNumber = oldNumber;
     }
 
+    public Boolean getMdmMode() {
+        return mdmMode;
+    }
+
+    public void setMdmMode(Boolean mdmMode) {
+        this.mdmMode = mdmMode;
+    }
+
+    public Boolean getKioskMode() {
+        return kioskMode;
+    }
+
+    public void setKioskMode(Boolean kioskMode) {
+        this.kioskMode = kioskMode;
+    }
+
+    public String getAndroidVersion() {
+        return androidVersion;
+    }
+
+    public void setAndroidVersion(String androidVersion) {
+        this.androidVersion = androidVersion;
+    }
+
+    public Long getEnrollTime() {
+        return enrollTime;
+    }
+
+    public void setEnrollTime(Long enrollTime) {
+        this.enrollTime = enrollTime;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
     public String getFastSearch() {
         return fastSearch;
     }
@@ -338,6 +388,11 @@ public class Device implements CustomerData, Serializable {
                 ", applied=" + applied +
                 ", launcherPkg='" + launcherPkg + '\'' +
                 ", launcherVersion='" + launcherVersion + '\'' +
+                ", mdmMode='" + mdmMode + '\'' +
+                ", kioskMode='" + kioskMode + '\'' +
+                ", androidVersion='" + androidVersion + '\'' +
+                ", enrollTime='" + enrollTime + '\'' +
+                ", serial='" + serial + '\'' +
                 ", statusCode='" + statusCode + '\'' +
                 ", oldNumber='" + oldNumber + '\'' +
                 ", fastSearch='" + fastSearch + '\'' +

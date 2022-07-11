@@ -48,6 +48,11 @@
         <result property="configName" column="configName"/>
         <result property="launcherPkg" column="launcherPkg"/>
         <result property="launcherVersion" column="launcherVersion"/>
+        <result property="mdmMode" column="mdmMode"/>
+        <result property="kioskMode" column="kioskMode"/>
+        <result property="androidVersion" column="androidVersion"/>
+        <result property="enrollTime" column="enrollTime"/>
+        <result property="serial" column="serial"/>
         <result property="statusCode" column="statusCode"/>
         <result property="custom1" column="custom1"/>
         <result property="custom2" column="custom2"/>
@@ -114,6 +119,11 @@
                 WHEN 'LAUNCHER_VERSION' = #{sortBy} THEN mdm_device_launcher_version(applications.pkg, devices.info)::VARCHAR(100)
                 WHEN 'BATTERY_LEVEL' = #{sortBy} THEN LPAD(COALESCE(devices.info::json -&gt;&gt; 'batteryLevel', '0'), 3, '0')::VARCHAR(100)
                 WHEN 'DEFAULT_LAUNCHER' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'defaultLauncher', 'unknown')::VARCHAR(100)
+                WHEN 'MDM_MODE' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'mdmMode', '')::VARCHAR(100)
+                WHEN 'KIOSK_MODE' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'kioskMode', '')::VARCHAR(100)
+                WHEN 'ANDROID_VERSION' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'androidVersion', '')::VARCHAR(100)
+                WHEN 'ENROLLMENT_DATE' = #{sortBy} THEN devices.enrollTime::VARCHAR(100)
+                WHEN 'SERIAL' = #{sortBy} THEN COALESCE(devices.info::json -&gt;&gt; 'serial', '')::VARCHAR(100)
                 WHEN 'CUSTOM1' = #{sortBy} THEN LOWER(devices.custom1)::VARCHAR(100)
                 WHEN 'CUSTOM2' = #{sortBy} THEN LOWER(devices.custom2)::VARCHAR(100)
                 WHEN 'CUSTOM3' = #{sortBy} THEN LOWER(devices.custom3)::VARCHAR(100)
@@ -140,6 +150,7 @@
             OR devices.info::json -&gt;&gt; 'imei' ILIKE #{value}
             OR devices.info::json -&gt;&gt; 'phone' ILIKE #{value}
             OR devices.info::json -&gt;&gt; 'model' ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'serial' ILIKE #{value}
             OR devices.custom1 ILIKE #{value}
             OR devices.custom2 ILIKE #{value}
             OR devices.custom3 ILIKE #{value}
@@ -177,6 +188,41 @@
             devices.lastUpdate &lt;= #{dateToMillis}
             )
         </if>
+        <if test="onlineEarlierMillis != null">
+            AND (
+            devices.lastUpdate &lt;= extract(epoch from now()) * 1000 - #{onlineEarlierMillis}
+            )
+        </if>
+        <if test="onlineLaterMillis != null">
+            AND (
+            devices.lastUpdate >= extract(epoch from now()) * 1000 - #{onlineLaterMillis}
+            )
+        </if>
+        <if test="enrollmentDateFrom != null">
+            AND (
+            devices.enrollTime &gt;= #{enrollmentDateFromMillis}
+            )
+        </if>
+        <if test="enrollmentDateTo != null">
+            AND (
+            devices.enrollTime &lt;= #{enrollmentDateToMillis}
+            )
+        </if>
+        <if test="mdmMode != null">
+            AND (
+            (devices.info::json -&gt;&gt; 'mdmMode')::BOOLEAN = #{mdmMode}
+            )
+        </if>
+        <if test="kioskMode != null">
+            AND (
+            (devices.info::json -&gt;&gt; 'kioskMode')::BOOLEAN = #{kioskMode}
+            )
+        </if>
+        <if test="androidVersion != null">
+            AND (
+            devices.info::json -&gt;&gt; 'androidVersion' = #{androidVersion}
+            )
+        </if>
         <if test="launcherVersion != null">
             AND (
             mdm_device_launcher_version(applications.pkg, devices.info) = #{launcherVersion}
@@ -197,6 +243,11 @@
     <select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
+               devices.enrollTime,
+               (devices.info::json ->> 'mdmMode')::BOOLEAN AS mdmMode,
+               (devices.info::json ->> 'kioskMode')::BOOLEAN AS kioskMode,
+               devices.info::json ->> 'androidVersion' AS androidVersion,
+               devices.info::json ->> 'serial' AS serial,
                devices.custom1, devices.custom2, devices.custom3, devices.oldNumber, devices.fastSearch,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName,
@@ -240,6 +291,7 @@
             OR devices.info::json -&gt;&gt; 'imei' ILIKE #{value}
             OR devices.info::json -&gt;&gt; 'phone' ILIKE #{value}
             OR devices.info::json -&gt;&gt; 'model' ILIKE #{value}
+            OR devices.info::json -&gt;&gt; 'serial' ILIKE #{value}
             OR devices.custom1 ILIKE #{value}
             OR devices.custom2 ILIKE #{value}
             OR devices.custom3 ILIKE #{value}
@@ -275,6 +327,41 @@
         <if test="dateTo != null">
             AND (
             devices.lastUpdate &lt;= #{dateToMillis}
+            )
+        </if>
+        <if test="onlineEarlierMillis != null">
+            AND (
+            devices.lastUpdate &lt;= extract(epoch from now()) * 1000 - #{onlineEarlierMillis}
+            )
+        </if>
+        <if test="onlineLaterMillis != null">
+            AND (
+            devices.lastUpdate >= extract(epoch from now()) * 1000 - #{onlineLaterMillis}
+            )
+        </if>
+        <if test="enrollmentDateFrom != null">
+            AND (
+            devices.enrollTime &gt;= #{enrollmentDateFromMillis}
+            )
+        </if>
+        <if test="enrollmentDateTo != null">
+            AND (
+            devices.enrollTime &lt;= #{enrollmentDateToMillis}
+            )
+        </if>
+        <if test="mdmMode != null">
+            AND (
+            (devices.info::json -&gt;&gt; 'mdmMode')::BOOLEAN = #{mdmMode}
+            )
+        </if>
+        <if test="kioskMode != null">
+            AND (
+            (devices.info::json -&gt;&gt; 'kioskMode')::BOOLEAN = #{kioskMode}
+            )
+        </if>
+        <if test="androidVersion != null">
+            AND (
+            devices.info::json -&gt;&gt; 'androidVersion' = #{androidVersion}
             )
         </if>
         <if test="launcherVersion != null">

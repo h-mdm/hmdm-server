@@ -105,6 +105,26 @@ public class DeviceInfoView implements Serializable {
         return deviceInfo.getBatteryLevel();
     }
 
+    @ApiModelProperty("A flag indicating if MDM mode is activated on the device")
+    public Boolean getMdmMode() {
+        return deviceInfo.getMdmMode();
+    }
+
+    @ApiModelProperty("A flag indicating if kiosk mode is activated on the device")
+    public Boolean getKioskMode() {
+        return deviceInfo.getKioskMode();
+    }
+
+    @ApiModelProperty("Version of Android OS on the device")
+    public String getAndroidVersion() {
+        return deviceInfo.getAndroidVersion();
+    }
+
+    @ApiModelProperty("Serial number of the device")
+    public String getSerial() {
+        return deviceInfo.getSerial();
+    }
+
     @ApiModelProperty("A flag showing if Headwind MDM is set as default launcher on a device")
     public Boolean getDefaultLauncher() {
         return deviceInfo.getDefaultLauncher();

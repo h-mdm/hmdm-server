@@ -83,6 +83,7 @@ public interface DeviceMapper {
     @Update({"UPDATE devices SET " +
             "  info = #{info}, " +
             "  lastUpdate = CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT), " +
+            "  enrollTime = COALESCE(enrollTime, CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT)), " +
             "  imeiUpdateTs = #{imeiUpdateTs} " +
             "WHERE id = #{deviceId}"})
     void updateDeviceInfo(@Param("deviceId") Integer deviceId,

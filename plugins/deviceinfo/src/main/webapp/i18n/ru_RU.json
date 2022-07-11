@@ -63,6 +63,7 @@
   "plugin.deviceinfo.title.model": "Модель",
   "plugin.deviceinfo.title.os.version": "Версия ОС",
   "plugin.deviceinfo.title.mdm.mode": "Режим MDM",
+  "plugin.deviceinfo.title.kiosk.mode": "Режим киоска",
   "plugin.deviceinfo.title.launcher.type": "Сборка лаунчера",
   "plugin.deviceinfo.title.default.launcher": "Лаунчер по умолчанию",
   "plugin.deviceinfo.title.imei2": "IMEI 2-й SIM",

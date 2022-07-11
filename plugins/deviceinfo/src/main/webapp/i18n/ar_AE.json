@@ -63,6 +63,7 @@
   "plugin.deviceinfo.title.model": "نموذج",
   "plugin.deviceinfo.title.os.version": "إصدار نظام التشغيل" ,
   "plugin.deviceinfo.title.mdm.mode": "MDM وضعية",
+  "plugin.deviceinfo.title.kiosk.mode": "وضع الكشك",
   "plugin.deviceinfo.title.launcher.type": "متغير المشغل",
   "plugin.deviceinfo.title.default.launcher": "المشغل الافتراضي",
   "plugin.deviceinfo.title.imei2": "بطاقة SIM الثانية IMEI",

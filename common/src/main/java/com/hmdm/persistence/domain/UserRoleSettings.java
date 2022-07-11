@@ -72,8 +72,18 @@ public class UserRoleSettings implements CustomerData, Serializable {
     private Boolean columnDisplayedLauncherVersion;
     @ApiModelProperty("A flag indicating if Battery Level column to be displayed in MDM web application")
     private Boolean columnDisplayedBatteryLevel;
-    @ApiModelProperty("A flag indicating if Headwind MDM is set as default launcher")
+    @ApiModelProperty("A flag indicating if the default launcher column to be displayed in MDM web application")
     private Boolean columnDisplayedDefaultLauncher;
+    @ApiModelProperty("A flag indicating if MDM mode column to be displayed in MDM web application")
+    private Boolean columnDisplayedMdmMode;
+    @ApiModelProperty("A flag indicating if kiosk mode column to be displayed in MDM web application")
+    private Boolean columnDisplayedKioskMode;
+    @ApiModelProperty("A flag indicating if Android version column to be displayed in MDM web application")
+    private Boolean columnDisplayedAndroidVersion;
+    @ApiModelProperty("A flag indicating if enrollment date column to be displayed in MDM web application")
+    private Boolean columnDisplayedEnrollmentDate;
+    @ApiModelProperty("A flag indicating if serial number column to be displayed in MDM web application")
+    private Boolean columnDisplayedSerial;
     @ApiModelProperty("A flag indicating if custom property #1 column must be displayed in the Devices table")
     private Boolean columnDisplayedCustom1;
     @ApiModelProperty("A flag indicating if custom property #2 column must be displayed in the Devices table")
@@ -223,6 +233,46 @@ public class UserRoleSettings implements CustomerData, Serializable {
         this.columnDisplayedDefaultLauncher = columnDisplayedDefaultLauncher;
     }
 
+    public Boolean getColumnDisplayedMdmMode() {
+        return columnDisplayedMdmMode;
+    }
+
+    public void setColumnDisplayedMdmMode(Boolean columnDisplayedMdmMode) {
+        this.columnDisplayedMdmMode = columnDisplayedMdmMode;
+    }
+
+    public Boolean getColumnDisplayedKioskMode() {
+        return columnDisplayedKioskMode;
+    }
+
+    public void setColumnDisplayedKioskMode(Boolean columnDisplayedKioskMode) {
+        this.columnDisplayedKioskMode = columnDisplayedKioskMode;
+    }
+
+    public Boolean getColumnDisplayedAndroidVersion() {
+        return columnDisplayedAndroidVersion;
+    }
+
+    public void setColumnDisplayedAndroidVersion(Boolean columnDisplayedAndroidVersion) {
+        this.columnDisplayedAndroidVersion = columnDisplayedAndroidVersion;
+    }
+
+    public Boolean getColumnDisplayedEnrollmentDate() {
+        return columnDisplayedEnrollmentDate;
+    }
+
+    public void setColumnDisplayedEnrollmentDate(Boolean columnDisplayedEnrollmentDate) {
+        this.columnDisplayedEnrollmentDate = columnDisplayedEnrollmentDate;
+    }
+
+    public Boolean getColumnDisplayedSerial() {
+        return columnDisplayedSerial;
+    }
+
+    public void setColumnDisplayedSerial(Boolean columnDisplayedSerial) {
+        this.columnDisplayedSerial = columnDisplayedSerial;
+    }
+
     public Boolean getColumnDisplayedCustom1() {
         return columnDisplayedCustom1;
     }
@@ -277,6 +327,11 @@ public class UserRoleSettings implements CustomerData, Serializable {
                 ", columnDisplayedLauncherVersion=" + columnDisplayedLauncherVersion +
                 ", columnDisplayedBatteryLevel=" + columnDisplayedBatteryLevel +
                 ", columnDisplayedDefaultLauncher=" + columnDisplayedDefaultLauncher +
+                ", columnDisplayedMdmMode=" + columnDisplayedMdmMode +
+                ", columnDisplayedKioskMode=" + columnDisplayedKioskMode +
+                ", columnDisplayedAndroidVersion=" + columnDisplayedAndroidVersion +
+                ", columnDisplayedEnrollmentDate=" + columnDisplayedEnrollmentDate +
+                ", columnDisplayedSerial=" + columnDisplayedSerial +
                 ", columnDisplayedCustom1=" + columnDisplayedCustom1 +
                 ", columnDisplayedCustom2=" + columnDisplayedCustom2 +
                 ", columnDisplayedCustom3=" + columnDisplayedCustom3 +

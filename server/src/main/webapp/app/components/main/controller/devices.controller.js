@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, $cookies, $window,
+    .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, $cookies, $window, $filter,
                                                   confirmModal, deviceService, groupService, settingsService,
                                                   authService, pluginService, configurationService, alertService,
                                                   spinnerService, localization) {
@@ -46,7 +46,13 @@ angular.module('headwind-kiosk')
                 dateFrom: null,
                 dateTo: null,
                 launcherVersion: '',
-                installationStatus: null
+                installationStatus: null,
+                androidVersion: '',
+                onlineOrOffline: null,
+                onlineTimeSelect: null,
+                onlineTimeEnter: '15',
+                kioskMode: null,
+                mdmMode: null
             };
 
             $scope.paging = {
@@ -277,10 +283,31 @@ angular.module('headwind-kiosk')
             };
 
             if ($scope.additionalParams.enabled) {
-                request["dateFrom"] = $scope.additionalParams.dateFrom;
-                request["dateTo"] = $scope.additionalParams.dateTo;
+                request["enrollmentDateFrom"] = $scope.additionalParams.dateFrom;
+                request["enrollmentDateTo"] = $scope.additionalParams.dateTo;
                 if ($scope.additionalParams.launcherVersion && $scope.additionalParams.launcherVersion.trim().length > 0) {
                     request["launcherVersion"] = $scope.additionalParams.launcherVersion;
+                }
+                if ($scope.additionalParams.androidVersion && $scope.additionalParams.androidVersion.trim().length > 0) {
+                    request["androidVersion"] = $scope.additionalParams.androidVersion;
+                }
+                if ($scope.additionalParams.mdmMode !== null && $scope.additionalParams.mdmMode !== '') {
+                    request["mdmMode"] = $scope.additionalParams.mdmMode === '1' ? true : false;
+                }
+                if ($scope.additionalParams.kioskMode !== null && $scope.additionalParams.kioskMode !== '') {
+                    request["kioskMode"] = $scope.additionalParams.kioskMode === '1' ? true : false;
+                }
+                if ($scope.additionalParams.onlineOrOffline) {
+                    var time = $scope.additionalParams.onlineTimeSelect;
+                    if (time == 1) {
+                        time = $scope.additionalParams.onlineTimeEnter;
+                    }
+                    time *= 60000;
+                    if ($scope.additionalParams.onlineOrOffline == 1) {
+                        request["onlineLaterMillis"] = time;
+                    } else {
+                        request["onlineEarlierMillis"] = time;
+                    }
                 }
                 if ($scope.additionalParams.installationStatus !== 'ALL'
                     && $scope.additionalParams.installationStatus
@@ -399,6 +426,30 @@ angular.module('headwind-kiosk')
                     return 'images/offline.png';
                 }
             }
+        };
+
+        $scope.calculateStatusText = function(device) {
+            if (device.lastUpdateDate.getTime() == 0) {
+                return localization.localize('devices.date.unknown');
+            }
+            var res = '';
+            var offlineDelay = (Date.now() - device.lastUpdateDate.getTime()) / 60000;
+            if (offlineDelay < 60) {
+                res = Math.round(offlineDelay) + " " + localization.localize('form.devices.status.minutes');
+            } else if (offlineDelay < 1440) {
+                res = Math.round(offlineDelay / 60) + " " + localization.localize('form.devices.status.hours');
+            } else if (offlineDelay < 10080) {
+                res = Math.round(offlineDelay / 1440) + " " + localization.localize('form.devices.status.days');
+            } else if (offlineDelay < 43200) {
+                res = Math.round(offlineDelay / 10080) + " " + localization.localize('form.devices.status.weeks');
+            } else if (offlineDelay < 525600) {
+                res = Math.round(offlineDelay / 43200) + " " + localization.localize('form.devices.status.months');
+            } else {
+                res = Math.round(offlineDelay / 525600) + " " + localization.localize('form.devices.status.years');
+            }
+            res += ' ' + localization.localize('form.devices.status.ago') + "\n" +
+                $filter('date')(device.lastUpdateDate, 'yyyy/MM/dd HH:mm:ss');
+            return res;
         };
 
         // Gets the info on the device parsed from the JSON-string taken from "info" attribute of the device
@@ -618,6 +669,50 @@ angular.module('headwind-kiosk')
                 } else if (info.defaultLauncher === false) {
                     return localization.localize('no');
                 }
+            }
+
+            return null;
+        };
+
+        $scope.getIsMdmMode = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                if (info.mdmMode === true) {
+                    return localization.localize('yes');
+                } else if (info.defaultLauncher === false) {
+                    return localization.localize('no');
+                }
+            }
+
+            return null;
+        };
+
+        $scope.getIsKioskMode = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                if (info.kioskMode === true) {
+                    return localization.localize('yes');
+                } else if (info.defaultLauncher === false) {
+                    return localization.localize('no');
+                }
+            }
+
+            return null;
+        };
+
+        $scope.getAndroidVersion = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                return info.androidVersion;
+            }
+
+            return null;
+        };
+
+        $scope.getSerial = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                return info.serial;
             }
 
             return null;

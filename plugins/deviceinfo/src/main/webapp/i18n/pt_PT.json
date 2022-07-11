@@ -63,6 +63,7 @@
   "plugin.deviceinfo.title.model": "Modelo",
   "plugin.deviceinfo.title.os.version": "Versão do SO",
   "plugin.deviceinfo.title.mdm.mode": "Modo MDM",
+  "plugin.deviceinfo.title.kiosk.mode": "Modo quiosque",
   "plugin.deviceinfo.title.launcher.type": "Variante do Launcher",
   "plugin.deviceinfo.title.default.launcher": "Launcher Padrão",
   "plugin.deviceinfo.title.imei2": "IMEI do Segundo Chip",

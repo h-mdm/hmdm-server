@@ -105,6 +105,9 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty(value = "A flag indicating if MDM mode is ON or not")
     private Boolean mdmMode;
 
+    @ApiModelProperty(value = "A flag indicating if kiosk mode is ON or not")
+    private Boolean kioskMode;
+
     @ApiModelProperty(value = "Headwind MDM launcher build variant")
     private String launcherType;
 
@@ -295,6 +298,14 @@ public class DeviceInfo implements Serializable {
 
     public void setMdmMode(Boolean mdmMode) {
         this.mdmMode = mdmMode;
+    }
+
+    public Boolean getKioskMode() {
+        return kioskMode;
+    }
+
+    public void setKioskMode(Boolean kioskMode) {
+        this.kioskMode = kioskMode;
     }
 
     public String getLauncherType() {

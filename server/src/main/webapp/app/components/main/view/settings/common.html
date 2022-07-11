@@ -135,9 +135,41 @@
             </div>
 
             <div class='form-group'>
-                <label class='col-sm-6 control-label' for="c114" localized>form.settings.common.default.launcher</label>
+                <label class='col-sm-6 control-label' for="c114" localized>form.settings.common.mdm.mode</label>
                 <div class='col-sm-1'>
-                    <input id="c114" ng-model='userRoleSettings.columnDisplayedDefaultLauncher' ng-disabled="loading"
+                    <input id="c114" ng-model='userRoleSettings.columnDisplayedMdmMode' ng-disabled="loading"
+                           type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c121" localized>form.settings.common.kiosk.mode</label>
+                <div class='col-sm-1'>
+                    <input id="c121" ng-model='userRoleSettings.columnDisplayedKioskMode' ng-disabled="loading"
+                           type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c118" localized>form.settings.common.android.version</label>
+                <div class='col-sm-1'>
+                    <input id="c118" ng-model='userRoleSettings.columnDisplayedAndroidVersion' ng-disabled="loading"
+                           type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c120" localized>form.settings.common.enrollment.date</label>
+                <div class='col-sm-1'>
+                    <input id="c120" ng-model='userRoleSettings.columnDisplayedEnrollmentDate' ng-disabled="loading"
+                           type='checkbox' class='form-control'/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="c122" localized>form.settings.common.serial</label>
+                <div class='col-sm-1'>
+                    <input id="c122" ng-model='userRoleSettings.columnDisplayedSerial' ng-disabled="loading"
                            type='checkbox' class='form-control'/>
                 </div>
             </div>

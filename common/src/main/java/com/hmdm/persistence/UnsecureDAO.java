@@ -369,9 +369,11 @@ public class UnsecureDAO {
             newDevice.setNumber(deviceId);
             newDevice.setLastUpdate(0L);
             insertDevice(newDevice);
+            logger.info("New device {} added", deviceId);
 
             return getDeviceByNumber(deviceId);
         } else {
+            logger.warn("Creating new devices disabled by settings");
             return null;
         }
     }
@@ -419,6 +421,7 @@ public class UnsecureDAO {
             // Configuration not specified, we will add a device only if a legacy setting "Create new devices" is set
             newDevice.setConfigurationId(settings.getNewDeviceConfigurationId());
         } else {
+            logger.warn("Creating new devices disabled by settings, configuration ID not set");
             return null;
         }
 
@@ -456,6 +459,7 @@ public class UnsecureDAO {
         newDevice.setNumber(deviceId);
         newDevice.setLastUpdate(0L);
         insertDevice(newDevice);
+        logger.info("New device {} added", deviceId);
 
         return getDeviceByNumber(deviceId);
     }

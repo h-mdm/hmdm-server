@@ -2234,4 +2234,24 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="25.06.22-16:36" author="seva" context="common">
+        <comment>Column,new: userRoleSettings#columnDisplayedMdmMode,columnDisplayedKioskMode,columnDisplayedAndroidVersion,columnDisplayedEnrollmentDate,columnDisplayedSerial,device#enrollTime</comment>
+        <sql>
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedMdmMode BOOLEAN;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedKioskMode BOOLEAN;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedAndroidVersion BOOLEAN;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedEnrollmentDate BOOLEAN;
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedSerial BOOLEAN;
+            ALTER TABLE devices ADD COLUMN IF NOT EXISTS enrollTime BIGINT;
+        </sql>
+        <rollback>
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedMdmMode;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedKioskMode;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedAndroidVersion;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedEnrollmentDate;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedSerial;
+            ALTER TABLE devices DROP COLUMN enrollTime;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -74,16 +74,56 @@ public class DeviceSearchRequest implements Serializable {
     private String sortDir = "ASC";
 
     /**
-     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
+     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by last online dates.</p>
      */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by dates")
+    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by last online dates")
     private Date dateFrom;
 
     /**
-     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
+     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by last online dates.</p>
      */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by dates")
+    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by last online dates")
     private Date dateTo;
+
+    /**
+     * <p>Age in milliseconds for selection of devices being online earlier</p>
+     */
+    private Long onlineEarlierMillis;
+
+    /**
+     * <p>Age in milliseconds for selection of devices being online later</p>
+     */
+    private Long onlineLaterMillis;
+
+    /**
+     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by enrollment dates.</p>
+     */
+    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by enrollment dates")
+    private Date enrollmentDateFrom;
+
+    /**
+     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by enrollment dates.</p>
+     */
+    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by enrollment dates")
+    private Date enrollmentDateTo;
+
+    /**
+     * <p>A condition for filtering the data records by mdm mode.</p>
+     */
+    @ApiModelProperty("A condition for filtering the data records by mdm mode")
+    private Boolean mdmMode;
+
+    /**
+     * <p>A condition for filtering the data records by kiosk mode.</p>
+     */
+    @ApiModelProperty("A condition for filtering the data records by kiosk mode")
+    private Boolean kioskMode;
+
+    /**
+     * <p>A filter for Android version.</p>
+     */
+    @ApiModelProperty("A filter for Android version")
+    private String androidVersion;
 
     /**
      * <p>A filter for launcher version.</p>
@@ -205,6 +245,62 @@ public class DeviceSearchRequest implements Serializable {
         this.dateTo = dateTo;
     }
 
+    public Long getOnlineEarlierMillis() {
+        return onlineEarlierMillis;
+    }
+
+    public void setOnlineEarlierMillis(Long onlineEarlierMillis) {
+        this.onlineEarlierMillis = onlineEarlierMillis;
+    }
+
+    public Long getOnlineLaterMillis() {
+        return onlineLaterMillis;
+    }
+
+    public void setOnlineLaterMillis(Long onlineLaterMillis) {
+        this.onlineLaterMillis = onlineLaterMillis;
+    }
+
+    public Date getEnrollmentDateFrom() {
+        return enrollmentDateFrom;
+    }
+
+    public void setEnrollmentDateFrom(Date enrollmentDateFrom) {
+        this.enrollmentDateFrom = enrollmentDateFrom;
+    }
+
+    public Date getEnrollmentDateTo() {
+        return enrollmentDateTo;
+    }
+
+    public void setEnrollmentDateTo(Date enrollmentDateTo) {
+        this.enrollmentDateTo = enrollmentDateTo;
+    }
+
+    public Boolean getMdmMode() {
+        return mdmMode;
+    }
+
+    public void setMdmMode(Boolean mdmMode) {
+        this.mdmMode = mdmMode;
+    }
+
+    public Boolean getKioskMode() {
+        return kioskMode;
+    }
+
+    public void setKioskMode(Boolean kioskMode) {
+        this.kioskMode = kioskMode;
+    }
+
+    public String getAndroidVersion() {
+        return androidVersion;
+    }
+
+    public void setAndroidVersion(String androidVersion) {
+        this.androidVersion = androidVersion;
+    }
+
     public String getLauncherVersion() {
         return launcherVersion;
     }
@@ -253,6 +349,22 @@ public class DeviceSearchRequest implements Serializable {
         }
     }
 
+    public long getEnrollmentDateFromMillis() {
+        if (enrollmentDateFrom != null) {
+            return enrollmentDateFrom.getTime();
+        } else {
+            return 0;
+        }
+    }
+
+    public long getEnrollmentDateToMillis() {
+        if (enrollmentDateTo != null) {
+            return enrollmentDateTo.getTime();
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public String toString() {
         return "DeviceSearchRequest{" +
@@ -268,6 +380,13 @@ public class DeviceSearchRequest implements Serializable {
                 ", dateFrom=" + dateFrom +
                 ", dateTo=" + dateTo +
                 ", launcherVersion=" + launcherVersion +
+                ", enrollmentDateFrom=" + enrollmentDateFrom +
+                ", enrollmentDateTo=" + enrollmentDateTo +
+                ", onlineEarlierMillis=" + onlineEarlierMillis +
+                ", onlineLaterMillis=" + onlineLaterMillis +
+                ", mdmMode=" + mdmMode +
+                ", kioskMode=" + kioskMode +
+                ", androidVersion=" + androidVersion +
                 ", installationStatus=" + installationStatus +
                 '}';
     }

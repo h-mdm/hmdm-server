@@ -500,7 +500,7 @@ document.localization ['zh_CN'] = {
     'form.settings.common.visible.columns':"\"设备\"表中的可见列",
     'form.settings.common.status' : "状态",
     'form.settings.common.role':"用户角色",
-    'form.settings.common.date' : "日期",
+    'form.settings.common.date' : "上次在线日期",
     'form.settings.common.device.number' : "设备编号",
     'form.settings.common.imei' : "IMEI",
     'form.settings.common.phone.number' : "电话号码",
@@ -514,7 +514,12 @@ document.localization ['zh_CN'] = {
     'form.settings.common.launcher.version':"启动器版本",
     'form.settings.common.battery.level':"电池电量",
     'form.settings.common.default.launcher':"默认启动器",
-		
+    'form.settings.common.mdm.mode': 'MDM 模式',
+    'form.settings.common.kiosk.mode': '信息亭模式',
+    'form.settings.common.android.version': '安卓版',
+    'form.settings.common.enrollment.date': '注册日期',
+    'form.settings.common.serial': '序列号',
+
     'form.settings.design.title':"默认设计",
     'form.settings.design.color.font' : "背景颜色",
     'form.settings.design.color.font.placeholder':"选择颜色",
@@ -676,7 +681,7 @@ document.localization ['zh_CN'] = {
     'table.heading.application.order' : "排序",
 		
     'table.heading.device.status' : "状态",
-    'table.heading.device.date' : "日期",
+    'table.heading.device.date' : "在线的",
     'table.heading.device.device.number' : "设备编号",
     'table.heading.device.imei' : "IMEI",
     'table.heading.device.phone.number' : "电话号码",
@@ -690,6 +695,11 @@ document.localization ['zh_CN'] = {
     'table.heading.device.launcher.version':"启动器版本",
     'table.heading.device.battery.level':"电池电量",
     'table.heading.device.default.launcher' : "设为默认启动器",
+    'table.heading.device.mdm.mode': 'MDM 模式',
+    'table.heading.device.kiosk.mode': '信息亭模式',
+    'table.heading.device.android.version': '安卓版',
+    'table.heading.device.enrollment.date': '注册日期',
+    'table.heading.device.serial': '序列号',
     'table.heading.device.actions':"功能",
 		
     'table.heading.group.name' : "名称",
@@ -813,7 +823,38 @@ document.localization ['zh_CN'] = {
 		
     'search.placeholder.launcher.version':"启动器版本",
     'error.date.range.invalid':"无效的日期间隔",
-		
+
+    'form.selection.status.any': '任何值',
+    'form.selection.status.all': '全部',
+    'form.selection.status.yes': '是的',
+    'form.selection.status.no': '不',
+
+    'form.devices.selection.status': '地位 ...',
+    'form.devices.selection.online': '在线的',
+    'form.devices.selection.offline': '离线',
+    'form.devices.selection.number': '输入号码',
+
+    'form.devices.selection.online.status.custom': '输入时间',
+    'form.devices.selection.online.status.1': '15分钟',
+    'form.devices.selection.online.status.2': '30分钟',
+    'form.devices.selection.online.status.3': '1小时',
+    'form.devices.selection.online.status.4': '3小时',
+    'form.devices.selection.online.status.5': '6小时',
+    'form.devices.selection.online.status.6': '1天',
+    'form.devices.selection.online.status.7': '2天',
+    'form.devices.selection.online.status.8': '3天',
+    'form.devices.selection.online.status.9': '1周',
+    'form.devices.selection.online.status.10': '1个月',
+
+    'form.devices.selection.online.status.label': '分钟',
+    'form.devices.status.ago': '前',
+    'form.devices.status.minutes': 'm',
+    'form.devices.status.hours': 'h',
+    'form.devices.status.days': 'd',
+    'form.devices.status.weeks': 'w',
+    'form.devices.status.months': 'mon',
+    'form.devices.status.years': 'y',
+
     'customer.type.demo' : "试用",
     'customer.type.small' : "专业",
     'customer.type.corporate' : "企业",

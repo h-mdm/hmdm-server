@@ -188,6 +188,7 @@ public class SyncResource {
 
             // Device creation on demand
             if (dbDevice == null) {
+                logger.info("Creating device {} with options {}", number, createOptions.toString());
                 dbDevice = unsecureDAO.createNewDeviceOnDemand(number, createOptions);
             }
 
@@ -236,8 +237,12 @@ public class SyncResource {
             }
 
             // Device creation on demand
-            if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
-                dbDevice = unsecureDAO.createNewDeviceOnDemand(number);
+            if (dbDevice == null) {
+                if (unsecureDAO.isSingleCustomer()) {
+                    dbDevice = unsecureDAO.createNewDeviceOnDemand(number);
+                } else {
+                    logger.warn("Not allowed to create devices in the multi-tenant setup");
+                }
             }
 
             if (dbDevice != null) {
@@ -482,8 +487,12 @@ public class SyncResource {
             }
 
             // Device creation on demand
-            if (dbDevice == null && unsecureDAO.isSingleCustomer()) {
-                dbDevice = unsecureDAO.createNewDeviceOnDemand(deviceInfo.getDeviceId());
+            if (dbDevice == null) {
+                if (unsecureDAO.isSingleCustomer()) {
+                    dbDevice = unsecureDAO.createNewDeviceOnDemand(deviceInfo.getDeviceId());
+                } else {
+                    logger.warn("Not allowed to create devices in the multi-tenant setup");
+                }
             }
 
             if (dbDevice != null) {

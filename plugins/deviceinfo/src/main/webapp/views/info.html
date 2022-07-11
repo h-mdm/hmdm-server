@@ -156,6 +156,12 @@
                 <tr>
                     <th localized>plugin.deviceinfo.title.mdm.mode</th>
                     <td ng-if="deviceInfo.mdmMode !== undefined">{{('plugin.deviceinfo.boolean.' + deviceInfo.mdmMode) | localize}}</td>
+                    <td ng-if="deviceInfo.mdmMode === undefined">&nbsp;</td>
+                </tr>
+                <tr>
+                    <th localized>plugin.deviceinfo.title.kiosk.mode</th>
+                    <td ng-if="deviceInfo.kioskMode !== undefined">{{('plugin.deviceinfo.boolean.' + deviceInfo.kioskMode) | localize}}</td>
+                    <td ng-if="deviceInfo.kioskMode === undefined">&nbsp;</td>
                 </tr>
                 <tr>
                     <th localized>plugin.deviceinfo.title.launcher.type</th>

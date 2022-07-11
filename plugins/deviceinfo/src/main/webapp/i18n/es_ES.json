@@ -63,6 +63,7 @@
   "plugin.deviceinfo.title.model": "Modelo",
   "plugin.deviceinfo.title.os.version": "Version de OS",
   "plugin.deviceinfo.title.mdm.mode": "Modo MDM",
+  "plugin.deviceinfo.title.kiosk.mode": "Modo quiosco",
   "plugin.deviceinfo.title.launcher.type": "Variante del launcher",
   "plugin.deviceinfo.title.default.launcher": "Launcher estándar",
   "plugin.deviceinfo.title.imei2": "2da SIM IMEI",

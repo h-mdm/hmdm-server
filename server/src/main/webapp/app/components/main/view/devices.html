@@ -45,6 +45,9 @@
 
 
         <div  class="form-group" ng-if="additionalParams.enabled">
+            <div class='col-sm-1  margin-bottom' style="margin-top: 5px">
+                <span localized>form.settings.common.enrollment.date</span>
+            </div>
             <div class='col-sm-2  margin-bottom'>
                 <div class='min-padding date-picker date-picker-input'>
                     <input class='form-control' datepicker-popup='{{dateFormat}}'
@@ -74,7 +77,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-3  margin-bottom" style="margin-top: 5px">
+            <div class="col-sm-2  margin-bottom" style="margin-top: 5px">
                 <input type="checkbox" id="addParamsImeiChanged"
                        ng-model='additionalParams.imeiChanged'> <span localized>form.devices.selection.imei.changed</span>
             </div>
@@ -92,6 +95,70 @@
                        ng-enter='initSearch()'
                        ng-model='additionalParams.launcherVersion'
                        localized-placeholder='search.placeholder.launcher.version'
+                       class='form-control'>
+            </div>
+        </div>
+
+        <div  class="form-group" ng-if="additionalParams.enabled">
+            <div class='col-sm-1  margin-bottom'>
+                <select class='form-control' id="onlineOrOffline"
+                        ng-model='additionalParams.onlineOrOffline'>
+                    <option value="" localized>form.devices.selection.status</option>
+                    <option value="1" localized>form.devices.selection.online</option>
+                    <option value="2" localized>form.devices.selection.offline</option>
+                </select>
+            </div>
+            <div class='col-sm-2  margin-bottom'>
+                <select class='form-control' id="onlineTimeSelect"
+                        ng-model='additionalParams.onlineTimeSelect'>
+                    <option value="15" localized>form.devices.selection.online.status.1</option>
+                    <option value="30" localized>form.devices.selection.online.status.2</option>
+                    <option value="60" localized>form.devices.selection.online.status.3</option>
+                    <option value="120" localized>form.devices.selection.online.status.4</option>
+                    <option value="360" localized>form.devices.selection.online.status.5</option>
+                    <option value="1440" localized>form.devices.selection.online.status.6</option>
+                    <option value="2880" localized>form.devices.selection.online.status.7</option>
+                    <option value="4320" localized>form.devices.selection.online.status.8</option>
+                    <option value="10080" localized>form.devices.selection.online.status.9</option>
+                    <option value="43200" localized>form.devices.selection.online.status.10</option>
+                    <option value="1" localized>form.devices.selection.online.status.custom</option>
+                </select>
+            </div>
+            <div class='col-sm-1  margin-bottom' ng-if='additionalParams.onlineTimeSelect == 1'>
+                <input type='number'
+                       ng-enter='initSearch()'
+                       ng-model='additionalParams.onlineTimeEnter'
+                       localized-placeholder='form.devices.selection.number'
+                       class='form-control'>
+            </div>
+            <div class='col-sm-1  margin-bottom' style="margin-top: 5px" ng-if='additionalParams.onlineTimeSelect == 1'>
+                <span localized>form.devices.selection.online.status.label</span>
+            </div>
+            <div class='col-sm-2  margin-bottom' ng-if='additionalParams.onlineTimeSelect != 1'>&nbsp;</div>
+
+            <div class='col-sm-2  margin-bottom'>
+                <select class='form-control' id="mdmMode"
+                        ng-model='additionalParams.mdmMode'>
+                    <option value="" localized>form.settings.common.mdm.mode</option>
+                    <option value="1" localized>form.selection.status.yes</option>
+                    <option value="0" localized>form.selection.status.no</option>
+                </select>
+            </div>
+
+            <div class='col-sm-2  margin-bottom'>
+                <select class='form-control' id="kioskMode"
+                        ng-model='additionalParams.kioskMode'>
+                    <option value="" localized>form.settings.common.kiosk.mode</option>
+                    <option value="1" localized>form.selection.status.yes</option>
+                    <option value="0" localized>form.selection.status.no</option>
+                </select>
+            </div>
+
+            <div class='col-sm-3  margin-bottom'>
+                <input type='text'
+                       ng-enter='initSearch()'
+                       ng-model='additionalParams.androidVersion'
+                       localized-placeholder='form.settings.common.android.version'
                        class='form-control'>
             </div>
         </div>
@@ -233,6 +300,31 @@
                 <span ng-if='paging.sortBy === "DEFAULT_LAUNCHER"' class="glyphicon"
                       ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
             </th>
+            <th ng-if="settings.columnDisplayedMdmMode" ng-click="sortData('MDM_MODE')" class="pointer">
+                <span localized>table.heading.device.mdm.mode</span>
+                <span ng-if='paging.sortBy === "MDM_MODE"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
+            <th ng-if="settings.columnDisplayedKioskMode" ng-click="sortData('KIOSK_MODE')" class="pointer">
+                <span localized>table.heading.device.kiosk.mode</span>
+                <span ng-if='paging.sortBy === "KIOSK_MODE"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
+            <th ng-if="settings.columnDisplayedAndroidVersion" ng-click="sortData('ANDROID_VERSION')" class="pointer">
+                <span localized>table.heading.device.android.version</span>
+                <span ng-if='paging.sortBy === "ANDROID_VERSION"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
+            <th ng-if="settings.columnDisplayedEnrollmentDate" ng-click="sortData('ENROLLMENT_DATE')" class="pointer">
+                <span localized>table.heading.device.enrollment.date</span>
+                <span ng-if='paging.sortBy === "ENROLLMENT_DATE"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
+            <th ng-if="settings.columnDisplayedSerial" ng-click="sortData('SERIAL')" class="pointer">
+                <span localized>table.heading.device.serial</span>
+                <span ng-if='paging.sortBy === "SERIAL"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
             <th ng-if="settings.columnDisplayedCustom1 && commonSettings.customPropertyName1" ng-click="sortData('CUSTOM1')" class="pointer">
                 <span>{{commonSettings.customPropertyName1}}</span>
                 <span ng-if='paging.sortBy === "CUSTOM1"' class="glyphicon"
@@ -263,7 +355,7 @@
             <td ng-if="settings.columnDisplayedDeviceStatus">
                 <img class='device-indicator'
                      ng-src='{{getDeviceIndicatorImage(device)}}'
-                     title='{{device.lastUpdateDate|date:dateFormat}}'>
+                     title='{{calculateStatusText(device)}}'>
             </td>
             <td ng-if='(device.lastUpdateDate > 0) && settings.columnDisplayedDeviceDate'>{{device.lastUpdateDate|date:dateFormat}}</td>
             <td ng-if='(device.lastUpdateDate <= 0 || !device.lastUpdateDate) && settings.columnDisplayedDeviceDate' localized>devices.date.unknown</td>
@@ -309,6 +401,20 @@
             </td>
             <td ng-if="settings.columnDisplayedDefaultLauncher">
                 <span ng-class="{'device-data-mismatch': device.info.defaultLauncher === false}">{{getIsDefaultLauncher(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedMdmMode">
+                <span ng-class="{'device-data-mismatch': device.info.mdmMode === false}">{{getIsMdmMode(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedKioskMode">
+                <span>{{getIsKioskMode(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedAndroidVersion">
+                {{getAndroidVersion(device)}}
+            </td>
+            <td ng-if='(device.enrollmentDate > 0) && settings.columnDisplayedEnrollmentDate'>{{device.enrollmentDate|date:dateFormat}}</td>
+            <td ng-if='(device.enrollmentDate <= 0 || !device.enrollmentDate) && settings.columnDisplayedEnrollmentDate' localized>devices.date.unknown</td>
+            <td ng-if="settings.columnDisplayedSerial">
+                <span>{{getSerial(device)}}</span>
             </td>
             <td ng-if="settings.columnDisplayedCustom1 && commonSettings.customPropertyName1">
                 <span>{{device.custom1}}</span>
