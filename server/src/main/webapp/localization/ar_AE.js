@@ -403,6 +403,8 @@ document.localization ['ar_AE'] = {
     'form.application.version': 'الإصدار',
     'form.application.version.placeholder': '0 لتطبيقات النظام',
     'form.application.version.title': 'يتم تحديد إصدار الحزمة تلقائيًا عند تحميل ملف APK. اضبطه على 0 لتطبيقات النظام.',
+    'form.application.version.code': 'كود الإصدار',
+    'form.application.version.code.exists': 'يوجد بالفعل إصدار بنفس الرمز. يرجى الإبلاغ عن هذه المشكلة لمطوري التطبيق.',
     'form.application.system': 'النظام',
     'form.application.system.title': 'تطبيقات النظام مثبتة مسبقًا على جهاز ولا تتطلب عنوان URL أو ملفًا. قم بتعيين هذه العلامة فقط إذا كنت بحاجة إلى تمكين حزمة نظام معينة.',
     "form.application.run.after.install": 'تشغيل بعد التثبيت',

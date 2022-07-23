@@ -403,6 +403,8 @@ document.localization ['en_US'] = {
     'form.application.version': 'Version',
     'form.application.version.placeholder': '0 for system apps',
     'form.application.version.title': 'Package version is automatically determined when you upload the APK file. Set it to 0 for system apps.',
+    'form.application.version.code': 'Version Code',
+    'form.application.version.code.exists': 'A version with the same code already exists. Please report this issue to the app developers.',
     'form.application.system': 'System',
     'form.application.system.title': 'System applications are preinstalled on a device and do not require URL or file. Set this flag only if you need to enable a certain system package.',
     'form.application.run.after.install': 'Run after installation',

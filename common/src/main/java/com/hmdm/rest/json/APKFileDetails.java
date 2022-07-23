@@ -43,6 +43,11 @@ public class APKFileDetails implements Serializable {
     private String version;
 
     /**
+     * <p>An application version code.</p>
+     */
+    private int versionCode;
+
+    /**
      * <p>CPU architecture (null = universal, armeabi or arm64).</p>
      */
     private String arch;
@@ -69,6 +74,14 @@ public class APKFileDetails implements Serializable {
         this.version = version;
     }
 
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
+    }
+
     public String getArch() {
         return arch;
     }
@@ -82,6 +95,7 @@ public class APKFileDetails implements Serializable {
         return "APKFileDetails{" +
                 "pkg='" + pkg + '\'' +
                 ", version='" + version + '\'' +
+                ", versionCode=" + versionCode +
                 ", arch='" + arch + '\'' +
                 '}';
     }

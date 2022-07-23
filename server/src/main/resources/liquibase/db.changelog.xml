@@ -2254,4 +2254,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="19.07.22-09:06" author="seva" context="common">
+        <comment>Column,new: applicationVersions#versionCode</comment>
+        <sql>
+            ALTER TABLE applicationVersions ADD COLUMN versionCode INT NOT NULL DEFAULT 0;
+        </sql>
+        <rollback>
+            ALTER TABLE applicationVersions DROP COLUMN versionCode;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

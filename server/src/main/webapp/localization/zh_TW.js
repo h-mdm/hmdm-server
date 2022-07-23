@@ -403,6 +403,8 @@ document.localization ['zh_TW'] = {
     'form.application.version' : "版本",
     'form.application.version.placeholder' : "0為系統應用程式",
     'form.application.version.title' : "打包版本是在您上傳APK文檔時自動確定的。對於系統應用，將其設置為0。",
+    'form.application.version.code': '版本代碼',
+    'form.application.version.code.exists': '已存在具有相同代碼的版本。 請將此問題報告給應用程序開發人員。',
     'form.application.system' : "系統",
     'form.application.system.title' : "系統應用程式已預先安裝在設備上，不需要URL或文檔。僅在需要啟用某個系統程序包時設置此標誌。",
     'form.application.run.after.install':"安裝後運行",

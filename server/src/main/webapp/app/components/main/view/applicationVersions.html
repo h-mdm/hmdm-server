@@ -33,6 +33,7 @@
         <thead>
         <tr>
             <th localized>table.heading.application.version</th>
+            <th localized>form.application.version.code</th>
             <th localized>table.heading.application.url</th>
             <th class='actions-column-150' localized>table.heading.application.actions</th>
         </tr>
@@ -40,6 +41,7 @@
         <tbody>
         <tr ng-repeat='application in applications.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
             <td>{{application.version}}</td>
+            <td>{{application.versionCode != 0 ? application.versionCode : ''}}</td>
             <td ng-if="!application.split">{{application.url}}</td>
             <td ng-if="application.split" class="column-split-apk"><span class="configuration-hint">arm64:</span>&nbsp;&nbsp;
                 <span ng-if="application.urlArm64">{{application.urlArm64}}</span>

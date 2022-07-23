@@ -402,6 +402,8 @@ document.localization ['pt_PT'] = {
     'form.application.version': 'Versão',
     'form.application.version.placeholder': '0 para aplicativos do sistema',
     'form.application.version.title': 'Package version is automatically determined when you upload the APK file. Set it to 0 for system apps.',
+    'form.application.version.code': 'Código da versão',
+    'form.application.version.code.exists': 'Já existe uma versão com o mesmo código. Por favor, informe este problema para os desenvolvedores do aplicativo.',
     'form.application.system': 'System',
     'form.application.system.title': 'Os aplicativos do sistema são pré-instaladas em um disposito e não requerem URL ou arquivo. Marque essa opção apenas se precisar habilitar um determinado pacote de sistema.',
     'form.application.run.after.install': 'Rodar após instalação',

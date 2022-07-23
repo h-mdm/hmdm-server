@@ -782,6 +782,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setKioskSystemInfo(getKioskSystemInfo());
         copy.setKioskKeyguard(getKioskKeyguard());
         copy.setKioskLockButtons(getKioskLockButtons());
+        copy.setRestrictions(getRestrictions());
 
         copy.setGps(getGps());
         copy.setBluetooth(getBluetooth());

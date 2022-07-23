@@ -215,6 +215,7 @@ angular.module('headwind-kiosk')
                         $scope.application.pkg = fileDetails.pkg;
                         $scope.appdesc.pkg = fileDetails.pkg + " - " + localization.localize("form.application.from.file");
                         $scope.application.version = fileDetails.version;
+                        $scope.application.versionCode = fileDetails.versionCode;
                         $scope.appdesc.version = fileDetails.version + " - " + localization.localize("form.application.from.file");
                         $scope.application.arch = fileDetails.arch;
 
@@ -233,7 +234,11 @@ angular.module('headwind-kiosk')
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
                 } else {
-                    $scope.errorMessage = localization.localize('error.apk.parse');
+                    if (response.data.message == 'form.application.version.code.exists') {
+                        $scope.errorMessage = localization.localize(response.data.message);
+                    } else {
+                        $scope.errorMessage = localization.localize('error.apk.parse');
+                    }
                 }
             } else {
                 $scope.errorMessage = localization.localize('error.apk.file.required');
@@ -816,6 +821,12 @@ angular.module('headwind-kiosk')
                     }
                     $scope.successMessage = localization.localize('success.file.uploaded');
                     $scope.fileSelected = true;
+                } else {
+                    if (response.data.message == 'form.application.version.code.exists') {
+                        $scope.errorMessage = localization.localize(response.data.message);
+                    } else {
+                        $scope.errorMessage = localization.localize('error.apk.parse');
+                    }
                 }
             } else {
                 $scope.errorMessage = localization.localize('error.apk.file.required');

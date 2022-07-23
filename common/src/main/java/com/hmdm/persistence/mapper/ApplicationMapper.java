@@ -40,7 +40,7 @@ public interface ApplicationMapper {
 
     String SELECT_BASE =
             "SELECT applications.*, customers.name AS customerName, customers.master AS commonApplication, " +
-                    "applicationVersions.version, applicationVersions.url," +
+                    "applicationVersions.version, applicationVersions.versionCode, applicationVersions.url," +
                     "applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64," +
                     "applications.latestVersion AS usedVersionId, " +
                     "(usageData.usageCount > 0) AS deletionProhibited " +
@@ -54,7 +54,7 @@ public interface ApplicationMapper {
 
     String SELECT_BY_VERSION_BASE =
             "SELECT applications.*, customers.name AS customerName, customers.master AS commonApplication, " +
-                    "applicationVersions.version, applicationVersions.url, " +
+                    "applicationVersions.version, applicationVersions.versionCode, applicationVersions.url, " +
                     "applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64," +
                     "applications.latestVersion AS usedVersionId, " +
                     "(usageData.usageCount > 0) AS deletionProhibited " +
@@ -71,6 +71,7 @@ public interface ApplicationMapper {
                     "applicationVersions.id, " +
                     "applicationVersions.applicationId, " +
                     "applicationVersions.version, " +
+                    "applicationVersions.versionCode, " +
                     "applicationVersions.url, " +
                     "applicationVersions.split, " +
                     "applicationVersions.urlArmeabi, " +
@@ -135,8 +136,8 @@ public interface ApplicationMapper {
     @SelectKey( statement = "SELECT currval('applications_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertApplication(Application application);
 
-    @Insert({"INSERT INTO applicationVersions (applicationId, version, url, apkHash, split, urlArmeabi, urlArm64) " +
-            "VALUES (#{applicationId}, #{version}, #{url}, #{apkHash}, #{split}, #{urlArmeabi}, #{urlArm64})"})
+    @Insert({"INSERT INTO applicationVersions (applicationId, version, versionCode, url, apkHash, split, urlArmeabi, urlArm64) " +
+            "VALUES (#{applicationId}, #{version}, #{versionCode}, #{url}, #{apkHash}, #{split}, #{urlArmeabi}, #{urlArm64})"})
     @SelectKey( statement = "SELECT currval('applicationVersions_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     int insertApplicationVersion(ApplicationVersion version);
 
@@ -147,7 +148,7 @@ public interface ApplicationMapper {
             "WHERE id=#{id}"})
     void updateApplication(Application application);
 
-    @Update({"UPDATE applicationVersions SET version = #{version}, url = #{url}, apkHash = #{apkHash}, " +
+    @Update({"UPDATE applicationVersions SET version = #{version}, versionCode=#{versionCode}, url = #{url}, apkHash = #{apkHash}, " +
             "split = #{split}, urlArmeabi = #{urlArmeabi}, urlArm64 = #{urlArm64} " +
             "WHERE id=#{id}"})
     void updateApplicationVersion(ApplicationVersion applicationVersion);
@@ -305,6 +306,13 @@ public interface ApplicationMapper {
     ApplicationVersion findApplicationVersion(@Param("customerId") int customerId,
                                               @Param("pkg") String pkg,
                                               @Param("version") String version);
+
+    @Select(SELECT_VERSION_BASE +
+            "WHERE (customerId = #{customerId} OR customers.master = TRUE) " +
+            "AND applications.pkg=#{pkg} AND applicationVersions.versionCode=#{versionCode} LIMIT 1")
+    ApplicationVersion findApplicationVersionByCode(@Param("customerId") int customerId,
+                                              @Param("pkg") String pkg,
+                                              @Param("versionCode") int versionCode);
 
     @Select("SELECT COUNT(*) > 0 " +
             "FROM configurationApplications " +

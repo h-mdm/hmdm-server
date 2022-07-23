@@ -95,6 +95,7 @@ public class APKFileAnalyzer {
 
             final AtomicReference<String> appPkg = new AtomicReference<>();
             final AtomicReference<String> appVersion = new AtomicReference<>();
+            final AtomicReference<Integer> appVersionCode = new AtomicReference<>();
             final AtomicReference<String> appArch = new AtomicReference<>();
             final List<String> errorLines = new ArrayList<>();
 
@@ -104,11 +105,11 @@ public class APKFileAnalyzer {
             // Process the output by analyzing the line starting with "package:"
             StreamGobbler outputGobbler = new StreamGobbler(exec.getInputStream(), "APK-file DUMP", line -> {
                 if (line.startsWith("package:")) {
-                    parseInfoLine(line, appPkg, appVersion);
+                    parseInfoLine(line, appPkg, appVersion, appVersionCode);
                     if (appPkg.get() == null || appVersion.get() == null) {
                         // AAPT output is wrong!
                         log.warn("Failed to parse aapt output: '" + line + "', trying legacy parser");
-                        parseInfoLineLegacy(line, appPkg, appVersion);
+                        parseInfoLineLegacy(line, appPkg, appVersion, appVersionCode);
                     }
                 } else if (line.startsWith("native-code:")) {
                     // This is an optional line, so do not care for errors
@@ -126,11 +127,14 @@ public class APKFileAnalyzer {
             errorGobbler.join();
 
             if (exitCode == 0) {
-                log.debug("Parsed application name and version from APK-file {}: {} {}", filePath, appPkg, appVersion);
+                log.debug("Parsed application name and version from APK-file {}: {} {} {}",
+                        filePath, appPkg, appVersion, appVersionCode);
                 APKFileDetails result = new APKFileDetails();
 
                 result.setPkg(appPkg.get());
                 result.setVersion(appVersion.get());
+                Integer versionCode = appVersionCode.get();
+                result.setVersionCode(versionCode != null ? versionCode : 0);
                 result.setArch(appArch.get());
 
                 return result;
@@ -149,7 +153,10 @@ public class APKFileAnalyzer {
     // This function deals with an issue when the version name contains a space or even an apostrophe
     // It presumes the following format of the line:
     // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx' compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
-    private void parseInfoLine(final String line, final AtomicReference<String> appPkg, final AtomicReference<String> appVersion) {
+    private void parseInfoLine(final String line,
+                               final AtomicReference<String> appPkg,
+                               final AtomicReference<String> appVersion,
+                               final AtomicReference<Integer> appVersionCode) {
         String l = line;
         final String namePrefix = "package: name='";
         final String versionCodePrefix = "' versionCode='";
@@ -175,8 +182,12 @@ public class APKFileAnalyzer {
         if (pos == -1) {
             return;
         }
-        // Here we get the version code but it is not currently used
-        // appCode.set(l.substring(0, pos));
+        // Here we get the version code
+        String versionCode = l.substring(0, pos);
+        try {
+            appVersionCode.set(Integer.parseInt(versionCode));
+        } catch (NumberFormatException e) {
+        }
         l = l.substring(pos + versionNamePrefix.length());
 
         // Different versions of aapt may give different output
@@ -190,7 +201,10 @@ public class APKFileAnalyzer {
         appVersion.set(l.substring(0, pos));
     }
 
-    private void parseInfoLineLegacy(final String line, final AtomicReference<String> appPkg, final AtomicReference<String> appVersion) {
+    private void parseInfoLineLegacy(final String line,
+                                     final AtomicReference<String> appPkg,
+                                     final AtomicReference<String> appVersion,
+                                     final AtomicReference<Integer> appVersionCode) {
         Scanner scanner = new Scanner(line).useDelimiter(" ");
         while (scanner.hasNext()) {
             final String token = scanner.next();
@@ -200,6 +214,15 @@ public class APKFileAnalyzer {
                     appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
                 }
                 appPkg.set(appPkgLocal);
+            } else if (token.startsWith("versionCode=")) {
+                String appVersionCodeLocal = token.substring("versionCode=".length());
+                if (appVersionCodeLocal.startsWith("'") && appVersionCodeLocal.endsWith("'")) {
+                    appVersionCodeLocal = appVersionCodeLocal.substring(1, appVersionCodeLocal.length() - 1);
+                }
+                try {
+                    appVersionCode.set(Integer.parseInt(appVersionCodeLocal));
+                } catch (NumberFormatException e) {
+                }
             } else if (token.startsWith("versionName=")) {
                 String appVersionLocal = token.substring("versionName=".length());
                 if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
@@ -295,6 +318,7 @@ public class APKFileAnalyzer {
         APKFileDetails fileDetails = new APKFileDetails();
         fileDetails.setPkg(jsonObject.getString("package_name"));
         fileDetails.setVersion(jsonObject.getString("version_name"));
+        fileDetails.setVersionCode(jsonObject.optInt("version_code"));
 
         // XAPK manifest doesn't contain data about the native code
         // So we try to guess it by searching the keywords

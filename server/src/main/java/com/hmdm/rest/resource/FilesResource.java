@@ -267,7 +267,17 @@ public class FilesResource {
                 apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
                 result.setFileDetails(apkFileDetails);
 
-                ApplicationVersion version = this.applicationDAO.findApplicationVersion(apkFileDetails.getPkg(), apkFileDetails.getVersion());
+                ApplicationVersion version;
+                if (apkFileDetails.getVersionCode() != 0) {
+                    version = this.applicationDAO.findApplicationVersionByCode(apkFileDetails.getPkg(), apkFileDetails.getVersionCode());
+                    if (version != null && !version.getVersion().equals(apkFileDetails.getVersion())) {
+                        // Version with the same version code but different version name exists
+                        // This is a violation of Android versioning guidelines - disable upload
+                        return Response.DUPLICATE_ENTITY("form.application.version.code.exists");
+                    }
+                }
+
+                version = this.applicationDAO.findApplicationVersion(apkFileDetails.getPkg(), apkFileDetails.getVersion());
                 if (StringUtil.isEmpty(apkFileDetails.getArch())){
                     if (version != null) {
                         result.setExists(true);

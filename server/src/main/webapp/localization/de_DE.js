@@ -403,6 +403,8 @@ document.localization ['de_DE'] = {
     'form.application.version': 'Version',
     'form.application.version.placeholder': '0 für System-Apps',
     'form.application.version.title': 'Die Paketversion wird automatisch ermittelt, wenn Sie die APK-Datei hochladen. Setzen Sie es für System-Apps auf 0.',
+    'form.application.version.code': 'Versionscode',
+    'form.application.version.code.exists': 'Eine Version mit demselben Code existiert bereits. Bitte melden Sie dieses Problem den App-Entwicklern.',
     'form.application.system': 'System',
     'form.application.system.title': 'System-Apps sind auf einem Gerät vorinstalliert und erfordern keine URL oder Datei. Setzen Sie dieses Flag nur, wenn Sie ein bestimmtes Systempaket aktivieren müssen.',
     'form.application.run.after.install': 'Nach der Installation ausführen',

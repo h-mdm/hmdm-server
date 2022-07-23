@@ -551,6 +551,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 .orElse(null);
     }
 
+    public ApplicationVersion findApplicationVersionByCode(String pkg, int versionCode) {
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> this.mapper.findApplicationVersionByCode(u.getCustomerId(), pkg, versionCode))
+                .orElse(null);
+    }
+
     public List<Application> getAllAdminApplications() {
         if (SecurityContext.get().isSuperAdmin()) {
             return this.mapper.getAllAdminApplications();

@@ -403,6 +403,8 @@ document.localization ['fr_FR'] = {
     'form.application.version': 'Version',
     'form.application.version.placeholder': '0 pour les applications système',
     'form.application.version.title': 'La version du package est automatiquement déterminée lorsque vous téléchargez le fichier APK. Réglez-le sur 0 pour les applications système.',
+    'form.application.version.code': 'Code de version',
+    'form.application.version.code.exists': 'Une version avec le même code existe déjà. Veuillez signaler ce problème aux développeurs de l\'application.',
     'form.application.system': 'Système',
     'form.application.system.title': 'Les applications système sont préinstallées sur un appareil et ne nécessitent ni URL ni fichier. Définissez cet indicateur uniquement si vous devez activer un certain package système.',
     'form.application.run.after.install': 'Exécuter après l\'installation',

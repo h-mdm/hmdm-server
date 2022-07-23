@@ -49,6 +49,8 @@ public class Application implements CustomerData, Serializable {
     private String pkg;
     @ApiModelProperty("A version of application")
     private String version;
+    @ApiModelProperty("Version code")
+    private int versionCode;
     @ApiModelProperty("CPU architecture (for file transfer only)")
     private String arch;
     @ApiModelProperty("An URL for the latest version of the application package")
@@ -165,6 +167,14 @@ public class Application implements CustomerData, Serializable {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
     }
 
     public String getArch() {
@@ -429,6 +439,7 @@ public class Application implements CustomerData, Serializable {
                 ", name='" + name + '\'' +
                 ", pkg='" + pkg + '\'' +
                 ", version='" + version + '\'' +
+                ", versionCode=" + versionCode +
                 ", url='" + url + '\'' +
                 ", split=" + split +
                 ", urlArmeabi='" + urlArmeabi + '\'' +

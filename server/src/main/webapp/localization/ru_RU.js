@@ -402,6 +402,8 @@ document.localization[ 'ru_RU' ] = {
     'form.application.name.placeholder': 'Например, Камера (Android)',
     'form.application.version': 'Версия',
     'form.application.version.title': 'Версия пакета определяется автоматически при загрузке файла. Для системных приложений ставьте 0.',
+    'form.application.version.code': 'Код версии',
+    'form.application.version.code.exists': 'Версия с таким кодом уже существует. Пожалуйста, сообщите об этой проблеме разработчикам приложения.',
     'form.application.version.placeholder': '0 для системных приложений',
     'form.application.system': 'Системное',
     'form.application.system.title': 'Системные приложения уже установлены на устройстве и не требуют файла. Ставьте этот флажок, только если требуется разрешить системный пакет.',

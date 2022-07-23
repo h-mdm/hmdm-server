@@ -41,6 +41,9 @@ public class ApplicationVersion implements Serializable {
     @ApiModelProperty("A version of application")
     private String version;
 
+    @ApiModelProperty("Version code")
+    private int versionCode;
+
     @ApiModelProperty("An URL for application package")
     private String url;
 
@@ -86,6 +89,7 @@ public class ApplicationVersion implements Serializable {
     public ApplicationVersion(Application application) {
         this.applicationId = application.getId();
         this.version = application.getVersion();
+        this.versionCode = application.getVersionCode();
         if (application.getArch() == null) {
             this.url = application.getUrl();
         } else if (application.getArch().equals(Application.ARCH_ARMEABI)) {
@@ -96,8 +100,6 @@ public class ApplicationVersion implements Serializable {
             this.urlArm64 = application.getUrl();
         }
     }
-
-
 
     public Integer getId() {
         return id;
@@ -121,6 +123,14 @@ public class ApplicationVersion implements Serializable {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
     }
 
     public String getUrl() {
@@ -209,6 +219,7 @@ public class ApplicationVersion implements Serializable {
                 "id=" + id +
                 ", applicationId=" + applicationId +
                 ", version='" + version + '\'' +
+                ", versionCode=" + versionCode +
                 ", system='" + system + '\'' +
                 ", url='" + url + '\'' +
                 ", apkHash='" + apkHash + '\'' +
