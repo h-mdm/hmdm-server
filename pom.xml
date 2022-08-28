@@ -55,7 +55,7 @@
         <mybatis.guice.version>3.10</mybatis.guice.version>
 
         <postgresql.version>42.3.3</postgresql.version>
-        <liquibase.version>3.6.3</liquibase.version>
+        <liquibase.version>4.8.0</liquibase.version>
 
         <junit.version>4.13.1</junit.version>
         <slf4j.version>1.7.2</slf4j.version>
