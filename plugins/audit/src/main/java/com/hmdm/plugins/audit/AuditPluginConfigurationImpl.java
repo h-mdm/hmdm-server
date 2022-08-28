@@ -23,6 +23,7 @@ package com.hmdm.plugins.audit;
 
 import com.google.inject.Module;
 import com.hmdm.plugin.PluginConfiguration;
+import com.hmdm.plugins.audit.guice.module.AuditConfigureModule;
 import com.hmdm.plugins.audit.guice.module.AuditLiquibaseModule;
 import com.hmdm.plugins.audit.guice.module.AuditPersistenceModule;
 import com.hmdm.plugins.audit.guice.module.AuditRestModule;
@@ -79,7 +80,7 @@ public class AuditPluginConfigurationImpl implements PluginConfiguration {
 
         modules.add(new AuditLiquibaseModule(context));
         modules.add(new AuditPersistenceModule(context));
-//        modules.add(new AuditConfigModule(context));
+        modules.add(new AuditConfigureModule(context));
         modules.add(new AuditRestModule());
 
         return modules;

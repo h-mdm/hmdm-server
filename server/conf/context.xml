@@ -54,6 +54,9 @@
     <Parameter name="mqtt.auth" value="${mqtt.auth}"/>
 
 
+    <!-- Display X-Forwarded-For instead of source IP -->
+    <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>
+
 
     <!-- Email parameters are necessary for password recovery -->
     <Parameter name="smtp.host" value="${smtp.host}"/>

@@ -1189,6 +1189,12 @@ angular.module('headwind-kiosk')
                 }
             };
 
+            $scope.disableLocationChanged = function () {
+                if ($scope.configuration.disableLocation) {
+                    $scope.configuration.requestUpdates = 'DONOTTRACK';
+                }
+            };
+
             var filterApplicationSettings = function () {
                 $scope.applicationSettings = $scope.configuration.applicationSettings.filter(function (item) {
                     var valid = true;

@@ -35,8 +35,8 @@ import java.util.stream.Stream;
  * @author isv
  */
 public enum ResourceAuditInfo {
-    LOGIN("POST", "/rest/public/auth/login", true, "plugin.audit.action.user.login", false),
-    JWT_LOGIN("POST", "/rest/public/jwt/login", true, "plugin.audit.action.api.login", false),
+    LOGIN("POST", "/rest/public/auth/login", true, "plugin.audit.action.user.login", true),
+    JWT_LOGIN("POST", "/rest/public/jwt/login", true, "plugin.audit.action.api.login", true),
     UPDATE_DEVICE("PUT", "/rest/private/devices", true, "plugin.audit.action.update.device", true),
     REMOVE_DEVICE("DELETE", "/rest/private/devices", false, "plugin.audit.action.remove.device", true),
     UPDATE_CONFIG("PUT", "/rest/private/configurations", true, "plugin.audit.action.update.configuration", true),
@@ -104,8 +104,8 @@ public enum ResourceAuditInfo {
      * @param chain a filter chain.
      * @return an auditor for the specified request/response chain.
      */
-    public ResourceAuditor getResourceAuditor(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
-        return new ResourceAuditor(auditLogAction, request, response, chain, payload);
+    public ResourceAuditor getResourceAuditor(ServletRequest request, ServletResponse response, FilterChain chain, boolean displayForwardedIp) throws IOException {
+        return new ResourceAuditor(auditLogAction, request, response, chain, payload, displayForwardedIp);
     }
 
     /**

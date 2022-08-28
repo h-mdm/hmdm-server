@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.rest.json.Response;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -73,10 +75,15 @@ class ResourceAuditor {
     private final boolean payload;
 
     /**
+     * <p>A flag indicating if the forwarded IP should be displayed instead of the request IP</p>
+     */
+    private final boolean displayForwardedIp;
+
+    /**
      * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
      */
     ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response,
-                    FilterChain chain, boolean payload) throws IOException {
+                    FilterChain chain, boolean payload, boolean displayForwardedIp) throws IOException {
         this.auditLogActionKey = auditLogActionKey;
         if (payload) {
             // Wrap request only if we need to log it
@@ -87,6 +94,7 @@ class ResourceAuditor {
         this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
         this.chain = chain;
         this.payload = payload;
+        this.displayForwardedIp = displayForwardedIp;
     }
 
     /**
@@ -107,27 +115,42 @@ class ResourceAuditor {
      * @throws IOException if an unexpected I/O error occurs.
      */
     AuditLogRecord getAuditLogRecord() throws IOException {
-        final HttpSession session = ((HttpServletRequest) this.request).getSession(false);
+        final HttpServletRequest httpRequest = (HttpServletRequest) this.request;
+        final HttpSession session = httpRequest.getSession(false);
         User currentUser = null;
         if (session != null) {
             currentUser = (User) session.getAttribute(sessionCredentials);
         }
 
+        String action = this.auditLogActionKey;
         String payloadString = null;
+        String requestedLogin = null;
         if (payload) {
             ServletRequestAuditWrapper requestWrapper = (ServletRequestAuditWrapper)this.request;
             payloadString = "Method: " + requestWrapper.getMethod() + "\n" +
                     "URI: " + requestWrapper.getRequestURI();
             String body = requestWrapper.getBody();
             if (body != null && body.length() > 0) {
+                if (needStripPassword(action)) {
+                    // Since we parse JSON anyway, let's extract and log the login from the request
+                    StripPasswordResponse response = stripPassword(body);
+                    body = response.result;
+                    requestedLogin = response.login;
+                }
                 payloadString += "\nBody: " + body;
             }
+            payloadString += "\nUser-Agent: " + httpRequest.getHeader("User-Agent");
         }
 
         AuditLogRecord logRecord = new AuditLogRecord();
-        String action = this.auditLogActionKey;
         logRecord.setCreateTime(System.currentTimeMillis());
         logRecord.setIpAddress(request.getRemoteAddr());
+        if (displayForwardedIp) {
+            String forwardedIp = httpRequest.getHeader("X-Forwarded-For");
+            if (forwardedIp != null) {
+                logRecord.setIpAddress(forwardedIp);
+            }
+        }
         if (currentUser != null) {
             logRecord.setCustomerId(currentUser.getCustomerId());
             logRecord.setLogin(currentUser.getLogin());
@@ -135,6 +158,9 @@ class ResourceAuditor {
         } else {
             // 1 is the default customer ID, otherwise the record won't be visible
             logRecord.setCustomerId(1);
+            if (requestedLogin != null) {
+                logRecord.setLogin(requestedLogin);
+            }
         }
         if (this.response.getStatus() == 200) {
             final byte[] content = this.response.getContent();
@@ -154,5 +180,51 @@ class ResourceAuditor {
         logRecord.setAction(action);
 
         return logRecord;
+    }
+
+    private boolean needStripPassword(String action) {
+        return "plugin.audit.action.user.login".equals(action) ||
+               "plugin.audit.action.api.login".equals(action) ||
+               "plugin.audit.action.password.changed".equals(action) ||
+               "plugin.audit.action.update.user".equals(action);
+    }
+
+    private class StripPasswordResponse {
+        String result;
+        String login;
+    }
+
+    private StripPasswordResponse stripPassword(String jsonPayload) {
+        StripPasswordResponse response = new StripPasswordResponse();
+        response.result = jsonPayload;
+        try {
+            boolean dirty = false;
+            JSONObject jsonObject = new JSONObject(jsonPayload);
+            if (jsonObject.has("newPassword")) {
+                jsonObject.put("newPassword", "******");
+                dirty = true;
+            }
+            if (jsonObject.has("oldPassword")) {
+                jsonObject.put("oldPassword", "******");
+                dirty = true;
+            }
+            if (jsonObject.has("password")) {
+                jsonObject.put("password", "******");
+                dirty = true;
+            }
+            if (jsonObject.has("confirm")) {
+                jsonObject.put("confirm", "******");
+                dirty = true;
+            }
+            if (dirty) {
+                response.result = jsonObject.toString();
+                if (jsonObject.has("login")) {
+                    response.login = jsonObject.getString("login");
+                }
+            }
+        } catch (JSONException e) {
+            // Do not change anything if not a valid JSON
+        }
+        return response;
     }
 }

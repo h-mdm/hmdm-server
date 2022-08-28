@@ -84,6 +84,10 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean usbStorage;
     @ApiModelProperty("A type of location tracking")
     private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
+    @ApiModelProperty("A flag indicating if location permission shouldn't be granted")
+    private Boolean disableLocation;
+    @ApiModelProperty("Strategy of app permission auto-granting")
+    private AppPermissionsType appPermissions = AppPermissionsType.GRANTALL;
     @ApiModelProperty("Push notification options")
     private String pushOptions;
     @ApiModelProperty("Keep-Alive time for MQTT connection")
@@ -580,6 +584,22 @@ public class Configuration implements CustomerData, Serializable {
         this.requestUpdates = requestUpdates;
     }
 
+    public Boolean getDisableLocation() {
+        return disableLocation;
+    }
+
+    public void setDisableLocation(Boolean disableLocation) {
+        this.disableLocation = disableLocation;
+    }
+
+    public AppPermissionsType getAppPermissions() {
+        return appPermissions;
+    }
+
+    public void setAppPermissions(AppPermissionsType appPermissions) {
+        this.appPermissions = appPermissions;
+    }
+
     public String getPushOptions() {
         return pushOptions;
     }
@@ -790,6 +810,8 @@ public class Configuration implements CustomerData, Serializable {
         copy.setMobileData(getMobileData());
         copy.setUsbStorage(getUsbStorage());
         copy.setRequestUpdates(getRequestUpdates());
+        copy.setDisableLocation(getDisableLocation());
+        copy.setAppPermissions(getAppPermissions());
         copy.setPushOptions(getPushOptions());
         copy.setKeepaliveTime(getKeepaliveTime());
         copy.setAutoBrightness(getAutoBrightness());

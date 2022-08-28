@@ -65,6 +65,8 @@ public interface ConfigurationMapper {
             "desktopHeader=#{desktopHeader}, " +
             "desktopHeaderTemplate=#{desktopHeaderTemplate}, " +
             "requestUpdates=#{requestUpdates}, " +
+            "disableLocation=#{disableLocation}, " +
+            "appPermissions=#{appPermissions}, " +
             "pushOptions=#{pushOptions}, " +
             "keepaliveTime=#{keepaliveTime}, " +
             "autoBrightness=#{autoBrightness}, " +

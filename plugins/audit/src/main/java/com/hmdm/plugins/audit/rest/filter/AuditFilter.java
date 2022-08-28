@@ -31,6 +31,7 @@ import com.hmdm.util.BackgroundTaskRunnerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -75,14 +76,21 @@ public class AuditFilter implements Filter {
     private PluginStatusCache pluginStatusCache;
 
     /**
+     * <p>Should we use proxy IP address?</p>
+     */
+    private boolean displayForwardedIp = false;
+
+    /**
      * <p>Constructs new <code>AuditFilter</code> instance. This implementation does nothing.</p>
      */
     @Inject
     public AuditFilter(AuditDAO auditDAO, BackgroundTaskRunnerService backgroundTaskRunnerService,
-                       PluginStatusCache pluginStatusCache) {
+                       PluginStatusCache pluginStatusCache,
+                       @Named("plugin.audit.display.forwarded.ip") boolean displayForwardedIp) {
         this.auditDAO = auditDAO;
         this.backgroundTaskRunnerService = backgroundTaskRunnerService;
         this.pluginStatusCache = pluginStatusCache;
+        this.displayForwardedIp = displayForwardedIp;
     }
 
     /**
@@ -119,7 +127,7 @@ public class AuditFilter implements Filter {
                     logger.trace("Will audit request {}", requestURI.substring(context.length()));
                 }
 
-                resourceAuditor = auditInfo.get().getResourceAuditor(request, response, chain);
+                resourceAuditor = auditInfo.get().getResourceAuditor(request, response, chain, displayForwardedIp);
                 resourceAuditor.doProcess();
             } else {
                 chain.doFilter(request, response);

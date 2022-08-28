@@ -2264,4 +2264,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="23.08.22-15:57" author="seva" context="common">
+        <comment>Column,new: configurations#disableLocation, #appPermissions</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN disableLocation BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE configurations ADD COLUMN appPermissions VARCHAR(20) NOT NULL DEFAULT 'GRANTALL';
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN disableLocation;
+            ALTER TABLE configurations DROP COLUMN appPermissions;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

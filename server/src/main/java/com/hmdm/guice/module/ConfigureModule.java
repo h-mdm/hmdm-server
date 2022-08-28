@@ -42,6 +42,7 @@ public class ConfigureModule extends AbstractModule {
     private final String rebrandingVendorLinkParameter = "rebranding.vendor.link";
     private final String rebrandingLogoParameter = "rebranding.logo";
     private final String rebrandingMobileNameParameter = "rebranding.mobile.name";
+    private final String rebrandingSignupLinkParameter = "rebranding.signup.link";
     private final String smtpHostParameter = "smtp.host";
     private final String smtpPortParameter = "smtp.port";
     private final String smtpSslParameter = "smtp.ssl";
@@ -91,6 +92,8 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(rebrandingLogoParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingMobileNameParameter);
         this.bindConstant().annotatedWith(Names.named(rebrandingMobileNameParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(rebrandingSignupLinkParameter);
+        this.bindConstant().annotatedWith(Names.named(rebrandingSignupLinkParameter)).to(opt != null ? opt : "");
 
         // SMTP
         opt = this.context.getInitParameter(smtpHostParameter);

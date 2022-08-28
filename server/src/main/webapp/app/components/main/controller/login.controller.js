@@ -1,11 +1,16 @@
 <!-- Localization completed -->
 angular.module('headwind-kiosk')
-    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization, rebranding, passwordResetService) {
+    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization, rebranding,
+                                             passwordResetService, getBrowserLanguage) {
         $scope.login = {};
 
         $scope.rebranding = null;
         rebranding.query(function(value) {
             $scope.rebranding = value;
+            // A very dirty hack preventing language change on h-mdm.com!
+            if ($scope.rebranding.signupLink == "https://h-mdm.com/contact-us/" && getBrowserLanguage() == 'ru_RU') {
+                $scope.rebranding.signupLink = "https://h-mdm.com/ru/kontakty/";
+            }
             $scope.ieBrowserNotice2 = localization.localize('ie.browser.notice.2').replace('${appName}', $scope.rebranding.appName);
         });
 

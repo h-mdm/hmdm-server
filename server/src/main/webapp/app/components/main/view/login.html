@@ -6,7 +6,7 @@
         <div class='panel-heading' ng-if='errorMessage'>{{errorMessage}}</div>
         <div class='panel-heading' ng-if='successMessage'>{{successMessage}}</div>
         <div class='panel-body' style="padding: 30px; background: #f6f8fc">
-            <form name='loginForm' ng-submit='onLogin()'>
+            <form name='loginForm' ng-submit='onLogin()' style="margin-bottom: 0px">
                 <div class='form-group'>
                     <label for='username' localized>login.username</label>
                     <input type='text' class='form-control' id='username'
@@ -20,9 +20,12 @@
                            required/>
                 </div>
 
-                <span style="vertical-align:text-bottom" ng-if="canRecover"><a class="action-link" ng-click="recoverPassword()" localized>login.password.recovery</a></span>
+                <div style="float: left; min-height: 45px; display: flex; flex-direction: column">
+                    <div ng-if="canRecover" style="margin: auto; width: 100%"><a class="action-link" ng-click="recoverPassword()" localized>login.password.recovery</a></div>
+                    <div ng-if="rebranding.signupLink" style="margin: auto; width: 100%"><span localized>login.no.account</span> <a class="action-link" href="{{rebranding.signupLink}}" localized>login.signup</a></div>
+                </div>
 
-                <button type='submit' class='btn btn-default right' style="opacity: 1"
+                <button type='submit' class='btn btn-default right' style="opacity: 1; margin-top: 9px"
                         ng-disabled='loginForm.$invalid' localized>login.submit</button>
             </form>
         </div>

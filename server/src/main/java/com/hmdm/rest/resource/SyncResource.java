@@ -323,6 +323,8 @@ public class SyncResource {
         data.setLockStatusBar(configuration.isBlockStatusBar());
         data.setSystemUpdateType(configuration.getSystemUpdateType());
         data.setRequestUpdates(configuration.getRequestUpdates().getTransmittedValue());
+        data.setDisableLocation(configuration.getDisableLocation());
+        data.setAppPermissions(configuration.getAppPermissions().getTransmittedValue());
         data.setPushOptions(configuration.getPushOptions());
         data.setKeepaliveTime(configuration.getKeepaliveTime());
         data.setAutoBrightness(configuration.getAutoBrightness());

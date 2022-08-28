@@ -54,6 +54,12 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("A type of location tracking")
     private String requestUpdates;
 
+    @ApiModelProperty("A flag indicating if location permission shouldn't be granted")
+    private Boolean disableLocation;
+
+    @ApiModelProperty("Strategy of app permission auto-granting")
+    private String appPermissions;
+
     @ApiModelProperty("Push notification options")
     private String pushOptions;
 
@@ -570,6 +576,24 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setRequestUpdates(String requestUpdates) {
         this.requestUpdates = requestUpdates;
+    }
+
+    @Override
+    public Boolean getDisableLocation() {
+        return disableLocation;
+    }
+
+    public void setDisableLocation(Boolean disableLocation) {
+        this.disableLocation = disableLocation;
+    }
+
+    @Override
+    public String getAppPermissions() {
+        return appPermissions;
+    }
+
+    public void setAppPermissions(String appPermissions) {
+        this.appPermissions = appPermissions;
     }
 
     public String getPushOptions() {

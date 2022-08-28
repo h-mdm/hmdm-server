@@ -95,6 +95,10 @@ public interface SyncResponseInt {
 
     String getRequestUpdates();
 
+    Boolean getDisableLocation();
+
+    String getAppPermissions();
+
     String getPushOptions();
 
     Integer getKeepaliveTime();

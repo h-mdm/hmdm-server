@@ -38,6 +38,7 @@ public class NameResponse {
     private String appName;
     private String vendorName;
     private String vendorLink;
+    private String signupLink;
 
     /**
      * <p>Constructs new <code>NameResponse</code> instance. This implementation does nothing.</p>
@@ -67,5 +68,13 @@ public class NameResponse {
 
     public void setVendorLink(String vendorLink) {
         this.vendorLink = vendorLink;
+    }
+
+    public String getSignupLink() {
+        return signupLink;
+    }
+
+    public void setSignupLink(String signupLink) {
+        this.signupLink = signupLink;
     }
 }
