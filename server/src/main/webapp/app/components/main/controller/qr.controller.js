@@ -103,6 +103,15 @@ angular.module('headwind-kiosk')
 
         $scope.helpClicked = function () {
             $scope.showHelp = !$scope.showHelp;
+            if ($scope.showHelp) {
+                $timeout(function() {
+                    $window.scrollTo({
+                        'top': 200,
+                        'left': 0,
+                        'behavior': 'smooth'
+                    });
+                }, 100);
+            }
         };
     });
 

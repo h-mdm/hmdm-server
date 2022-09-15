@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, $cookies, $window, $filter,
-                                                  confirmModal, deviceService, groupService, settingsService,
+    .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, $cookies, $window, $filter, $timeout,
+                                                  confirmModal, deviceService, groupService, settingsService, hintService,
                                                   authService, pluginService, configurationService, alertService,
                                                   spinnerService, localization) {
 
@@ -241,12 +241,17 @@ angular.module('headwind-kiosk')
         $scope.init = function () {
             $rootScope.settingsTabActive = false;
             $rootScope.pluginsTabActive = false;
-            $scope.search();
+            $scope.search(false, function () {
+                // Hints are shown after all devices are loaded
+                $timeout(function () {
+                    hintService.onStateChangeSuccess();
+                }, 100);
+            });
         };
 
         $scope.showSpinner = false;
         var searchIsRunning = false;
-        $scope.search = function (spinnerHidden) {
+        $scope.search = function (spinnerHidden, callback) {
             if (searchIsRunning) {
                 console.log("Skipping device search since a previous search is pending", new Error());
                 return;
@@ -368,6 +373,10 @@ angular.module('headwind-kiosk')
                     }
 
                     $scope.paging.totalItems = response.data.devices.totalItemsCount;
+
+                    if (callback) {
+                        callback();
+                    }
                 }
             }, function () {
                 searchIsRunning = false;
@@ -382,7 +391,7 @@ angular.module('headwind-kiosk')
             // Workaround against AngularJS bug!
             var number = device.number.replace(/\//g, "~2F");
             var url = device.configuration.baseUrl + "/#/qr/" + device.configuration.qrCodeKey + "/" + number;
-            $window.open(url, "_blank");
+            $window.open(url, "_self");
         };
 
         $scope.interval = $interval(function () {
@@ -1159,7 +1168,7 @@ angular.module('headwind-kiosk')
             var lower = filter.toLowerCase();
             var apps = applications.filter(function (app) {
                 // Intentionally using app.action == 1 but not app.action === 1
-                return (app.name.toLowerCase().indexOf(lower) > -1
+                return app.type === 'app' && (app.name.toLowerCase().indexOf(lower) > -1
                     || app.pkg && app.pkg.toLowerCase().indexOf(lower) > -1
                     || app.version && app.version.toLowerCase().indexOf(lower) > -1);
             });

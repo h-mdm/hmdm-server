@@ -8,6 +8,7 @@ import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.Device;
+import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.CryptoUtil;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -29,18 +30,27 @@ public class PushSenderMqtt implements PushSender {
     private String hashSecret;
     private DeviceDAO deviceDAO;
     private MqttClient client;
+    private MqttThrottledSender throttledSender;
+    private BackgroundTaskRunnerService taskRunner;
     private MemoryPersistence persistence = new MemoryPersistence();
+    private long mqttDelay;
 
     @Inject
     public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri,
                           @Named("mqtt.client.tag") String clientTag,
                           @Named("mqtt.auth") boolean mqttAuth,
+                          @Named("mqtt.message.delay") long mqttDelay,
                           @Named("hash.secret") String hashSecret,
+                          MqttThrottledSender throttledSender,
+                          BackgroundTaskRunnerService taskRunner,
                           DeviceDAO deviceDAO) {
         this.serverUri = serverUri;
         this.clientTag = clientTag;
         this.mqttAuth = mqttAuth;
         this.hashSecret = hashSecret;
+        this.mqttDelay = mqttDelay;
+        this.throttledSender = throttledSender;
+        this.taskRunner = taskRunner;
         this.deviceDAO = deviceDAO;
     }
 
@@ -56,6 +66,11 @@ public class PushSenderMqtt implements PushSender {
                 options.setPassword(CryptoUtil.getSHA1String(NotificationMqttTaskModule.MQTT_USERNAME + hashSecret).toCharArray());
             }
             client.connect(options);
+
+            if (mqttDelay > 0) {
+                throttledSender.setClient(client);
+                taskRunner.submitTask(throttledSender);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +96,12 @@ public class PushSenderMqtt implements PushSender {
 
             MqttMessage mqttMessage = new MqttMessage(strMessage.getBytes());
             mqttMessage.setQos(2);
-            client.publish(device.getOldNumber() == null ? device.getNumber() : device.getOldNumber(), mqttMessage);
+            String number = device.getOldNumber() == null ? device.getNumber() : device.getOldNumber();
+            if (mqttDelay == 0) {
+                client.publish(number, mqttMessage);
+            } else {
+                throttledSender.send(new MqttEnvelope(number, mqttMessage));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

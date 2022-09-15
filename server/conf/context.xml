@@ -53,6 +53,10 @@
          (supported by Headwind MDM launcher v5.05 and above) -->
     <Parameter name="mqtt.auth" value="${mqtt.auth}"/>
 
+    <!-- Optional tag for delaying MQTT messages in milliseconds
+     to avoid congestion when all devices are updating configuration at the same time -->
+    <Parameter name="mqtt.message.delay" value="${mqtt.message.delay}"/>
+
 
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>

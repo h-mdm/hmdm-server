@@ -27,7 +27,7 @@ angular.module('headwind-kiosk')
 
         $scope.showQrCode = function (configuration) {
             var url = configuration.baseUrl + "/#/qr/" + configuration.qrCodeKey + "/";
-            $window.open(url, "_blank");
+            $window.open(url, "_self");
         };
 
         $scope.init = function (isTypical) {
@@ -36,8 +36,10 @@ angular.module('headwind-kiosk')
             $scope.paging.currentPage = 1;
             $scope.isTypical = isTypical;
             $scope.search(function () {
+                // Hints are shown after all configurations are loaded
                 $timeout(function () {
-                    hintService.onStateChangeSuccess();
+                    // Onboarding hint in the configuration tab is no more needed
+//                    hintService.onStateChangeSuccess();
                 }, 100);
             });
         };
@@ -223,6 +225,7 @@ angular.module('headwind-kiosk')
             var lower = filter.toLowerCase();
 
             var apps = $scope.availableApplications.filter(function (app) {
+                // Here we select all apps including web because this function is used to add a new app to the desktop
                 // Intentionally using app.action == 1 but not app.action === 1
                 return (app.name.toLowerCase().indexOf(lower) > -1
                     || app.pkg && app.pkg.toLowerCase().indexOf(lower) > -1
@@ -499,8 +502,9 @@ angular.module('headwind-kiosk')
             $scope.getApps = function (filter) {
                 var lower = filter.toLowerCase();
                 var apps = allApplications.filter(function (app) {
+                    // Here we select only native apps because this function is used to select main and content apps
                     // Intentionally using app.action == 1 but not app.action === 1
-                    return (app.action == 1) && (app.name.toLowerCase().indexOf(lower) > -1
+                    return app.type === 'app' && (app.action == 1) && (app.name.toLowerCase().indexOf(lower) > -1
                         || app.pkg && app.pkg.toLowerCase().indexOf(lower) > -1
                         || app.version && app.version.toLowerCase().indexOf(lower) > -1);
                 });
@@ -542,7 +546,7 @@ angular.module('headwind-kiosk')
                 var lower = filter.toLowerCase();
                 var apps = allApplications.filter(function (app) {
                     // Intentionally using app.action == 1 but not app.action === 1
-                    return (app.name.toLowerCase().indexOf(lower) > -1
+                    return app.type === 'app' && (app.name.toLowerCase().indexOf(lower) > -1
                         || app.pkg && app.pkg.toLowerCase().indexOf(lower) > -1
                         || app.version && app.version.toLowerCase().indexOf(lower) > -1);
                 });

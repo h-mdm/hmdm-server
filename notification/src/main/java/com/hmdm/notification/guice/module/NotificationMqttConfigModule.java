@@ -49,5 +49,16 @@ public class NotificationMqttConfigModule extends AbstractModule {
                 mqttAuthTag != null && (mqttAuthTag.equals("1") || mqttAuthTag.equalsIgnoreCase("true"))
         );
 
+        String mqttDelayTag = this.context.getInitParameter("mqtt.message.delay");
+        long mqttDelay = 0;
+        try {
+            if (mqttDelayTag != null) {
+                mqttDelay = Long.parseLong(mqttDelayTag);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.message.delay")).to(mqttDelay);
+
     }
 }

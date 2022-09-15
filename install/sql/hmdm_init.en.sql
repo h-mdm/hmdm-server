@@ -150,7 +150,7 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10042, 43, '0', NULL),
     (10045, 46, '_HMDM_VERSION_', 'https://h-mdm.com/files/_HMDM_APK_'),
     (10046, 47, '0', NULL),
-    (10047, 48, '1.01', 'https://h-mdm.com/files/pager-1.01.apk'),
+    (10047, 48, '1.02', 'https://h-mdm.com/files/pager-1.02.apk'),
     (10048, 49, '1.02', 'https://h-mdm.com/files/phoneproxy-1.02.apk'),
     (10049, 50, '1.04', 'https://h-mdm.com/files/LauncherRestarter-1.04.apk'),
     (10050, 51, '0', NULL),
@@ -186,9 +186,9 @@ SELECT pg_catalog.setval('public.applicationversions_id_seq', 10076, true);
 ALTER TABLE applications ADD CONSTRAINT applications_latestversion_fkey FOREIGN KEY (latestversion) REFERENCES applicationversions(id) ON DELETE SET NULL;
     
 DELETE FROM configurations;
-INSERT INTO configurations (id, name, description, type, password, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, usedefaultdesignsettings, customerid, gps, bluetooth, wifi, mobiledata, mainappid, eventreceivingcomponent, kioskmode, qrcodekey, contentappid,autoupdate, blockstatusbar, systemupdatetype, systemupdatefrom, systemupdateto, pushoptions) VALUES 
-(1, 'Common - Minimal', 'Suitable for generic Android devices; minimum of apps installed', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '6fb9c8dc81483173a0c0e9f8b2e46be1', NULL, false, false, 0, NULL, NULL, 'mqttAlarm'),
-(2, 'MIUI (Xiaomi Redmi)', 'Optimized for MIUI-running devices', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '8e6ca072ddb926a1af61578dfa9fc334', NULL, false, false, 0, NULL, NULL, 'mqttAlarm');
+INSERT INTO configurations (id, name, description, type, password, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, usedefaultdesignsettings, customerid, gps, bluetooth, wifi, mobiledata, mainappid, eventreceivingcomponent, kioskmode, qrcodekey, contentappid,autoupdate, blockstatusbar, systemupdatetype, systemupdatefrom, systemupdateto, pushoptions, keepalivetime) VALUES 
+(1, 'Common - Minimal', 'Suitable for generic Android devices; minimum of apps installed', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '6fb9c8dc81483173a0c0e9f8b2e46be1', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300),
+(2, 'MIUI (Xiaomi Redmi)', 'Optimized for MIUI-running devices', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '8e6ca072ddb926a1af61578dfa9fc334', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300);
 
 SELECT pg_catalog.setval('public.configurations_id_seq', 2, true);
 
@@ -293,9 +293,6 @@ SELECT pg_catalog.setval('public.configurationapplications_id_seq', 96, true);
 INSERT INTO devices (id, number, description, lastupdate, configurationid, oldconfigurationid, info, imei, phone, customerid) VALUES (1, 'h0001', 'My first Android device', 0, 1, NULL, NULL, NULL, NULL, 1);
 
 SELECT pg_catalog.setval('public.devices_id_seq', 1, true);
-
-INSERT INTO plugin_devicelog_settings (id, customerid, logspreserveperiod) VALUES (1, 1, 30);
-SELECT pg_catalog.setval('public.plugin_devicelog_settings_id_seq', 1, true);
 
 INSERT INTO plugin_devicelog_settings_rules (id, settingid, name, active, applicationid, severity) VALUES (1, 1, 'Headwind MDM', true, 46, 'VERBOSE');
 SELECT pg_catalog.setval('public.plugin_devicelog_settings_rules_id_seq', 1, true);

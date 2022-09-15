@@ -44,6 +44,17 @@
     <!-- MQTT notification service parameters -->
     <Parameter name="mqtt.server.uri" value="_BASE_DOMAIN_:31000"/>
 
+    <!-- Optional tag for delaying MQTT messages in milliseconds
+     to avoid congestion when all devices are updating configuration at the same time -->
+    <!-- <Parameter name="mqtt.message.delay" value="100"/> -->
+
+    <!-- Fast device search by last characters, here's the length -->
+    <Parameter name="device.fast.search.chars" value="5"/>
+
+    <!-- Optional tag for MQTT authentication for more security
+         (supported by Headwind MDM launcher v5.05 and above) -->
+    <!-- <Parameter name="mqtt.auth" value="1"/> -->
+
     <!-- Email parameters are necessary for password recovery -->
     <Parameter name="smtp.host" value="_SMTP_HOST_"/>
     <Parameter name="smtp.port" value="_SMTP_PORT_"/>

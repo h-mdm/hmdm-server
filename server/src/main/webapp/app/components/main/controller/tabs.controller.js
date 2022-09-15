@@ -78,9 +78,10 @@ angular.module('headwind-kiosk')
             }
         });
 
-        $timeout(function () {
-            hintService.onStateChangeSuccess();
-        }, 100);
+        // hintService start is fired by the controllers themselves after they are loaded all required content
+//        $timeout(function () {
+//            hintService.onStateChangeSuccess();
+//        }, 100);
 
         loadData();
     });
