@@ -79,12 +79,13 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
         log.info("Base URL: " + baseUrl);
     }
 
-    public List<Configuration> getAllConfigurationsByType(int type) {
-        return getList(customerId -> this.mapper.getAllConfigurationsByType(customerId, type));
+    public List<Configuration> getAllConfigurations() {
+        return getListWithCurrentUser(currentUser -> this.mapper.getAllConfigurations(currentUser.getCustomerId(), currentUser.getId()));
     }
 
-    public List<Configuration> getAllConfigurationsByTypeAndValue(int type, String value) {
-        return getList(customerId -> this.mapper.getAllConfigurationsByTypeAndValue(customerId, type, "%" + value + "%"));
+    public List<Configuration> getAllConfigurationsByValue(String value) {
+        return getListWithCurrentUser(currentUser ->
+                this.mapper.getAllConfigurationsByValue(currentUser.getCustomerId(), "%" + value + "%", currentUser.getId()));
     }
 
     public Configuration getConfigurationByName(String name) {

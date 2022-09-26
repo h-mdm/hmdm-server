@@ -35,21 +35,26 @@ import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
 
 public interface ConfigurationMapper {
-    @Select({"SELECT * " +
+    @Select({"SELECT configurations.* " +
             "FROM configurations " +
-            "WHERE customerId=#{customerId} " +
-            "AND type=#{type} " +
-            "ORDER BY name"})
-    List<Configuration> getAllConfigurationsByType(@Param("customerId") int customerId, @Param("type") int type);
+            "INNER JOIN users ON users.id = #{userId} " +
+            "LEFT JOIN userConfigurationAccess access ON configurations.id = access.configurationId AND access.userId = users.id " +
+            "WHERE configurations.customerId=#{customerId} " +
+            "AND (users.allConfigAvailable = TRUE OR NOT access.id IS NULL) " +
+            "ORDER BY configurations.name"})
+    List<Configuration> getAllConfigurations(@Param("customerId") int customerId, @Param("userId") int userId);
 
-    @Select({"SELECT * " +
+    @Select({"SELECT configurations.* " +
             "FROM configurations " +
-            "WHERE customerId=#{customerId} " +
-            "AND type=#{type} " +
-            "AND (name ILIKE #{value} OR description ILIKE #{value}) ORDER BY name"})
-    List<Configuration> getAllConfigurationsByTypeAndValue(@Param("customerId") int customerId,
-                                                           @Param("type") int type,
-                                                           @Param("value") String value);
+            "INNER JOIN users ON users.id = #{userId} " +
+            "LEFT JOIN userConfigurationAccess access ON configurations.id = access.configurationId AND access.userId = users.id " +
+            "WHERE configurations.customerId=#{customerId} " +
+            "AND (users.allConfigAvailable = TRUE OR NOT access.id IS NULL) " +
+            "AND (configurations.name ILIKE #{value} OR configurations.description ILIKE #{value}) " +
+            "ORDER BY configurations.name"})
+    List<Configuration> getAllConfigurationsByValue(@Param("customerId") int customerId,
+                                                    @Param("value") String value,
+                                                    @Param("userId") int userId);
 
     @SelectKey( statement = "SELECT currval('configurations_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertConfiguration(Configuration configuration);

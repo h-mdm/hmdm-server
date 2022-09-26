@@ -11,11 +11,26 @@
         <div class="col-sm-3" style="text-align: left">
             <input type="text" maxlength="100" name="qrdevice" style="width: auto;display: inline-block"
                    ng-enter='renew()'
+                   ng-change="renew()"
                    ng-model="formData.deviceIdNew"
                    localized-placeholder="form.qr.device.number.placeholder"
                    class="form-control"
             />
         </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-6 control-label" localized>form.qr.number.use</label>
+        <div class="col-sm-3" style="padding-right: 45px">
+            <select class='form-control' id="useId-c" name="useId" ng-change="renew()"
+                    ng-model='formData.useId' ng-disabled="formData.deviceIdNew != ''">
+                <option ng-value="''" ng-selected="!formData.useId && formData.deviceIdNew == ''" localized>form.qr.number.use.request</option>
+                <option ng-value="'imei'" ng-selected="formData.useId === 'imei'" localized>form.qr.number.use.imei</option>
+                <option ng-value="'serial'" ng-selected="formData.useId === 'serial'" localized>form.qr.number.use.serial</option>
+            </select>
+        </div>
+        <div class="col-sm-3">&nbsp;</div>
+        <div class="col-sm-4 col-sm-offset-6" style="color: #888; font-size: 13px; margin-top: 5px; text-align: left" localized>form.qr.number.hint</div>
     </div>
 
     <div class="form-group">
@@ -26,18 +41,6 @@
                    ng-change="renew()"
                    class="form-control common-checkbox"
             />
-        </div>
-    </div>
-
-    <div class="form-group" ng-if="formData.create">
-        <label class="col-sm-6 control-label" localized>form.qr.number.use</label>
-        <div class="col-sm-3" style="padding-right: 45px">
-            <select class='form-control' id="useId-c" name="useId" ng-change="renew()"
-                    ng-model='formData.useId'>
-                <option ng-value="''" ng-selected="!formData.useId" localized>form.qr.number.use.request</option>
-                <option ng-value="'imei'" ng-selected="formData.useId === 'imei'" localized>form.qr.number.use.imei</option>
-                <option ng-value="'serial'" ng-selected="formData.useId === 'serial'" localized>form.qr.number.use.serial</option>
-            </select>
         </div>
     </div>
 
@@ -55,14 +58,14 @@
         </div>
     </div>
 
-    <div class="form-group" ng-if="jsonData && formData.create">
+    <div class="form-group" ng-if="jsonData">
         <textarea class="col-sm-6 col-sm-offset-3" style="height: 150px">{{jsonData}}</textarea>
     </div>
 
     <div class='form-group'>
         <div style="display: inline-block">
-            <button type="button" class="btn btn-default" ng-click="renew()" localized>button.renew.code</button>
-            <button type="button" class="btn btn-default" ng-disabled="!formData.create" ng-click="generateJson()" localized>form.qr.button.json</button>
+            <!--<button type="button" class="btn btn-default" ng-click="renew()" localized>button.renew.code</button> -->
+            <button type="button" class="btn btn-default" ng-click="generateJson()" localized>form.qr.button.json</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-hint-key="hint.step.3" data-hint-order="3"
                     localized-title="button.help" ng-click="helpClicked()">
                 <span localized>button.help</span>

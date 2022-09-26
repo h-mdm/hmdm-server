@@ -106,6 +106,13 @@ public class UserDAO extends AbstractDAO<User> {
                     this.mapper.insertUserDeviceGroupsAccess(u.getId(), groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
                 }
             }
+            this.mapper.removeConfigurationAccessByUserId(u.getCustomerId(), u.getId());
+            if (!u.isAllConfigAvailable()) {
+                List<LookupItem> configs = u.getConfigurations();
+                if (configs != null && !configs.isEmpty()) {
+                    this.mapper.insertUserConfigurationAccess(u.getId(), configs.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                }
+            }
         }, SecurityException::onUserAccessViolation);
     }
 

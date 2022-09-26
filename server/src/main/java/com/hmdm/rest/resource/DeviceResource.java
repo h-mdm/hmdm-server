@@ -145,7 +145,27 @@ public class DeviceResource {
 
     }
 
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Get the device info by number",
+            notes = "Get the device info by number",
+            response = DeviceListView.class
+    )
+    @GET
+    @Path("/number/{number}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDevice(@PathParam("number") @ApiParam("Device number") String number) {
+        try {
+            Device device = this.deviceDAO.getDeviceByNumber(number);
+            DeviceView deviceView = new DeviceView(device);
+            return Response.OK(deviceView);
+        } catch (Exception e) {
+            log.error("Cannot find device by number: " + number);
+            return Response.DEVICE_NOT_FOUND_ERROR();
+        }
+    }
 
+    // =================================================================================================================
     /**
      * <p>Gets the list of device ids/names matching the specified string filter for autocompletions.</p>
      *

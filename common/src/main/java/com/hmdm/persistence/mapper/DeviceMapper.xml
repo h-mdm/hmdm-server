@@ -391,6 +391,11 @@
         WHERE LOWER(devices.number) = LOWER(#{number})
     </select>
 
+    <select id="getDeviceByImeiOrSerial" resultMap="deviceResult">
+        <include refid="deviceWithGroupsSelect"/>
+        WHERE devices.imei = #{number} OR devices.info::json -&gt;&gt; 'imei' = #{number} OR devices.info::json -&gt;&gt; 'serial' = #{number}
+    </select>
+
     <select id="getDeviceById" resultMap="deviceResult">
         <include refid="deviceWithGroupsSelect"/>
         WHERE devices.id = #{id}

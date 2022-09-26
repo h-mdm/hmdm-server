@@ -52,8 +52,27 @@
             <div class='col-sm-9'>
                 <div ng-dropdown-multiselect
                      options='groupsList'
-                     translation-texts='tableFilteringTexts'
+                     translation-texts='tableGroupsTexts'
                      selected-model='groupsSelection'
+                     class='left margin-right-half custom-multi-select'></div>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.user.all.configs.available</label>
+            <div class='col-sm-9'>
+                <input id='allConfigs' type="checkbox" name="allConfigs" class='form-control'
+                       ng-model="user.allConfigAvailable"/>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="!user.allConfigAvailable">
+            <label class='col-sm-3 control-label' localized>form.user.available.configs</label>
+            <div class='col-sm-9'>
+                <div ng-dropdown-multiselect
+                     options='configsList'
+                     translation-texts='tableConfigsTexts'
+                     selected-model='configSelection'
                      class='left margin-right-half custom-multi-select'></div>
             </div>
         </div>

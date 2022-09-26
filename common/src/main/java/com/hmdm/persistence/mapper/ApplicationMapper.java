@@ -170,14 +170,18 @@ public interface ApplicationMapper {
             "       (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion <> configurationApplications.applicationVersionId) AS outdated, " +
             "       configurationApplications.action AS action " +
             "FROM configurations " +
+            "         INNER JOIN users ON users.id = #{userId} " +
+            "         LEFT JOIN userConfigurationAccess access ON configurations.id = access.configurationId AND access.userId = users.id " +
             "         LEFT JOIN applications ON applications.id = #{id} " +
             "         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion " +
             "         LEFT JOIN configurationApplications ON configurations.id = configurationApplications.configurationId AND " +
             "                                                applications.id = configurationApplications.applicationId " +
             "         LEFT JOIN applicationVersions AS currentAppVersion ON currentAppVersion.applicationId = applications.id AND currentAppVersion.id=configurationApplications.applicationVersionId " +
             "WHERE configurations.customerId = #{customerId} " +
+            "AND (users.allConfigAvailable = TRUE OR NOT access.id IS NULL) " +
             "ORDER BY LOWER(configurations.name)"})
     List<ApplicationConfigurationLink> getApplicationConfigurations(@Param("customerId") Integer customerId,
+                                                                    @Param("userId") Integer userId,
                                                                     @Param("id") Integer applicationId);
 
     @Select({"SELECT configurationApplications.id       AS id, " +
@@ -196,14 +200,18 @@ public interface ApplicationMapper {
             "       configurationApplications.remove   AS remove, " +
             "       configurationApplications.action   AS action " +
             "FROM configurations " +
+            "         INNER JOIN users ON users.id = #{userId} " +
+            "         LEFT JOIN userConfigurationAccess access ON configurations.id = access.configurationId AND access.userId = users.id " +
             "INNER JOIN applicationVersions ON applicationVersions.id = #{id} " +
             "INNER JOIN applications ON applications.id = applicationVersions.applicationId " +
             "LEFT JOIN configurationApplications ON configurations.id = configurationApplications.configurationId AND configurationApplications.applicationVersionId = applicationVersions.id " +
             "LEFT JOIN configurationApplications caPrev ON configurations.id = caPrev.configurationId AND caPrev.applicationId = #{appId} AND caPrev.action=1 " +
             "WHERE configurations.customerId = #{customerId} " +
+            "AND (users.allConfigAvailable = TRUE OR NOT access.id IS NULL) " +
             "ORDER BY LOWER(configurations.name)"})
     List<ApplicationVersionConfigurationLink> getApplicationVersionConfigurationsWithCandidates(
-            @Param("customerId") Integer customerId, @Param("appId") Integer applicationId, @Param("id") Integer applicationVersionId
+            @Param("customerId") Integer customerId, @Param("userId") Integer userId,
+            @Param("appId") Integer applicationId, @Param("id") Integer applicationVersionId
     );
 
 

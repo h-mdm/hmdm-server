@@ -69,6 +69,8 @@ public interface DeviceMapper {
 
     Device getDeviceByNumberIgnoreCase(@Param("number") String number);
 
+    Device getDeviceByImeiOrSerial(@Param("number") String number);
+
     Device getDeviceById(@Param("id") Integer id);
 
     List<Device> getAllDevices(DeviceSearchRequest deviceSearchRequest);

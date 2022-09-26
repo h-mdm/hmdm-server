@@ -180,10 +180,16 @@ public class SyncResource {
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
             boolean migration = false;
+            boolean foundByImeiOrSerial = false;
 
             if (dbDevice == null) {
                 dbDevice = this.unsecureDAO.getDeviceByOldNumber(number);
                 migration = dbDevice != null;
+            }
+
+            if (dbDevice == null) {
+                dbDevice = this.unsecureDAO.getDeviceByImeiOrSerial(number);
+                foundByImeiOrSerial = dbDevice != null;
             }
 
             // Device creation on demand
@@ -193,7 +199,7 @@ public class SyncResource {
             }
 
             if (dbDevice != null) {
-                return getDeviceSettingInternal(dbDevice, migration, request, response);
+                return getDeviceSettingInternal(dbDevice, migration, foundByImeiOrSerial, request, response);
             } else {
                 logger.warn("Requested device {} was not found", number);
                 return Response.DEVICE_NOT_FOUND_ERROR();
@@ -230,10 +236,16 @@ public class SyncResource {
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(number);
             boolean migration = false;
+            boolean foundByImeiOrSerial = false;
 
             if (dbDevice == null) {
                 dbDevice = this.unsecureDAO.getDeviceByOldNumber(number);
                 migration = dbDevice != null;
+            }
+
+            if (dbDevice == null) {
+                dbDevice = this.unsecureDAO.getDeviceByImeiOrSerial(number);
+                foundByImeiOrSerial = dbDevice != null;
             }
 
             // Device creation on demand
@@ -246,7 +258,7 @@ public class SyncResource {
             }
 
             if (dbDevice != null) {
-                return getDeviceSettingInternal(dbDevice, migration, request, response);
+                return getDeviceSettingInternal(dbDevice, migration, foundByImeiOrSerial, request, response);
             } else {
                 logger.warn("Requested device {} was not found", number);
                 return Response.DEVICE_NOT_FOUND_ERROR();
@@ -258,7 +270,7 @@ public class SyncResource {
         }
     }
 
-    private Response getDeviceSettingInternal(Device dbDevice, boolean migration,
+    private Response getDeviceSettingInternal(Device dbDevice, boolean migration, boolean foundByImeiOrSerial,
                                            HttpServletRequest request,
                                            HttpServletResponse response) throws UnsupportedEncodingException {
 
@@ -437,6 +449,10 @@ public class SyncResource {
         }
         if (!vendor.equals("")) {
             data.setVendor(vendor);
+        }
+
+        if (foundByImeiOrSerial) {
+            data.setNewNumber(dbDevice.getNumber());
         }
 
         SyncResponseInt syncResponse = data;

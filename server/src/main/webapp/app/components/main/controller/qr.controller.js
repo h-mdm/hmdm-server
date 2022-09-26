@@ -54,11 +54,14 @@ angular.module('headwind-kiosk')
 
         var urlPart = function() {
             var res = "";
+            if ($scope.formData.deviceIdNew) {
+                res += "&deviceId=" + $scope.formData.deviceIdNew;
+            }
+            if ($scope.formData.useId) {
+                res += "&useId=" + $scope.formData.useId;
+            }
             if ($scope.formData.create) {
                 res += "&create=1";
-                if ($scope.formData.useId) {
-                    res += "&useId=" + $scope.formData.useId;
-                }
                 for (var i = 0; i < $scope.groupsSelection.length; i++) {
                     var group = $scope.groupsSelection[i];
                     res += "&group=" + encodeURI(group.id);
@@ -74,7 +77,7 @@ angular.module('headwind-kiosk')
             }
             $scope.qrCodeUrl += urlPart();
         };
-        generateQrUrl();
+        $scope.renew();
 
         $scope.generateJson = function() {
             var url = "rest/public/qr/json/" + $scope.qrCodeKey + "?" + urlPart().substring(1);
@@ -106,7 +109,7 @@ angular.module('headwind-kiosk')
             if ($scope.showHelp) {
                 $timeout(function() {
                     $window.scrollTo({
-                        'top': 200,
+                        'top': 500,
                         'left': 0,
                         'behavior': 'smooth'
                     });

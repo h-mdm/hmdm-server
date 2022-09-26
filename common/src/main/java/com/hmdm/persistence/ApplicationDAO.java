@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import com.google.inject.Singleton;
 import javax.inject.Named;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.ApplicationConfigurationLink;
 import com.hmdm.rest.json.ApplicationVersionConfigurationLink;
@@ -374,10 +375,11 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     }
 
     public List<ApplicationConfigurationLink> getApplicationConfigurations(Integer id) {
+        final int userId = SecurityContext.get().getCurrentUser().get().getId();
         return getLinkedList(
                 id,
                 this::findById,
-                customerId -> this.mapper.getApplicationConfigurations(customerId, id),
+                customerId -> this.mapper.getApplicationConfigurations(customerId, userId, id),
                 SecurityException::onApplicationAccessViolation
         );
     }
@@ -385,10 +387,12 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     public List<ApplicationVersionConfigurationLink> getApplicationVersionConfigurations(Integer versionId) {
         final ApplicationVersion applicationVersion = findApplicationVersionById(versionId);
         final Application application = this.mapper.findById(applicationVersion.getApplicationId());
-        final int userCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
+        final User user = SecurityContext.get().getCurrentUser().get();
+        final int userCustomerId = user.getCustomerId();
 
         if (application.isCommon() || application.getCustomerId() == userCustomerId) {
-            return this.mapper.getApplicationVersionConfigurationsWithCandidates(userCustomerId, application.getId(), versionId);
+            return this.mapper.getApplicationVersionConfigurationsWithCandidates(userCustomerId, user.getId(),
+                    application.getId(), versionId);
         } else {
             throw SecurityException.onApplicationAccessViolation(application);
         }

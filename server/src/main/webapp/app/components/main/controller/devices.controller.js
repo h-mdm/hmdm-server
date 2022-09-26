@@ -186,9 +186,24 @@ angular.module('headwind-kiosk')
             })
         };
 
+        var user = authService.getUser();
+        if (user.allConfigAvailable) {
+            $scope.availableConfigs = null;
+        } else {
+            $scope.availableConfigs = [];
+            user.configurations.forEach(function (config) {
+                $scope.availableConfigs.push(config.id);
+            });
+        }
+        $scope.configAvailable = function(config) {
+            return $scope.availableConfigs == null ||
+                $scope.availableConfigs.indexOf(config.id) !== -1;
+        };
+
         var loadSettings = function (completion) {
-            if (authService.getUser().userRole) {
-                settingsService.getUserRoleSettings({roleId: authService.getUser().userRole.id}, function (response) {
+            var user = authService.getUser();
+            if (user.userRole) {
+                settingsService.getUserRoleSettings({roleId: user.userRole.id}, function (response) {
                     if (response.data) {
                         // Display settings
                         $scope.settings = response.data;

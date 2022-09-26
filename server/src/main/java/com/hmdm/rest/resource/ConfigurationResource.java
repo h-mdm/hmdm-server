@@ -92,7 +92,7 @@ public class ConfigurationResource {
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllConfigurations() {
-        List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByType(0);
+        List<Configuration> configurations = this.configurationDAO.getAllConfigurations();
         configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
     }
@@ -108,27 +108,7 @@ public class ConfigurationResource {
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchConfigurations(@PathParam("value") String value) {
-        List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByTypeAndValue(0, value);
-        configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
-        return Response.OK(configurations);
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @GET
-    @Path("/typical/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllTypicalConfigurations() {
-        List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByType(1);
-        configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
-        return Response.OK(configurations);
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @GET
-    @Path("/typical/search/{value}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchTypicalConfigurations(@PathParam("value") String value) {
-        List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByTypeAndValue(1, value);
+        List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByValue(value);
         configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
     }
@@ -147,7 +127,7 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurations(String filter) {
         try {
-            List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByTypeAndValue(0, filter)
+            List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByValue(filter)
                     .stream()
                     .map(configuration -> new LookupItem(configuration.getId(), configuration.getName()))
                     .collect(Collectors.toList());

@@ -117,6 +117,10 @@ public class UnsecureDAO {
         return this.deviceMapper.getDeviceByOldNumber(number);
     }
 
+    public Device getDeviceByImeiOrSerial(String number) {
+        return this.deviceMapper.getDeviceByImeiOrSerial(number);
+    }
+
     public List<ApplicationSetting> getDeviceAppSettings(int deviceId) {
         final List<ApplicationSetting> appSettings
                 = this.applicationSettingDAO.getApplicationSettingsByDeviceId(deviceId);

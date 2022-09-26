@@ -89,12 +89,17 @@ angular.module('headwind-kiosk')
     })
     //*******************************************************************************************************************
     .controller('UserModalController', function ($scope, $modalInstance, userService, user, groupService,
-                                                 localization, settingsService, passwordService) {
+                                                 configurationService, localization, settingsService, passwordService) {
         $scope.groupsList = [];
 
         groupService.getAllGroups(function (response) {
-            $scope.groups = response.data;
             $scope.groupsList = response.data.map(function (group) {
+                return {id: group.id, label: group.name};
+            });
+        });
+
+        configurationService.getAllConfigurations(function (response) {
+            $scope.configsList = response.data.map(function (group) {
                 return {id: group.id, label: group.name};
             });
         });
@@ -110,11 +115,22 @@ angular.module('headwind-kiosk')
             return {id: group.id};
         });
 
-        $scope.tableFilteringTexts = {
+        $scope.configSelection = (user.configurations || []).map(function (configuration) {
+            return {id: configuration.id};
+        });
+
+        $scope.tableGroupsTexts = {
             'buttonDefaultText': localization.localize('table.filtering.no.selected.group'),
             'checkAll': localization.localize('table.filtering.check.all'),
             'uncheckAll': localization.localize('table.filtering.uncheck.all'),
             'dynamicButtonTextSuffix': localization.localize('table.filtering.suffix.group')
+        };
+
+        $scope.tableConfigsTexts = {
+            'buttonDefaultText': localization.localize('table.filtering.no.selected.configuration'),
+            'checkAll': localization.localize('table.filtering.check.all'),
+            'uncheckAll': localization.localize('table.filtering.uncheck.all'),
+            'dynamicButtonTextSuffix': localization.localize('table.filtering.suffix.configuration')
         };
 
         var resetMessages = function () {
@@ -181,6 +197,13 @@ angular.module('headwind-kiosk')
                 } else {
                     request["allDevicesAvailable"] = false;
                     request.groups = $scope.groupsSelection;
+                }
+
+                if ($scope.user.allConfigAvailable) {
+                    request.configurations = null;
+                } else {
+                    request["allConfigAvailable"] = false;
+                    request.configurations = $scope.configSelection;
                 }
 
                 userService.update(request, function (response) {
