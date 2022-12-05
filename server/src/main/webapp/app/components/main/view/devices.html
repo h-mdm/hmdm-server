@@ -411,8 +411,8 @@
             <td ng-if="settings.columnDisplayedAndroidVersion">
                 {{getAndroidVersion(device)}}
             </td>
-            <td ng-if='(device.enrollmentDate > 0) && settings.columnDisplayedEnrollmentDate'>{{device.enrollmentDate|date:dateFormat}}</td>
-            <td ng-if='(device.enrollmentDate <= 0 || !device.enrollmentDate) && settings.columnDisplayedEnrollmentDate' localized>devices.date.unknown</td>
+            <td ng-if='(device.enrollTime > 0) && settings.columnDisplayedEnrollmentDate'>{{device.enrollTime|date:dateFormat}}</td>
+            <td ng-if='(device.enrollTime <= 0 || !device.enrollTime) && settings.columnDisplayedEnrollmentDate' localized>devices.date.unknown</td>
             <td ng-if="settings.columnDisplayedSerial">
                 <span>{{getSerial(device)}}</span>
             </td>

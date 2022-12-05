@@ -90,7 +90,7 @@ public class ApplicationVersion implements Serializable {
         this.applicationId = application.getId();
         this.version = application.getVersion();
         this.versionCode = application.getVersionCode();
-        if (application.getArch() == null) {
+        if (application.getArch() == null || application.getArch().equals("")) {
             this.url = application.getUrl();
         } else if (application.getArch().equals(Application.ARCH_ARMEABI)) {
             this.split = true;

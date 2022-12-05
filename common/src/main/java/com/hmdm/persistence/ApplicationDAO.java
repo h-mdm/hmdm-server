@@ -126,7 +126,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             try {
                 movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
             } catch (FileExistsException e) {
-                FileUtil.deleteFile(filesDirectory, FileUtil.getNameFromTmpPath(filePath));
+                FileUtil.deleteFile(customer, filesDirectory, FileUtil.getNameFromTmpPath(filePath));
                 movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
             }
             if (movedFile != null) {
@@ -141,7 +141,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
                 application.setPkg(apkFileDetails.getPkg());
                 application.setVersion(apkFileDetails.getVersion());
-                application.setArch(apkFileDetails.getArch());
+                // APK architecture is determined on a previous step, and can be overridden by user's request
+                //application.setArch(apkFileDetails.getArch());
             } else {
                 log.error("Could not move the uploaded .apk-file {}", filePath);
                 throw new DAOException("Could not move the uploaded .apk-file");
@@ -803,7 +804,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         if (url != null && !url.trim().isEmpty()) {
             final String apkFile = FileUtil.translateURLToLocalFilePath(customer, url, baseUrl);
             if (apkFile != null) {
-                final boolean deleted = FileUtil.deleteFile(filesDirectory, apkFile);
+                final boolean deleted = FileUtil.deleteFile(customer, filesDirectory, apkFile);
                 if (!deleted) {
                     log.warn("Could not delete the APK-file {} related to deleted application version #{}", apkFile, id);
                 }
@@ -836,7 +837,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             try {
                 movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
             } catch (FileExistsException e) {
-                FileUtil.deleteFile(filesDirectory, FileUtil.getNameFromTmpPath(filePath));
+                FileUtil.deleteFile(customer, filesDirectory, FileUtil.getNameFromTmpPath(filePath));
                 movedFile = FileUtil.moveFile(customer, filesDirectory, null, filePath);
             }
             if (movedFile != null) {

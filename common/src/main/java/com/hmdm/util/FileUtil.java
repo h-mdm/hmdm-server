@@ -135,8 +135,9 @@ public final class FileUtil {
      * @param path a path to a file to delete.
      * @return <code>true</code> if file was deleted successfully; <code>false</code> otherwise.
      */
-    public static boolean deleteFile(String baseDirectory, String path) {
-        final File fileToDelete = new File(baseDirectory, path);
+    public static boolean deleteFile(Customer customer, String baseDirectory, String path) {
+        String filePath = String.format("%s/%s", baseDirectory, customer.getFilesDir()).replace("/", File.separator);
+        final File fileToDelete = new File(filePath, path);
         return fileToDelete.delete();
     }
 
