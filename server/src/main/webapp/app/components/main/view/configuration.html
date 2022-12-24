@@ -775,6 +775,12 @@
                                 <input ng-model='configuration.kioskLockButtons' name="kioskLockButtons" type='checkbox' class='form-control'/>
                             </div>
                         </div>
+                        <div class='form-group'>
+                            <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.exit</label>
+                            <div class='col-sm-1'>
+                                <input ng-model='configuration.kioskExit' name="kioskExit" type='checkbox' class='form-control'/>
+                            </div>
+                        </div>
                     </div>
 
                     <div class='form-group'>
@@ -816,10 +822,21 @@
                         </div>
                     </div>
 
+                    <div ng-if="!configuration.kioskMode">
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.permissive</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.permissive' name="permissive-c" type='checkbox' class='form-control'/>
+                        </div>
+                    </div>
+
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.lock.safe.settings</label>
                         <div class='col-sm-1'>
-                            <input ng-model='configuration.lockSafeSettings' name="lockSafeSettings-c" type='checkbox' class='form-control'/>
+                            <input ng-model='configuration.lockSafeSettings'
+                                   ng-disabled="configuration.permissive"
+                                   name="lockSafeSettings-c" type='checkbox' class='form-control'/>
                         </div>
                     </div>
 
@@ -827,6 +844,7 @@
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.allowed.classes</label>
                         <div class='col-sm-9'>
                           <textarea ng-model='configuration.allowedClasses' name="allowedClasses-c"
+                                    ng-disabled="configuration.permissive"
                                     class='form-control'
                                     localized-placeholder='form.configuration.settings.mdm.allowed.classes.placeholder'></textarea>
                         </div>
@@ -836,9 +854,11 @@
                         <label class='col-sm-3 control-label'><span localized>form.configuration.settings.mdm.restrictions</span><br><a href="https://developer.android.com/reference/android/os/UserManager" target="_blank" localized>button.more</a></label>
                         <div class='col-sm-9'>
                           <textarea ng-model='configuration.restrictions' name="restrictions-c"
+                                    ng-disabled="configuration.permissive"
                                     class='form-control'
                                     localized-placeholder='form.configuration.settings.mdm.restrictions.placeholder'></textarea>
                         </div>
+                    </div>
                     </div>
 
                     <div class='form-group'>

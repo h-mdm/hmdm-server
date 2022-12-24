@@ -133,6 +133,10 @@ public interface SyncResponseInt {
 
     Boolean getLockSafeSettings();
 
+    Boolean getPermissive();
+
+    Boolean getKioskExit();
+
     Boolean getShowWifi();
 
     List<SyncConfigurationFileInt> getFiles();

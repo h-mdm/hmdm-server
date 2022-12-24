@@ -2276,4 +2276,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="24.12.22-11:43" author="seva" context="common">
+        <comment>Column,new: configurations#permissive, #kioskExit</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN permissive BOOLEAN;
+            ALTER TABLE configurations ADD COLUMN kioskExit BOOLEAN DEFAULT true;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN permissive;
+            ALTER TABLE configurations DROP COLUMN kioskExit;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

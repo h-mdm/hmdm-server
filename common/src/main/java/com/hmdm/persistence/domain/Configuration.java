@@ -122,6 +122,10 @@ public class Configuration implements CustomerData, Serializable {
     private String newServerUrl;
     @ApiModelProperty("Flag disabling safe settings")
     private Boolean lockSafeSettings;
+    @ApiModelProperty("Flag enabling permissive mode")
+    private Boolean permissive;
+    @ApiModelProperty("Flag enabling the kiosk exit button")
+    private Boolean kioskExit;
     @ApiModelProperty("Show WiFi settings if there's a connection error, also in Kiosk mode")
     private Boolean showWifi;
 
@@ -736,6 +740,22 @@ public class Configuration implements CustomerData, Serializable {
         this.lockSafeSettings = lockSafeSettings;
     }
 
+    public Boolean getPermissive() {
+        return permissive;
+    }
+
+    public void setPermissive(Boolean permissive) {
+        this.permissive = permissive;
+    }
+
+    public Boolean getKioskExit() {
+        return kioskExit;
+    }
+
+    public void setKioskExit(Boolean kioskExit) {
+        this.kioskExit = kioskExit;
+    }
+
     public Boolean getShowWifi() {
         return showWifi;
     }
@@ -829,6 +849,8 @@ public class Configuration implements CustomerData, Serializable {
         copy.setAllowedClasses(getAllowedClasses());
         copy.setNewServerUrl(getNewServerUrl());
         copy.setLockSafeSettings(getLockSafeSettings());
+        copy.setPermissive(getPermissive());
+        copy.setKioskExit(getKioskExit());
         copy.setShowWifi(getShowWifi());
 
         copy.setUseDefaultDesignSettings(isUseDefaultDesignSettings());

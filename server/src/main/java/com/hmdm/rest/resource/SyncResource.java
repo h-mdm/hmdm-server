@@ -370,6 +370,8 @@ public class SyncResource {
         data.setAllowedClasses(configuration.getAllowedClasses());
         data.setNewServerUrl(configuration.getNewServerUrl());
         data.setLockSafeSettings(configuration.getLockSafeSettings());
+        data.setPermissive(configuration.getPermissive());
+        data.setKioskExit(configuration.getKioskExit());
         data.setShowWifi(configuration.getShowWifi());
 
         data.setKioskMode(configuration.isKioskMode());

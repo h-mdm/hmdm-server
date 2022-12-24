@@ -30,8 +30,8 @@
                                     pushOptions, keepaliveTime, autoBrightness, brightness, manageTimeout, timeout,
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
                                     runDefaultLauncher, disableScreenshots, timeZone, allowedClasses, newServerUrl,
-                                    lockSafeSettings, showWifi, mainAppId, eventReceivingComponent, kioskMode, contentAppId,
-                                    wifiSSID, wifiPassword, wifiSecurityType, mobileEnrollment, kioskHome, kioskRecents,
+                                    lockSafeSettings, permissive, kioskExit, showWifi, mainAppId, eventReceivingComponent, kioskMode,
+                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, mobileEnrollment, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, kioskLockButtons, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
                                     scheduleAppUpdate, appUpdateFrom, appUpdateTo, defaultFilePath)
@@ -41,8 +41,8 @@
                 #{pushOptions}, #{keepaliveTime}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout},
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
                 #{runDefaultLauncher}, #{disableScreenshots}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
-                #{lockSafeSettings}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode}, #{contentAppId},
-                #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
+                #{lockSafeSettings}, #{permissive}, #{kioskExit}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode},
+                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
                 #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{kioskLockButtons}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo},
                 #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{defaultFilePath})

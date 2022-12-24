@@ -90,6 +90,8 @@ public interface ConfigurationMapper {
             "allowedClasses=#{allowedClasses}, " +
             "newServerUrl=#{newServerUrl}, " +
             "lockSafeSettings=#{lockSafeSettings}, " +
+            "permissive=#{permissive}, " +
+            "kioskExit=#{kioskExit}, " +
             "showWifi=#{showWifi}, " +
             "gps=#{gps}, " +
             "bluetooth=#{bluetooth}, " +

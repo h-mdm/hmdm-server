@@ -118,6 +118,12 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Flag disabling safe settings")
     private Boolean lockSafeSettings;
 
+    @ApiModelProperty("Flag enabling permissive mode")
+    private Boolean permissive;
+
+    @ApiModelProperty("Flag enabling the kiosk exit button")
+    private Boolean kioskExit;
+
     @ApiModelProperty("Show WiFi settings if there's a connection error, also in Kiosk mode")
     private Boolean showWifi;
 
@@ -738,6 +744,24 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setLockSafeSettings(Boolean lockSafeSettings) {
         this.lockSafeSettings = lockSafeSettings;
+    }
+
+    @Override
+    public Boolean getPermissive() {
+        return permissive;
+    }
+
+    public void setPermissive(Boolean permissive) {
+        this.permissive = permissive;
+    }
+
+    @Override
+    public Boolean getKioskExit() {
+        return kioskExit;
+    }
+
+    public void setKioskExit(Boolean kioskExit) {
+        this.kioskExit = kioskExit;
     }
 
     @Override
