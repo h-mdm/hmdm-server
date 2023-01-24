@@ -61,6 +61,7 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedAndroidVersion," +
                     "columnDisplayedEnrollmentDate," +
                     "columnDisplayedSerial," +
+                    "columnDisplayedPublicIp," +
                     "columnDisplayedCustom1," +
                     "columnDisplayedCustom2," +
                     "columnDisplayedCustom3," +
@@ -87,6 +88,7 @@ public interface UserRoleSettingsMapper {
                     "#{columnDisplayedAndroidVersion}," +
                     "#{columnDisplayedEnrollmentDate}," +
                     "#{columnDisplayedSerial}," +
+                    "#{columnDisplayedPublicIp}," +
                     "#{columnDisplayedCustom1}," +
                     "#{columnDisplayedCustom2}," +
                     "#{columnDisplayedCustom3}," +
@@ -115,6 +117,7 @@ public interface UserRoleSettingsMapper {
                     "columnDisplayedAndroidVersion = EXCLUDED.columnDisplayedAndroidVersion, " +
                     "columnDisplayedEnrollmentDate = EXCLUDED.columnDisplayedEnrollmentDate, " +
                     "columnDisplayedSerial = EXCLUDED.columnDisplayedSerial, " +
+                    "columnDisplayedPublicIp = EXCLUDED.columnDisplayedPublicIp, " +
                     "columnDisplayedCustom1 = EXCLUDED.columnDisplayedCustom1, " +
                     "columnDisplayedCustom2 = EXCLUDED.columnDisplayedCustom2, " +
                     "columnDisplayedCustom3 = EXCLUDED.columnDisplayedCustom3"

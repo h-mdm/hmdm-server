@@ -58,6 +58,8 @@ public class Device implements CustomerData, Serializable {
     private int customerId;
     @ApiModelProperty("A date of last IMEI change")
     private Long imeiUpdateTs;
+    @ApiModelProperty("Public IP address")
+    private String publicIp;
     @ApiModelProperty("Custom property #1")
     private String custom1;
     @ApiModelProperty("Custom property #2")
@@ -239,6 +241,14 @@ public class Device implements CustomerData, Serializable {
         this.imeiUpdateTs = imeiChangeTs;
     }
 
+    public String getPublicIp() {
+        return publicIp;
+    }
+
+    public void setPublicIp(String publicIp) {
+        this.publicIp = publicIp;
+    }
+
     public String getCustom1() {
         return custom1;
     }
@@ -377,6 +387,7 @@ public class Device implements CustomerData, Serializable {
                 ", phone='" + phone + '\'' +
                 ", customerId=" + customerId +
                 ", imeiUpdateTs=" + imeiUpdateTs +
+                ", publicIp=" + publicIp +
                 ", custom1=" + custom1 +
                 ", custom2=" + custom2 +
                 ", custom3=" + custom3 +

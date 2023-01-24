@@ -143,6 +143,11 @@ public class FilesResource {
     @POST
     @Path("/remove")
     public Response removeFile(HFile file) {
+        if (!isSafePath(file.getPath()) || !isSafePath(file.getName())) {
+            logger.error("Attempt to remove a file with unsafe path! path: " + file.getPath() + " name: " + file.getName());
+            return Response.PERMISSION_DENIED();
+        }
+
         return SecurityContext.get().getCurrentUser().map(u -> {
             Customer customer = customerDAO.findById(u.getCustomerId());
 
@@ -183,6 +188,12 @@ public class FilesResource {
     @POST
     @Path("/move")
     public Response moveFile(MoveFileRequest moveFileRequest) {
+        if (!isSafePath(moveFileRequest.getLocalPath())) {
+            logger.error("Attempt to remove a file with unsafe path! local path: " + moveFileRequest.getLocalPath() +
+                    " path: " + moveFileRequest.getPath());
+            return Response.PERMISSION_DENIED();
+        }
+
         return SecurityContext.get().getCurrentUser().map(u -> {
             Customer customer = customerDAO.findById(u.getCustomerId());
             try {
@@ -395,4 +406,7 @@ public class FilesResource {
 
     }
 
+    private boolean isSafePath(String path) {
+        return !path.contains("..");
+    }
 }

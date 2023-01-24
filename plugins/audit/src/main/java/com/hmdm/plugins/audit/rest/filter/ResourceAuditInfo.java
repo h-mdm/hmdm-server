@@ -104,8 +104,9 @@ public enum ResourceAuditInfo {
      * @param chain a filter chain.
      * @return an auditor for the specified request/response chain.
      */
-    public ResourceAuditor getResourceAuditor(ServletRequest request, ServletResponse response, FilterChain chain, boolean displayForwardedIp) throws IOException {
-        return new ResourceAuditor(auditLogAction, request, response, chain, payload, displayForwardedIp);
+    public ResourceAuditor getResourceAuditor(ServletRequest request, ServletResponse response, FilterChain chain,
+                                              String proxyIps, String ipHeader) throws IOException {
+        return new ResourceAuditor(auditLogAction, request, response, chain, payload, proxyIps, ipHeader);
     }
 
     /**

@@ -534,6 +534,7 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.common.android.version': 'Версия Android',
     'form.settings.common.enrollment.date': 'Дата настройки',
     'form.settings.common.serial': 'Серийный номер',
+    'form.settings.common.publicip': 'IP адрес',
 
     'form.settings.design.title': 'Дизайн по умолчанию',
     'form.settings.design.color.font': 'Цвет фона',
@@ -716,6 +717,7 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.device.android.version': 'Версия Android',
     'table.heading.device.enrollment.date': 'Дата настройки',
     'table.heading.device.serial': 'Серийный номер',
+    'table.heading.device.publicip': 'IP адрес',
     'table.heading.device.actions': 'Действия',
 
     'table.heading.group.name': 'Название',

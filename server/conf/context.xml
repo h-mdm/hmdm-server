@@ -73,4 +73,12 @@
 
     <Parameter name="sql.init.script.path" value="${sql.init.script.path}"/>
 
+    <!-- If you have any reverse proxies, specify them here (IP addresses,
+    comma-separated) for correct logging of IP addresses -->
+    <!-- <Parameter name="proxy.addresses" value="${proxy.addresses}"/> -->
+
+    <!-- Name of the HTTP header containing the device IP address.
+    Defaults to X-Real-IP -->
+    <!-- <Parameter name="proxy.ip.header" value="${proxy.ip.header}"/> -->
+
 </Context>

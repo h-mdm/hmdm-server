@@ -2288,4 +2288,29 @@
         </rollback>
     </changeSet>
 
+
+    <changeSet id="22.01.23-15:40" author="seva" context="common">
+        <comment>Column,new: devices#infojson</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN infojson JSONB;
+            UPDATE devices SET infojson=info::jsonb;
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP COLUMN infojson;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="23.01.23-09:31" author="seva" context="common">
+        <comment>Column,new: devices#publicIp</comment>
+        <sql>
+            ALTER TABLE devices ADD COLUMN publicIp VARCHAR(100);
+            ALTER TABLE userRoleSettings ADD COLUMN columnDisplayedPublicIp BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE devices DROP COLUMN publicIp;
+            ALTER TABLE userRoleSettings DROP COLUMN columnDisplayedPublicIp;
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

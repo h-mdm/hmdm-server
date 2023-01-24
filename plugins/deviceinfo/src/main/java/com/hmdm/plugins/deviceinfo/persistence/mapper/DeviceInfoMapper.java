@@ -208,29 +208,29 @@ public interface DeviceInfoMapper {
             "    devices.description AS description," +
             "    devices.lastUpdate AS latestUpdateTime, " +
             "    devices.imei AS imeiRequired, " +
-            "    devices.info::json ->> 'imei' AS imeiActual, " +
+            "    devices.infojson ->> 'imei' AS imeiActual, " +
             "    devices.phone AS phoneNumberRequired, " +
-            "    devices.info::json ->> 'phone' AS phoneNumberActual, " +
-            "    devices.info::json ->> 'model' AS model, " +
-            "    devices.info::json ->> 'androidVersion' AS osVersion, " +
-            "    devices.info::json ->> 'batteryLevel' AS batteryLevel," +
-            "    devices.info::json ->> 'mdmMode' AS mdmMode," +
-            "    devices.info::json ->> 'kioskMode' AS kioskMode," +
-            "    devices.info::json ->> 'launcherType' AS launcherType," +
-            "    devices.info::json ->> 'launcherPackage' AS launcherPackage," +
-            "    devices.info::json ->> 'defaultLauncher' AS defaultLauncher," +
-            "    devices.info::json ->> 'phone2' AS phone2," +
-            "    devices.info::json ->> 'imei2' AS imei2," +
-            "    devices.info::json ->> 'iccid' AS iccid," +
-            "    devices.info::json ->> 'imsi' AS imsi," +
-            "    devices.info::json ->> 'iccid2' AS iccid2," +
-            "    devices.info::json ->> 'imsi2' AS imsi2," +
-            "    devices.info::json ->> 'serial' AS serial," +
-            "    devices.info::json ->> 'cpu' AS cpu," +
-            "    COALESCE((devices.info::json -> 'permissions' ->> 0)::BOOLEAN, FALSE) AS adminPermission, " +
-            "    COALESCE((devices.info::json -> 'permissions' ->> 1)::BOOLEAN, FALSE) AS overlapPermission, " +
-            "    COALESCE((devices.info::json -> 'permissions' ->> 2)::BOOLEAN, FALSE) AS historyPermission, " +
-            "    COALESCE((devices.info::json -> 'permissions' ->> 3)::BOOLEAN, FALSE) AS accessibilityPermission  " +
+            "    devices.infojson ->> 'phone' AS phoneNumberActual, " +
+            "    devices.infojson ->> 'model' AS model, " +
+            "    devices.infojson ->> 'androidVersion' AS osVersion, " +
+            "    devices.infojson ->> 'batteryLevel' AS batteryLevel," +
+            "    devices.infojson ->> 'mdmMode' AS mdmMode," +
+            "    devices.infojson ->> 'kioskMode' AS kioskMode," +
+            "    devices.infojson ->> 'launcherType' AS launcherType," +
+            "    devices.infojson ->> 'launcherPackage' AS launcherPackage," +
+            "    devices.infojson ->> 'defaultLauncher' AS defaultLauncher," +
+            "    devices.infojson ->> 'phone2' AS phone2," +
+            "    devices.infojson ->> 'imei2' AS imei2," +
+            "    devices.infojson ->> 'iccid' AS iccid," +
+            "    devices.infojson ->> 'imsi' AS imsi," +
+            "    devices.infojson ->> 'iccid2' AS iccid2," +
+            "    devices.infojson ->> 'imsi2' AS imsi2," +
+            "    devices.infojson ->> 'serial' AS serial," +
+            "    devices.infojson ->> 'cpu' AS cpu," +
+            "    COALESCE((devices.infojson -> 'permissions' ->> 0)::BOOLEAN, FALSE) AS adminPermission, " +
+            "    COALESCE((devices.infojson -> 'permissions' ->> 1)::BOOLEAN, FALSE) AS overlapPermission, " +
+            "    COALESCE((devices.infojson -> 'permissions' ->> 2)::BOOLEAN, FALSE) AS historyPermission, " +
+            "    COALESCE((devices.infojson -> 'permissions' ->> 3)::BOOLEAN, FALSE) AS accessibilityPermission  " +
             "FROM devices " +
             "WHERE devices.id = #{id}")
     DeviceInfo getDetailedDeviceInfo(@Param("id") int deviceId);

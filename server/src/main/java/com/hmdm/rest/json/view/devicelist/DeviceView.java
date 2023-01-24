@@ -120,6 +120,11 @@ public class DeviceView {
         return device.getPhone();
     }
 
+    @ApiModelProperty("A public IP of device")
+    public String getPublicIp() {
+        return device.getPublicIp();
+    }
+
     @ApiModelProperty("Custom property #1")
     public String getCustom1() {
         return device.getCustom1();

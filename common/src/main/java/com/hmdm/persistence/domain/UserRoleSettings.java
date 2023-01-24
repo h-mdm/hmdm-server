@@ -84,6 +84,8 @@ public class UserRoleSettings implements CustomerData, Serializable {
     private Boolean columnDisplayedEnrollmentDate;
     @ApiModelProperty("A flag indicating if serial number column to be displayed in MDM web application")
     private Boolean columnDisplayedSerial;
+    @ApiModelProperty("A flag indicating if public IP address column to be displayed in MDM web application")
+    private Boolean columnDisplayedPublicIp;
     @ApiModelProperty("A flag indicating if custom property #1 column must be displayed in the Devices table")
     private Boolean columnDisplayedCustom1;
     @ApiModelProperty("A flag indicating if custom property #2 column must be displayed in the Devices table")
@@ -273,6 +275,14 @@ public class UserRoleSettings implements CustomerData, Serializable {
         this.columnDisplayedSerial = columnDisplayedSerial;
     }
 
+    public Boolean getColumnDisplayedPublicIp() {
+        return columnDisplayedPublicIp;
+    }
+
+    public void setColumnDisplayedPublicIp(Boolean columnDisplayedPublicIp) {
+        this.columnDisplayedPublicIp = columnDisplayedPublicIp;
+    }
+
     public Boolean getColumnDisplayedCustom1() {
         return columnDisplayedCustom1;
     }
@@ -332,6 +342,7 @@ public class UserRoleSettings implements CustomerData, Serializable {
                 ", columnDisplayedAndroidVersion=" + columnDisplayedAndroidVersion +
                 ", columnDisplayedEnrollmentDate=" + columnDisplayedEnrollmentDate +
                 ", columnDisplayedSerial=" + columnDisplayedSerial +
+                ", columnDisplayedPublicIp=" + columnDisplayedPublicIp +
                 ", columnDisplayedCustom1=" + columnDisplayedCustom1 +
                 ", columnDisplayedCustom2=" + columnDisplayedCustom2 +
                 ", columnDisplayedCustom3=" + columnDisplayedCustom3 +

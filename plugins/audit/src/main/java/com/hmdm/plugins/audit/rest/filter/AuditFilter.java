@@ -76,9 +76,14 @@ public class AuditFilter implements Filter {
     private PluginStatusCache pluginStatusCache;
 
     /**
-     * <p>Should we use proxy IP address?</p>
+     * <p>IP addresses of reverse proxies, comma-separated</p>
      */
-    private boolean displayForwardedIp = false;
+    private final String proxyIps;
+
+    /**
+     * <p>IP addresses of reverse proxies, comma-separated</p>
+     */
+    private final String ipHeader;
 
     /**
      * <p>Constructs new <code>AuditFilter</code> instance. This implementation does nothing.</p>
@@ -86,11 +91,18 @@ public class AuditFilter implements Filter {
     @Inject
     public AuditFilter(AuditDAO auditDAO, BackgroundTaskRunnerService backgroundTaskRunnerService,
                        PluginStatusCache pluginStatusCache,
-                       @Named("plugin.audit.display.forwarded.ip") boolean displayForwardedIp) {
+                       @Named("proxy.addresses") String proxyIps,
+                       @Named("proxy.ip.header") String ipHeader) {
         this.auditDAO = auditDAO;
         this.backgroundTaskRunnerService = backgroundTaskRunnerService;
         this.pluginStatusCache = pluginStatusCache;
-        this.displayForwardedIp = displayForwardedIp;
+        this.proxyIps = proxyIps;
+        if (!"".equals(ipHeader)) {
+            this.ipHeader = ipHeader;
+        } else {
+            // Defaults to Nginx IP header
+            this.ipHeader = "X-Real-IP";
+        }
     }
 
     /**
@@ -127,7 +139,7 @@ public class AuditFilter implements Filter {
                     logger.trace("Will audit request {}", requestURI.substring(context.length()));
                 }
 
-                resourceAuditor = auditInfo.get().getResourceAuditor(request, response, chain, displayForwardedIp);
+                resourceAuditor = auditInfo.get().getResourceAuditor(request, response, chain, proxyIps, ipHeader);
                 resourceAuditor.doProcess();
             } else {
                 chain.doFilter(request, response);

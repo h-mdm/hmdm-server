@@ -534,6 +534,7 @@ document.localization ['fr_FR'] = {
     'form.settings.common.android.version': 'Version Androïd',
     'form.settings.common.enrollment.date': 'Date de l\'inscription',
     'form.settings.common.serial': 'Numéro de série',
+    'form.settings.common.publicip': 'Adresse IP',
 
 	'form.settings.design.title': 'Conception par défaut',
     'form.settings.design.color.font': 'Couleur d\'arrière-plan',
@@ -716,6 +717,7 @@ document.localization ['fr_FR'] = {
     'table.heading.device.android.version': 'Version Androïd',
     'table.heading.device.enrollment.date': 'Date de l\'inscription',
     'table.heading.device.serial': 'Numéro de série',
+    'table.heading.device.publicip': 'Adresse IP',
     'table.heading.device.actions': 'Actions',
 
     'table.heading.group.name': 'Nom',

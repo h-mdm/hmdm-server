@@ -111,7 +111,7 @@ public class APKFileAnalyzer {
                         log.warn("Failed to parse aapt output: '" + line + "', trying legacy parser");
                         parseInfoLineLegacy(line, appPkg, appVersion, appVersionCode);
                     }
-                } else if (line.startsWith("native-code:")) {
+                } else if (line.startsWith("native-code:") || line.startsWith("alt-native-code:")) {
                     // This is an optional line, so do not care for errors
                     parseNativeCodeLine(line, appArch);
                 }
@@ -238,12 +238,25 @@ public class APKFileAnalyzer {
     // native-code: 'xxxxx'
     private void parseNativeCodeLine(final String line, final AtomicReference<String> appArch) {
         if (line.indexOf("armeabi-v7a") != -1) {
+            if (Application.ARCH_ARM64.equals(appArch.get())) {
+                // ARM64 has already been set elsewhere, so it is a universal file
+                // This is the case when the AAPT output has the form:
+                // native-code: 'armeabi-v7a'
+                // alt-native-code: 'arm64-v8a'
+                appArch.set(null);
+                return;
+            }
             appArch.set(Application.ARCH_ARMEABI);
             if (line.indexOf("arm64-v8a") != -1) {
                 // Native code for both architectures present, so it is a universal file
                 appArch.set(null);
             }
         } else if (line.indexOf("arm64-v8a") != -1) {
+            if (Application.ARCH_ARMEABI.equals(appArch.get())) {
+                // ARMEABI has already been set elsewhere, so it is a universal file
+                appArch.set(null);
+                return;
+            }
             appArch.set(Application.ARCH_ARM64);
         }
     }

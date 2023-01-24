@@ -127,8 +127,8 @@ public class UnsecureDAO {
         return appSettings;
     }
 
-    public void updateDeviceInfo(Integer id, String info, Long imeiUpdateTs) {
-        this.deviceMapper.updateDeviceInfo(id, info, imeiUpdateTs);
+    public void updateDeviceInfo(Integer id, String info, Long imeiUpdateTs, String publicIp) {
+        this.deviceMapper.updateDeviceInfo(id, info, imeiUpdateTs, publicIp);
     }
 
     public void updateDeviceCustomProperties(Integer id, Device device) {

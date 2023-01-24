@@ -84,13 +84,16 @@ public interface DeviceMapper {
 
     @Update({"UPDATE devices SET " +
             "  info = #{info}, " +
+            "  infojson = #{info}::json, " +
             "  lastUpdate = CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT), " +
             "  enrollTime = COALESCE(enrollTime, CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT)), " +
-            "  imeiUpdateTs = #{imeiUpdateTs} " +
+            "  imeiUpdateTs = #{imeiUpdateTs}, " +
+            "  publicIp = #{publicIp} " +
             "WHERE id = #{deviceId}"})
     void updateDeviceInfo(@Param("deviceId") Integer deviceId,
                           @Param("info") String info,
-                          @Param("imeiUpdateTs") Long imeiUpdateTs);
+                          @Param("imeiUpdateTs") Long imeiUpdateTs,
+                          @Param("publicIp") String publicIp);
 
     @Update({"UPDATE devices SET " +
             "  custom1 = #{custom1}, " +
@@ -167,11 +170,11 @@ public interface DeviceMapper {
     void deleteDeviceApplicationSettings(@Param("id") Integer deviceId);
 
     @Select("SELECT " +
-            "    deviceApps.app::json ->> 'pkg' AS pkg, " +
-            "    deviceApps.app::json ->> 'version' AS version, " +
-            "    deviceApps.app::json ->> 'name' AS name " +
+            "    deviceApps.app ->> 'pkg' AS pkg, " +
+            "    deviceApps.app ->> 'version' AS version, " +
+            "    deviceApps.app ->> 'name' AS name " +
             "FROM (" +
-            "    SELECT json_array_elements(info::json -> 'applications') AS app " +
+            "    SELECT jsonb_array_elements(infojson -> 'applications') AS app " +
             "    FROM devices " +
             "    WHERE id = #{deviceId}" +
             ") deviceApps")

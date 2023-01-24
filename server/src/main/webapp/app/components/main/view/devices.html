@@ -325,6 +325,11 @@
                 <span ng-if='paging.sortBy === "SERIAL"' class="glyphicon"
                       ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
             </th>
+            <th ng-if="settings.columnDisplayedPublicIp" ng-click="sortData('PUBLICIP')" class="pointer">
+                <span localized>table.heading.device.publicip</span>
+                <span ng-if='paging.sortBy === "PUBLICIP"' class="glyphicon"
+                      ng-class="{'glyphicon-sort-by-alphabet': paging.sortAsc, 'glyphicon-sort-by-alphabet-alt': !paging.sortAsc}"></span>
+            </th>
             <th ng-if="settings.columnDisplayedCustom1 && commonSettings.customPropertyName1" ng-click="sortData('CUSTOM1')" class="pointer">
                 <span>{{commonSettings.customPropertyName1}}</span>
                 <span ng-if='paging.sortBy === "CUSTOM1"' class="glyphicon"
@@ -415,6 +420,9 @@
             <td ng-if='(device.enrollTime <= 0 || !device.enrollTime) && settings.columnDisplayedEnrollmentDate' localized>devices.date.unknown</td>
             <td ng-if="settings.columnDisplayedSerial">
                 <span>{{getSerial(device)}}</span>
+            </td>
+            <td ng-if="settings.columnDisplayedPublicIp">
+                <span>{{device.publicIp}}</span>
             </td>
             <td ng-if="settings.columnDisplayedCustom1 && commonSettings.customPropertyName1">
                 <span>{{device.custom1}}</span>

@@ -58,6 +58,9 @@ public final class FileUtil {
 
     public static String getNameFromTmpPath(String tmpFilePath) {
         File localFile = new File(tmpFilePath);
+        if (!localFile.getName().contains(DELIMITER)) {
+            throw new RuntimeException("Temp file should contain the delimiter: " + tmpFilePath);
+        }
         return localFile.getName().split(DELIMITER)[0];
     }
 

@@ -24,9 +24,12 @@ package com.hmdm.plugins.audit.rest.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
+import com.hmdm.plugins.audit.rest.AuditResource;
 import com.hmdm.rest.json.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * <p>An auditor for a single request-response chain.</p>
@@ -43,6 +47,8 @@ import java.io.IOException;
  * @author isv
  */
 class ResourceAuditor {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResourceAuditor.class);
 
     /**
      * <p>A name of session attribute holding the details for current user.</p>
@@ -75,15 +81,20 @@ class ResourceAuditor {
     private final boolean payload;
 
     /**
-     * <p>A flag indicating if the forwarded IP should be displayed instead of the request IP</p>
+     * <p>List of reverse proxy IPs</p>
      */
-    private final boolean displayForwardedIp;
+    private final String[] proxies;
+
+    /**
+     * <p>Name of the HTTP header containing the user IP address</p>
+     */
+    private final String ipHeader;
 
     /**
      * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
      */
     ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response,
-                    FilterChain chain, boolean payload, boolean displayForwardedIp) throws IOException {
+                    FilterChain chain, boolean payload, String proxyIps, String ipHeader) throws IOException {
         this.auditLogActionKey = auditLogActionKey;
         if (payload) {
             // Wrap request only if we need to log it
@@ -94,7 +105,12 @@ class ResourceAuditor {
         this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
         this.chain = chain;
         this.payload = payload;
-        this.displayForwardedIp = displayForwardedIp;
+        if (!"".equals(proxyIps)) {
+            proxies = proxyIps.split(",");
+        } else {
+            proxies = new String[0];
+        }
+        this.ipHeader = ipHeader;
     }
 
     /**
@@ -144,13 +160,7 @@ class ResourceAuditor {
 
         AuditLogRecord logRecord = new AuditLogRecord();
         logRecord.setCreateTime(System.currentTimeMillis());
-        logRecord.setIpAddress(request.getRemoteAddr());
-        if (displayForwardedIp) {
-            String forwardedIp = httpRequest.getHeader("X-Forwarded-For");
-            if (forwardedIp != null) {
-                logRecord.setIpAddress(forwardedIp);
-            }
-        }
+        logRecord.setIpAddress(getRemoteAddr(httpRequest));
         if (currentUser != null) {
             logRecord.setCustomerId(currentUser.getCustomerId());
             logRecord.setLogin(currentUser.getLogin());
@@ -180,6 +190,39 @@ class ResourceAuditor {
         logRecord.setAction(action);
 
         return logRecord;
+    }
+
+    private String getRemoteAddr(HttpServletRequest request) {
+        boolean isFromProxy = false;
+//        String localAddr = request.getLocalAddr();
+//        logger.info("Local address: " + localAddr);
+        if (request.getRemoteAddr().equals(request.getLocalAddr())) {
+            isFromProxy = true;
+        } else {
+            for (String p : proxies) {
+                if (request.getRemoteAddr().equals(p.trim())) {
+                    isFromProxy = true;
+                    break;
+                }
+            }
+        }
+        if (isFromProxy) {
+//            logger.info("From proxy: true");
+//            Enumeration<String> headerNames = request.getHeaderNames();
+//            if (headerNames != null) {
+//                while (headerNames.hasMoreElements()) {
+//                    String headerName = headerNames.nextElement();
+//                    String headerValue = request.getHeader(headerName);
+//                    logger.info(headerName + ": " + headerValue);
+//                }
+//            }
+
+            String forwardedIp = request.getHeader(ipHeader);
+            if (forwardedIp != null) {
+                return forwardedIp;
+            }
+        }
+        return request.getRemoteAddr();
     }
 
     private boolean needStripPassword(String action) {

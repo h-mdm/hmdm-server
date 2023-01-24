@@ -52,6 +52,8 @@ public class ConfigureModule extends AbstractModule {
     private final String smtpFromParameter = "smtp.from";
     private final String deviceFastSearchCharsParameter = "device.fast.search.chars";
     private final String sqlInitScriptPath = "sql.init.script.path";
+    private final String proxyAddresses = "proxy.addresses";
+    private final String proxyIpHeader = "proxy.ip.header";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -118,5 +120,9 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(deviceFastSearchCharsParameter)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 5);
         opt = this.context.getInitParameter(sqlInitScriptPath);
         this.bindConstant().annotatedWith(Names.named(sqlInitScriptPath)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(proxyAddresses);
+        this.bindConstant().annotatedWith(Names.named(proxyAddresses)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(proxyIpHeader);
+        this.bindConstant().annotatedWith(Names.named(proxyIpHeader)).to(opt != null ? opt : "");
     }
 }

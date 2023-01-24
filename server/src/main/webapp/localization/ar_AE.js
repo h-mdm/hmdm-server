@@ -534,6 +534,7 @@ document.localization ['ar_AE'] = {
     'form.settings.common.android.version': 'نسخة أندرويد',
     'form.settings.common.enrollment.date': 'تاريخ التسجيل',
     'form.settings.common.serial': 'رقم سري',
+    'form.settings.common.publicip': 'عنوان IP',
 
     'form.settings.design.title': 'التصميم الافتراضي',
     'form.settings.design.color.font': 'لون الخلفية',
@@ -716,6 +717,7 @@ document.localization ['ar_AE'] = {
     'table.heading.device.android.version': 'نسخة أندرويد',
     'table.heading.device.enrollment.date': 'تاريخ التسجيل',
     'table.heading.device.serial': 'رقم سري',
+    'table.heading.device.publicip': 'عنوان IP',
     "table.heading.device.actions": 'الإجراءات',
 
     "table.heading.group.name": 'الاسم',

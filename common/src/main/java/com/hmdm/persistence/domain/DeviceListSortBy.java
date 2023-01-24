@@ -44,5 +44,6 @@ public enum DeviceListSortBy {
     KIOSK_MODE,
     ANDROID_VERSION,
     ENROLLMENT_DATE,
-    SERIAL;
+    SERIAL,
+    PUBLICIP;
 }

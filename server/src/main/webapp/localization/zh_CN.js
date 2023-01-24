@@ -534,6 +534,7 @@ document.localization ['zh_CN'] = {
     'form.settings.common.android.version': '安卓版',
     'form.settings.common.enrollment.date': '注册日期',
     'form.settings.common.serial': '序列号',
+    'form.settings.common.publicip': 'IP地址',
 
     'form.settings.design.title':"默认设计",
     'form.settings.design.color.font' : "背景颜色",
@@ -716,6 +717,7 @@ document.localization ['zh_CN'] = {
     'table.heading.device.android.version': '安卓版',
     'table.heading.device.enrollment.date': '注册日期',
     'table.heading.device.serial': '序列号',
+    'table.heading.device.publicip': 'IP地址',
     'table.heading.device.actions':"功能",
 		
     'table.heading.group.name' : "名称",
