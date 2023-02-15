@@ -35,7 +35,7 @@ public interface UserRoleSettingsMapper {
 
     @Select({"SELECT * " +
             "FROM userRoleSettings " +
-            "WHERE customerId = #{customerId} AND roleId = #{roleId}" +
+            "WHERE customerId = #{customerId} AND roleId = #{roleId} " +
             "LIMIT 1"})
     UserRoleSettings getUserRoleSettings(@Param("customerId") int customerId, @Param("roleId") int roleId);
 
