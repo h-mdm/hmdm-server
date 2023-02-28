@@ -3,24 +3,24 @@ Headwind MDM: a corporate launcher for Android
 =    BUILD INSTRUCTIONS FOR THE WEB PANEL    =
 ==============================================
 
-This instruction has been tested on Ubuntu Linux 20.04 LTS.
+This instruction has been tested on Ubuntu Linux 20.04 LTS/22.04 LTS.
 
 1. Install required software
 
+For Ubuntu Linux 20.04 LTS
 # sudo apt install git aapt tomcat8 maven postgresql
+
+For Ubuntu Linux 22.04 LTS:
+# sudo apt install git aapt tomcat9 maven postgresql
 
 2. Make sure Tomcat is running
 
-telnet localhost 8080
-Trying ::1...
-Connected to localhost.
-Escape character is '^]'.
-
-(if you get "Connection refused" error, fix the installation issue)
+curl localhost:8080
+(if you get "Failed to connect" error, fix the installation issue)
 
 3. Clone the repository
 
-# git clone https://gitlab.com/h-mdm/hmdm-server
+# git clone https://github.com/h-mdm/hmdm-server
 # cd hmdm-server
 
 4. If you are planning to run or debug Headwind MDM in IDE, create the properties
