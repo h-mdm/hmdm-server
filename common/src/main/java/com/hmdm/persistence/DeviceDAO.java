@@ -74,8 +74,11 @@ public class DeviceDAO extends AbstractDAO<Device> {
         this.deviceListHooks = hooks;
     }
 
-    public int getTotalDevicesCount() {
-        User user = SecurityContext.get()
+    // UNSECURE, for sending stats (by superadmin in multi-tenant setup) only
+    public long getTotalDevicesCount() {
+        return this.mapper.countTotalDevices();
+
+/*        User user = SecurityContext.get()
                 .getCurrentUser().get();
         if (user == null) {
             return 0;
@@ -84,7 +87,12 @@ public class DeviceDAO extends AbstractDAO<Device> {
         if (count == null) {
             return 0;
         }
-        return count.intValue();
+        return count.intValue(); */
+    }
+
+    // UNSECURE, for sending stats (by superadmin in multi-tenant setup) only
+    public long getOnlineDevicesCount() {
+        return this.mapper.countOnlineDevices();
     }
 
     public List<Device> getAllDevices() {

@@ -45,5 +45,8 @@ public enum DeviceListSortBy {
     ANDROID_VERSION,
     ENROLLMENT_DATE,
     SERIAL,
-    PUBLICIP;
+    PUBLICIP,
+    CUSTOM1,
+    CUSTOM2,
+    CUSTOM3;
 }

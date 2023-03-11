@@ -10,8 +10,8 @@ document.localization ['zh_CN'] = {
     'login.password.recovery': '忘记密码？',
     'recovery.password': '恢复密码',
     'recovery.password.success': '密码恢复说明已发送至您的邮箱',
-    'login.no.account': 'Don\'t have an account?',
-    'login.signup': 'Sign up',
+    'login.no.account': '没有帐户？',
+    'login.signup': '报名',
 
     'header.label.username' : "用户名",
 		
@@ -563,6 +563,7 @@ document.localization ['zh_CN'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title':"其他设置",
     'form.settings.misc.phone.format':"电话号码格式",
@@ -885,7 +886,26 @@ document.localization ['zh_CN'] = {
     'account.expired.short':"您的帐户已过期！",
     'account.expired' : "您的帐户已过期。请与卖家联繫以更新您的帐户。",
     'device.limit.achieved' : "由於您已达到极限，因此无法新增设备。请移除一些设备或与卖家联繫以扩展设备限制。",
-		
+
+    'menu.updates': '检查更新',
+    'updates.title': '更新',
+    'updates.disabled.custom': '自定义版本，请手动更新',
+    'updates.disabled.not_master': '要求主机提供商更新',
+    'updates.disabled.multiple': '多个应用版本，请手动更新',
+    'updates.disabled.error': '内部服务器错误',
+    'updates.disabled.download': '下载更新时出错',
+    'updates.application': '应用程序',
+    'updates.current.version': '当前版本',
+    'updates.available.version': '可用版本',
+    'updates.downloaded': '已下载',
+    'updates.auto.update': '自动更新移动应用程序（在生产中谨慎使用！）',
+    'updates.enable.stats': '将使用统计信息发送给服务提供商以提高系统性能',
+    'updates.get': '获取更新',
+    'updates.checking': '正在检查更新...',
+    'updates.getting': '正在获取更新...',
+    'updates.success': '更新完成',
+    'updates.web.hint': '要完成 Web 应用程序更新，请在 SSH 控制台中运行 shell 脚本 /opt/hmdm/update-web-app.sh',
+
     'yes' : 'yes',
     'no' : 'No'
 };		

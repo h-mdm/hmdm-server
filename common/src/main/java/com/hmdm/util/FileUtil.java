@@ -25,6 +25,8 @@ import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Customer;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <p>An utility class for managing the files on local file system.</p>
@@ -32,12 +34,25 @@ import java.io.*;
  * @author isv
  */
 public final class FileUtil {
-    private static final String DELIMITER = "1111111";
+    private static final String TEMP_FILE_DELIMITER = "1111111";
 
     /**
      * <p>Constructs new <code>FileUtil</code> instance. This implementation does nothing.</p>
      */
     private FileUtil() {
+    }
+
+    public static String adjustFileName(String fileName) {
+        return fileName
+                .replace(' ', '_')
+                .replace('+', '_')          // Not valid in URL
+                .replace('%', '_')          // Not valid in URL
+                .replace("(", "")           // These characters are used by Windows when a file is downloaded twice
+                .replace(")", "");
+    }
+
+    public static File createTempFile(String fileName) throws IOException {
+        return File.createTempFile(fileName + TEMP_FILE_DELIMITER, ".temp");
     }
 
     public static void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
@@ -58,10 +73,10 @@ public final class FileUtil {
 
     public static String getNameFromTmpPath(String tmpFilePath) {
         File localFile = new File(tmpFilePath);
-        if (!localFile.getName().contains(DELIMITER)) {
+        if (!localFile.getName().contains(TEMP_FILE_DELIMITER)) {
             throw new RuntimeException("Temp file should contain the delimiter: " + tmpFilePath);
         }
-        return localFile.getName().split(DELIMITER)[0];
+        return localFile.getName().split(TEMP_FILE_DELIMITER)[0];
     }
 
     /**
@@ -151,5 +166,37 @@ public final class FileUtil {
         }
         url += fileName;
         return url;
+    }
+
+    public static String downloadTextFile(URL url) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(url.openStream());
+        StringBuffer stringBuffer = new StringBuffer();
+        byte[] buffer = new byte[1024];
+        int count=0;
+        while((count = bis.read(buffer,0,1024)) != -1) {
+            stringBuffer.append(new String(buffer, StandardCharsets.UTF_8));
+        }
+        bis.close();
+        return stringBuffer.toString();
+    }
+
+    public static void downloadFile(URL url, String directory, String name) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(url.openStream());
+        File file = new File(directory, name);
+        if (file.exists()) {
+            file.delete();
+        }
+        FileOutputStream fos = new FileOutputStream(file);
+        byte[] buffer = new byte[1024];
+        int count=0;
+        while((count = bis.read(buffer,0,1024)) != -1) {
+            fos.write(buffer, 0, count);
+        }
+        bis.close();
+        fos.close();
+    }
+
+    public static boolean isSafePath(String path) {
+        return !path.contains("..");
     }
 }

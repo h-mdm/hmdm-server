@@ -7,6 +7,7 @@ angular.module('headwind-kiosk')
         $scope.rebranding = null;
         rebranding.query(function(value) {
             $scope.rebranding = value;
+            $scope.rebranding.year = new Date().getFullYear();
             // A very dirty hack preventing language change on h-mdm.com!
             if ($scope.rebranding.signupLink == "https://h-mdm.com/contact-us/" && getBrowserLanguage() == 'ru_RU') {
                 $scope.rebranding.signupLink = "https://h-mdm.com/ru/kontakty/";

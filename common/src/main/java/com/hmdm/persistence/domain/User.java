@@ -75,6 +75,8 @@ public class User implements CustomerData, Serializable {
     private boolean masterCustomer;
     @ApiModelProperty(hidden = true)
     private boolean editable = false;
+    @ApiModelProperty(hidden = true)
+    private boolean singleCustomer = false;
 
     public User() {
     }
@@ -157,6 +159,14 @@ public class User implements CustomerData, Serializable {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public boolean isSingleCustomer() {
+        return singleCustomer;
+    }
+
+    public void setSingleCustomer(boolean singleCustomer) {
+        this.singleCustomer = singleCustomer;
     }
 
     public UserRole getUserRole() {

@@ -50,6 +50,12 @@ angular.module('headwind-kiosk')
             updateLanguageSettings: {url: 'rest/private/settings/lang', method: 'POST'},
         })
     })
+    .factory('updatesService', function ($resource) {
+        return $resource('', {}, {
+            checkUpdates: {url: 'rest/private/update/check', method: 'GET'},
+            getUpdates: {url: 'rest/private/update', method: 'POST'},
+        })
+    })
     .factory('passwordResetService', function ($resource) {
         return $resource('', {}, {
             getSettings: {url: 'rest/public/passwordReset/settings/:token', method: 'GET'},

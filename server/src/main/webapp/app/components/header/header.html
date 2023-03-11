@@ -15,6 +15,7 @@
             <ul class='dropdown-menu' role='menu'>
                 <li><a ng-style='color' ng-click="about()" localized-change-tracking>menu.about</a></li>
                 <li><a ui-sref='profile' ng-style='color' localized-change-tracking>menu.profile</a></li>
+                <li ng-if="updatesAllowed()"><a ui-sref='updates' ng-style='color' localized-change-tracking>menu.updates</a></li>
                 <li ng-if="authService.isSuperAdmin() && !isControlPanel"><a ng-click='controlPanel()' localized-change-tracking>menu.panel.master</a></li>
                 <li ng-if="authService.isSuperAdmin() && isControlPanel"><a ng-click='mainPanel()' localized-change-tracking>menu.panel.main</a></li>
                 <li><a ng-click='logout()' localized-change-tracking>menu.logout</a></li>

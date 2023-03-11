@@ -563,6 +563,7 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title': 'Прочие настройки',
     'form.settings.misc.phone.format': 'Формат номера телефона',
@@ -885,6 +886,25 @@ document.localization[ 'ru_RU' ] = {
     'account.expired': 'Ваша учетная запись истекла. Пожалуйста, свяжитесь с продавцом для продления.',
     'account.expired.short': 'Ваша учетная запись истекла!',
     'device.limit.achieved': 'Нельзя добавить устройство - вы достигли лимита. Удалите устройства или свяжитесь с продавцом для увеличения лимита.',
+
+    'menu.updates': 'Проверить наличие обновлений',
+    'updates.title': 'Обновления',
+    'updates.disabled.custom': 'Пользовательская версия, обновите ее вручную',
+    'updates.disabled.not_master': 'Попросите хостинг-провайдера обновить',
+    'updates.disabled.multiple': 'Несколько версий приложения, обновите вручную',
+    'updates.disabled.error': 'Внутренняя ошибка сервера',
+    'updates.disabled.download': 'Ошибка загрузки обновления',
+    'updates.application': 'Приложение',
+    'updates.current.version': 'Текущая версия',
+    'updates.available.version': 'Доступная версия',
+    'updates.downloaded': 'Загружено',
+    'updates.auto.update': 'Автоматически обновлять мобильные приложения (используйте с осторожностью в рабочей среде!)',
+    'updates.enable.stats': 'Отправить статистику использования поставщику услуг для повышения производительности системы',
+    'updates.get': 'Обновить',
+    'updates.checking': 'Проверка обновлений...',
+    'updates.getting': 'Получение обновлений...',
+    'updates.success': 'Обновление завершено',
+    'updates.web.hint': 'Чтобы завершить обновление веб-приложения, запустите сценарий оболочки /opt/hmdm/update-web-app.sh в консоли SSH',
 
     'yes': 'да',
     'no': 'нет'

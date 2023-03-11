@@ -563,6 +563,7 @@ document.localization ['de_DE'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title': 'Verschiedene Einstellungen',
     'form.settings.misc.phone.format': 'Telefonnummernformat',
@@ -885,6 +886,25 @@ document.localization ['de_DE'] = {
     'account.expired.short': 'Ihr Konto ist abgelaufen!',
     'account.expired': 'Ihr Konto ist abgelaufen. Bitte kontaktieren Sie den Verkäufer, um Ihr Konto zu erneuern. ',
     'device.limit.achieved': 'Ein Gerät kann nicht hinzugefügt werden, da Sie Ihr Limit erreicht haben. Bitte entfernen Sie einige Geräte oder wenden Sie sich an den Verkäufer, um Ihr Gerätelimit zu verlängern. ',
+
+    'menu.updates': 'Nach Updates suchen',
+    'updates.title': 'Updates',
+    'updates.disabled.custom': 'Benutzerdefinierte Version, bitte manuell aktualisieren',
+    'updates.disabled.not_master': 'Den Hosting-Provider um Aktualisierung bitten',
+    'updates.disabled.multiple': 'Mehrere App-Versionen, bitte manuell aktualisieren',
+    'updates.disabled.error': 'Interner Serverfehler',
+    'updates.disabled.download': 'Fehler beim Herunterladen eines Updates',
+    'updates.application': 'Anwendung',
+    'updates.current.version': 'Aktuelle Version',
+    'updates.available.version': 'Verfügbare Version',
+    'updates.downloaded': 'Heruntergeladen',
+    'updates.auto.update': 'Mobile Apps automatisch aktualisieren (mit Vorsicht in der Produktion verwenden!)',
+    'updates.enable.stats': 'Nutzungsstatistiken an den Dienstanbieter senden, um die Systemleistung zu verbessern',
+    'updates.get': 'Updates erhalten',
+    'updates.checking': 'Suche nach Updates...',
+    'updates.getting': 'Updates werden abgerufen...',
+    'updates.success': 'Update abgeschlossen',
+    'updates.web.hint': 'Um das Web-App-Update abzuschließen, führen Sie das Shell-Skript "/opt/hmdm/update-web-app.sh" in der SSH-Konsole aus',
 
     'yes': 'Ja',
     'no': 'Nein'

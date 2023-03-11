@@ -562,6 +562,7 @@ document.localization ['pt_PT'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title': 'Configurações diversas',
     'form.settings.misc.phone.format': 'Formato de número de telefone',
@@ -884,6 +885,25 @@ document.localization ['pt_PT'] = {
     'account.expired.short': 'Sua conta expirou!',
     'account.expired': 'Sua conta expirou. Por favor, contate o vendedor para renovar sua conta.',
     'device.limit.achieved': 'Não é possível adicionar um dispositivo, por quel você atingiu seu limite. Por favor, remova algum dispositivo ou contate o vendedor para extender seu limite de dispositivos.',
+
+    'menu.updates': 'Verificar se há atualizações',
+    'updates.title': 'Atualizações',
+    'updates.disabled.custom': 'Versão personalizada, atualize manualmente',
+    'updates.disabled.not_master': 'Peça ao provedor de hospedagem para atualizar',
+    'updates.disabled.multiple': 'Várias versões de aplicativos, atualize manualmente',
+    'updates.disabled.error': 'Erro interno do servidor',
+    'updates.disabled.download': 'Erro ao baixar uma atualização',
+    'updates.application': 'Aplicativo',
+    'updates.current.version': 'Versão atual',
+    'updates.available.version': 'Versão disponível',
+    'updates.downloaded': 'Baixado',
+    'updates.auto.update': 'Atualizar aplicativos móveis automaticamente (use com cuidado na produção!)',
+    'updates.enable.stats': 'Enviar estatísticas de uso para o provedor de serviços para melhorar o desempenho do sistema',
+    'updates.get': 'Obter atualizações',
+    'updates.checking': 'Verificando atualizações...',
+    'updates.getting': 'Recebendo atualizações...',
+    'updates.success': 'Atualização concluída',
+    'updates.web.hint': 'Para concluir a atualização do aplicativo da web, execute o shell script /opt/hmdm/update-web-app.sh no console SSH',
 
     'yes': 'sim',
     'no': 'não'

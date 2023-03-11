@@ -80,6 +80,15 @@ public interface DeviceMapper {
             "WHERE customerId = #{customerId}"})
     Long countAllDevicesForCustomer(@Param("customerId") Integer customerId);
 
+    @Select({"SELECT COUNT(*) " +
+            "FROM devices"})
+    Long countTotalDevices();
+
+    @Select({"SELECT COUNT(*) " +
+            "FROM devices " +
+            "WHERE devices.lastUpdate >= extract(epoch from now()) * 1000 - 3600000"})
+    Long countOnlineDevices();
+
     Long countAllDevices(DeviceSearchRequest filter);
 
     @Update({"UPDATE devices SET " +

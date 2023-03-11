@@ -563,6 +563,7 @@ document.localization ['es_ES'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title': 'Opciones Varias',
     'form.settings.misc.phone.format': 'Formato del número telefonico',
@@ -885,6 +886,25 @@ document.localization ['es_ES'] = {
     'account.expired': 'Su cuenta ha caducado. Comuníquese con el vendedor para renovar su cuenta.',
     'account.expired.short': 'Su cuenta ha caducado.',
     'device.limit.achieved': 'No se puede agregar un dispositivo porque alcanzó su límite. Quite algunos dispositivos o comuníquese con el vendedor para ampliar el límite de dispositivos.',
+
+    'menu.updates': 'Buscar actualizaciones',
+    'updates.title': 'Actualizaciones',
+    'updates.disabled.custom': 'Versión personalizada, actualice manualmente',
+    'updates.disabled.not_master': 'Pídale al proveedor de alojamiento que actualice',
+    'updates.disabled.multiple': 'Múltiples versiones de la aplicación, actualice manualmente',
+    'updates.disabled.error': 'Error interno del servidor',
+    'updates.disabled.download': 'Error al descargar una actualización',
+    'updates.application': 'Aplicación',
+    'updates.current.version': 'Versión actual',
+    'updates.disponible.version': 'Versión disponible',
+    'updates.downloaded': 'Descargado',
+    'updates.auto.update': 'Actualiza automáticamente las aplicaciones móviles (¡utilízalo con cuidado en producción!)',
+    'updates.enable.stats': 'Enviar estadísticas de uso al proveedor de servicios para mejorar el rendimiento del sistema',
+    'updates.get': 'Obtener actualizaciones',
+    'updates.checking': 'Buscando actualizaciones...',
+    'updates.getting': 'Obteniendo actualizaciones...',
+    'updates.success': 'Actualización completada',
+    'updates.web.hint': 'Para completar la actualización de la aplicación web, ejecute el script de shell /opt/hmdm/update-web-app.sh en la consola SSH',
 
     'yes': 'si',
     'no': 'no'

@@ -54,6 +54,9 @@ angular.module( 'headwind-kiosk' )
     $scope.isSuperAdmin = function() {
         return authService.isSuperAdmin();
     };
+    $scope.updatesAllowed = function() {
+        return (authService.isSingleCustomer() || authService.isSuperAdmin()) && authService.hasPermission('get_updates');
+    };
 
     $scope.logout = function() {
         authService.logout();

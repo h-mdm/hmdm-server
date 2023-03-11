@@ -563,6 +563,7 @@ document.localization ['fr_FR'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title': 'Paramètres divers',
     'form.settings.misc.phone.format': 'Format du numéro de téléphone',
@@ -885,6 +886,25 @@ document.localization ['fr_FR'] = {
     'account.expired': 'Votre compte a expiré. Veuillez contacter le vendeur pour renouveler votre compte.',
     'account.expired.short': 'Votre compte a expiré!',
     'device.limit.achieved': 'Impossible d\'ajouter un appareil car vous avez atteint votre limite. Veuillez supprimer certains appareils ou contacter le vendeur pour étendre la limite de votre appareil.',
+
+    'menu.updates' : 'Vérifier les mises à jour',
+    'updates.title' : 'Mises à jour',
+    'updates.disabled.custom': 'Version personnalisée, veuillez mettre à jour manuellement',
+    'updates.disabled.not_master': 'Demander à l\'hébergeur de mettre à jour',
+    'updates.disabled.multiple': 'Plusieurs versions d\'application, veuillez mettre à jour manuellement',
+    'updates.disabled.error' : 'Erreur interne du serveur',
+    'updates.disabled.download': 'Erreur lors du téléchargement d\'une mise à jour',
+        'mises à jour.application' : 'Application',
+    'updates.current.version' : 'Version actuelle',
+    'updates.available.version' : 'Version disponible',
+    'updates.downloaded' : 'Téléchargé',
+    'updates.auto.update': 'Mettre à jour automatiquement les applications mobiles (à utiliser avec précaution en production !)',
+    'updates.enable.stats' : 'Envoyer des statistiques d\'utilisation au fournisseur de services pour améliorer les performances du système',
+'updates.get' : 'Obtenir les mises à jour',
+    'updates.checking': 'Vérification des mises à jour...',
+    'updates.getting': 'Récupération des mises à jour...',
+    'updates.success' : 'Mise à jour terminée',
+    'updates.web.hint': 'Pour terminer la mise à jour de l\'application Web, exécutez le script shell /opt/hmdm/update-web-app.sh dans la console SSH',
 
     'yes': 'oui',
     'no': 'non'

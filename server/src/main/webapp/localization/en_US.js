@@ -563,6 +563,7 @@ document.localization ['en_US'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
     'form.settings.misc.title': 'Miscellaneous settings',
     'form.settings.misc.phone.format': 'Phone number format',
@@ -783,7 +784,7 @@ document.localization ['en_US'] = {
     'app.name': 'Headwind MDM',
     'app.vendor.name':"h-mdm.com",
     'app.vendor.link':"https://h-mdm.com",
-    'app.description': 'is the open source mobile device management system',
+    'app.description': 'is an open source mobile device management system',
     'app.title': '${appName} Web Panel',
 
     'box.show.my.apps.only': 'Display my applications only',
@@ -882,9 +883,28 @@ document.localization ['en_US'] = {
     'customer.status.options.all': 'All statuses',
 
     'account.expiring': 'Your account will be expired in ${days} days. Please contact the seller to renew your account.',
-    'account.expired.short': 'Your account has been expired!',
-    'account.expired': 'Your account has been expired. Please contact the seller to renew your account.',
+    'account.expired.short': 'Your account has expired!',
+    'account.expired': 'Your account has expired. Please contact the seller to renew your account.',
     'device.limit.achieved': 'Cannot add a device because you have reached your limit. Please remove some devices or contact the seller to extend your device limit.',
+
+    'menu.updates': 'Check for updates',
+    'updates.title': 'Updates',
+    'updates.disabled.custom': 'Custom version, please update manually',
+    'updates.disabled.not_master': 'Ask the hosting provider to update',
+    'updates.disabled.multiple': 'Multiple app versions, please update manually',
+    'updates.disabled.error': 'Internal server error',
+    'updates.disabled.download': 'Error downloading an update',
+    'updates.application': 'Application',
+    'updates.current.version': 'Current version',
+    'updates.available.version': 'Available version',
+    'updates.downloaded': 'Downloaded',
+    'updates.auto.update': 'Automatically update mobile apps (use with care in production!)',
+    'updates.enable.stats': 'Send usage statistics to the service provider to improve system performance',
+    'updates.get': 'Get updates',
+    'updates.checking': 'Checking for updates...',
+    'updates.getting': 'Getting updates...',
+    'updates.success': 'Update completed',
+    'updates.web.hint': 'To complete the web app update, run the shell script "/opt/hmdm/update-web-app.sh" in the SSH console',
 
     'yes': 'yes',
     'no': 'no'

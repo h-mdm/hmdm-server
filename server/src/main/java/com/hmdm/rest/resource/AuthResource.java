@@ -23,7 +23,6 @@ package com.hmdm.rest.resource;
 
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
 import com.hmdm.persistence.domain.User;
@@ -114,6 +113,8 @@ public class AuthResource {
             }
 
             user.setPassword(null);
+
+            user.setSingleCustomer(userDAO.isSingleCustomer());
 
             return Response.OK( user );
         } catch (Exception e) {

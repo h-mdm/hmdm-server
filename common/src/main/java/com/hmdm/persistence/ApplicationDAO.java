@@ -955,6 +955,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     /**
      * <p>Updates the configurations which have the AUTO-UPDATE flag set to true to refer to newly added application
      * version.</p>
+     * <p>This method is deprecated because it uses autoUpdate parameter in configurations which is always false.</p>
      *
      * @param newApplicationVersion a new application version to update the configuration references to.
      */

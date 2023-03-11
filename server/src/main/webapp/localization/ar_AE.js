@@ -563,6 +563,7 @@ document.localization ['ar_AE'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
+    'form.settings.lang.ja': '日本',
 
 	"form.settings.misc.title": 'إعدادات متنوعة',
     "form.settings.misc.phone.format": 'تنسيق رقم الهاتف',
@@ -885,6 +886,25 @@ document.localization ['ar_AE'] = {
     'account.expired.short': 'انتهت صلاحية حسابك!',
     'account.expired': 'انتهت صلاحية حسابك. يرجى الاتصال بالبائع لتجديد حسابك.',
     'device.limit.achieved': 'لا يمكن إضافة جهاز لأنك وصلت إلى الحد الأقصى. الرجاء إزالة بعض الأجهزة أو الاتصال بالبائع لتوسيع حد جهازك.',
+
+    'menu.updates': 'تحقق من وجود تحديثات',
+    'updates.title': 'التحديثات',
+    'updates.disabled.custom': 'إصدار مخصص ، يرجى التحديث يدويًا',
+    'updates.disabled.not_master': 'اطلب من مزود الاستضافة التحديث',
+    'updates.disabled.multiple': 'إصدارات متعددة من التطبيق ، يرجى التحديث يدويًا',
+    'updates.disabled.error': 'خطأ في الخادم الداخلي',
+    'updates.disabled.download': 'خطأ في تنزيل التحديث',
+    'updates.application': 'طلب',
+    'updates.current.version': 'النسخة الحالية',
+    'updates.available.version': 'الإصدار المتاح',
+    'updates.downloaded': 'تم التنزيل',
+    'updates.auto.update': 'تحديث تطبيقات الأجهزة المحمولة تلقائيًا (استخدم بعناية في الإنتاج!)',
+    'updates.enable.stats': 'أرسل إحصائيات الاستخدام إلى مزود الخدمة لتحسين أداء النظام',
+    'updates.get': 'احصل على التحديثات',
+    'updates.checking': 'البحث عن تحديثات...',
+    'updates.getting': 'الحصول على التحديثات ...',
+    'updates.success': '\'تحديث الانتهاء',
+    'updates.web.hint': 'لإكمال تحديث تطبيق الويب ، قم بتشغيل البرنامج النصي shell /opt/hmdm/update-web-app.sh في وحدة تحكم SSH',
 
     'yes':' نعم',
     'no': 'لا'

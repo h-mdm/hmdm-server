@@ -2312,5 +2312,43 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="05.03.23-13:33" author="seva" context="common">
+        <comment>Permission,new: get_updates</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('get_updates', 'Can update apps automatically');
+            INSERT INTO userRolePermissions (roleId, permissionId)
+            SELECT id, currval('permissions_id_seq') FROM userroles WHERE id IN (1, 2);
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'get_updates';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="07.03.23-11:23" author="seva" context="common">
+        <comment>Table,new: usageStats</comment>
+        <sql>
+            CREATE TABLE usageStats (
+            id serial NOT NULL CONSTRAINT usagestats_pr_key PRIMARY KEY,
+            ts DATE NOT NULL DEFAULT CURRENT_DATE,
+            instanceId VARCHAR(255),
+            webVersion VARCHAR(255),
+            community BOOLEAN NOT NULL DEFAULT TRUE,
+            devicesTotal INT NOT NULL DEFAULT 0,
+            devicesOnline INT NOT NULL DEFAULT 0,
+            cpuTotal INT NOT NULL DEFAULT 0,
+            cpuUsed INT NOT NULL DEFAULT 0,
+            ramTotal INT NOT NULL DEFAULT 0,
+            ramUsed INT NOT NULL DEFAULT 0,
+            scheme VARCHAR(255),
+            arch VARCHAR(255),
+            os VARCHAR(255)
+            );
+            ALTER TABLE usageStats ADD CONSTRAINT usageStats_ts_instanceId_key UNIQUE (ts, instanceId);
+        </sql>
+        <rollback>
+            DROP TABLE usageStats;
+        </rollback>
+    </changeSet>
+
 
 </databaseChangeLog>

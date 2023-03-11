@@ -1,0 +1,65 @@
+<!-- Localization completed -->
+<div class='profile'>
+    <form class='form-horizontal'>
+
+        <div class='form-group change-title'>
+            <label class='col-sm-3 control-label'>&nbsp;</label>
+            <div class='col-sm-9'><h3 localized>updates.title</h3></div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label'>&nbsp;</label>
+            <div ng-show='errorMessage' class='col-sm-9 error' style="text-align: left"><span>{{errorMessage}}</span></div>
+            <div ng-show='completeMessage' class='col-sm-9 success' style="text-align: left"><span>{{completeMessage}}</span>
+                <img ng-if="isUpdating || isChecking" style="margin-left: 15px" src='images/loading.gif'/></div>
+        </div>
+
+        <div ng-if="!isChecking">
+
+            <div class='form-group bold'>
+                <div class="col-sm-3" localized>updates.application</div>
+                <div class="col-sm-3" localized>updates.current.version</div>
+                <div class="col-sm-3" localized>updates.available.version</div>
+                <div class="col-sm-3" localized>updates.downloaded</div>
+            </div>
+
+            <div class='form-group' ng-repeat="app in updates">
+                <div class="col-sm-3">{{app.name}}</div>
+                <div class="col-sm-3" ng-if="!app.updateDisabled && !app.outdated">{{app.currentVersion}}</div>
+                <div class="col-sm-3 warning-font" ng-if="!app.updateDisabled && app.outdated">{{app.currentVersion}}</div>
+                <div class="col-sm-3" ng-if="!app.updateDisabled">{{app.version}}</div>
+                <div class="col-sm-3" ng-if="!app.updateDisabled"><span class="glyphicon glyphicon-ok" ng-if="app.downloaded"></span></div>
+                <div class="col-sm-9 warning-font" ng-if="app.updateDisabled">{{app.updateDisableReasonLocalized}}</div>
+            </div>
+
+            <p>&nbsp;</p>
+
+            <div class='form-group'>
+                <div class='col-sm-1'>
+                    <input id="c1" ng-model='updateForm.update' type='checkbox' class='form-control'/>
+                </div>
+                <div class='col-sm-11' style="padding-top: 10px" localized>updates.auto.update</div>
+            </div>
+
+            <div class='form-group'>
+                <div class='col-sm-1'>
+                    <input id="c2" ng-model='updateForm.sendStats' type='checkbox' class='form-control'/>
+                </div>
+                <div class='col-sm-11' style="padding-top: 10px" localized>updates.enable.stats</div>
+            </div>
+
+            <div class='form-group'>
+                <span class="field-hint" localized>updates.web.hint</span>
+            </div>
+
+            <p>&nbsp;</p>
+
+            <div class='form-group'>
+                <div class='col-sm-offset-2 col-sm-10'>
+                    <button type='submit' class='btn btn-default' ng-disabled="isUpdating || isError" ng-click='getUpdates()' localized>updates.get</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>

@@ -37,10 +37,11 @@ angular.module('headwind-kiosk',
         'zh_CN': 'zh_CN',
         'pt': 'pt_PT',
         'pt_PT': 'pt_PT',
-        'pt_BR': 'pt_PT'
+        'pt_BR': 'pt_PT',
+        'ja_JP': 'ja_JP'
     })
-    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN'])
-    .constant("APP_VERSION", "5.13.3") // Update this value on each commit
+    .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN', 'ja_JP'])
+    .constant("APP_VERSION", "5.14.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -245,6 +246,11 @@ angular.module('headwind-kiosk',
                 url: '/profile',
                 templateUrl: 'app/components/main/view/profile.html',
                 controller: 'ProfileController'
+            })
+            .state('updates', {
+                url: '/updates',
+                templateUrl: 'app/components/main/view/updates.html',
+                controller: 'UpdatesController'
             })
             .state('control-panel', {
                 url: '/control-panel',

@@ -10,8 +10,8 @@ document.localization ['zh_TW'] = {
     'login.password.recovery': '忘記密碼？',
     'recovery.password': '恢復密碼',
     'recovery.password.success': '密碼恢復說明已發送至您的郵箱',
-    'login.no.account': 'Don\'t have an account?',
-    'login.signup': 'Sign up',
+    'login.no.account': '沒有帳戶？',
+    'login.signup': '報名',
 
     'header.label.username' : "用戶名",
 		
@@ -563,7 +563,8 @@ document.localization ['zh_TW'] = {
     'form.settings.lang.de': 'Deutsch',
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
-		
+    'form.settings.lang.ja': '日本',
+
     'form.settings.misc.title':"其他設置",
     'form.settings.misc.phone.format':"電話號碼格式",
     'form.settings.misc.phone.format.placeholder' : "+9（999）999-99-99",
@@ -885,7 +886,26 @@ document.localization ['zh_TW'] = {
     'account.expired.short':"您的帳戶已過期！",
     'account.expired' : "您的帳戶已過期。請與賣家聯繫以更新您的帳戶。",
     'device.limit.achieved' : "由於您已達到極限，因此無法新增設備。請移除一些設備或與賣家聯繫以擴展設備限制。",
-		
+
+    'menu.updates': '檢查更新',
+    'updates.title': '更新',
+    'updates.disabled.custom': '自定義版本，請手動更新',
+    'updates.disabled.not_master': '要求主機提供商更新',
+    'updates.disabled.multiple': '多個應用版本，請手動更新',
+    'updates.disabled.error': '內部服務器錯誤',
+    'updates.disabled.download': '下載更新時出錯',
+    'updates.application': '應用程序',
+    'updates.current.version': '當前版本',
+    'updates.available.version': '可用版本',
+    'updates.downloaded': '已下載',
+    'updates.auto.update': '自動更新移動應用程序（在生產中謹慎使用！）',
+    'updates.enable.stats': '將使用統計信息發送給服務提供商以提高系統性能',
+    'updates.get': '獲取更新',
+    'updates.checking': '正在檢查更新...',
+    'updates.getting': '正在獲取更新...',
+    'updates.success': '更新完成',
+    'updates.web.hint': '要完成 Web 應用程序更新，請在 SSH 控制台中運行 shell 腳本 /opt/hmdm/update-web-app.sh',
+
     'yes' : 'yes',
     'no' : 'No'
 };		

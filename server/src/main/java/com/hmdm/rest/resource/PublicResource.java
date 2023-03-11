@@ -27,8 +27,10 @@ import javax.inject.Named;
 
 import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.rest.json.NameResponse;
+import com.hmdm.util.FileUtil;
 import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
+import nonapi.io.github.classgraph.utils.FileUtils;
 import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -162,6 +164,11 @@ public class PublicResource {
                 if (request.getFileName() == null || request.getFileName().isEmpty()) {
                     errors.add("fileName");
                 }
+            }
+            if (!FileUtil.isSafePath(request.getLocalPath()) || !FileUtil.isSafePath(request.getFileName())) {
+                logger.error("Attempt to upload a file to unsafe path! local path: " + request.getLocalPath() +
+                        " File name: " + request.getFileName());
+                return Response.PERMISSION_DENIED();
             }
             if (deviceId == null || deviceId.isEmpty()) {
                 errors.add("deviceId");

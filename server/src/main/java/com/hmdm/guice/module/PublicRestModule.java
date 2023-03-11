@@ -22,12 +22,7 @@
 package com.hmdm.guice.module;
 
 import com.google.inject.servlet.ServletModule;
-import com.hmdm.rest.resource.AuthResource;
-import com.hmdm.rest.resource.DownloadFilesServlet;
-import com.hmdm.rest.resource.PublicFilesResource;
-import com.hmdm.rest.resource.PublicResource;
-import com.hmdm.rest.resource.QRCodeResource;
-import com.hmdm.rest.resource.SyncResource;
+import com.hmdm.rest.resource.*;
 import com.hmdm.security.jwt.rest.JWTAuthResource;
 
 public class PublicRestModule extends ServletModule {
@@ -42,5 +37,6 @@ public class PublicRestModule extends ServletModule {
         this.bind(SyncResource.class);
         this.bind(PublicFilesResource.class);
         this.bind(QRCodeResource.class);
+        this.bind(StatsResource.class);
     }
 }

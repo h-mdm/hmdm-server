@@ -195,8 +195,8 @@ public interface ApplicationMapper {
             "       COALESCE(configurationApplications.screenOrder, caPrev.screenOrder) AS screenOrder, " +
             "       COALESCE(configurationApplications.keyCode, caPrev.keyCode) AS keyCode, " +
             "       COALESCE(configurationApplications.bottom, caPrev.bottom) AS bottom, " +
-            "       applications.id                    AS applicationVersionId, " +
-            "       applications.id                    AS versionText, " +
+            "       applicationVersions.id             AS applicationVersionId, " +
+            "       applicationVersions.id             AS versionText, " +
             "       configurationApplications.remove   AS remove, " +
             "       configurationApplications.action   AS action " +
             "FROM configurations " +

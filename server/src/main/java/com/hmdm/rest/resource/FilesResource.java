@@ -75,8 +75,6 @@ import com.hmdm.security.SecurityContext;
 import com.hmdm.util.FileExistsException;
 import com.hmdm.util.FileUtil;
 
-import static com.hmdm.util.FileUtil.writeToFile;
-
 @Api(tags = {"Files"}, authorizations = {@Authorization("Bearer Token")})
 @Singleton
 @Path("/private/web-ui-files")
@@ -86,7 +84,6 @@ public class FilesResource {
     private String filesDirectory;
     private String baseUrl;
     private File baseDirectory;
-    private static final String DELIMITER = "1111111";
     private CustomerDAO customerDAO;
     private ApplicationDAO applicationDAO;
     private APKFileAnalyzer apkFileAnalyzer;
@@ -143,7 +140,7 @@ public class FilesResource {
     @POST
     @Path("/remove")
     public Response removeFile(HFile file) {
-        if (!isSafePath(file.getPath()) || !isSafePath(file.getName())) {
+        if (!FileUtil.isSafePath(file.getPath()) || !FileUtil.isSafePath(file.getName())) {
             logger.error("Attempt to remove a file with unsafe path! path: " + file.getPath() + " name: " + file.getName());
             return Response.PERMISSION_DENIED();
         }
@@ -188,7 +185,7 @@ public class FilesResource {
     @POST
     @Path("/move")
     public Response moveFile(MoveFileRequest moveFileRequest) {
-        if (!isSafePath(moveFileRequest.getLocalPath())) {
+        if (!FileUtil.isSafePath(moveFileRequest.getLocalPath())) {
             logger.error("Attempt to remove a file with unsafe path! local path: " + moveFileRequest.getLocalPath() +
                     " path: " + moveFileRequest.getPath());
             return Response.PERMISSION_DENIED();
@@ -261,14 +258,9 @@ public class FilesResource {
             // it to UTF_8 and enable non-ASCII characters
             // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
             String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-            String adjustedFileName = fileName
-                    .replace(' ', '_')
-                    .replace('+', '_')          // Not valid in URL
-                    .replace('%', '_')          // Not valid in URL
-                    .replace("(", "")           // These characters are used by Windows when a file is downloaded twice
-                    .replace(")", "");
-            File uploadFile = File.createTempFile(adjustedFileName + DELIMITER, ".temp");
-            writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
+            String adjustedFileName = FileUtil.adjustFileName(fileName);
+            File uploadFile = FileUtil.createTempFile(adjustedFileName);
+            FileUtil.writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
 
             FileUploadResult result = new FileUploadResult();
             result.setServerPath(uploadFile.getAbsolutePath());
@@ -404,9 +396,5 @@ public class FilesResource {
             }
         }
 
-    }
-
-    private boolean isSafePath(String path) {
-        return !path.contains("..");
     }
 }
