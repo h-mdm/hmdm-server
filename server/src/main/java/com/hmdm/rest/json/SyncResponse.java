@@ -106,6 +106,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Flag indicating if screenshots are disabled on the device")
     private Boolean disableScreenshots;
 
+    @ApiModelProperty("Flag indicating if autostarted apps should be kept in the foreground")
+    private Boolean autostartForeground;
+
     @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
     private String timeZone;
 
@@ -708,6 +711,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setDisableScreenshots(Boolean disableScreenshots) {
         this.disableScreenshots = disableScreenshots;
+    }
+
+    @Override
+    public Boolean getAutostartForeground() {
+        return autostartForeground;
+    }
+
+    public void setAutostartForeground(Boolean autostartForeground) {
+        this.autostartForeground = autostartForeground;
     }
 
     @Override

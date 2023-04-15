@@ -58,6 +58,7 @@ public class CommonDAO extends AbstractDAO<Settings> {
                 settings.setAccountType(customer.getAccountType());
                 settings.setExpiryTime(customer.getExpiryTime());
                 settings.setDeviceLimit(customer.getDeviceLimit());
+                settings.setSizeLimit(customer.getSizeLimit());
             } else {
                 settings.setAccountType(Customer.Primary);
             }

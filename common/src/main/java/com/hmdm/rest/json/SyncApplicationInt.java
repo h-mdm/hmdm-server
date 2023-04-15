@@ -69,4 +69,6 @@ public interface SyncApplicationInt {
     Integer getKeyCode();
 
     Boolean getBottom();
+
+    Boolean getLongTap();
 }

@@ -348,6 +348,14 @@ public class UnsecureDAO {
         return customerMapper.findAll();
     }
 
+    public List<Customer> getFollowUpCustomersUnsecure() {
+        return customerMapper.findFollowedUp();
+    }
+
+    public void updateCustomerUnsecure(Customer customer) {
+        customerMapper.update(customer);
+    }
+
     public Application getDefaultLauncher() {
         List<Application> apps = this.applicationMapper.findByPackageId(1, defaultLauncherPackage);
         if (apps.size() == 0) {

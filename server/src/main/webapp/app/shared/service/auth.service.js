@@ -11,6 +11,7 @@ angular.module('headwind-kiosk')
                 serverAuthService.login({login: login, password: password}, function (response) {
                     if (response.status === "OK") {
                         user = response.data;
+                        var userStr = JSON.stringify(user);
                         $cookies.put('user', JSON.stringify(user));
                     }
 
@@ -34,17 +35,6 @@ angular.module('headwind-kiosk')
                 }
 
                 return false;
-            },
-
-            mobileLogin: function (email, successCallback) {
-                serverAuthService.mobileLogin({'email': email}, function (response) {
-                    if (response.status === "OK") {
-                        user = response.data;
-                        $cookies.put('user', JSON.stringify(user));
-                    }
-
-                    successCallback(response);
-                });
             },
 
             logout: function () {
@@ -96,7 +86,6 @@ angular.module('headwind-kiosk')
     .factory('serverAuthService', function ($resource) {
         return $resource('rest/public/auth/', {}, {
             login: {url: 'rest/public/auth/login', method: 'POST'},
-            mobileLogin: {url: 'rest/public/auth/login/mobile', method: 'POST'},
             logout: {url: 'rest/public/auth/logout', method: 'POST'}
         });
     });

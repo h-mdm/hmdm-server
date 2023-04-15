@@ -45,20 +45,34 @@ public interface CustomerMapper {
     @Select({SELECT_BASE})
     List<Customer> findAll();
 
+    @Select({SELECT_BASE + "WHERE " +
+            " customerStatus='customer.new' OR " +
+            " customerStatus='customer.active' OR " +
+            " customerStatus='customer.inactive' OR " +
+            " customerStatus='customer.pause' OR " +
+            " customerStatus='customer.abandon' "
+    })
+    List<Customer> findFollowedUp();
+
     @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
     List<Customer> findAllExceptMaster();
 
     @Insert({"INSERT INTO customers (name, email, description, filesDir, master, prefix, registrationTime, " +
-             "accountType, expiryTime, deviceLimit, customerStatus) " +
+             "accountType, expiryTime, deviceLimit, customerStatus, firstName, lastName, language, " +
+             "inactiveState, pauseState, abandonState, sizeLimit, signupStatus, signupToken) " +
              "VALUES (#{name}, #{email}, #{description}, #{filesDir}, FALSE, #{prefix}, #{registrationTime}, " +
-             "#{accountType}, #{expiryTime}, #{deviceLimit}, #{customerStatus})"})
+             "#{accountType}, #{expiryTime}, #{deviceLimit}, #{customerStatus}, #{firstName}, #{lastName}, #{language}, " + "" +
+            "#{inactiveState}, #{pauseState}, #{abandonState}, #{sizeLimit}, #{signupStatus}, #{signupToken})"})
     @SelectKey( statement = "SELECT currval('customers_id_seq')", keyColumn = "id",
             keyProperty = "id", before = false, resultType = int.class )
     void insert(Customer customer);
 
     @Update({"UPDATE customers SET name=#{name}, email=#{email}, description=#{description}, " +
             "accountType=#{accountType}, expiryTime=#{expiryTime}, deviceLimit=#{deviceLimit}, " +
-            "customerStatus=#{customerStatus} WHERE id=#{id} AND master = FALSE"})
+            "customerStatus=#{customerStatus}, firstName=#{firstName}, lastName=#{lastName}, language=#{language}, " +
+            "inactiveState=#{inactiveState}, pauseState=#{pauseState}, abandonState=#{abandonState}, " +
+            "sizeLimit=#{sizeLimit}, signupStatus=#{signupStatus}, signupToken=#{signupToken} " +
+            "WHERE id=#{id} AND master = FALSE"})
     void update(Customer customer);
 
     @Delete({"DELETE FROM customers WHERE id=#{id} AND master = FALSE"})

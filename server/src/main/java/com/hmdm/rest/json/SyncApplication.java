@@ -142,4 +142,9 @@ public class SyncApplication implements SyncApplicationInt {
     public Boolean getBottom() {
         return wrapped.isBottom() ? true : null;
     }
+
+    @Override
+    public Boolean getLongTap() {
+        return wrapped.isLongTap() ? true : null;
+    }
 }

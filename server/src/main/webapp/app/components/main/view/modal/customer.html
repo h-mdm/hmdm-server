@@ -17,6 +17,27 @@
         </div>
 
         <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.admin.name</label>
+            <div class='col-sm-4'>
+                <input ng-model='customer.firstName' required type='text' class='form-control' ng-disabled="formDisabled"
+                       localized-placeholder='form.customer.firstname.placeholder'>
+            </div>
+            <div class='col-sm-5'>
+                <input ng-model='customer.lastName' required type='text' class='form-control' ng-disabled="formDisabled"
+                       localized-placeholder='form.customer.lastname.placeholder'>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.customer.language</label>
+            <div class='col-sm-9'>
+                <input ng-model='customer.language' required type='text' class='form-control' ng-disabled="formDisabled"
+                       localized-placeholder='form.customer.language.placeholder'>
+            </div>
+        </div>
+
+
+        <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.user.email</label>
             <div class='col-sm-9'>
                 <input ng-model='customer.email' required type='text' class='form-control' ng-disabled="formDisabled"
@@ -34,18 +55,16 @@
 
         <div class="form-group">
             <label class='col-sm-3 control-label' localized>form.customer.type</label>
-            <div class='col-sm-9'>
+            <div class='col-sm-3'>
                 <select required ng-model="customer.accountType" class="form-control">
                     <option ng-value="0" ng-selected="customer.accountType==0" localized>customer.type.demo</option>
                     <option ng-value="1" ng-selected="customer.accountType==1" localized>customer.type.small</option>
                     <option ng-value="2" ng-selected="customer.accountType==2" localized>customer.type.corporate</option>
                 </select>
             </div>
-        </div>
 
-        <div class="form-group">
             <label class='col-sm-3 control-label' localized>form.customer.status</label>
-            <div class='col-sm-9'>
+            <div class='col-sm-3'>
                 <select required ng-model="customer.customerStatus" class="form-control">
                     <option value="customer.new" ng-selected="customer.accountStatus=='customer.new'" localized>customer.new</option>
                     <option value="customer.active" ng-selected="customer.accountStatus=='customer.active'" localized>customer.active</option>
@@ -54,8 +73,11 @@
                     <option value="customer.internal.test" ng-selected="customer.accountStatus=='customer.internal.test'" localized>customer.internal.test</option>
                     <option value="customer.developer" ng-selected="customer.accountStatus=='customer.developer'" localized>customer.developer</option>
                     <option value="customer.difficult" ng-selected="customer.accountStatus=='customer.difficult'" localized>customer.difficult</option>
+                    <option value="customer.inactive" ng-selected="customer.accountStatus=='customer.inactive'" localized>customer.inactive</option>
                     <option value="customer.pause" ng-selected="customer.accountStatus=='customer.pause'" localized>customer.pause</option>
+                    <option value="customer.abandon" ng-selected="customer.accountStatus=='customer.abandon'" localized>customer.abandon</option>
                     <option value="customer.denial" ng-selected="customer.accountStatus=='customer.denial'" localized>customer.denial</option>
+                    <option value="customer.onpremise" ng-selected="customer.accountStatus=='customer.onpremise'" localized>customer.onpremise</option>
                     <option value="customer.client" ng-selected="customer.accountStatus=='customer.client'" localized>customer.client</option>
                 </select>
             </div>
@@ -79,9 +101,14 @@
 
         <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.customer.device.limit</label>
-            <div class='col-sm-9'>
+            <div class='col-sm-3'>
                 <input ng-model='customer.deviceLimit' required type='number' class='form-control' ng-disabled="formDisabled"
                        localized-placeholder='form.customer.device.limit'>
+            </div>
+            <label class='col-sm-3 control-label' localized>form.customer.size.limit</label>
+            <div class='col-sm-3'>
+                <input ng-model='customer.sizeLimit' required type='number' class='form-control' ng-disabled="formDisabled"
+                       localized-placeholder='form.customer.size.limit.placeholder'>
             </div>
         </div>
 

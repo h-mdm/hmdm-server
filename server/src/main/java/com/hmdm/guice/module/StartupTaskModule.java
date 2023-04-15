@@ -6,6 +6,7 @@ import com.hmdm.event.EventService;
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
+import com.hmdm.task.CustomerStatusTask;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class StartupTaskModule {
 
@@ -25,6 +27,8 @@ public class StartupTaskModule {
     private BackgroundTaskRunnerService taskRunner;
     private int deviceFastSearchChars;
     private String sqlInitScriptPath;
+    private CustomerStatusTask customerStatusTask;
+    private boolean customerAutoStatus;
 
     private static final Logger logger = LoggerFactory.getLogger(EventService.class);
 
@@ -33,13 +37,17 @@ public class StartupTaskModule {
      */
     @Inject
     public StartupTaskModule(CommonDAO commonDAO, UnsecureDAO unsecureDAO, BackgroundTaskRunnerService taskRunner,
+                             CustomerStatusTask customerStatusTask,
                              @Named("device.fast.search.chars") int deviceFastSearchChars,
-                             @Named("sql.init.script.path") String sqlInitScriptPath) {
+                             @Named("sql.init.script.path") String sqlInitScriptPath,
+                             @Named("customer.auto.status") boolean customerAutoStatus) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.taskRunner = taskRunner;
         this.deviceFastSearchChars = deviceFastSearchChars;
         this.sqlInitScriptPath = sqlInitScriptPath;
+        this.customerStatusTask = customerStatusTask;
+        this.customerAutoStatus = customerAutoStatus;
     }
 
     public void init() {
@@ -47,6 +55,9 @@ public class StartupTaskModule {
         taskRunner.submitTask(new UpdateDeviceFastSearchTask());
         if (!sqlInitScriptPath.equals("")) {
             taskRunner.submitTask(new ExecuteInitSqlTask());
+        }
+        if (customerAutoStatus) {
+            taskRunner.submitRepeatableTask(customerStatusTask, 0, 1, TimeUnit.HOURS);
         }
     }
 

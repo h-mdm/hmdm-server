@@ -31,6 +31,11 @@
             <div class="col-sm-9 bold"><span ng-class="{'warning-font': settings.deviceCount > settings.deviceLimit}">{{settings.deviceCount}} / {{settings.deviceLimit}}</span></div>
         </div>
 
+        <div class='form-group' ng-if="settings.sizeLimit > 0">
+            <div class="col-sm-3 align-right" localized>form.customer.size.limit</div>
+            <div class="col-sm-9 bold"><span>{{settings.sizeLimit}} Mb</span></div>
+        </div>
+
         <div class='form-group'>
             <label for='username' class='col-sm-3 control-label' style="font-weight: normal" localized>form.user.name</label>
             <div class='col-sm-9'>

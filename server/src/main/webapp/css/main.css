@@ -2108,15 +2108,15 @@ td.app-desc span {
     color: blue;
 }
 
-.customer-need-followup {
+.customer-need-followup, .customer-inactive {
     color: red;
 }
 
-.customer-internal-test, .customer-developer, .customer-denial, .customer-client {
+.customer-internal-test, .customer-developer, .customer-denial, .customer-onpremise, .customer-client {
     color: #c0c0c0;
 }
 
-.customer-difficult, .customer-pause {
+.customer-difficult, .customer-pause, .customer-abandon {
     color: #c0a080;
 }
 

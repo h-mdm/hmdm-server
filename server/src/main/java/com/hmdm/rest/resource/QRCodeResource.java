@@ -217,6 +217,17 @@ public class QRCodeResource {
                             mobileEnrollmentEntry = "\"android.app.extra.PROVISIONING_USE_MOBILE_DATA\":true,\n";
                         }
 
+                        String miscQrParametersEntry = "";
+                        if (configuration.getQrParameters() != null) {
+                            miscQrParametersEntry = configuration.getQrParameters().trim();
+                            if (!miscQrParametersEntry.equals("")) {
+                                if (!miscQrParametersEntry.endsWith(",")) {
+                                    miscQrParametersEntry += ",";
+                                }
+                                miscQrParametersEntry += "\n";
+                            }
+                        }
+
                         String s = "{\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
@@ -224,6 +235,7 @@ public class QRCodeResource {
                                 wifiSsidEntry + wifiPasswordEntry + mobileEnrollmentEntry +
                                 "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n" +
                                 "\"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\":true,\n" +
+                                miscQrParametersEntry +
                                 "\"android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE\": " +
                                 generateExtrasBundle(deviceID, createOnDemand, configuration, groups, useId, req.getContextPath()) +
                                 "}\n";

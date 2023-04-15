@@ -38,6 +38,8 @@ import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +65,7 @@ import java.util.stream.Collectors;
 @Path("/private/users")
 public class UserResource {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
     private static final String sessionCredentials = "credentials";
 
     private UserDAO userDAO;
@@ -162,7 +165,8 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePassword(User user) {
         return SecurityContext.get().getCurrentUser().map(u -> {
-            if (u.getId() != user.getId()) {
+            if (!u.getId().equals(user.getId())) {
+                logger.warn("Failed to update password: u.getId()=" + u.getId() + ", user.getId()=" + user.getId());
                 return Response.PERMISSION_DENIED();
             }
 

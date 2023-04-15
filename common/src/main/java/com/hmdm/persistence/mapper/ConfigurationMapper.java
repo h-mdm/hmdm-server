@@ -85,6 +85,7 @@ public interface ConfigurationMapper {
             "orientation=#{orientation}, " +
             "runDefaultLauncher=#{runDefaultLauncher}, " +
             "disableScreenshots=#{disableScreenshots}, " +
+            "autostartForeground=#{autostartForeground}, " +
             "useDefaultDesignSettings=#{useDefaultDesignSettings}, " +
             "timeZone=#{timeZone}, " +
             "allowedClasses=#{allowedClasses}, " +
@@ -105,6 +106,7 @@ public interface ConfigurationMapper {
             "wifiSSID=#{wifiSSID}, " +
             "wifiPassword=#{wifiPassword}, " +
             "wifiSecurityType=#{wifiSecurityType}, " +
+            "qrParameters=#{qrParameters}, " +
             "mobileEnrollment=#{mobileEnrollment}, " +
             "kioskHome=#{kioskHome}, " +
             "kioskRecents=#{kioskRecents}, " +

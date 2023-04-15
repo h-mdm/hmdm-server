@@ -32,6 +32,7 @@ import com.hmdm.rest.json.CustomerSearchRequest;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
+import com.hmdm.service.MailchimpService;
 import com.hmdm.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class CustomerResource {
     private CustomerDAO customerDAO;
     private UnsecureDAO unsecureDAO;
     private UserDAO userDAO;
+    private MailchimpService mailchimpService;
 
     public CustomerResource() {
     }
@@ -77,10 +79,11 @@ public class CustomerResource {
      * <p>Constructs new <code>CustomerResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public CustomerResource(CustomerDAO customerDAO, UnsecureDAO unsecureDAO, UserDAO userDAO) {
+    public CustomerResource(CustomerDAO customerDAO, UnsecureDAO unsecureDAO, UserDAO userDAO, MailchimpService mailchimpService) {
         this.customerDAO = customerDAO;
         this.unsecureDAO = unsecureDAO;
         this.userDAO = userDAO;
+        this.mailchimpService = mailchimpService;
     }
 
     @GET
@@ -147,6 +150,12 @@ public class CustomerResource {
 
             if (customer.getId() == null) {
                 String adminCredentials = this.customerDAO.insertCustomer(customer);
+                if (customer.getEmail() != null && !customer.getEmail().trim().equals("")) {
+                    if (mailchimpService.initialize()) {
+                        mailchimpService.subscribe(customer);
+                    }
+                }
+
                 Map<String, String> result = new HashMap<>();
                 result.put("adminCredentials", adminCredentials);
                 return Response.OK(result);

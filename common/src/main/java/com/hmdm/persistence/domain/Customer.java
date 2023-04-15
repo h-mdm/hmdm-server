@@ -46,6 +46,20 @@ public class Customer implements Serializable {
     public static final int Enterprise = 2;
     public static final int Primary = 3;
 
+    public static final String CUSTOMER_NEW = "customer.new";
+    public static final String CUSTOMER_ACTIVE = "customer.active";
+    public static final String CUSTOMER_NEED_FOLLOWUP = "customer.need.followup";
+    public static final String CUSTOMER_FOLLOWUP_SENT = "customer.followup.sent";
+    public static final String CUSTOMER_INTERNAL_TEST = "customer.internal.test";
+    public static final String CUSTOMER_DEVELOPER = "customer.developer";
+    public static final String CUSTOMER_DIFFICULT = "customer.difficult";
+    public static final String CUSTOMER_INACTIVE = "customer.inactive";
+    public static final String CUSTOMER_PAUSE = "customer.pause";
+    public static final String CUSTOMER_ABANDON = "customer.abandon";
+    public static final String CUSTOMER_DENIAL = "customer.denial";
+    public static final String CUSTOMER_ONPREMISE = "customer.onpremise";
+    public static final String CUSTOMER_CLIENT = "customer.client";
+
     /**
      * <p>A prefix for numbers for default generated devices for customer.</p>
      */
@@ -81,6 +95,11 @@ public class Customer implements Serializable {
     private int deviceLimit;
 
     /**
+     * <p>Limit of disk size in Mb</p>
+     */
+    private int sizeLimit;
+
+    /**
      * <p>Customer account type (primary / demo / small business / enterprise)</p>
      */
     private int accountType;
@@ -89,6 +108,47 @@ public class Customer implements Serializable {
      * <p>Customer status (for super-admin information purposes)</p>
      */
     private String customerStatus;
+
+    /**
+     * <p>Admin's first name (for follow-ups)</p>
+     */
+    private String firstName;
+
+    /**
+     * <p>Admin's last name (for follow-ups)</p>
+     */
+    private String lastName;
+
+    /**
+     * <p>Language (for follow-ups)</p>
+     */
+    private String language;
+
+    /**
+     * <p>State of sending follow-up emails to Inactive customers</p>
+     */
+    private int inactiveState;
+
+    /**
+     * <p>State of sending follow-up emails to Pause customers</p>
+     */
+    private int pauseState;
+
+    /**
+     * <p>State of sending follow-up emails to Abandon customers</p>
+     */
+    private int abandonState;
+
+    /**
+     * <p>Status of a self-registered customer (unconfirmed, active, blocked)</p>
+     */
+    private String signupStatus;
+
+    /**
+     * <p>Token for email confirmation</p>
+     */
+    private String signupToken;
+
 
     public Customer() {
     }
@@ -205,6 +265,14 @@ public class Customer implements Serializable {
         this.deviceLimit = deviceLimit;
     }
 
+    public int getSizeLimit() {
+        return sizeLimit;
+    }
+
+    public void setSizeLimit(int sizeLimit) {
+        this.sizeLimit = sizeLimit;
+    }
+
     public int getAccountType() {
         return accountType;
     }
@@ -219,6 +287,70 @@ public class Customer implements Serializable {
 
     public void setCustomerStatus(String customerStatus) {
         this.customerStatus = customerStatus;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public int getInactiveState() {
+        return inactiveState;
+    }
+
+    public void setInactiveState(int inactiveState) {
+        this.inactiveState = inactiveState;
+    }
+
+    public int getPauseState() {
+        return pauseState;
+    }
+
+    public void setPauseState(int pauseState) {
+        this.pauseState = pauseState;
+    }
+
+    public int getAbandonState() {
+        return abandonState;
+    }
+
+    public void setAbandonState(int abandonState) {
+        this.abandonState = abandonState;
+    }
+
+    public String getSignupStatus() {
+        return signupStatus;
+    }
+
+    public void setSignupStatus(String signupStatus) {
+        this.signupStatus = signupStatus;
+    }
+
+    public String getSignupToken() {
+        return signupToken;
+    }
+
+    public void setSignupToken(String signupToken) {
+        this.signupToken = signupToken;
     }
 
     @Override
@@ -247,7 +379,16 @@ public class Customer implements Serializable {
                 ", deviceConfigurationId=" + deviceConfigurationId +
                 ", accountType=" + accountType +
                 ", deviceLimit=" + deviceLimit +
+                ", sizeLimit=" + sizeLimit +
                 ", customerStatus='" + customerStatus + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", language='" + language + '\'' +
+                ", inactiveState=" + inactiveState +
+                ", pauseState=" + pauseState +
+                ", abandonState=" + abandonState +
+                ", signupStatus=" + signupStatus +
+                ", signupToken=" + signupToken +
                 '}';
     }
 }

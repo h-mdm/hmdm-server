@@ -108,6 +108,8 @@ public class Settings implements CustomerData, Serializable {
     private int deviceLimit;
     @ApiModelProperty(hidden = true)
     private int deviceCount;
+    @ApiModelProperty(hidden = true)
+    private int sizeLimit;
 
     public Settings() {
     }
@@ -368,6 +370,14 @@ public class Settings implements CustomerData, Serializable {
         this.deviceCount = deviceCount;
     }
 
+    public int getSizeLimit() {
+        return sizeLimit;
+    }
+
+    public void setSizeLimit(int sizeLimit) {
+        this.sizeLimit = sizeLimit;
+    }
+
     @Override
     public String toString() {
         return "Settings{" +
@@ -392,6 +402,7 @@ public class Settings implements CustomerData, Serializable {
                 ", expiryTime=" + expiryTime +
                 ", deviceLimit=" + deviceLimit +
                 ", deviceCount=" + deviceCount +
+                ", sizeLimit=" + sizeLimit +
                 '}';
     }
 }

@@ -61,6 +61,8 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
     private Integer keyCode;
     @ApiModelProperty("A flag indicating if application must be displayed at the bottom of the launcher")
     private boolean bottom;
+    @ApiModelProperty("A flag indicating if app settings could be opened by a long tap")
+    private boolean longTap;
 
     // A helper property to indicate the action required to be performed by mobile device
     // in regard to application installation
@@ -198,6 +200,14 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
         this.bottom = bottom;
     }
 
+    public boolean isLongTap() {
+        return longTap;
+    }
+
+    public void setLongTap(boolean longTap) {
+        this.longTap = longTap;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersionConfigurationLink{" +
@@ -215,6 +225,7 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
                 ", screenOrder=" + screenOrder +
                 ", keyCode=" + keyCode +
                 ", bottom=" + bottom +
+                ", longTap=" + longTap +
                 '}';
     }
 }

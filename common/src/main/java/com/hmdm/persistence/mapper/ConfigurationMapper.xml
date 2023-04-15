@@ -29,9 +29,9 @@
                                     gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates, disableLocation, appPermissions,
                                     pushOptions, keepaliveTime, autoBrightness, brightness, manageTimeout, timeout,
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
-                                    runDefaultLauncher, disableScreenshots, timeZone, allowedClasses, newServerUrl,
+                                    runDefaultLauncher, disableScreenshots, autostartForeground, timeZone, allowedClasses, newServerUrl,
                                     lockSafeSettings, permissive, kioskExit, showWifi, mainAppId, eventReceivingComponent, kioskMode,
-                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, mobileEnrollment, kioskHome, kioskRecents,
+                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, qrParameters, mobileEnrollment, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, kioskLockButtons, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
                                     scheduleAppUpdate, appUpdateFrom, appUpdateTo, defaultFilePath)
@@ -40,9 +40,9 @@
                 #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates}, #{disableLocation}, #{appPermissions},
                 #{pushOptions}, #{keepaliveTime}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout},
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
-                #{runDefaultLauncher}, #{disableScreenshots}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
+                #{runDefaultLauncher}, #{disableScreenshots}, #{autostartForeground}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
                 #{lockSafeSettings}, #{permissive}, #{kioskExit}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode},
-                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
+                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{qrParameters}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
                 #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{kioskLockButtons}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo},
                 #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{defaultFilePath})
@@ -50,12 +50,12 @@
 
     <insert id="insertConfigurationApplications">
         INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon,
-        action, screenOrder, keyCode, bottom)
+        action, screenOrder, keyCode, bottom, longTap)
         VALUES
         <foreach item="item" index="index" collection="apps"
                  open="" separator="," close="">
             (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon},
-            #{item.action}, #{item.screenOrder}, #{item.keyCode}, #{item.bottom})
+            #{item.action}, #{item.screenOrder}, #{item.keyCode}, #{item.bottom}, #{item.longTap})
         </foreach>
     </insert>
 
@@ -111,6 +111,7 @@
                configurationApplications.screenOrder AS screenOrder,
                configurationApplications.keyCode AS keyCode,
                configurationApplications.bottom AS bottom,
+               configurationApplications.longTap AS longTap,
                cap.skipVersionCheck AS skipVersion
         FROM applications
         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
@@ -150,6 +151,7 @@
                configurationApplications.screenOrder AS screenOrder,
                configurationApplications.keyCode AS keyCode,
                configurationApplications.bottom AS bottom,
+               configurationApplications.longTap AS longTap,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL
@@ -192,6 +194,7 @@
                configurationApplications.screenOrder AS screenOrder,
                configurationApplications.keyCode AS keyCode,
                configurationApplications.bottom AS bottom,
+               configurationApplications.longTap AS longTap,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL

@@ -125,6 +125,8 @@ public interface SyncResponseInt {
 
     Boolean getDisableScreenshots();
 
+    Boolean getAutostartForeground();
+
     String getTimeZone();
 
     String getAllowedClasses();

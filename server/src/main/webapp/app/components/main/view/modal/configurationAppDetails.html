@@ -29,6 +29,16 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <div class="col-sm-6">
+                <label for="c_bottom" localized>form.configuration.apps.long.tap</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="checkbox" id="c_longtap" class="form-control" ng-model="application.longTap"
+                       value="{{application.longTap}}"/>
+            </div>
+        </div>
+
         <div class='form-group'>
             <div class='col-sm-12 text-center'>
                 <button type='submit' class='btn btn-default' ng-click='closeModal()' localized>button.close</button>

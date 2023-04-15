@@ -25,13 +25,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.inject.Named;
 
-import com.hmdm.persistence.ConfigurationFileDAO;
-import com.hmdm.persistence.IconDAO;
+import com.hmdm.persistence.*;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.rest.json.APKFileDetails;
 import com.hmdm.rest.json.FileUploadResult;
 import com.hmdm.util.APKFileAnalyzer;
 import com.hmdm.util.StringUtil;
+import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -64,8 +64,6 @@ import org.apache.poi.util.IOUtils;
 import org.reflections.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.HFile;
@@ -85,6 +83,7 @@ public class FilesResource {
     private String baseUrl;
     private File baseDirectory;
     private CustomerDAO customerDAO;
+    private UnsecureDAO unsecureDAO;
     private ApplicationDAO applicationDAO;
     private APKFileAnalyzer apkFileAnalyzer;
     private ConfigurationFileDAO configurationFileDAO;
@@ -100,6 +99,7 @@ public class FilesResource {
     public FilesResource(@Named("files.directory") String filesDirectory,
                          @Named("base.url") String baseUrl,
                          CustomerDAO customerDAO,
+                         UnsecureDAO unsecureDAO,
                          ApplicationDAO applicationDAO,
                          APKFileAnalyzer apkFileAnalyzer,
                          ConfigurationFileDAO configurationFileDAO,
@@ -107,6 +107,7 @@ public class FilesResource {
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
         this.customerDAO = customerDAO;
+        this.unsecureDAO = unsecureDAO;
         this.applicationDAO = applicationDAO;
         this.configurationFileDAO = configurationFileDAO;
         this.iconDAO = iconDAO;
@@ -263,6 +264,26 @@ public class FilesResource {
             FileUtil.writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
 
             FileUploadResult result = new FileUploadResult();
+
+            if (!unsecureDAO.isSingleCustomer()) {
+                // Check the disk size in multi-tenant mode
+                Customer currentCustomer = customerDAO.findById(SecurityContext.get().getCurrentCustomerId().get());
+                if (!currentCustomer.isMaster() && currentCustomer.getSizeLimit() > 0) {
+                    File userDir = new File(this.filesDirectory, currentCustomer.getFilesDir());
+                    long userDirSize = 0;
+                    long uploadFileSize = uploadFile.length();
+                    if (userDir.exists()) {
+                        userDirSize = FileUtils.sizeOfDirectory(userDir);
+                    }
+                    long totalSizeMb = (userDirSize + uploadFileSize) / 1048576l;
+                    if (totalSizeMb > currentCustomer.getSizeLimit()) {
+                        uploadFile.delete();
+                        return Response.ERROR("error.size.limit.exceeded",
+                                "" + totalSizeMb + " / " + currentCustomer.getSizeLimit());
+                    }
+                }
+            }
+
             result.setServerPath(uploadFile.getAbsolutePath());
 
             if (fileName.endsWith("apk")) {

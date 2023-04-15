@@ -22,6 +22,7 @@
 package com.hmdm.rest.resource;
 
 import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.UploadedFileDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
@@ -33,6 +34,7 @@ import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.FileUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -64,6 +66,7 @@ public class ConfigurationFileResource {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationFileResource.class);
 
     private CustomerDAO customerDAO;
+    private UnsecureDAO unsecureDAO;
     private String filesDirectory;
     private UploadedFileDAO uploadedFileDAO;
     private String baseUrl;
@@ -82,10 +85,12 @@ public class ConfigurationFileResource {
     public ConfigurationFileResource(CustomerDAO customerDAO,
                                      @Named("files.directory") String filesDirectory,
                                      @Named("base.url") String baseUrl,
-                                     UploadedFileDAO uploadedFileDAO) {
+                                     UploadedFileDAO uploadedFileDAO,
+                                     UnsecureDAO unsecureDAO) {
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
         this.uploadedFileDAO = uploadedFileDAO;
+        this.unsecureDAO = unsecureDAO;
         this.baseUrl = baseUrl;
     }
 
@@ -124,6 +129,21 @@ public class ConfigurationFileResource {
                     }
 
                     StreamUtils.copyThenClose(uploadedInputStream, new BufferedOutputStream(new FileOutputStream(configFile)));
+
+                    if (!unsecureDAO.isSingleCustomer()) {
+                        // Check the disk size in multi-tenant mode
+                        if (!customer.isMaster() && customer.getSizeLimit() > 0) {
+                            long userDirSize = 0;
+                            long uploadFileSize = configFile.length();
+                            userDirSize = FileUtils.sizeOfDirectory(customerFilesDirectory);
+                            long totalSizeMb = (userDirSize + uploadFileSize) / 1048576l;
+                            if (totalSizeMb > customer.getSizeLimit()) {
+                                configFile.delete();
+                                return Response.ERROR("error.size.limit.exceeded",
+                                        "" + totalSizeMb + " / " + customer.getSizeLimit());
+                            }
+                        }
+                    }
 
                     UploadedFile uploadedFile = new UploadedFile();
                     uploadedFile.setCustomerId(customerId);

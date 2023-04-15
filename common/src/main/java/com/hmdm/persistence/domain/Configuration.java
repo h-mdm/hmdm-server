@@ -114,6 +114,8 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean runDefaultLauncher;
     @ApiModelProperty("Flag indicating if screenshots are disabled on the device")
     private Boolean disableScreenshots;
+    @ApiModelProperty("Flag indicating if auto-started apps should be kept in the foreground")
+    private Boolean autostartForeground;
     @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
     private String timeZone;
     @ApiModelProperty("Allowed classes, separated by comma")
@@ -144,6 +146,8 @@ public class Configuration implements CustomerData, Serializable {
     private String wifiPassword;
     @ApiModelProperty("WiFi security type for provisioning: NONE/WPA/WEP/EAP")
     private String wifiSecurityType;
+    @ApiModelProperty("Additional QR code parameters")
+    private String qrParameters;
     @ApiModelProperty("Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
     @ApiModelProperty("Flag enabling Home button in kiosk mode")
@@ -418,6 +422,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setWifiSecurityType(String wifiSecurityType) {
         this.wifiSecurityType = wifiSecurityType;
+    }
+
+    public String getQrParameters() {
+        return qrParameters;
+    }
+
+    public void setQrParameters(String qrParameters) {
+        this.qrParameters = qrParameters;
     }
 
     public boolean isMobileEnrollment() {
@@ -708,6 +720,14 @@ public class Configuration implements CustomerData, Serializable {
         this.disableScreenshots = disableScreenshots;
     }
 
+    public Boolean getAutostartForeground() {
+        return autostartForeground;
+    }
+
+    public void setAutostartForeground(Boolean autostartForeground) {
+        this.autostartForeground = autostartForeground;
+    }
+
     public String getTimeZone() {
         return timeZone;
     }
@@ -816,6 +836,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setWifiSSID(getWifiSSID());
         copy.setWifiPassword(getWifiPassword());
         copy.setWifiSecurityType(getWifiSecurityType());
+        copy.setQrParameters(getQrParameters());
         copy.setKioskHome(getKioskHome());
         copy.setKioskRecents(getKioskRecents());
         copy.setKioskNotifications(getKioskNotifications());
@@ -845,6 +866,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setOrientation(getOrientation());
         copy.setRunDefaultLauncher(getRunDefaultLauncher());
         copy.setDisableScreenshots(getDisableScreenshots());
+        copy.setAutostartForeground(getAutostartForeground());
         copy.setTimeZone(getTimeZone());
         copy.setAllowedClasses(getAllowedClasses());
         copy.setNewServerUrl(getNewServerUrl());

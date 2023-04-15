@@ -96,6 +96,8 @@ public class Application implements CustomerData, Serializable {
     private Integer keyCode;
     @ApiModelProperty("A flag indicating if application must be displayed at the bottom of the launcher")
     private boolean bottom;
+    @ApiModelProperty("A flag indicating if app settings could be opened by a long tap")
+    private boolean longTap;
 
     // A flag indicating that application is to be removed from the application
     // This field is going to be removed as now action field is stored in DB and encodes the removed apps with
@@ -431,6 +433,14 @@ public class Application implements CustomerData, Serializable {
         this.bottom = bottom;
     }
 
+    public boolean isLongTap() {
+        return longTap;
+    }
+
+    public void setLongTap(boolean longTap) {
+        this.longTap = longTap;
+    }
+
     @Override
     public String toString() {
         return "Application{" +
@@ -447,6 +457,7 @@ public class Application implements CustomerData, Serializable {
                 ", showIcon=" + showIcon +
                 ", useKiosk=" + useKiosk +
                 ", bottom=" + bottom +
+                ", longTap=" + longTap +
                 ", iconText='" + iconText + '\'' +
                 ", iconId='" + iconId + '\'' +
                 ", runAfterInstall=" + runAfterInstall +

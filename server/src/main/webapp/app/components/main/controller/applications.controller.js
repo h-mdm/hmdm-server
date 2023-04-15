@@ -236,6 +236,9 @@ angular.module('headwind-kiosk')
                 } else {
                     if (response.data.message == 'form.application.version.code.exists') {
                         $scope.errorMessage = localization.localize(response.data.message);
+                    } else if (response.data.message == 'error.size.limit.exceeded') {
+                        $scope.errorMessage = localization.localize(response.data.message) +
+                            ' (' + response.data.data + ' Mb)';
                     } else {
                         $scope.errorMessage = localization.localize('error.apk.parse');
                     }

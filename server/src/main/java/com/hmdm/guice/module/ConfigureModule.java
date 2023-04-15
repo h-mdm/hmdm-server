@@ -54,6 +54,10 @@ public class ConfigureModule extends AbstractModule {
     private final String sqlInitScriptPath = "sql.init.script.path";
     private final String proxyAddresses = "proxy.addresses";
     private final String proxyIpHeader = "proxy.ip.header";
+    private final String customerAutoStatus = "customer.auto.status";
+    private final String adminEmail = "admin.email";
+    private final String mailchimpUrl = "mailchimp.url";
+    private final String mailchimpKey = "mailchimp.key";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -124,5 +128,14 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(proxyAddresses)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(proxyIpHeader);
         this.bindConstant().annotatedWith(Names.named(proxyIpHeader)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(customerAutoStatus);
+        this.bindConstant().annotatedWith(Names.named(customerAutoStatus)).to(
+                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        opt = this.context.getInitParameter(adminEmail);
+        this.bindConstant().annotatedWith(Names.named(adminEmail)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(mailchimpUrl);
+        this.bindConstant().annotatedWith(Names.named(mailchimpUrl)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(mailchimpKey);
+        this.bindConstant().annotatedWith(Names.named(mailchimpKey)).to(opt != null ? opt : "");
     }
 }

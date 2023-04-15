@@ -81,4 +81,10 @@
     Defaults to X-Real-IP -->
     <!-- <Parameter name="proxy.ip.header" value="${proxy.ip.header}"/> -->
 
-</Context>
+    <!--<Parameter name="customer.auto.status" value="${customer.auto.status}"/>
+        <Parameter name="admin.email" value="${admin.email}"/>
+        <Parameter name="mailchimp.url" value="${mailchimp.url}"/>
+        <Parameter name="mailchimp.key" value="${mailchimp.key}"/> -->
+
+
+    </Context>

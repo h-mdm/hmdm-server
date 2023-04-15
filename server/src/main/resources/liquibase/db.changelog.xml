@@ -2350,5 +2350,52 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="22.03.23-12:56" author="seva" context="common">
+        <comment>Column,new: customers#firstName, lastName, language, inactiveState, pauseState, abandonState</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN firstName VARCHAR(100);
+            ALTER TABLE customers ADD COLUMN lastName VARCHAR(100);
+            ALTER TABLE customers ADD COLUMN language VARCHAR(100);
+            ALTER TABLE customers ADD COLUMN inactiveState INT NOT NULL DEFAULT 0;
+            ALTER TABLE customers ADD COLUMN pauseState INT NOT NULL DEFAULT 0;
+            ALTER TABLE customers ADD COLUMN abandonState INT NOT NULL DEFAULT 0;
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP COLUMN firstName;
+            ALTER TABLE customers DROP COLUMN lastName;
+            ALTER TABLE customers DROP COLUMN language;
+            ALTER TABLE customers DROP COLUMN inactiveState;
+            ALTER TABLE customers DROP COLUMN pauseState;
+            ALTER TABLE customers DROP COLUMN abandonState;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="27.03.23-10:55" author="seva" context="common">
+        <comment>Column,new: customers#sizeLimit</comment>
+        <sql>
+            ALTER TABLE customers ADD COLUMN sizeLimit INT NOT NULL DEFAULT 100;
+            ALTER TABLE customers ADD COLUMN signupStatus VARCHAR(100) DEFAULT 'active';
+            ALTER TABLE customers ADD COLUMN signupToken VARCHAR(100);
+        </sql>
+        <rollback>
+            ALTER TABLE customers DROP COLUMN sizeLimit;
+            ALTER TABLE customers DROP COLUMN signupStatus;
+            ALTER TABLE customers DROP COLUMN signupToken;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15.04.23-17:20" author="seva" context="common">
+        <comment>Column,new: configurationApplications#longTap, configurations#qrParameters, configurations#autostartForeground</comment>
+        <sql>
+            ALTER TABLE configurationApplications ADD COLUMN longTap BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE configurations ADD COLUMN qrParameters TEXT;
+            ALTER TABLE configurations ADD COLUMN autostartForeground BOOLEAN;
+        </sql>
+        <rollback>
+            ALTER TABLE configurationApplications DROP COLUMN longTap;
+            ALTER TABLE configurations DROP COLUMN qrParameters;
+            ALTER TABLE configurations DROP COLUMN autostartForeground;
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

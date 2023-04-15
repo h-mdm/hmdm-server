@@ -134,7 +134,8 @@ document.localization ['zh_CN'] = {
     'error.request.failure':"请求失败",
     'error.configuration.device.use' : "无法删除此配置，它在设备上使用。首先转到\"设备\",使用此配置查找设备并更改其设置。",
     'error.invalid.system.update.time':"无效的安装间隔",
-		
+    'error.size.limit.exceeded': '超出存储限制',
+
     'error.configuration.file.empty.name':"输入文档名",
     'error.configuration.file.empty.desc':"指定文档资讯",
     'error.configuration.file.empty.path':"指定设备上的路径",
@@ -245,6 +246,8 @@ document.localization ['zh_CN'] = {
     'form.configuration.settings.mdm.allowed.classes.placeholder' : "以逗号分隔的类，例如: com.android.settings.homepage.SettingsHomepageActivity",
     'form.configuration.settings.mdm.restrictions': '限制条件',
     'form.configuration.settings.mdm.restrictions.placeholder': 'MDM限制，以逗号分隔，例如： no_sms,no_outgoing_calls,no_usb_file_transfer',
+    'form.configuration.settings.mdm.misc': '其他二维码入口',
+    'form.configuration.settings.mdm.misc.placeholder': '逗号分隔的条目，例如：\n"android.app.extra.PROVISIONING_LOCALE": "de_DE"',
     'form.configuration.settings.mdm.qrcode.url':"QR代码网址",
     'form.configuration.settings.mdm.hint':"选择主要应用程式和组件",
     'form.configuration.apps.search.label' : "搜索",
@@ -265,6 +268,7 @@ document.localization ['zh_CN'] = {
     'form.configuration.apps.edit.details':"其他参数",
     'form.configuration.apps.keycode' : "按钮代码",
     'form.configuration.apps.bottom': '显示在底行',
+    'form.configuration.apps.long.tap': '长按设置',
     'form.configuration.apps.hint' : "提示:要断开应用程式与配置的链接，请选择操作“阻止\"或“不安装\"。",
     'form.configuration.settings.design.use.default':"使用默认设计",
     'form.configuration.settings.design.color.background' : "背景颜色",
@@ -318,6 +322,7 @@ document.localization ['zh_CN'] = {
     'form.configuration.settings.common.timezone.placeholder':"例如America / Los_Angeles",
     'form.configuration.settings.common.timezone.link':"时区列表",
     'form.configuration.settings.common.no.network.warning' : "警告！不要关闭所有连接通道，否则您将无法再管理设备！",
+    'form.configuration.settings.common.autostart.foreground': '在前台启动应用程序',
     'form.configuration.settings.request.updates': '位置追踪',
     'form.configuration.settings.request.updates.donottrack': '没有主动跟踪（使用第三方应用位置数据）',
     'form.configuration.settings.request.updates.gps': '通过 GPS 追踪位置',
@@ -453,6 +458,11 @@ document.localization ['zh_CN'] = {
 		
     'form.customer.name' : "名称",
     'form.customer.name.placeholder':"输入组织名称",
+    'form.customer.admin.name': '管理员名称',
+    'form.customer.firstname.placeholder': '名',
+    'form.customer.lastname.placeholder': '姓',
+    'form.customer.language': '语言',
+    'form.customer.language.placeholder': '为英文留空或输入两个小写字母',
     'form.customer.apiKey':"API密钥",
     'form.customer.apiKey.placeholder':"输入API密钥",
     'form.customer.prefix' : "字首",
@@ -466,7 +476,9 @@ document.localization ['zh_CN'] = {
     'form.customer.status':"客户状态",
     'form.customer.expiry.time' : "到期日",
     'form.customer.device.limit':"设备限制",
-		
+    'form.customer.size.limit': '存储限制',
+    'form.customer.size.limit.placeholder': '大小 (Mb)',
+
     'form.device.number' : "编号",
     'form.device.number.locked': '由于之前的号码更改尚未完成，因此无法更改号码。',
     'form.device.migration.warning': '设备编号将被更改。 确保设备已打开并在线。',
@@ -670,6 +682,9 @@ document.localization ['zh_CN'] = {
     'customer.developer':"开发人员",
     'customer.difficult' : "複习",
     'customer.pause' : "暂停",
+    'customer.inactive': '没有登录',
+    'customer.abandon': '弃',
+    'customer.onpremise': '内部试用',
     'customer.denial' : "谢绝",
     'customer.client' : "客户",
 		

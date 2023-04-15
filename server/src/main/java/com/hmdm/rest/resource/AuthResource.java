@@ -26,6 +26,7 @@ import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
 import com.hmdm.persistence.domain.User;
+import com.hmdm.rest.json.view.user.UserView;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
 
@@ -116,7 +117,7 @@ public class AuthResource {
 
             user.setSingleCustomer(userDAO.isSingleCustomer());
 
-            return Response.OK( user );
+            return Response.OK(new UserView(user));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.INTERNAL_ERROR();

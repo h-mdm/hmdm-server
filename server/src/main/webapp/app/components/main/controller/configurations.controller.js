@@ -1560,6 +1560,8 @@ angular.module('headwind-kiosk')
                 $scope.file.url = response.data.data.url;
                 $scope.fileSelected = true;
                 $scope.successMessage = localization.localize('success.file.uploaded');
+            } else if (response.data.message == 'error.size.limit.exceeded') {
+                $scope.errorMessage = localization.localize(response.data.message) + ' (' + response.data.data + ' Mb)';
             } else {
                 $scope.errorMessage = localization.localize(response.data.message);
             }

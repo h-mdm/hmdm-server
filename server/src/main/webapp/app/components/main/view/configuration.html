@@ -384,6 +384,13 @@
                         </div>
                     </div>
 
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.common.autostart.foreground</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.autostartForeground' name="autostartForeground" type='checkbox' class='form-control common-checkbox'/>
+                        </div>
+                    </div>
+
                     <div class="config-bottom">&nbsp;</div>
                     <div class='form-group'>
                         <div class='config-save'>
@@ -816,6 +823,15 @@
                     </div>
 
                     <div class='form-group'>
+                        <label class='col-sm-3 control-label'><span localized>form.configuration.settings.mdm.misc</span></label>
+                        <div class='col-sm-9'>
+                          <textarea ng-model='configuration.qrParameters' name="qrParameters-c"
+                                    class='form-control'
+                                    localized-placeholder='form.configuration.settings.mdm.misc.placeholder'></textarea>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.mobile.enrollment</label>
                         <div class='col-sm-1'>
                             <input ng-model='configuration.mobileEnrollment' name="mobileEnrollment-c" type='checkbox' class='form-control'/>
@@ -849,6 +865,7 @@
                                     localized-placeholder='form.configuration.settings.mdm.allowed.classes.placeholder'></textarea>
                         </div>
                     </div>
+                    </div>
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label'><span localized>form.configuration.settings.mdm.restrictions</span><br><a href="https://developer.android.com/reference/android/os/UserManager" target="_blank" localized>button.more</a></label>
@@ -858,7 +875,6 @@
                                     class='form-control'
                                     localized-placeholder='form.configuration.settings.mdm.restrictions.placeholder'></textarea>
                         </div>
-                    </div>
                     </div>
 
                     <div class='form-group'>
