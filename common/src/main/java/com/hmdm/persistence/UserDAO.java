@@ -78,6 +78,12 @@ public class UserDAO extends AbstractDAO<User> {
         }
     }
 
+    /**
+     * UNSECURE! Should be called by super-admin or admin only!
+     * Make sure permissions are checked before calling this method
+     * @param user
+     */
+
     public void insert(User user) {
         this.mapper.insert(user);
         if (!user.isAllDevicesAvailable()) {

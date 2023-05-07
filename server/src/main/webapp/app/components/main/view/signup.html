@@ -1,0 +1,38 @@
+<div class="login-logo" ng-if="rebranding"><img src="rest/public/logo"><span class="logo">{{rebranding.appName}}</span></div>
+
+<div>
+    <h2 class="login-logo center" localized>signup.title</h2>
+    <div class='panel panel-default login' ng-class='{"panel-danger": errorMessage, "panel-success": successMessage}'>
+        <div class='panel-heading' ng-if='errorMessage'>{{errorMessage}}</div>
+        <div class='panel-heading' ng-if='successMessage'>{{successMessage}}</div>
+        <div class='panel-body' style="padding: 30px; background: #f6f8fc">
+            <form name='signupForm' ng-submit='signupForm.$valid && onSignup()' style="margin-bottom: 0px" ng-if="!signupComplete">
+                <div>
+                    <label for='email' localized>signup.email</label>
+                    <input class='form-control' name="email" id='email' ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/"
+                           ng-model='signup.email' localized-placeholder="signup.email.placeholder"
+                           required/>
+                    <div class="field-warning" ng-class="(signupForm.email.$dirty && signupForm.email.$error.pattern) ? '' : 'expired-device-hidden'" localized>signup.email.invalid</div>
+                </div>
+                <div class='form-group' ng-if="rebranding.termsLink">
+                    <input type='checkbox' id='agree'
+                           ng-model='signup.agree' required/>
+                    <label for='agree'><span localized>signup.terms.agree</span> <span>{{rebranding.appName}}
+                        <a href="{{rebranding.termsLink}}" target="_blank" localized>signup.terms.terms</a></span></label>
+                </div>
+
+                <button type='submit' class='btn btn-default right' style="opacity: 1; margin-top: 9px"
+                        ng-if="!loading" localized>signup.submit</button>
+                <button type='submit' class='btn btn-default right' style="opacity: 0.5; margin-top: 9px"
+                        ng-disabled='true' ng-if="loading" localized>signup.progress</button>
+            </form>
+
+            <h3 ng-if="signupComplete" style="margin: 0 0 20px 0" localized>signup.complete</h3>
+            <div ng-if="signupComplete" localized>signup.email.check</div>
+        </div>
+    </div>
+</div>
+
+<div class="login-footer" ng-if="rebranding">
+    <span>{{rebranding.appName}}</span> <span localized>app.description</span>. (c) {{rebranding.year}} <a href="{{rebranding.vendorLink}}">{{rebranding.vendorName}}</a>
+</div>

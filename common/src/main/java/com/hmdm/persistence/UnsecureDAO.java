@@ -23,16 +23,22 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.event.CustomerCreatedEvent;
+import com.hmdm.event.DeviceInfoUpdatedEvent;
+import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.*;
 import com.hmdm.rest.json.DeviceCreateOptions;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
+import com.hmdm.util.PasswordUtil;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
+import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,9 +61,17 @@ public class UnsecureDAO {
     private final ApplicationMapper applicationMapper;
     private final ApplicationDAO applicationDAO;
     private final ApplicationSettingDAO applicationSettingDAO;
+    private final UserDAO userDAO;
+    private final CommonDAO settingDAO;
+    private final CustomerDAO customerDAO;
     private final ConfigurationFileMapper configurationFileMapper;
     private final CustomerMapper customerMapper;
     private final String defaultLauncherPackage;
+    private final File filesDirectory;
+    private final int orgAdminRoleId;
+    private final EventService eventService;
+
+    private static final int DEFAULT_CUSTOMER_ID = 1;
 
     /**
      * <p>Constructs new <code>UnsecureDAO</code> instance. This implementation does nothing.</p>
@@ -70,8 +84,14 @@ public class UnsecureDAO {
                        ApplicationMapper applicationMapper,
                        ApplicationDAO applicationDAO,
                        ApplicationSettingDAO applicationSettingDAO,
+                       UserDAO userDAO,
+                       CommonDAO settingDAO,
+                       CustomerDAO customerDAO,
                        ConfigurationFileMapper configurationFileMapper,
                        CustomerMapper customerMapper,
+                       EventService eventService,
+                       @Named("files.directory") String filesDirectory,
+                       @Named("role.orgadmin.id") int orgAdminRoleId,
                        @Named("launcher.package") String defaultLauncherPackage) {
         this.deviceMapper = deviceMapper;
         this.userMapper = userMapper;
@@ -80,8 +100,14 @@ public class UnsecureDAO {
         this.applicationMapper = applicationMapper;
         this.applicationDAO = applicationDAO;
         this.applicationSettingDAO = applicationSettingDAO;
+        this.userDAO = userDAO;
+        this.settingDAO = settingDAO;
+        this.customerDAO = customerDAO;
         this.configurationFileMapper = configurationFileMapper;
         this.customerMapper = customerMapper;
+        this.eventService = eventService;
+        this.filesDirectory = new File(filesDirectory);
+        this.orgAdminRoleId = orgAdminRoleId;
         this.defaultLauncherPackage = defaultLauncherPackage;
     }
 
@@ -103,6 +129,14 @@ public class UnsecureDAO {
 
     public List<User> findAllWithOldPassword() {
         return userMapper.findAllWithOldPassword();
+    }
+
+    public void updateUserUnsecure(User user) {
+        if (user.getId() == null) {
+            userMapper.insert(user);
+        } else {
+            userMapper.updateUserMainDetails(user);
+        }
     }
 
     public void setUserNewPasswordUnsecure(User user ) {
@@ -171,7 +205,7 @@ public class UnsecureDAO {
     }
 
     public Settings getSingleCustomerSettings() {
-        return this.settingsMapper.getSettings(1);
+        return this.settingsMapper.getSettings(DEFAULT_CUSTOMER_ID);
     }
 
     public List<Application> findByPackageIdAndVersion(Integer customerId, String pkg, String version) {
@@ -356,8 +390,119 @@ public class UnsecureDAO {
         customerMapper.update(customer);
     }
 
+    public Customer getCustomerByEmailUnsecure(String email) {
+        return customerMapper.findCustomerByEmail(email);
+    }
+
+    public Customer getCustomerByNameUnsecure(String name) {
+        return customerMapper.findCustomerByName(name);
+    }
+
+    public Customer getCustomerByIdUnsecure(Integer id) {
+        return customerMapper.findCustomerById(id);
+    }
+
+    public void signupCustomerUnsecure(Customer customer, String passwordMD5, boolean copySettings) {
+
+        logger.debug("Registering customer account: {}", customer);
+
+        File customerFilesDir;
+        do {
+            customerFilesDir = new File(this.filesDirectory, UUID.randomUUID().toString());
+        } while (customerFilesDir.exists());
+        if (customerFilesDir.mkdirs()) {
+            customer.setRegistrationTime(System.currentTimeMillis());
+            customer.setFilesDir(customerFilesDir.getName());
+            generatePrefix(customer);
+            customerMapper.insert(customer);
+
+            // Here we assume that nobody will delete the default customer!
+            final Settings masterSettings = getSingleCustomerSettings();
+
+            // Create a customer admin record
+            UserRole orgAdminRole = new UserRole();
+            orgAdminRole.setId(this.orgAdminRoleId);
+
+            User user = new User();
+            user.setCustomerId(customer.getId());
+            user.setPassword(PasswordUtil.getHashFromMd5(passwordMD5));
+            user.setAuthToken(PasswordUtil.generateToken());
+            user.setLogin(customer.getName());
+            user.setName(customer.getName());
+            user.setEmail(customer.getEmail());
+            user.setUserRole(orgAdminRole);
+
+            // Works here without a security context, see notice to UserDAO.insert()
+            userDAO.insert(user);
+            logger.info("Registered customer account: {}", customer);
+            logger.info("Registered customer admin account: {}", user.getLogin());
+
+            // Copy design settings if required
+            Settings customerSettings = new Settings();
+
+            if (copySettings) {
+                customerSettings.setBackgroundColor(masterSettings.getBackgroundColor());
+                customerSettings.setBackgroundImageUrl(masterSettings.getBackgroundImageUrl());
+                customerSettings.setDesktopHeader(masterSettings.getDesktopHeader());
+                customerSettings.setDesktopHeaderTemplate(masterSettings.getDesktopHeaderTemplate());
+                customerSettings.setIconSize(masterSettings.getIconSize());
+                customerSettings.setTextColor(masterSettings.getTextColor());
+                customerSettings.setCustomerId(customer.getId());
+
+                settingDAO.saveDefaultDesignSettingsBySuperAdmin(customerSettings);
+            }
+
+            // Copy configurations if required
+            Map<Integer, Integer> configIdsMapping = new HashMap<>();
+            if (customer.getConfigurationIds() != null && customer.getConfigurationIds().length > 0) {
+                for (Integer configurationId: customer.getConfigurationIds()) {
+                    final Integer copyId = customerDAO.copyConfigurationForCustomer(customer, DEFAULT_CUSTOMER_ID, configurationId);
+                    configIdsMapping.put(configurationId, copyId);
+                }
+            }
+            logger.debug("Mapping for original and copied configurations: {}", configIdsMapping);
+
+            // Notify plugins about new customer so they could set up default settings for this customer
+            eventService.fireEvent(new CustomerCreatedEvent(customer));
+
+            // Generate three default devices
+            for (int i = 0; i < CustomerDAO.DEFAULT_DEVICE_SUFFIXES.length; i++) {
+                String deviceNumber = customer.getPrefix() + CustomerDAO.DEFAULT_DEVICE_SUFFIXES[i];
+                Device newDevice = new Device();
+                newDevice.setLastUpdate(0L);
+                newDevice.setNumber(deviceNumber);
+                newDevice.setConfigurationId(configIdsMapping.get(customer.getDeviceConfigurationId()));
+                newDevice.setCustomerId(customer.getId());
+
+                deviceMapper.insertDevice(newDevice);
+
+                eventService.fireEvent(new DeviceInfoUpdatedEvent(newDevice.getId()));
+
+                logger.info("Created default device '{}' for new customer account", deviceNumber);
+            }
+        } else {
+            logger.error("Could not create files directory when creating customer {}", customer);
+            throw new IllegalArgumentException("Could not create directory for customer's file.");
+        }
+    }
+
+    private void generatePrefix(Customer customer) {
+        String prefix;
+
+        for (int n = 2; n < customer.getName().length(); n++) {
+            prefix = customer.getName().substring(0, n).toLowerCase();
+            if (!customerMapper.isPrefixUsed(prefix)) {
+                customer.setPrefix(prefix);
+                return;
+            }
+        }
+        // The customer username is unique, so it could always be used as a prefix
+        // So we shouldn't be here, but set the prefix anyway
+        customer.setPrefix(customer.getName().toLowerCase());
+    }
+
     public Application getDefaultLauncher() {
-        List<Application> apps = this.applicationMapper.findByPackageId(1, defaultLauncherPackage);
+        List<Application> apps = this.applicationMapper.findByPackageId(DEFAULT_CUSTOMER_ID, defaultLauncherPackage);
         if (apps.size() == 0) {
             return null;
         }
@@ -391,7 +536,7 @@ public class UnsecureDAO {
     }
 
     public Device createNewDeviceOnDemand(String deviceId, DeviceCreateOptions createOptions) {
-        int customerId = 1;
+        int customerId = DEFAULT_CUSTOMER_ID;
         if (!isSingleCustomer()) {
             if (createOptions.getCustomer() == null) {
                 logger.warn("Customer is not set, device not created");
@@ -478,5 +623,9 @@ public class UnsecureDAO {
 
     public void updateDeviceFastSearch(int fastSearchChars) {
         deviceMapper.updateFastSearch(fastSearchChars);
+    }
+
+    public UserRole findRoleByNameUnsecure(String name) {
+        return userMapper.findUserRoleByName(name);
     }
 }

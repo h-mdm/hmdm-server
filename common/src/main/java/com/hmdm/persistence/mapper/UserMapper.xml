@@ -56,6 +56,7 @@
         <id property="passwordReset" column="passwordReset" />
         <id property="authToken" column="authToken" />
         <id property="passwordResetToken" column="passwordResetToken" />
+        <id property="authData" column="authData" />
         <association property="userRole" resultMap="userRoleLite"/>
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>

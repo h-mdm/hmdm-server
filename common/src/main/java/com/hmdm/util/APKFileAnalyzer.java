@@ -94,6 +94,7 @@ public class APKFileAnalyzer {
             final Process exec = Runtime.getRuntime().exec(commands);
 
             final AtomicReference<String> appPkg = new AtomicReference<>();
+            final AtomicReference<String> appName = new AtomicReference<>();
             final AtomicReference<String> appVersion = new AtomicReference<>();
             final AtomicReference<Integer> appVersionCode = new AtomicReference<>();
             final AtomicReference<String> appArch = new AtomicReference<>();
@@ -114,6 +115,8 @@ public class APKFileAnalyzer {
                 } else if (line.startsWith("native-code:") || line.startsWith("alt-native-code:")) {
                     // This is an optional line, so do not care for errors
                     parseNativeCodeLine(line, appArch);
+                } else if (line.startsWith("application-label:")) {
+                    parseAppName(line, appName);
                 }
             });
 
@@ -136,6 +139,7 @@ public class APKFileAnalyzer {
                 Integer versionCode = appVersionCode.get();
                 result.setVersionCode(versionCode != null ? versionCode : 0);
                 result.setArch(appArch.get());
+                result.setName(appName.get());
 
                 return result;
             } else {
@@ -261,6 +265,15 @@ public class APKFileAnalyzer {
         }
     }
 
+    private void parseAppName(final String line, final AtomicReference<String> appName) {
+        String[] parts = line.split(":", 2);
+        if (parts.length < 2 || parts[1].length() <= 2) {
+            return;
+        }
+        String trimmedName = parts[1].trim();
+        trimmedName = trimmedName.substring(1, trimmedName.length() - 1);
+        appName.set(trimmedName);
+    }
 
     /**
      * <p>A consumer for the stream contents. Outputs the line read from the stream and passes it to provided line
@@ -332,6 +345,7 @@ public class APKFileAnalyzer {
         fileDetails.setPkg(jsonObject.getString("package_name"));
         fileDetails.setVersion(jsonObject.getString("version_name"));
         fileDetails.setVersionCode(jsonObject.optInt("version_code"));
+        fileDetails.setName(jsonObject.optString("name"));
 
         // XAPK manifest doesn't contain data about the native code
         // So we try to guess it by searching the keywords

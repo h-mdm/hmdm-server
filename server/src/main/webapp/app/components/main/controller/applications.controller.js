@@ -209,11 +209,15 @@ angular.module('headwind-kiosk')
                         $scope.application.runAfterInstall = app.runAfterInstall;
                         $scope.application.runAtBoot = app.runAtBoot;
                         $scope.application.system = app.system;
+                        $scope.application.autoUpdateDisplayed = true;
                     }
                     if (response.data.data.fileDetails) {
                         var fileDetails = response.data.data.fileDetails;
                         $scope.application.pkg = fileDetails.pkg;
                         $scope.appdesc.pkg = fileDetails.pkg + " - " + localization.localize("form.application.from.file");
+                        if (!$scope.application.name) {
+                            $scope.application.name = fileDetails.name;
+                        }
                         $scope.application.version = fileDetails.version;
                         $scope.application.versionCode = fileDetails.versionCode;
                         $scope.appdesc.version = fileDetails.version + " - " + localization.localize("form.application.from.file");
@@ -312,6 +316,7 @@ angular.module('headwind-kiosk')
                 if (response.status === 'OK') {
                     if (!closeOnSave) {
                         if ($scope.isNewApp) {
+                            response.data.autoUpdate = $scope.application.autoUpdate;
                             $scope.application = undefined;
                             $scope.isNewApp = false;
                             $scope.file = {};
@@ -388,10 +393,10 @@ angular.module('headwind-kiosk')
                     var existingAppsForPkg = response.data;
                     if (existingAppsForPkg.length > 0 && (!request.id || request.pkg !== $scope.application.pkg)) {
                         if (existingAppsForPkg.length != 1 ||
-                            existingAppsForPkg[0].version > request.version ||
-                            (existingAppsForPkg[0].version == request.version && !$scope.complete) ||       // Do not confirm if upload different architectures
+                            existingAppsForPkg[0].versionCode > request.versionCode ||
+                            (existingAppsForPkg[0].versionCode == request.versionCode && !$scope.complete) ||       // Do not confirm if upload different architectures
                             existingAppsForPkg[0].name != request.name) {
-                            // If the user change the name, he may decide to create a new app
+                            // If the user changes the name, he may decide to create a new app
                             // Also, let him choose the proper option if there are multiple apps with the same package ID
                             startDuplicatePkgResolutionDialog(request, existingAppsForPkg);
                         } else {
@@ -551,6 +556,7 @@ angular.module('headwind-kiosk')
 
             $scope.actionChanged = function (configuration) {
                 configuration.remove = (configuration.action == '2');
+                configuration.notify = true;
                 $scope.actionGroup = -1;
             };
             $scope.isInstallOptionAvailable = function (application) {
@@ -586,6 +592,7 @@ angular.module('headwind-kiosk')
                 for (var i in $scope.configurations) {
                     if ($scope.configurations[i].selected && $scope.configurations[i].action != $scope.actionGroup) {
                         $scope.configurations[i].action = $scope.actionGroup;
+                        $scope.configurations[i].notify = true;
                     }
                 }
             };
@@ -794,7 +801,7 @@ angular.module('headwind-kiosk')
             if (!$scope.invalidFile) {
                 if (response.data.status === 'OK') {
                     $scope.file.path = response.data.data.serverPath;
-                    if (response.data.data.application) {
+                    if (response.data.data.application && response.data.data.application.id == applicationVersion.applicationId) {
                         var app = response.data.data.application;
                         $scope.application.name = app.name;
                         $scope.application.showIcon = app.showIcon;
@@ -802,11 +809,18 @@ angular.module('headwind-kiosk')
                         $scope.application.runAfterInstall = app.runAfterInstall;
                         $scope.application.runAtBoot = app.runAtBoot;
                         $scope.application.system = app.system;
+                    } else {
+                        $scope.errorMessage = localization.localize('error.package.not.match');
+                        return;
                     }
                     if (response.data.data.fileDetails) {
                         var fileDetails = response.data.data.fileDetails;
                         $scope.application.pkg = fileDetails.pkg;
+                        if (!$scope.application.name) {
+                            $scope.application.name = fileDetails.name;
+                        }
                         $scope.application.version = fileDetails.version;
+                        $scope.application.versionCode = fileDetails.versionCode;
                         $scope.application.arch = fileDetails.arch;
                         $scope.appdesc.version = fileDetails.version + " - " + localization.localize("form.application.from.file");
 
@@ -868,6 +882,7 @@ angular.module('headwind-kiosk')
                 applicationService.updateApplicationVersion(request, function (response) {
                     if (response.status === 'OK') {
                         if ($scope.isNewApp) {
+                            response.data.autoUpdate = $scope.application.autoUpdate;
                             $scope.application = response.data;
                             $scope.isNewApp = false;
                             $scope.file = {};
@@ -926,6 +941,7 @@ angular.module('headwind-kiosk')
 
             $scope.actionChanged = function (configuration) {
                 configuration.remove = (configuration.action == '2');
+                configuration.notify = true;
                 $scope.actionGroup = -1;
             };
             $scope.isInstallOptionAvailable = function (application) {
@@ -961,6 +977,7 @@ angular.module('headwind-kiosk')
                 for (var i in $scope.configurations) {
                     if ($scope.configurations[i].selected && $scope.configurations[i].action != $scope.actionGroup) {
                         $scope.configurations[i].action = $scope.actionGroup;
+                        $scope.configurations[i].notify = true;
                     }
                 }
             };
@@ -969,6 +986,11 @@ angular.module('headwind-kiosk')
                 applicationService.getVersionConfigurations({"id": applicationVersion.id}, function (response) {
                     if (response.data) {
                         $scope.configurations = response.data;
+                        // For new version, this will always return "Do not install" for all configurations
+                        // The autoUpdate flag updates the default actions
+                        if (applicationVersion.autoUpdate) {
+                            updateActions();
+                        }
                     }
                 });
 
@@ -977,6 +999,22 @@ angular.module('headwind-kiosk')
                         $scope.application = response.data;
                     });
 
+            };
+
+            var updateActions = function() {
+                applicationService.getConfigurations({"id": applicationVersion.applicationId}, function (response) {
+                    if (response.data) {
+                        response.data.forEach(function(item) {
+                            var matchingConfig = $scope.configurations.find(obj => obj.configurationId == item.configurationId);
+                            if (matchingConfig) {
+                                matchingConfig.action = item.action;
+                                if (item.action !== 0) {
+                                    matchingConfig.notify = true;
+                                }
+                            }
+                        });
+                    }
+                });
             };
 
             $scope.save = function () {
@@ -1007,7 +1045,7 @@ angular.module('headwind-kiosk')
             };
 
             $scope.configurations = [];
-            $scope.application = {};
+            $scope.application = null;
 
             loadData();
 

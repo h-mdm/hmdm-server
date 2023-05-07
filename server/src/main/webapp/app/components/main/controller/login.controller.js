@@ -1,8 +1,9 @@
 <!-- Localization completed -->
 angular.module('headwind-kiosk')
-    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization, rebranding,
-                                             passwordResetService, getBrowserLanguage) {
+    .controller('LoginController', function ($scope, $state, $rootScope, $timeout, authService, localization,
+                                             rebranding, getBrowserLanguage) {
         $scope.login = {};
+        $scope.transmitPassword = false;
 
         $scope.rebranding = null;
         rebranding.query(function(value) {
@@ -15,9 +16,11 @@ angular.module('headwind-kiosk')
             $scope.ieBrowserNotice2 = localization.localize('ie.browser.notice.2').replace('${appName}', $scope.rebranding.appName);
         });
 
-        passwordResetService.canRecover(function (response) {
+        authService.options(function (response) {
             if (response.status === 'OK') {
-                $scope.canRecover = true;
+                $scope.canRecover = response.data.recover;
+                $scope.canSignup = response.data.signup;
+                $scope.publicKey = response.data.publicKey;
             }
         });
 
@@ -37,11 +40,24 @@ angular.module('headwind-kiosk')
         };
 
         $scope.onLogin = function () {
-            authService.login($scope.login.username, md5($scope.login.password).toUpperCase(), loginHandler);
+            var password = null;
+            if (!$scope.publicKey) {
+                // By default, sending a MD5 hash
+                password = md5($scope.login.password).toUpperCase();
+            } else {
+                var encrypt = new JSEncrypt();
+                encrypt.setPublicKey($scope.publicKey);
+                password = encrypt.encrypt($scope.login.password);
+            }
+            authService.login($scope.login.username, password, loginHandler);
         };
 
         $scope.recoverPassword = function() {
             $state.transitionTo('passwordRecovery');
+        };
+
+        $scope.signup = function() {
+            $state.transitionTo('signup');
         };
 
             /**

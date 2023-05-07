@@ -166,7 +166,10 @@ public class CustomerDAO {
         return this.mapper.findCustomerByEmail(email);
     }
 
-    private static final String[] DEFAULT_DEVICE_SUFFIXES = {"001", "002", "003"};
+    /**
+     * Made public because used by the UnsecureDAO to sign up a customer
+     */
+    public static final String[] DEFAULT_DEVICE_SUFFIXES = {"001", "002", "003"};
 
     public String insertCustomer(Customer customer) {
         if (!SecurityContext.get().isSuperAdmin()) {
@@ -228,7 +231,8 @@ public class CustomerDAO {
             Map<Integer, Integer> configIdsMapping = new HashMap<>();
             if (customer.getConfigurationIds() != null && customer.getConfigurationIds().length > 0) {
                 for (Integer configurationId: customer.getConfigurationIds()) {
-                    final Integer copyId = copyConfigurationForCustomer(customer, configurationId);
+                    final Integer copyId = copyConfigurationForCustomer(customer,
+                            SecurityContext.get().getCurrentUser().get().getCustomerId(), configurationId);
                     configIdsMapping.put(configurationId, copyId);
                 }
             }
@@ -262,16 +266,16 @@ public class CustomerDAO {
 
     /**
      * <p>Creates the copy of specified master-customer configuration for specified customer account.</p>
-     *
+     * <p>Notice: it is made public because it is used for signing up a customer in UnsecureDAO</p>
+     * <p>Notice: UNSECURE! The permissions should be checked prior to calling this function</p>
      * @param customer a customer account to create configuration for.
      * @param configurationId an ID of a configuration to copy.
      * @return an ID of configuration copy.
      */
-    private Integer copyConfigurationForCustomer(Customer customer, Integer configurationId) {
+    public Integer copyConfigurationForCustomer(Customer customer, int masterCustomerId, Integer configurationId) {
         Configuration configurationTemplate = this.configurationMapper.getConfigurationById(configurationId);
         List<Application> configApplications = this.configurationMapper.getPlainConfigurationApplications(
-                SecurityContext.get().getCurrentUser().get().getCustomerId(), configurationId
-        );
+                masterCustomerId, configurationId);
         configApplications = configApplications
                 .stream()
                 .filter(Application::isCommon)

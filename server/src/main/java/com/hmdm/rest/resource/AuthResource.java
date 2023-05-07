@@ -21,22 +21,29 @@
 
 package com.hmdm.rest.resource;
 
+import com.hmdm.auth.HmdmAuthInterface;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.rest.json.AuthOptionsResponse;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.view.user.UserView;
+import com.hmdm.service.EmailService;
+import com.hmdm.service.RsaKeyService;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.security.PublicKey;
+import java.util.Base64;
 
 /**
  * <p>A resource for authenticating the users based on provided login/password credentials.</p>
@@ -52,6 +59,11 @@ public class AuthResource {
     private UnsecureDAO userDAO;
     private CustomerDAO customerDAO;
     private BackgroundTaskRunnerService taskRunner;
+    private boolean customerSignup;
+    private EmailService emailService;
+    private RsaKeyService rsaKeyService;
+    private boolean transmitPassword;
+    private HmdmAuthInterface authEngine;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -63,10 +75,22 @@ public class AuthResource {
      * <p>Constructs new <code>AuthResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public AuthResource(UnsecureDAO userDAO, CustomerDAO customerDAO, BackgroundTaskRunnerService taskRunner) {
+    public AuthResource(UnsecureDAO userDAO,
+                        CustomerDAO customerDAO,
+                        BackgroundTaskRunnerService taskRunner,
+                        EmailService emailService,
+                        RsaKeyService rsaKeyService,
+                        @Named("customer.signup") boolean customerSignup,
+                        @Named("transmit.password") boolean transmitPassword,
+                        @Named("auth.class") HmdmAuthInterface authEngine) {
         this.userDAO = userDAO;
         this.customerDAO = customerDAO;
         this.taskRunner = taskRunner;
+        this.emailService = emailService;
+        this.rsaKeyService = rsaKeyService;
+        this.customerSignup = customerSignup;
+        this.transmitPassword = transmitPassword;
+        this.authEngine = authEngine;
     }
 
     /**
@@ -87,14 +111,22 @@ public class AuthResource {
             return Response.ERROR();
         }
 
-        User user = userDAO.findByLoginOrEmail( credentials.getLogin() );
+        User user = authEngine.findUser(credentials.getLogin());
         if ( user == null ) {
             Thread.sleep(1000);
             return Response.ERROR();
         }
 
+        String password = null;
+        if (transmitPassword) {
+            byte[] passEnc = Base64.getDecoder().decode(credentials.getPassword());
+            password = rsaKeyService.decrypt(passEnc);
+        } else {
+            password = credentials.getPassword();
+        }
+
         // Web app sends MD5 hash, we need to re-hash it to compare with the DB value
-        if (!PasswordUtil.passwordMatch(credentials.getPassword(), user.getPassword())) {
+        if (!authEngine.authenticate(user, password)) {
             Thread.sleep(1000);
             return Response.ERROR();
         }
@@ -136,5 +168,24 @@ public class AuthResource {
         if ( session != null ) {
             session.invalidate();
         }
+    }
+
+
+    /**
+     * <p>Returns the login options</p>
+     */
+    @GET
+    @Path( "/options" )
+    public Response options() {
+        AuthOptionsResponse response = new AuthOptionsResponse();
+        response.setSignup(emailService.isConfigured() && customerSignup);
+        response.setRecover(emailService.isConfigured());
+        if (transmitPassword) {
+            PublicKey publicKey = rsaKeyService.getPublicKey();
+            byte[] keyBytes = publicKey.getEncoded();
+            String encoded = Base64.getEncoder().encodeToString(keyBytes);
+            response.setPublicKey(encoded);
+        }
+        return Response.OK(response);
     }
 }

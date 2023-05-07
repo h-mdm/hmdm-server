@@ -89,6 +89,7 @@ public class PublicResource {
     private String appVendorName;
     private String appVendorLink;
     private String appSignupLink;
+    private String appTermsLink;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -107,6 +108,7 @@ public class PublicResource {
                           @Named("rebranding.vendor.name") String appVendorName,
                           @Named("rebranding.vendor.link") String appVendorLink,
                           @Named("rebranding.signup.link") String appSignupLink,
+                          @Named("rebranding.terms.link") String appTermsLink,
                           UnsecureDAO unsecureDAO,
                           CustomerDAO customerDAO,
                           @Named("hash.secret") String hashSecret) {
@@ -117,6 +119,7 @@ public class PublicResource {
         this.appVendorName = appVendorName;
         this.appVendorLink = appVendorLink;
         this.appSignupLink = appSignupLink;
+        this.appTermsLink = appTermsLink;
         this.unsecureDAO = unsecureDAO;
         this.customerDAO = customerDAO;
         this.hashSecret = hashSecret;
@@ -273,6 +276,7 @@ public class PublicResource {
         nameResponse.setVendorName(appVendorName);
         nameResponse.setVendorLink(appVendorLink);
         nameResponse.setSignupLink(appSignupLink);
+        nameResponse.setTermsLink(appTermsLink);
         return Response.OK(nameResponse);
     }
 

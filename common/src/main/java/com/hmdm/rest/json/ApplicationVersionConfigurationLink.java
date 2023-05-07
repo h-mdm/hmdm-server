@@ -76,7 +76,8 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
     private int action;
     @ApiModelProperty(value = "A flag indicating that application is to be removed from the application")
     private boolean remove;
-
+    @ApiModelProperty(value = "Set by front-end when the configuration needs to be notified about changes")
+    private boolean notify;
 
     /**
      * <p>Constructs new <code>ApplicationVersionConfigurationLink</code> instance. This implementation does nothing.</p>
@@ -208,6 +209,14 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
         this.longTap = longTap;
     }
 
+    public boolean isNotify() {
+        return notify;
+    }
+
+    public void setNotify(boolean notify) {
+        this.notify = notify;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersionConfigurationLink{" +
@@ -226,6 +235,7 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
                 ", keyCode=" + keyCode +
                 ", bottom=" + bottom +
                 ", longTap=" + longTap +
+                ", notify=" + notify +
                 '}';
     }
 }

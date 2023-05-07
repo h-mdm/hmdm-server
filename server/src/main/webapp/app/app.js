@@ -41,7 +41,7 @@ angular.module('headwind-kiosk',
         'ja_JP': 'ja_JP'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN', 'ja_JP'])
-    .constant("APP_VERSION", "5.16.1") // Update this value on each commit
+    .constant("APP_VERSION", "5.18.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -267,6 +267,16 @@ angular.module('headwind-kiosk',
                 templateUrl: 'app/components/main/view/passwordRecovery.html',
                 controller: 'PasswordRecoveryController'
             })
+            .state('signup', {
+                url: '/signup',
+                templateUrl: 'app/components/main/view/signup.html',
+                controller: 'SignupController'
+            })
+            .state('signupComplete', {
+                url: '/signupComplete/{token}',
+                templateUrl: 'app/components/main/view/signupComplete.html',
+                controller: 'SignupCompleteController'
+            })
     })
 
     .config(function ($httpProvider) {
@@ -483,7 +493,11 @@ angular.module('headwind-kiosk',
         $transitions.onStart({ }, function(trans) {
             hintService.onStateChangeStart();
 
-            if (trans.to().name !== 'passwordRecovery' && trans.to().name !== 'passwordReset' && trans.to().name !== 'qr') {
+            if (trans.to().name !== 'passwordRecovery' &&
+                trans.to().name !== 'signup' &&
+                trans.to().name !== 'signupComplete' &&
+                trans.to().name !== 'passwordReset' &&
+                trans.to().name !== 'qr') {
                 if (!authService.isLoggedIn() && trans.to().name !== 'login') {
                     hintService.onLogout();
                     return trans.router.stateService.target('login');

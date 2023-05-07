@@ -848,13 +848,15 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 // file
                 if ((applicationVersion.getUrl() == null || applicationVersion.getUrl().trim().isEmpty())) {
                     String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), movedFile.getName());
-                    if (StringUtil.isEmpty(apkFileDetails.getArch())) {
+                    // Here we check applicationVersion.getArch() because the admin may wish to override
+                    // the automatic selection
+                    if (StringUtil.isEmpty(applicationVersion.getArch())) {
                         applicationVersion.setSplit(false);
                         applicationVersion.setUrl(url);
-                    } else if (apkFileDetails.getArch().equals(Application.ARCH_ARMEABI)) {
+                    } else if (applicationVersion.getArch().equals(Application.ARCH_ARMEABI)) {
                         applicationVersion.setSplit(true);
                         applicationVersion.setUrlArmeabi(url);
-                    } else if (apkFileDetails.getArch().equals(Application.ARCH_ARM64)) {
+                    } else if (applicationVersion.getArch().equals(Application.ARCH_ARM64)) {
                         applicationVersion.setSplit(true);
                         applicationVersion.setUrlArm64(url);
                     }

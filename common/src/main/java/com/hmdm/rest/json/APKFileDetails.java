@@ -53,6 +53,11 @@ public class APKFileDetails implements Serializable {
     private String arch;
 
     /**
+     * <p>Application name.</p>
+     */
+    private String name;
+
+    /**
      * <p>Constructs new <code>APKFileDetails</code> instance. This implementation does nothing.</p>
      */
     public APKFileDetails() {
@@ -64,6 +69,14 @@ public class APKFileDetails implements Serializable {
 
     public void setPkg(String pkg) {
         this.pkg = pkg;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getVersion() {
@@ -94,6 +107,7 @@ public class APKFileDetails implements Serializable {
     public String toString() {
         return "APKFileDetails{" +
                 "pkg='" + pkg + '\'' +
+                ", name='" + name + '\'' +
                 ", version='" + version + '\'' +
                 ", versionCode=" + versionCode +
                 ", arch='" + arch + '\'' +

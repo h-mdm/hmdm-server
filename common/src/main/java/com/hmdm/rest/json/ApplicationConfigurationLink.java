@@ -63,7 +63,8 @@ public class ApplicationConfigurationLink implements CustomerData {
     private String latestVersionText;
     @ApiModelProperty(value = "A current version of the application as set for configuration")
     private String currentVersionText;
-
+    @ApiModelProperty(value = "Set by front-end when the configuration needs to be notified about changes")
+    private boolean notify;
 
     /**
      * <p>Constructs new <code>ApplicationConfigurationLink</code> instance. This implementation does nothing.</p>
@@ -170,6 +171,14 @@ public class ApplicationConfigurationLink implements CustomerData {
         this.currentVersionText = currentVersionText;
     }
 
+    public boolean isNotify() {
+        return notify;
+    }
+
+    public void setNotify(boolean notify) {
+        this.notify = notify;
+    }
+
     @Override
     public String toString() {
         return "ApplicationConfigurationLink{" +
@@ -185,6 +194,7 @@ public class ApplicationConfigurationLink implements CustomerData {
                 ", outdated=" + outdated +
                 ", currentVersionText=" + currentVersionText +
                 ", latestVersionText=" + latestVersionText +
+                ", notify=" + notify +
                 '}';
     }
 }

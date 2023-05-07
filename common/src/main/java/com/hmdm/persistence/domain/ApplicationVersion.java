@@ -71,6 +71,9 @@ public class ApplicationVersion implements Serializable {
     @ApiModelProperty(hidden = true)
     private String apkHash;
 
+    @ApiModelProperty(hidden = true)
+    private String arch;
+
     /**
      * <p>A path to uploaded file to link this application to when adding an application.</p>
      */
@@ -90,6 +93,7 @@ public class ApplicationVersion implements Serializable {
         this.applicationId = application.getId();
         this.version = application.getVersion();
         this.versionCode = application.getVersionCode();
+        this.arch = application.getArch();
         if (application.getArch() == null || application.getArch().equals("")) {
             this.url = application.getUrl();
         } else if (application.getArch().equals(Application.ARCH_ARMEABI)) {
@@ -213,6 +217,14 @@ public class ApplicationVersion implements Serializable {
         this.type = type;
     }
 
+    public String getArch() {
+        return arch;
+    }
+
+    public void setArch(String arch) {
+        this.arch = arch;
+    }
+
     @Override
     public String toString() {
         return "ApplicationVersion{" +
@@ -227,6 +239,7 @@ public class ApplicationVersion implements Serializable {
                 ", commonApplication='" + commonApplication + '\'' +
                 ", filePath='" + filePath + '\'' +
                 ", type='" + type + '\'' +
+                ", arch='" + arch + '\'' +
                 '}';
     }
 }

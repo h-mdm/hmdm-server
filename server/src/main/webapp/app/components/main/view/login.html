@@ -23,6 +23,7 @@
                 <div style="float: left; min-height: 45px; display: flex; flex-direction: column">
                     <div ng-if="canRecover" style="margin: auto; width: 100%"><a class="action-link" ng-click="recoverPassword()" localized>login.password.recovery</a></div>
                     <div ng-if="rebranding.signupLink" style="margin: auto; width: 100%"><span localized>login.no.account</span> <a class="action-link" href="{{rebranding.signupLink}}" localized>login.signup</a></div>
+                    <div ng-if="!rebranding.signupLink && canSignup" style="margin: auto; width: 100%"><span localized>login.no.account</span> <a class="action-link" ng-click="signup()" localized>login.signup</a></div>
                 </div>
 
                 <button type='submit' class='btn btn-default right' style="opacity: 1; margin-top: 9px"

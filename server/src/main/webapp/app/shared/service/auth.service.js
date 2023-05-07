@@ -19,6 +19,10 @@ angular.module('headwind-kiosk')
                 });
             },
 
+            options: function(successCallback) {
+                serverAuthService.options(successCallback);
+            },
+
             hasPermission: function (permission) {
                 if (user) {
                     if (user.userRole) {
@@ -86,6 +90,7 @@ angular.module('headwind-kiosk')
     .factory('serverAuthService', function ($resource) {
         return $resource('rest/public/auth/', {}, {
             login: {url: 'rest/public/auth/login', method: 'POST'},
-            logout: {url: 'rest/public/auth/logout', method: 'POST'}
+            logout: {url: 'rest/public/auth/logout', method: 'POST'},
+            options: {url: 'rest/public/auth/options', method: 'GET'}
         });
     });

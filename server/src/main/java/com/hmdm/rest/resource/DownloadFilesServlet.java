@@ -53,6 +53,7 @@ public class DownloadFilesServlet extends HttpServlet {
     private String hashSecret;
 
     private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
+    private static final String CONTENT_TYPE_APK = "application/vnd.android.package-archive";
 
     private static final Logger log = LoggerFactory.getLogger(DownloadFilesServlet.class);
 
@@ -112,6 +113,9 @@ public class DownloadFilesServlet extends HttpServlet {
                 } else {
                     resp.addHeader("Content-Length", Long.toString(length));
                 }
+                if (file.getAbsolutePath().endsWith(".apk")) {
+                    resp.setContentType(CONTENT_TYPE_APK);
+                }
 
                 IOUtils.copy(input, outputStream);
                 outputStream.flush();
@@ -147,6 +151,9 @@ public class DownloadFilesServlet extends HttpServlet {
                 resp.setContentLength((int)contentLength);
             } else {
                 resp.addHeader("Content-Length", Long.toString(contentLength));
+            }
+            if (file.getAbsolutePath().endsWith(".apk")) {
+                resp.setContentType(CONTENT_TYPE_APK);
             }
 
             input.skip(start);

@@ -1,0 +1,80 @@
+<div>
+    <h2 class="center" ng-if="tokenValid">{{signupTitle}}</h2>
+    <div class='panel panel-default width-700' ng-class='{"panel-danger": errorMessage, "panel-success": successMessage}'>
+        <div class='panel-heading' ng-if='errorMessage'>{{errorMessage}}</div>
+        <div class='panel-heading' ng-if='successMessage'>{{successMessage}}</div>
+        <div class='panel-body' style="padding: 30px; background: #f6f8fc">
+            <form name='signupForm' ng-submit='signupForm.$valid && onSignup()' style="margin-bottom: 0px" ng-if="tokenValid && !signupComplete">
+                <div class='col-sm-12'>
+                    <label for='customerId' localized>signup.customer.id</label>
+                    <input class='form-control' name='customerId' id='customerId' ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9\.\-_]{4,48}[a-zA-Z0-9]$/"
+                           ng-model='customer.name' localized-placeholder="signup.customer.id.placeholder"
+                           required/>
+                    <div class="field-warning" ng-class="(signupForm.customerId.$dirty && signupForm.customerId.$error.pattern) ? '' : 'expired-device-hidden'" localized>signup.customer.id.invalid</div>
+                </div>
+                <div class="form-group">
+                <div class='form-group col-sm-6'>
+                    <label for='firstName' localized>signup.first.name</label>
+                    <input class='form-control' id='firstName'
+                           ng-model='customer.firstName' localized-placeholder="signup.first.name.placeholder"
+                           required/>
+                </div>
+                <div class='form-group col-sm-6'>
+                    <label for='lastName' localized>signup.last.name</label>
+                    <input class='form-control' id='lastName'
+                           ng-model='customer.lastName' localized-placeholder="signup.last.name.placeholder"
+                           required/>
+                </div>
+                </div>
+                <div class='form-group col-sm-12'>
+                    <label for='company' localized>signup.company</label>
+                    <input type='text' class='form-control' id='company'
+                           ng-model='customer.company' localized-placeholder="signup.company.placeholder"/>
+                </div>
+
+                <div class='form-group col-sm-12'>
+                    <label for='description' localized>signup.description</label>
+                    <textarea ng-model='customer.description' id="description" class='form-control no-resize'
+                              localized-placeholder='signup.description.placeholder'></textarea>
+                </div>
+                <div class="form-group">
+                    <div class='col-sm-6'>
+                        <label for='passwd' localized>signup.password</label>
+                        <input type='password' class='form-control' id='passwd' ng-change="checkPassword()"
+                               ng-model='passwds.passwd1' localized-placeholder="signup.password.placeholder"
+                               required/>
+                        <div class="field-warning" ng-class="passwordError ? '' : 'expired-device-hidden'">{{passwordError}}</div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <label for='passwd2' localized>signup.password.repeat</label>
+                        <input type='password' class='form-control' id='passwd2' ng-change="checkPassword()"
+                               ng-model='passwds.passwd2' localized-placeholder="signup.password.placeholder"
+                               required/>
+                    </div>
+                </div>
+
+
+                <div class='form-group col-sm-12'>
+                <button type='submit' class='btn btn-default right' style="opacity: 1; margin-top: 9px"
+                        ng-if="!loading" localized>signup.submit</button>
+                <button type='submit' class='btn btn-default right' style="opacity: 0.5; margin-top: 9px"
+                        ng-disabled='true' ng-if="loading" localized>signup.progress</button>
+                </div>
+            </form>
+
+            <div ng-if="tokenValid && signupComplete">
+                <h3 style="margin: 0 0 20px 0" localized>signup.finalized.title</h3>
+                <div><span localized>signup.finalized.description</span> &nbsp; <a class="action-link" ng-click="login()" localized>button.login</a></div>
+            </div>
+
+            <div ng-if="!tokenValid">
+                <h3 style="margin: 0 0 20px 0" localized>signup.token.invalid.title</h3>
+                <div><span localized>signup.token.invalid.description</span> &nbsp; <a class="action-link" ng-click="signup()" localized>login.signup</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="login-footer" ng-if="rebranding">
+    <span>{{rebranding.appName}}</span> <span localized>app.description</span>. (c) {{rebranding.year}} <a href="{{rebranding.vendorLink}}">{{rebranding.vendorName}}</a>
+</div>

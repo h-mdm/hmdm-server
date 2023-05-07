@@ -2398,4 +2398,30 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="22.04.23-10:55" author="seva" context="common">
+        <comment>Table,new: pendingSignup</comment>
+        <sql>
+            CREATE TABLE pendingSignup (
+            id serial NOT NULL CONSTRAINT pendingSignup_pr_key PRIMARY KEY,
+            email varchar(50) NOT NULL CONSTRAINT pendingSignup_email_key UNIQUE,
+            signupTime BIGINT,
+            language varchar(50),
+            token varchar(50)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE pendingSignup;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="01.05.23-16:58" author="seva" context="common">
+        <comment>Column,new: users#authData</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN authData TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE users DROP COLUMN authData;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -30,19 +30,19 @@
                                         class="form-control col-sm-4">
                                     <option ng-value="-1" ng-selected="actionGroup == -1" localized>form.configuration.apps.action.select</option>
                                     <option ng-value="1" ng-selected="actionGroup == 1"
-                                            ng-if="!isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && !isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.permit</option>
                                     <option ng-value="1" ng-selected="actionGroup == 1"
-                                            ng-if="isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.install</option>
                                     <option ng-value="0" ng-selected="actionGroup == 0"
-                                            ng-if="!isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && !isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.prohibit</option>
                                     <option ng-value="0" ng-selected="actionGroup == 0"
-                                            ng-if="isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.not.install</option>
                                     <option ng-value="2" ng-selected="actionGroup == 2"
-                                            ng-if="isRemoveOptionAvailable(application)"
+                                            ng-if="application !== null && isRemoveOptionAvailable(application)"
                                             localized>form.configuration.apps.action.delete</option>
                                 </select>
                             </div>
@@ -62,19 +62,19 @@
                                         ng-model="configuration.action" name="action{{configuration.configurationId}}"
                                         class="form-control col-sm-4">
                                     <option ng-value="1" ng-selected="configuration.action == 1"
-                                            ng-if="!isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && !isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.permit</option>
                                     <option ng-value="0" ng-selected="configuration.action == 0"
-                                            ng-if="!isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && !isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.prohibit</option>
                                     <option ng-value="1" ng-selected="configuration.action == 1"
-                                            ng-if="isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.install</option>
                                     <option ng-value="0" ng-selected="configuration.action == 0"
-                                            ng-if="isInstallOptionAvailable(application)"
+                                            ng-if="application !== null && isInstallOptionAvailable(application)"
                                             localized>form.configuration.apps.action.not.install</option>
                                     <option ng-value="2" ng-selected="configuration.action == 2"
-                                            ng-if="isRemoveOptionAvailable(application)"
+                                            ng-if="application !== null && isRemoveOptionAvailable(application)"
                                             localized>form.configuration.apps.action.delete</option>
                                 </select>
                             </div>

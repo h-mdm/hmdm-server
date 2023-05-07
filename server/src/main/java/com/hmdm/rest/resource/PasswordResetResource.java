@@ -24,6 +24,7 @@ package com.hmdm.rest.resource;
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
@@ -149,6 +150,7 @@ public class PasswordResetResource {
             notes = "Checks if the password can be recovered."
     )
     @GET
+    @Deprecated
     @Path("/canRecover")
     @Produces(MediaType.APPLICATION_JSON)
     public Response canRecover() {
@@ -189,8 +191,10 @@ public class PasswordResetResource {
                 unsecureDAO.setUserNewPasswordUnsecure(user);
             }
 
-            if (emailService.sendEmail(user.getEmail(), emailService.getRecoveryEmailSubj(),
-                    emailService.getRecoveryEmailBody(baseUrl, user.getPasswordResetToken()))) {
+            Customer customer = unsecureDAO.getCustomerByIdUnsecure(user.getCustomerId());
+            String language = customer == null ? "" : customer.getLanguage();
+            if (emailService.sendEmail(user.getEmail(), emailService.getRecoveryEmailSubj(language),
+                    emailService.getRecoveryEmailBody(language, user.getPasswordResetToken()))) {
                 return Response.OK();
             } else {
                 return Response.INTERNAL_ERROR();

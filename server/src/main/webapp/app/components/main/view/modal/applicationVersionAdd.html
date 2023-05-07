@@ -56,6 +56,14 @@
             </div>
         </div>
 
+        <div class='form-group' ng-if="!isWebType">
+            <label for="autoUpdateBox" class='col-sm-4 control-label' localized>form.application.auto.update</label>
+            <div class='col-sm-2'>
+                <input localized-title="form.application.auto.update.title" ng-model='application.autoUpdate'
+                       type='checkbox' class='form-control' id="autoUpdateBox"/>
+            </div>
+        </div>
+
         <div class='form-group'>
             <div class='col-sm-offset-4 col-sm-8'>
                 <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="loading" localized>button.save</button>

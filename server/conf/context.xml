@@ -6,6 +6,9 @@
     <Parameter name="JDBC.username" value="${jdbc.username}"/>
     <Parameter name="JDBC.password" value="${jdbc.password}"/>
 
+    <!-- This directory is used to as a base directory to store app data -->
+    <Parameter name="base.directory" value="${base.directory}"/>
+
     <!-- files directory -->
     <Parameter name="files.directory" value="${files.directory}"/>
     <Parameter name="plugins.files.directory" value="${plugins.files.directory}"/>
@@ -57,10 +60,8 @@
      to avoid congestion when all devices are updating configuration at the same time -->
     <Parameter name="mqtt.message.delay" value="${mqtt.message.delay}"/>
 
-
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>
-
 
     <!-- Email parameters are necessary for password recovery -->
     <Parameter name="smtp.host" value="${smtp.host}"/>
@@ -81,10 +82,4 @@
     Defaults to X-Real-IP -->
     <!-- <Parameter name="proxy.ip.header" value="${proxy.ip.header}"/> -->
 
-    <!--<Parameter name="customer.auto.status" value="${customer.auto.status}"/>
-        <Parameter name="admin.email" value="${admin.email}"/>
-        <Parameter name="mailchimp.url" value="${mailchimp.url}"/>
-        <Parameter name="mailchimp.key" value="${mailchimp.key}"/> -->
-
-
-    </Context>
+</Context>

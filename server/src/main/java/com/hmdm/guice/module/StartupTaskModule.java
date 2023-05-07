@@ -6,6 +6,7 @@ import com.hmdm.event.EventService;
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
+import com.hmdm.service.RsaKeyService;
 import com.hmdm.task.CustomerStatusTask;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
@@ -17,6 +18,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +32,8 @@ public class StartupTaskModule {
     private String sqlInitScriptPath;
     private CustomerStatusTask customerStatusTask;
     private boolean customerAutoStatus;
+    private boolean transmitPassword;
+    private RsaKeyService rsaKeyService;
 
     private static final Logger logger = LoggerFactory.getLogger(EventService.class);
 
@@ -38,9 +43,11 @@ public class StartupTaskModule {
     @Inject
     public StartupTaskModule(CommonDAO commonDAO, UnsecureDAO unsecureDAO, BackgroundTaskRunnerService taskRunner,
                              CustomerStatusTask customerStatusTask,
+                             RsaKeyService rsaKeyService,
                              @Named("device.fast.search.chars") int deviceFastSearchChars,
                              @Named("sql.init.script.path") String sqlInitScriptPath,
-                             @Named("customer.auto.status") boolean customerAutoStatus) {
+                             @Named("customer.auto.status") boolean customerAutoStatus,
+                             @Named("transmit.password") boolean transmitPassword) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.taskRunner = taskRunner;
@@ -48,6 +55,8 @@ public class StartupTaskModule {
         this.sqlInitScriptPath = sqlInitScriptPath;
         this.customerStatusTask = customerStatusTask;
         this.customerAutoStatus = customerAutoStatus;
+        this.transmitPassword = transmitPassword;
+        this.rsaKeyService = rsaKeyService;
     }
 
     public void init() {
@@ -58,6 +67,9 @@ public class StartupTaskModule {
         }
         if (customerAutoStatus) {
             taskRunner.submitRepeatableTask(customerStatusTask, 0, 1, TimeUnit.HOURS);
+        }
+        if (transmitPassword) {
+            taskRunner.submitTask(new GenerateRsaKeysTask());
         }
     }
 
@@ -97,6 +109,14 @@ public class StartupTaskModule {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public class GenerateRsaKeysTask implements Runnable {
+        @Override
+        public void run() {
+            // This method generates keys if they do not yet exist
+            rsaKeyService.getPrivateKey();
         }
     }
 }

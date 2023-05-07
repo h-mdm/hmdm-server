@@ -40,6 +40,12 @@
     margin: 5px 0 15px 0;
 }
 
+.field-warning {
+    color: red;
+    font-size: 13px;
+    margin: 2px 0 5px 0;
+}
+
 .device-indicator {
     width: 15px;
     margin-top: 3px;
@@ -152,6 +158,11 @@
 
 .width-1000 {
     max-width: 1000px;
+    margin: 0px auto;
+}
+
+.width-700 {
+    max-width: 700px;
     margin: 0px auto;
 }
 

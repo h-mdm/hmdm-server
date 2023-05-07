@@ -6,6 +6,9 @@ jdbc.driver=org.postgresql.Driver
 jdbc.username=hmdm
 jdbc.password=hmdm
 
+# A path to a base app directory to store internal data
+base.directory=D:/home/launcher
+
 # A path to a directory to store uploaded files
 files.directory=D:/home/launcher/files
 
@@ -23,7 +26,7 @@ secure.enrollment=0
 
 # A hash secret used for validating the device IDs provided by requests
 # from devices
-hash.secret=12345
+hash.secret=changeme-C3z9vi54
 
 # An ID of a record in userroles DB table representing an ORG_ADMIN role
 # Do not change this!
@@ -46,6 +49,12 @@ plugin.devicelog.persistence.config.class=com.hmdm.plugins.devicelog.persistence
 
 # MQTT notification server local URI
 mqtt.server.uri=localhost:31000
+
+# MQTT authentication for more security (supported by Headwind MDM launcher v5.05 and above)
+mqtt.auth=true
+
+# Delaying MQTT messages in milliseconds to avoid congestion
+mqtt.message.delay=1000
 
 # Fast device search by last characters, here's the length
 device.fast.search.chars=5

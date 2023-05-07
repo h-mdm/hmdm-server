@@ -61,6 +61,8 @@ public class User implements CustomerData, Serializable {
     private String authToken;
     @ApiModelProperty("Password reset token")
     private String passwordResetToken;
+    @ApiModelProperty("Third party authentication data")
+    private String authData;
 
     // Many-to-many relations
     private List<LookupItem> groups;
@@ -221,6 +223,14 @@ public class User implements CustomerData, Serializable {
         this.passwordResetToken = passwordResetToken;
     }
 
+    public String getAuthData() {
+        return authData;
+    }
+
+    public void setAuthData(String authData) {
+        this.authData = authData;
+    }
+
     public List<LookupItem> getGroups() {
         return groups;
     }
@@ -244,8 +254,10 @@ public class User implements CustomerData, Serializable {
         builder.append(this.getLogin());
         builder.append(' ');
         builder.append(this.getEmail());
-        builder.append(' ');
-        builder.append(this.getUserRole().getName());
+        if (this.getUserRole() != null) {
+            builder.append(' ');
+            builder.append(this.getUserRole().getName());
+        }
         return builder.toString();
     }
 

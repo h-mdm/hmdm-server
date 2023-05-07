@@ -396,6 +396,12 @@ public class ApplicationResource {
         try {
             this.applicationDAO.updateApplicationConfigurations(request);
 
+            for (ApplicationConfigurationLink configurationLink : request.getConfigurations()) {
+                if (configurationLink.isNotify()) {
+                    this.pushService.notifyDevicesOnUpdate(configurationLink.getConfigurationId());
+                }
+            }
+
             return Response.OK();
         } catch (Exception e) {
             logger.error("Unexpected error when updating application configurations", e);
@@ -416,7 +422,9 @@ public class ApplicationResource {
         try {
             this.applicationDAO.updateApplicationVersionConfigurations(request);
             for (ApplicationVersionConfigurationLink configurationLink : request.getConfigurations()) {
-                this.pushService.notifyDevicesOnUpdate(configurationLink.getConfigurationId());
+                if (configurationLink.isNotify()) {
+                    this.pushService.notifyDevicesOnUpdate(configurationLink.getConfigurationId());
+                }
             }
 
             return Response.OK();
