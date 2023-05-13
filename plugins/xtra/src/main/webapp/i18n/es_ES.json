@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "Más complementos",
+  "plugin.xtra.localization.key.name": "Más complementos...",
+  "plugin.xtra.tab.title": "¡Más funciones en Headwind MDM Enterprise!",
+  "plugin.xtra.feature.kiosk": "Modo quiosco (tarea única)",
+  "plugin.xtra.feature.location": "Seguimiento de la ubicación del dispositivo",
+  "plugin.xtra.feature.reset": "Reinicio remoto, bloqueo y restablecimiento de fábrica",
+  "plugin.xtra.feature.photo": "Subir fotos desde dispositivos",
+  "plugin.xtra.feature.remote": "Control remoto",
+  "plugin.xtra.feature.filtering": "Filtrado del tráfico de red",
+  "plugin.xtra.feature.ldap": "Integración LDAP",
+  "plugin.xtra.feature.export": "Exportar e importar dispositivos",
+  "plugin.xtra.feature.contacts": "Administración de contactos del dispositivo",
+  "plugin.xtra.feature.rebranding": "Software de marca blanca (cambio de marca)",
+  "plugin.xtra.upgrade.free": "¡Actualizar su instancia a una versión de prueba es muy fácil y absolutamente GRATIS!",
+  "plugin.xtra.request.trial": "¡Obtén una prueba gratis!"
+}

@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "More plugins",
+  "plugin.xtra.localization.key.name": "More plugins...",
+  "plugin.xtra.tab.title": "More features in Headwind MDM Enterprise!",
+  "plugin.xtra.feature.kiosk": "Kiosk (single-task) mode",
+  "plugin.xtra.feature.location": "Device location tracking",
+  "plugin.xtra.feature.reset": "Remote reboot, lock and factory reset",
+  "plugin.xtra.feature.photo": "Upload photos from devices",
+  "plugin.xtra.feature.remote": "Remote control",
+  "plugin.xtra.feature.filtering": "Filtering of network traffic",
+  "plugin.xtra.feature.ldap": "LDAP integration",
+  "plugin.xtra.feature.export": "Export and import devices",
+  "plugin.xtra.feature.contacts": "Management of device contacts",
+  "plugin.xtra.feature.rebranding": "White-label software (rebranding)",
+  "plugin.xtra.upgrade.free": "Upgrading your instance to a trial version is very easy and absolutely FREE!",
+  "plugin.xtra.request.trial": "Get a free trial!"
+}

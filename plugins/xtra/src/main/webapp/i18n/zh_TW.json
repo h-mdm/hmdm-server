@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "更多插件",
+  "plugin.xtra.localization.key.name": "更多插件...",
+  "plugin.xtra.tab.title": "Headwind MDM Enterprise 中的更多功能！",
+  "plugin.xtra.feature.kiosk": "Kiosk（單任務）模式",
+  "plugin.xtra.feature.location": "設備位置追踪",
+  "plugin.xtra.feature.reset": "遠程重啟、鎖定和恢復出廠設置",
+  "plugin.xtra.feature.photo": "從設備上傳照片",
+  "plugin.xtra.feature.remote": "遠程控制",
+  "plugin.xtra.feature.filtering": "過濾網絡流量",
+  "plugin.xtra.feature.ldap": "LDAP 集成",
+  "plugin.xtra.feature.export": "導出和導入設備",
+  "plugin.xtra.feature.contacts": "設備聯繫人管理",
+  "plugin.xtra.feature.rebranding": "白標軟件（品牌重塑）",
+  "plugin.xtra.upgrade.free": "將您的實例升級到試用版非常簡單而且完全免費！",
+  "plugin.xtra.request.trial": "免費試用！"
+}

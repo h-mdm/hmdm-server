@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "Weitere Plugins",
+  "plugin.xtra.localization.key.name": "Weitere Plugins…",
+  "plugin.xtra.tab.title": "Mehr Funktionen in Headwind MDM Enterprise!",
+  "plugin.xtra.feature.kiosk": "Kioskmodus (Einzelaufgabe)",
+  "plugin.xtra.feature.location": "Gerätestandortverfolgung",
+  "plugin.xtra.feature.reset": "Remote-Neustart, Sperre und Zurücksetzen",
+  "plugin.xtra.feature.photo": "Fotos von Geräten hochladen",
+  "plugin.xtra.feature.remote": "Fernbedienung",
+  "plugin.xtra.feature.filtering": "Filterung des Netzwerkverkehrs",
+  "plugin.xtra.feature.ldap": "LDAP-Integration",
+  "plugin.xtra.feature.export": "Geräte exportieren und importieren",
+  "plugin.xtra.feature.contacts": "Verwaltung von Gerätekontakten",
+  "plugin.xtra.feature.rebranding": "White-Label-Software (Rebranding)",
+  "plugin.xtra.upgrade.free": "Das Upgrade Ihrer Instanz auf eine Testversion ist sehr einfach und absolut KOSTENLOS!",
+  "plugin.xtra.request.trial": "Die Testversion Holen!"
+}

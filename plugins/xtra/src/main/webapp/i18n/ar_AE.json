@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "المزيد من المكونات الإضافية",
+  "plugin.xtra.localization.key.name": "المزيد من المكونات الإضافية ...",
+  "plugin.xtra.tab.title": "المزيد من الميزات في Headwind MDM Enterprise!",
+  "plugin.xtra.feature.kiosk": "وضع Kiosk (مهمة واحدة)" ,
+  "plugin.xtra.feature.location": "تتبع موقع الجهاز",
+  "plugin.xtra.feature.reset": "إعادة التشغيل عن بعد والقفل وإعادة ضبط المصنع",
+  "plugin.xtra.feature.photo": "تحميل الصور من الأجهزة",
+  "plugin.xtra.feature.remote": "التحكم عن بعد",
+  "plugin.xtra.feature.filtering": "تصفية حركة مرور الشبكة",
+  "plugin.xtra.feature.ldap": "تكامل LDAP" ,
+  "plugin.xtra.feature.export": "تصدير واستيراد الأجهزة" ,
+  "plugin.xtra.feature.contacts": "إدارة جهات اتصال الجهاز",
+  "plugin.xtra.feature.rebranding": "برنامج العلامة البيضاء (تغيير العلامة التجارية)",
+  "plugin.xtra.upgrade.free": "ترقية المثيل إلى إصدار تجريبي سهل للغاية ومجاني تمامًا!" ,
+  "plugin.xtra.request.trial": "احصل على نسخة تجريبية مجانية!"
+}

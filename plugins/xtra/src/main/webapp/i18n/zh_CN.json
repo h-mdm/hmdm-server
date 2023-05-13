@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "更多插件",
+  "plugin.xtra.localization.key.name": "更多插件...",
+  "plugin.xtra.tab.title": "Headwind MDM Enterprise 中的更多功能！",
+  "plugin.xtra.feature.kiosk": "Kiosk（单任务）模式",
+  "plugin.xtra.feature.location": "设备位置追踪",
+  "plugin.xtra.feature.reset": "远程重启、锁定和恢复出厂设置",
+  "plugin.xtra.feature.photo": "从设备上传照片",
+  "plugin.xtra.feature.remote": "远程控制",
+  "plugin.xtra.feature.filtering": "过滤网络流量",
+  "plugin.xtra.feature.ldap": "LDAP 集成",
+  "plugin.xtra.feature.export": "导出和导入设备",
+  "plugin.xtra.feature.contacts": "设备联系人管理",
+  "plugin.xtra.feature.rebranding": "白标软件（品牌重塑）",
+  "plugin.xtra.upgrade.free": "将您的实例升级到试用版非常简单而且完全免费！",
+  "plugin.xtra.request.trial": "免费试用！"
+}

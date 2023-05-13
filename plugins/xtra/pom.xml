@@ -24,33 +24,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.hmdm.plugin</groupId>
-    <artifactId>base</artifactId>
-    <packaging>pom</packaging>
+
+    <artifactId>xtra</artifactId>
+
+    <packaging>jar</packaging>
     <version>0.1.0</version>
-    <name>Plugins for MDM Server</name>
+    <name>A Promo plugin</name>
 
     <parent>
-        <groupId>com.hmdm</groupId>
-        <artifactId>root</artifactId>
+        <groupId>com.hmdm.plugin</groupId>
+        <artifactId>base</artifactId>
         <version>0.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <modules>
-        <module>platform</module>
-        <module>devicelog</module>
-        <module>audit</module>
-        <module>deviceinfo</module>
-        <module>messaging</module>
-        <module>push</module>
-        <module>xtra</module>
-    </modules>
-
     <dependencies>
         <dependency>
-            <groupId>com.hmdm</groupId>
-            <artifactId>common</artifactId>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>platform</artifactId>
             <version>0.1.0</version>
         </dependency>
     </dependencies>

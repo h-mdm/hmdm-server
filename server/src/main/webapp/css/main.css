@@ -166,6 +166,37 @@
     margin: 0px auto;
 }
 
+.promo {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.promo li {
+    margin: 12px 12px 12px 180px;
+    font-size: 18px;
+}
+
+.promo-desc {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.btn-promo, btn-promo:hover {
+    color: white!important;
+    font-weight: bold;
+    font-size: 20px;
+    text-transform: uppercase;
+    padding: 20px 40px 20px 40px;
+}
+
+.btn-promo {
+    background-color: #7a9ab9;
+}
+
+.btn-promo:hover {
+    background-color: #9bb4cc;
+}
+
 .fullscreen {
     height: 100%;
     margin: 0px 20px;

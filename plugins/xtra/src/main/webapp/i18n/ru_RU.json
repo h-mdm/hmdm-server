@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "Другие плагины",
+  "plugin.xtra.localization.key.name": "Другие плагины...",
+  "plugin.xtra.tab.title": "Больше возможностей в Headwind MDM Enterprise!",
+  "plugin.xtra.feature.kiosk": "Режим киоска (однозадачный)",
+  "plugin.xtra.feature.location": "Отслеживание местоположения устройства",
+  "plugin.xtra.feature.reset": "Удаленная перезагрузка, блокировка и сброс настроек",
+  "plugin.xtra.feature.photo": "Загрузка фотографий с устройств",
+  "plugin.xtra.feature.remote": "Удаленное управление",
+  "plugin.xtra.feature.filtering": "Фильтрация сетевого трафика",
+  "plugin.xtra.feature.ldap": "Интеграция с LDAP",
+  "plugin.xtra.feature.export": "Экспорт и импорт устройств",
+  "plugin.xtra.feature.contacts": "Управление контактами устройства",
+  "plugin.xtra.feature.rebranding": "Программное обеспечение White-label (ребрендинг)",
+  "plugin.xtra.upgrade.free": "Обновиться до пробной версии - очень просто и абсолютно БЕСПЛАТНО!",
+  "plugin.xtra.request.trial": "Получить пробную версию!"
+}

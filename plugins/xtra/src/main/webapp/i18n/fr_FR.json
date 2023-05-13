@@ -1,0 +1,17 @@
+{
+  "breadcrumb.plugin.xtra.main": "Plus de plugins",
+  "plugin.xtra.localization.key.name": "Plus de plugins...",
+  "plugin.xtra.tab.title": "Plus de fonctionnalités dans Headwind MDM Enterprise !",
+  "plugin.xtra.feature.kiosk": "Mode kiosque (mono-tâche)",
+  "plugin.xtra.feature.location": "Suivi de l'emplacement de l'appareil",
+  "plugin.xtra.feature.reset": "Redémarrage à distance, verrouillage et réinitialisation d'usine",
+  "plugin.xtra.feature.photo": "Télécharger des photos depuis des appareils",
+  "plugin.xtra.feature.remote": "Télécommande",
+  "plugin.xtra.feature.filtering": "Filtrage du trafic réseau",
+  "plugin.xtra.feature.ldap": "Intégration LDAP",
+  "plugin.xtra.feature.export": "Exporter et importer des appareils",
+  "plugin.xtra.feature.contacts": "Gestion des contacts de l'appareil",
+  "plugin.xtra.feature.rebranding": "Logiciel en marque blanche (rebranding)",
+  "plugin.xtra.upgrade.free": "Mettre à jour votre instance vers une version d'essai est très simple et absolument GRATUIT !",
+  "plugin.xtra.request.trial": "Obtenez un essai gratuit !"
+}
