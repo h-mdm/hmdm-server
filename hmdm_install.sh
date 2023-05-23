@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Headwind MDM installer script
-# Tested on Ubuntu Linux 18.04 - 20.10, Ubuntu 20.04 is recommended
+# Tested on Ubuntu Linux 18.04 - 22.04, Ubuntu 22.04 is recommended
 #
 REPOSITORY_BASE=https://h-mdm.com/files
 CLIENT_VERSION=5.18
