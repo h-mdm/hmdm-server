@@ -72,7 +72,7 @@
         <glassfish-jersey.version>2.25.1</glassfish-jersey.version>
         <guice-bridge.version>2.6.1</guice-bridge.version>
         
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.20</lombok.version>
     </properties>
 
     <dependencies>
