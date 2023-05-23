@@ -53,7 +53,7 @@
 
     <!-- Optional tag for MQTT authentication for more security
          (supported by Headwind MDM launcher v5.05 and above) -->
-    <!-- <Parameter name="mqtt.auth" value="1"/> -->
+    <Parameter name="mqtt.auth" value="1"/>
 
     <!-- If you have any reverse proxies, specify them here (IP addresses, 
     comma-separated) for correct logging of IP addresses -->
