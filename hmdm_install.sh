@@ -4,7 +4,7 @@
 # Tested on Ubuntu Linux 18.04 - 22.04, Ubuntu 22.04 is recommended
 #
 REPOSITORY_BASE=https://h-mdm.com/files
-CLIENT_VERSION=5.18
+CLIENT_VERSION=5.19
 DEFAULT_SQL_HOST=localhost
 DEFAULT_SQL_PORT=5432
 DEFAULT_SQL_BASE=hmdm
