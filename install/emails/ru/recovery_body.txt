@@ -1,0 +1,2 @@
+Мы получили запрос на восстановление пароля на ${baseUrl}.<br><br>
+Для изменения пароля, перейдите по ссылке: <a href='${passwordResetUrl}'>${passwordResetUrl}</a>.<br><br>

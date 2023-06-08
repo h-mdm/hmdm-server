@@ -1,0 +1,3 @@
+The password reset on ${baseUrl} has been requested.<br><br>
+To change your password, please follow this link: <a href='${passwordResetUrl}'>${passwordResetUrl}</a>.<br><br>
+If you didn't request the password reset, just ignore this email.

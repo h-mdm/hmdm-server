@@ -6,6 +6,9 @@
     <Parameter name="JDBC.username" value="_SQL_USER_"/>
     <Parameter name="JDBC.password" value="_SQL_PASS_"/>
 
+    <!-- This directory is used to as a base directory to store app data -->
+    <Parameter name="base.directory" value="_BASE_DIRECTORY_"/>
+
     <!-- This directory is used to store uploaded app files, must be accessible for tomcat user -->
     <Parameter name="files.directory" value="_BASE_DIRECTORY_/files"/>
 
@@ -71,5 +74,14 @@
     <Parameter name="smtp.username" value="_SMTP_USERNAME_"/>
     <Parameter name="smtp.password" value="_SMTP_PASSWORD_"/>
     <Parameter name="smtp.from" value="_SMTP_FROM_"/>
+
+    <!-- Uncomment this line if you get 'Could not convert socket to TLS' -->
+    <!-- <Parameter name="smtp.ssl.protocols" value="TLSv1.2"/> -->
+
+<!-- These are the customer email templates
+     Email paths may contain _LANGUAGE_ replaced to a two-letter language
+     The default language is en -->
+    <Parameter name="email.recovery.subj" value="_BASE_DIRECTORY_/emails/_LANGUAGE_/recovery_subj.txt"/>
+    <Parameter name="email.recovery.body" value="_BASE_DIRECTORY_/emails/_LANGUAGE_/recovery_body.txt"/>
 
 </Context>
