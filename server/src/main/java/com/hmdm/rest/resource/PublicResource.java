@@ -181,7 +181,7 @@ public class PublicResource {
             }
 
             if (!errors.isEmpty()) {
-                logger.error("Не указаны требуемые данные: {}", errors);
+                logger.error("Required data not specified: {}", errors);
                 return Response.ERROR("error.params.missing", errors);
             }
 

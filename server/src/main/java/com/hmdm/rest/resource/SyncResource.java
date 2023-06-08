@@ -187,6 +187,7 @@ public class SyncResource {
 
         if (secureEnrollment) {
             if (!CryptoUtil.checkRequestSignature(request.getHeader(HEADER_ENROLLMENT_SIGNATURE), hashSecret + number)) {
+                logger.warn("Failed to setup device {}: signature mismatch", number);
                 return Response.PERMISSION_DENIED();
             }
         }
@@ -243,6 +244,7 @@ public class SyncResource {
 
         if (secureEnrollment) {
             if (!CryptoUtil.checkRequestSignature(request.getHeader(HEADER_ENROLLMENT_SIGNATURE), hashSecret + number)) {
+                logger.warn("Failed to setup device {}: signature mismatch", number);
                 return Response.PERMISSION_DENIED();
             }
         }

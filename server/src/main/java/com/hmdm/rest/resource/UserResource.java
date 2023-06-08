@@ -187,13 +187,15 @@ public class UserResource {
     public Response updateUser(User user) {
         return SecurityContext.get().getCurrentUser().map(u -> {
             if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
-                 return Response.PERMISSION_DENIED();
+                logger.warn("Failed to update user {}: must be org admin or superadmin", user.getLogin());
+                return Response.PERMISSION_DENIED();
             }
             try {
                 String userEmail = user.getEmail();
                 if (userEmail != null && !userEmail.equals("")) {
                     User dbUser = unsecureDAO.findByEmail(userEmail);
                     if (dbUser != null && !dbUser.getId().equals(user.getId())) {
+                        logger.warn("User with email {} already exists, id {}", userEmail, dbUser.getId());
                         return Response.ERROR("error.duplicate.email");
                     }
                 }
@@ -201,6 +203,7 @@ public class UserResource {
                 if (user.getId() == null) {
                     // Password is required for new users only
                     if (user.getNewPassword() == null) {
+                        logger.warn("Failed to create user {}: empty password", user.getLogin());
                         return Response.ERROR("error.password.empty");
                     }
                     user.setCustomerId(SecurityContext.get().getCurrentUser().get().getCustomerId());
@@ -217,6 +220,7 @@ public class UserResource {
 
                 return Response.OK();
             } catch (Exception e) {
+                logger.error("Failed to create user {}: ", user.getLogin(), e);
                 e.printStackTrace();
                 return Response.ERROR("error.duplicate.login");
             }
@@ -248,12 +252,14 @@ public class UserResource {
     public Response deleteUser(@PathParam("id") @ApiParam("User ID") int id) {
         return SecurityContext.get().getCurrentUser().map(u -> {
             if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                logger.warn("Failed to delete user {}: must be org admin or superadmin", id);
                 return Response.PERMISSION_DENIED();
             }
             try {
                 userDAO.deleteUser(id);
                 return Response.OK();
             } catch (Exception e) {
+                logger.warn("Failed to delete user", e);
                 return Response.ERROR(e.getMessage());
             }
         }).orElse(Response.PERMISSION_DENIED());
@@ -281,6 +287,7 @@ public class UserResource {
                 // Email must be unique
                 User user2 = unsecureDAO.findByEmail(user.getEmail());
                 if (user2 != null) {
+                    logger.warn("User with email {} already exists, id {}", user.getEmail(), user2.getId());
                     return Response.ERROR("error.duplicate.email");
                 }
                 dbUser.setEmail(user.getEmail());
@@ -312,6 +319,7 @@ public class UserResource {
             List<UserRole> roles = userDAO.findAllUserRoles();
             return Response.OK(roles);
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.ERROR(e.getMessage());
         }
     }
@@ -343,6 +351,7 @@ public class UserResource {
             userDAO.updatePasswordBySuperAdmin(user);
             return Response.OK("success.operation.completed");
         } else {
+            logger.warn("Failed to update password for user {}, must be super admin", user.getLogin());
             return Response.PERMISSION_DENIED();
         }
     }
@@ -356,14 +365,17 @@ public class UserResource {
 
         return SecurityContext.get().getCurrentUser().map(u -> {
             if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                logger.warn("Failed to impersonate as user {}: must be admin", id);
                 return Response.PERMISSION_DENIED();
             }
 
             User user = this.userDAO.getUserDetails(id);
             if (user == null) {
+                logger.warn("Failed to impersonate as user {}: user not found", id);
                 return Response.INTERNAL_ERROR();
             }
             if (u.getCustomerId() != user.getCustomerId() && !u.getUserRole().isSuperAdmin()) {
+                logger.warn("Failed to impersonate as user {}: belongs to another customer {}", id, u.getCustomerId());
                 return Response.PERMISSION_DENIED();
             }
 
@@ -385,10 +397,12 @@ public class UserResource {
     private Response updatePassword(User dbUser, User user) {
         if (user.getNewPassword() == null || user.getOldPassword() == null ||
                 !PasswordUtil.passwordMatch(user.getOldPassword(), dbUser.getPassword())) {
+            logger.warn("Failed to update password for {}: current password not match", user.getLogin());
             return Response.ERROR("error.password.wrong");
         }
 
         if (user.getNewPassword() == null || user.getNewPassword().isEmpty()) {
+            logger.warn("Failed to update password for {}: new password is empty", user.getLogin());
             return Response.ERROR("error.password.empty");
         }
 
@@ -398,6 +412,7 @@ public class UserResource {
         dbUser.setPasswordResetToken(null);
         userDAO.updatePassword(dbUser);
 
+        logger.info("Password for {} is updated", user.getLogin());
         return Response.OK("success.operation.completed", dbUser);
     }
 

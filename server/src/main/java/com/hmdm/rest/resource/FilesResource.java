@@ -204,6 +204,7 @@ public class FilesResource {
                     return Response.ERROR("error.file.save");
                 }
             } catch (FileExistsException e) {
+                logger.warn("File {} already exists", moveFileRequest.getLocalPath());
                 return Response.FILE_EXISTS();
             }
         }).orElse(Response.PERMISSION_DENIED());
@@ -278,6 +279,8 @@ public class FilesResource {
                     long totalSizeMb = (userDirSize + uploadFileSize) / 1048576l;
                     if (totalSizeMb > currentCustomer.getSizeLimit()) {
                         uploadFile.delete();
+                        logger.warn("Storage limit exceeded for customer {}: {}/{}", currentCustomer.getName(),
+                                totalSizeMb, currentCustomer.getSizeLimit());
                         return Response.ERROR("error.size.limit.exceeded",
                                 "" + totalSizeMb + " / " + currentCustomer.getSizeLimit());
                     }
@@ -295,6 +298,8 @@ public class FilesResource {
                 if (apkFileDetails.getVersionCode() != 0) {
                     version = this.applicationDAO.findApplicationVersionByCode(apkFileDetails.getPkg(), apkFileDetails.getVersionCode());
                     if (version != null && !version.getVersion().equals(apkFileDetails.getVersion())) {
+                        logger.warn("Version of {} with code {} already exists, name {}", apkFileDetails.getPkg(),
+                                apkFileDetails.getVersionCode(), version.getVersion());
                         // Version with the same version code but different version name exists
                         // This is a violation of Android versioning guidelines - disable upload
                         return Response.DUPLICATE_ENTITY("form.application.version.code.exists");

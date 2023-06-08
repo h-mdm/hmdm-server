@@ -134,16 +134,19 @@ public class CustomerResource {
         try {
             Customer dbCustomer = customerDAO.getCustomerByName(customer.getName());
             if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
+                log.warn("Customer with name {} already exists, id {}", customer.getName(), dbCustomer.getId());
                 return Response.DUPLICATE_ENTITY("error.duplicate.customer.name");
             }
             if (customer.getEmail() != null && !customer.getEmail().trim().equals("")) {
                 dbCustomer = customerDAO.getCustomerByEmail(customer.getEmail());
                 if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
+                    log.warn("Customer with email {} already exists, id {}", customer.getEmail(), dbCustomer.getId());
                     return Response.DUPLICATE_ENTITY("error.duplicate.email");
                 }
 
                 User dbUser = unsecureDAO.findByEmail(customer.getEmail());
                 if (dbUser != null && (customer.getId() == null || dbUser.getCustomerId() != customer.getId())) {
+                    log.warn("User with email {} already exists, customer {}", customer.getEmail(), dbUser.getCustomerId());
                     return Response.DUPLICATE_ENTITY("error.duplicate.email");
                 }
             }
@@ -246,9 +249,11 @@ public class CustomerResource {
 
                     return Response.OK( orgAdmin );
                 } else {
+                    log.warn("Failed to impersonate: org admin not found for customer {}", customer.getName());
                     return Response.ERROR("error.notfound.customer.admin");
                 }
             } else {
+                log.warn("Failed to impersonate: the user must be super admin");
                 return Response.PERMISSION_DENIED();
             }
         } catch (Exception e) {

@@ -99,6 +99,13 @@ public class DownloadFilesServlet extends HttpServlet {
         File file = new File(String.format("%s/%s", this.filesDirectory, path));
         if (file.exists()) {
 
+            long modifiedSince = req.getDateHeader("If-Modified-Since");
+            if (modifiedSince != -1 && modifiedSince > file.lastModified()) {
+                // Client can use cached images
+                resp.setStatus(304);
+                return;
+            }
+
             String range = req.getHeader("Range");
             if (range != null && range.startsWith("bytes=")) {
                 sendPartialContent(range.substring(6), file, resp);
