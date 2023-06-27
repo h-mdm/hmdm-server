@@ -5,6 +5,8 @@ angular.module('headwind-kiosk')
 
         $scope.authService = authService;
 
+        $scope.user = authService.getUser();
+
         $scope.search = {};
         $scope.loading = false;
 
@@ -53,7 +55,8 @@ angular.module('headwind-kiosk')
                 function (response) {
                     $scope.loading = false;
                     $scope.applications = response.data.filter(function (app) {
-                        return ($scope.showMyAppsOnly.on && !app.common || !$scope.showMyAppsOnly.on) &&
+                        return ($scope.showMyAppsOnly.on && (!app.common || app.customerId == $scope.user.customerId) ||
+                            !$scope.showMyAppsOnly.on) &&
                             ($scope.showMyAppsOnly.system && app.system || !app.system);
                     });
 
@@ -645,6 +648,8 @@ angular.module('headwind-kiosk')
         };
         $scope.loading = false;
         $scope.authService = authService;
+        $scope.user = authService.getUser();
+        $scope.hasPermission = authService.hasPermission;
 
         $scope.init = function () {
             $rootScope.settingsTabActive = false;
@@ -654,7 +659,7 @@ angular.module('headwind-kiosk')
 
             applicationService.getApplication({id: applicationId},
                 function (response) {
-                    $scope.application = response.data;
+                    $scope.parentApp = response.data;
                 });
         };
 

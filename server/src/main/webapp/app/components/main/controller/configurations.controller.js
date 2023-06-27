@@ -115,7 +115,7 @@ angular.module('headwind-kiosk')
     .controller('CopyConfigurationModalController',
         function ($scope, $modalInstance, configurationService, configuration, localization) {
 
-            $scope.configuration = {"id": configuration.id, "name": ""};
+            $scope.configuration = {"id": configuration.id, "name": "", "description": configuration.description};
 
             $scope.save = function () {
                 $scope.saveInternal();
@@ -127,7 +127,11 @@ angular.module('headwind-kiosk')
                 if (!$scope.configuration.name) {
                     $scope.errorMessage = localization.localize('error.empty.configuration.name');
                 } else {
-                    var request = {"id": $scope.configuration.id, "name": $scope.configuration.name};
+                    var request = {
+                        "id": $scope.configuration.id,
+                        "name": $scope.configuration.name,
+                        "description": $scope.configuration.description
+                    };
                     configurationService.copyConfiguration(request, function (response) {
                         if (response.status === 'OK') {
                             $modalInstance.close();
@@ -201,12 +205,14 @@ angular.module('headwind-kiosk')
             }
         };
     })
-    .controller('AddConfigurationAppModalController', function ($scope, localization, configurationService,
+    .controller('AddConfigurationAppModalController', function ($scope, localization, configurationService, authService,
                                                                 applications, configuration, $modalInstance, $modal) {
 
         // TODO : ISV : Update this controller
         // $scope.mainAppSelected = false;
         $scope.mainApp = {id: -1, name: ""};
+
+        $scope.hasPermission = authService.hasPermission;
 
         $scope.appLookupFormatter = function (val) {
             return val.name + (val.version && val.version !== '0' ? " " + val.version : "");
@@ -1423,7 +1429,11 @@ angular.module('headwind-kiosk')
                 }
             });
 
-            $scope.loadApps(configId);
+            if (configId > 0) {
+                $scope.loadApps(configId);
+            } else {
+                allApplications = [];
+            }
         })
     .controller('ConfigurationAppVersionSelectController', function ($scope, $modalInstance, applicationService,
                                                                      localization, application, applicationParameters) {

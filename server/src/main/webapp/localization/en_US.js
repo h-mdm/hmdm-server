@@ -100,6 +100,7 @@ document.localization ['en_US'] = {
     'button.application': 'Application',
     'button.change.password': 'Change password',
     'button.set.configuration': 'Set configuration',
+    'button.set.group': 'Set group',
     'button.group.action': 'Group action',
     'button.delete': 'Delete',
     'button.login': 'Login',
@@ -153,6 +154,7 @@ document.localization ['en_US'] = {
     'error.empty.configuration.name': 'Fill in the configuration name',
     'error.empty.configuration.password': 'Fill in the password',
     'error.empty.configuration.contentApp': 'No content application specified',
+    'error.empty.group': 'Add a device to one or more groups',
     'error.invalid.configuration.mainApp': 'In the MDM settings, the wrong main application is used',
     'error.invalid.configuration.contentApp': 'Invalid content application used in MDM settings',
     'error.mismatch.password': 'Password and password confirmation must match',
@@ -528,6 +530,9 @@ document.localization ['en_US'] = {
     'form.device.phone.number': 'Phone Number',
 
     'form.update.device.config': 'Configuration',
+    'form.update.device.action': 'Group action',
+    'form.device.set.group': 'Add to groups',
+    'form.device.clear.group': 'Remove from groups',
 
     'form.file.file': 'File',
     'form.file.path': 'Path',

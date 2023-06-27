@@ -9,7 +9,7 @@
 
         <div class='configurations-search-buttons'>
             <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
-            <button type='button' class='btn btn-default' ng-click='addFile()' localized>button.add</button>
+            <button ng-if="hasPermission('edit_files')" type='button' class='btn btn-default' ng-click='addFile()' localized>button.add</button>
         </div>
     </div>
 
@@ -45,7 +45,7 @@
                             class='btn btn-default' ng-click='showApps( file )'>
                         <span class='glyphicon glyphicon-list'></span>
                     </button>
-                    <button type='button' ng-if="!file.removalDisabled" localized-title="button.delete"
+                    <button type='button' ng-if="hasPermission('edit_files') && !file.removalDisabled" localized-title="button.delete"
                             class='btn btn-default' ng-click='removeFile( file )'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>

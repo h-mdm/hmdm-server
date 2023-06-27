@@ -28,21 +28,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import com.hmdm.notification.PushService;
-import com.hmdm.persistence.ConfigurationReferenceExistsException;
-import com.hmdm.persistence.CustomerDAO;
-import com.hmdm.persistence.domain.ConfigurationFile;
-import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.*;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.UpgradeConfigurationApplicationRequest;
+import com.hmdm.security.SecurityContext;
 import com.hmdm.util.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.persistence.ConfigurationDAO;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.rest.json.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +56,7 @@ public class ConfigurationResource {
     private ApplicationDAO applicationDAO;
     private PushService pushService;
     private CustomerDAO customerDAO;
+    private UserDAO userDAO;
     private String baseUrl;
 
     /**
@@ -74,11 +70,13 @@ public class ConfigurationResource {
                                  ApplicationDAO applicationDAO,
                                  PushService pushService,
                                  CustomerDAO customerDAO,
+                                 UserDAO userDAO,
                                  @Named("base.url") String baseUrl) {
         this.configurationDAO = configurationDAO;
         this.applicationDAO = applicationDAO;
         this.pushService = pushService;
         this.customerDAO = customerDAO;
+        this.userDAO = userDAO;
         this.baseUrl = baseUrl;
     }
     // =================================================================================================================
@@ -92,6 +90,10 @@ public class ConfigurationResource {
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllConfigurations() {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configurations");
+            return Response.PERMISSION_DENIED();
+        }
         List<Configuration> configurations = this.configurationDAO.getAllConfigurations();
         configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
@@ -108,6 +110,10 @@ public class ConfigurationResource {
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchConfigurations(@PathParam("value") String value) {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configurations");
+            return Response.PERMISSION_DENIED();
+        }
         List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByValue(value);
         configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
@@ -126,6 +132,10 @@ public class ConfigurationResource {
     @Path("/autocomplete")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurations(String filter) {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configurations");
+            return Response.PERMISSION_DENIED();
+        }
         try {
             List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByValue(filter)
                     .stream()
@@ -147,6 +157,10 @@ public class ConfigurationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateConfiguration(Configuration configuration) {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to update the configuration " + configuration.getId());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             Configuration dbConfiguration = this.configurationDAO.getConfigurationByName(configuration.getName());
             final Integer id = configuration.getId();
@@ -154,7 +168,18 @@ public class ConfigurationResource {
                 return Response.DUPLICATE_ENTITY("error.duplicate.configuration");
             } else {
                 if (id == null) {
+                    if (!SecurityContext.get().hasPermission("add_config")) {
+                        log.error("Unauthorized attempt to create the configuration " + configuration.getId());
+                        return Response.PERMISSION_DENIED();
+                    }
+                    configuration.setDisableLocation(false);        // Not used but shouldn't be NULL
                     this.configurationDAO.insertConfiguration(configuration);
+                    User user = SecurityContext.get().getCurrentUser().get();
+                    if (!user.isAllConfigAvailable()) {
+                        // User should get permissions to edit a configuration he created
+                        user.getConfigurations().add(new LookupItem(configuration.getId(), null));
+                        userDAO.updateUserMainDetails(user);
+                    }
                 } else {
                     this.configurationDAO.updateConfiguration(configuration);
                     this.pushService.notifyDevicesOnUpdate(configuration.getId());
@@ -165,6 +190,7 @@ public class ConfigurationResource {
             }
         } catch (Exception e) {
             log.error("Unexpected error when saving the configuration", e);
+            e.printStackTrace();
             return Response.INTERNAL_ERROR();
         }
     }
@@ -180,6 +206,10 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/application/upgrade")
     public Response upgradeConfiguration(UpgradeConfigurationApplicationRequest request) {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to upgrade the configuration " + request.getConfigurationId());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             this.configurationDAO.upgradeConfigurationApplication(request.getConfigurationId(), request.getApplicationId());
             final Configuration configuration = this.getConfiguration(request.getConfigurationId());
@@ -201,6 +231,10 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/copy")
     public Response copyConfiguration(Configuration configuration) {
+        if (!SecurityContext.get().hasPermission("copy_config")) {
+            log.error("Unauthorized attempt to copy the configuration " + configuration.getId());
+            return Response.PERMISSION_DENIED();
+        }
         Configuration dbConfiguration = this.configurationDAO.getConfigurationByName(configuration.getName());
         if (dbConfiguration != null) {
             return Response.DUPLICATE_ENTITY("error.duplicate.configuration");
@@ -209,9 +243,16 @@ public class ConfigurationResource {
             List<Application> configurationApplications = this.configurationDAO.getPlainConfigurationApplications(configuration.getId());
             Configuration copy = dbConfiguration.newCopy();
             copy.setName(configuration.getName());
+            copy.setDescription(configuration.getDescription());
             copy.setApplications(configurationApplications);
             copy.setBaseUrl(this.configurationDAO.getBaseUrl());
             this.configurationDAO.insertConfiguration(copy);
+            User user = SecurityContext.get().getCurrentUser().get();
+            if (!user.isAllConfigAvailable()) {
+                // User should get permissions to edit a configuration he created
+                user.getConfigurations().add(new LookupItem(copy.getId(), null));
+                userDAO.updateUserMainDetails(user);
+            }
             return Response.OK();
         }
     }
@@ -225,6 +266,10 @@ public class ConfigurationResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeConfiguration(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("copy_config")) {
+            log.error("Unauthorized attempt to delete the configuration " + id);
+            return Response.PERMISSION_DENIED();
+        }
         try {
             this.configurationDAO.removeConfigurationById(id);
             return Response.OK();
@@ -256,6 +301,10 @@ public class ConfigurationResource {
     @Path("/applications/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationApplications(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configuration applications");
+            return Response.PERMISSION_DENIED();
+        }
         return Response.OK(this.configurationDAO.getConfigurationApplications(id));
     }
 
@@ -269,6 +318,11 @@ public class ConfigurationResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationById(@PathParam("id") Integer id) {
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access the configuration " + id);
+            return Response.PERMISSION_DENIED();
+        }
+
         Configuration configurationById = getConfiguration(id);
 
         return Response.OK(configurationById);
@@ -282,6 +336,7 @@ public class ConfigurationResource {
      * @return a configuration referenced by the specified ID or <code>null</code> if there is no such configuration.
      */
     private Configuration getConfiguration(Integer id) {
+
         Configuration configuration = this.configurationDAO.getConfigurationByIdFull(id);
         if (configuration != null) {
             configuration.setBaseUrl(this.configurationDAO.getBaseUrl());

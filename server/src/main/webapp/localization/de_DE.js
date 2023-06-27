@@ -100,6 +100,7 @@ document.localization ['de_DE'] = {
     'button.application': 'Anwendung',
     'button.change.password': 'Ändere Passwort',
     'button.set.configuration': 'Konfiguration einstellen',
+    'button.set.group': 'Gruppe einstellen',
     'button.group.action': 'Gruppenaktion',
     'button.delete': 'Löschen',
     'button.login': 'Login',
@@ -153,6 +154,7 @@ document.localization ['de_DE'] = {
     'error.empty.configuration.name': 'Füllen Sie den Konfigurationsnamen aus',
     'error.empty.configuration.password': 'Geben Sie das Passwort an',
     'error.empty.configuration.contentApp': 'Keine Inhaltsanwendung angegeben',
+    'error.empty.group': 'Fügen Sie ein Gerät einer oder mehreren Gruppen hinzu',
     'error.invalid.configuration.mainApp': 'In den MDM-Einstellungen wird die falsche Hauptanwendung verwendet',
     'error.invalid.configuration.contentApp': 'Ungültige Inhaltsanwendung, die in den MDM-Einstellungen verwendet wird',
     'error.mismatch.password': 'Passwort und Passwortbestätigung müssen übereinstimmen',
@@ -528,6 +530,9 @@ document.localization ['de_DE'] = {
     'form.device.phone.number': 'Telefonnummer',
 
     'form.update.device.config': 'Konfiguration',
+    'form.update.device.action': 'Gruppenaktion',
+    'form.device.set.group': 'Zu Gruppen hinzufügen',
+    'form.device.clear.group': 'Aus Gruppen entfernen',
 
     'form.file.file': 'Datei',
     'form.file.path': 'Path',

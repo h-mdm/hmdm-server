@@ -100,6 +100,7 @@ document.localization[ 'ru_RU' ] = {
     'button.application': 'Приложение',
     'button.change.password': 'Сменить пароль',
     'button.set.configuration': 'Задать конфигурацию',
+    'button.set.group': 'Задать группу',
     'button.group.action': 'Действие с группой',
     'button.delete': 'Удалить',
     'button.login': 'Логин',
@@ -153,6 +154,7 @@ document.localization[ 'ru_RU' ] = {
     'error.empty.configuration.name': 'Заполните имя конфигурации',
     'error.empty.configuration.password': 'Заполните пароль',
     'error.empty.configuration.contentApp': 'Не указано контентное приложение',
+    'error.empty.group': 'Добавьте устройство в одну или несколько групп',
     'error.invalid.configuration.mainApp': 'В настройках MDM используется неверное главное приложение',
     'error.invalid.configuration.contentApp': 'В настройках MDM используется неверное контентное приложение',
     'error.mismatch.password': 'Пароль и подтверждение пароля должны совпадать',
@@ -528,6 +530,9 @@ document.localization[ 'ru_RU' ] = {
     'form.device.phone.number': 'Номер телефона',
 
     'form.update.device.config': 'Конфигурация',
+    'form.update.device.action': 'Групповое действие',
+    'form.device.set.group': 'Добавить в группы',
+    'form.device.clear.group': 'Удалить из групп',
 
     'form.file.file': 'Файл',
     'form.file.path': 'Путь',

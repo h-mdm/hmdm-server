@@ -5,15 +5,15 @@
 
     <div class='form-group'>
         <div class='center'>
-            <h3>&quot;{{application.name}}&quot;</h3>
+            <h3>&quot;{{parentApp.name}}&quot;</h3>
         </div>
     </div>
 
-    <div class='form-group' ng-if="application.type !== 'web'">
+    <div class='form-group' ng-if="parentApp.type !== 'web'">
         <div class='col-sm-offset-10 text-right'>
             <button type='button' class='btn btn-default'
-                    ng-disabled="application.commonApplication && !authService.isSuperAdmin()"
-                    ng-click='addApplicationVersion( {system: application.system, applicationId: application.id, arch: null} )'
+                    ng-if="hasPermission('edit_application_versions') && !(parentApp.commonApplication && parentApp.customerId != user.customerId)"
+                    ng-click='addApplicationVersion( {system: parentApp.system, applicationId: parentApp.id, arch: null} )'
                     localized>button.add</button>
         </div>
     </div>
@@ -56,22 +56,22 @@
                             type='button' class='btn btn-default' ng-click='manageConfigurations( application )'>
                         <span class='glyphicon glyphicon-list'></span>
                     </button>
-                    <button ng-if="!application.commonApplication || authService.isSuperAdmin()"
+                    <button ng-if="hasPermission('edit_application_versions') && (!parentApp.commonApplication || parentApp.customerId == user.customerId)"
                             localized-title="button.edit"
                             type='button' class='btn btn-default' ng-click='editApplicationVersion( application )'>
                         <span class='glyphicon glyphicon-pencil'></span>
                     </button>
-                    <button ng-if="!application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                    <button ng-if="hasPermission('edit_application_versions') && !application.deletionProhibited && (!parentApp.commonApplication || parentApp.customerId == user.customerId)"
                             localized-title="button.delete"
                             type='button' class='btn btn-default' ng-click='removeApplicationVersion( application )'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
-                    <button ng-if="application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                    <button ng-if="hasPermission('edit_application_versions') && application.deletionProhibited && (!parentApp.commonApplication || parentApp.customerId == user.customerId)"
                             localized-title="error.application.version.deletion.prohibited" disabled="disabled"
                             type='button' class='btn btn-default'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
-                    <button ng-if="application.commonApplication && !authService.isSuperAdmin()"
+                    <button ng-if="hasPermission('edit_application_versions') && parentApp.commonApplication && parentApp.customerId != user.customerId"
                             ng-click="clarifyOnCommon()"
                             localized-title="button.common" type='button' class='btn btn-default'>
                         <span class='glyphicon glyphicon-cloud'></span>

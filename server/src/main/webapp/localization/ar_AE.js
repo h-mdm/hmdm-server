@@ -100,6 +100,7 @@ document.localization ['ar_AE'] = {
     "button.application": 'تطبيق',
     "button.change.password": 'تغيير كلمة المرور',
     "button.set.configuration": 'ضبط الاعدادات',
+    'button.set.group': 'ضع مجموعة',
     'button.group.action': 'عمل جماعي',
     "button.delete": 'حذف',
     'button.login': 'تسجيل الدخول',
@@ -153,6 +154,7 @@ document.localization ['ar_AE'] = {
     'error.empty.configuration.name': 'املأ اسم اللاعداد',
     'error.empty.configuration.password': 'أدخل كلمة المرور',
     "error.empty.configuration.contentApp": 'لم يتم تحديد تطبيق محتوى',
+    'error.empty.group': 'أضف جهازًا إلى مجموعة واحدة أو أكثر',
     'error.invalid.configuration.mainApp': 'MDM يتم استخدام التطبيق الرئيسي الخاطئ في إعدادات' ,
     "error.invalid.configuration.contentApp": 'MDM تطبيق محتوى غير صالح مستخدم في إعدادات',
     'error.mismatch.password': 'يجب أن تتطابق كلمة المرور وتأكيد كلمة المرور' ,
@@ -528,6 +530,9 @@ document.localization ['ar_AE'] = {
     "form.device.phone.number": 'رقم الهاتف',
 
     "form.update.device.config": 'الاعداد',
+    'form.update.device.action': 'عمل جماعي',
+    'form.device.set.group': 'أضف إلى المجموعات',
+    'form.device.clear.group': 'إزالة من المجموعات',
 
     'form.file.file': 'ملف',
     'form.file.path': 'مسار',

@@ -13,7 +13,7 @@
         </div>
 
         <div class='device-search-buttons col-sm-2'>
-            <button type='button' class='btn btn-default' ng-click='editApplication( {arch:null} )' localized>button.add</button>
+            <button ng-if="hasPermission('edit_applications')" type='button' class='btn btn-default' ng-click='editApplication( {arch:null} )' localized>button.add</button>
         </div>
     </div>
 
@@ -86,22 +86,22 @@
                             type='button' class='btn btn-default' ng-click='editConfiguration( application )'>
                         <span class='glyphicon glyphicon-list'></span>
                     </button>
-                    <button ng-if="!application.commonApplication || authService.isSuperAdmin()"
+                    <button ng-if="hasPermission('edit_applications') && (!application.commonApplication || application.customerId == user.customerId)"
                             localized-title="button.edit"
                             type='button' class='btn btn-default' ng-click='editApplication( application )'>
                         <span class='glyphicon glyphicon-pencil'></span>
                     </button>
-                    <button ng-if="!application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                    <button ng-if="hasPermission('edit_applications') && !application.deletionProhibited && (!application.commonApplication || application.customerId == user.customerId)"
                             localized-title="button.delete"
                             type='button' class='btn btn-default' ng-click='removeApplication( application )'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
-                    <button ng-if="application.deletionProhibited && (!application.commonApplication || authService.isSuperAdmin())"
+                    <button ng-if="hasPermission('edit_applications') && application.deletionProhibited && (!application.commonApplication || application.customerId == user.customerId)"
                             localized-title="error.application.config.reference.exists" disabled="disabled"
                             type='button' class='btn btn-default' ng-click='removeApplication( application )'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
-                    <button ng-if="application.commonApplication && !authService.isSuperAdmin()"
+                    <button ng-if="hasPermission('edit_applications') && application.commonApplication && application.customerId != user.customerId"
                             ng-click="clarifyOnCommon()"
                             localized-title="button.common" type='button' class='btn btn-default'>
                         <span class='glyphicon glyphicon-cloud'></span>

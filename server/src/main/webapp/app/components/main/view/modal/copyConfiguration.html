@@ -14,6 +14,14 @@
         </div>
 
         <div class='form-group'>
+            <label class='col-sm-3 control-label' localized>form.configuration.settings.common.desc</label>
+            <div class='col-sm-9'>
+                <textarea ng-model='configuration.description' class='form-control no-resize'
+                          localized-placeholder='form.configuration.settings.common.desc.placeholder'></textarea>
+            </div>
+        </div>
+
+        <div class='form-group'>
             <div class='col-sm-offset-3 col-sm-8'>
                 <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
                 <button type='button' class='btn btn-default' ng-click='closeModal()' localized>button.cancel</button>

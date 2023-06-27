@@ -42,7 +42,7 @@ import com.hmdm.notification.PushService;
 import com.hmdm.persistence.ConfigurationFileDAO;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ConfigurationFile;
-import com.hmdm.rest.json.DeviceLookupItem;
+import com.hmdm.rest.json.*;
 import com.hmdm.rest.json.view.devicelist.DeviceListView;
 import com.hmdm.rest.json.view.devicelist.DeviceView;
 import com.hmdm.security.SecurityContext;
@@ -57,8 +57,6 @@ import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.DeviceSearchRequest;
-import com.hmdm.rest.json.PaginatedData;
-import com.hmdm.rest.json.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -297,6 +295,46 @@ public class DeviceResource {
             while (it.hasNext()) {
                 Integer id = (Integer) it.next();
                 this.deviceDAO.removeDeviceById(id);
+            }
+        }
+        return Response.OK();
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Set or clear device groups in bulk"
+    )
+    @POST
+    @Path("/groupBulk")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateDeviceGroupBulk(DeviceGroupBulkRequest request) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!(canEditDevices)) {
+            log.error("Unauthorized attempt to delete devices",
+                    SecurityException.onCustomerDataAccessViolation(0, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
+        if (request.getIds() != null) {
+            // Device IDs are transferred in the "ids" parameter
+            Iterator it = request.getIds().iterator();
+
+            while (it.hasNext()) {
+                Integer id = (Integer) it.next();
+                Device device = deviceDAO.getDeviceById(id);
+                if (device == null) {
+                    // Not found
+                    continue;
+                }
+                List<LookupItem> groups = device.getGroups();
+                groups.removeAll(request.getGroups());
+                if (request.getAction().equals("set")) {
+                    groups.addAll(request.getGroups());
+                }
+                deviceDAO.updateDevice(device);
+                // No need to notify devices because changing a group doesn't affect a device
             }
         }
         return Response.OK();

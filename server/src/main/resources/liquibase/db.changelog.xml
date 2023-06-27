@@ -2424,4 +2424,39 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="25.06.23-10:33" author="seva" context="common">
+        <comment>More granular permissions for limited users</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('applications', 'View the applications tab');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (100, currval('permissions_id_seq'));
+
+            INSERT INTO permissions (name, description) VALUES ('edit_applications', 'Add and edit applications');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+
+            INSERT INTO permissions (name, description) VALUES ('edit_application_versions', 'Add and edit versions of existing applications');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+
+            INSERT INTO permissions (name, description) VALUES ('files', 'View the files tab');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (100, currval('permissions_id_seq'));
+
+            INSERT INTO permissions (name, description) VALUES ('edit_files', 'Add and edit files');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'applications';
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

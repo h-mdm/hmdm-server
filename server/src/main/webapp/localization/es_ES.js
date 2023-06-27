@@ -100,6 +100,7 @@ document.localization ['es_ES'] = {
     'button.application': 'Aplicacion',
     'button.change.password': 'Cambiar contraseña',
     'button.set.configuration': 'Definir configuración',
+    'button.set.group': 'Definir un grupo',
     'button.group.action': 'Acción de grupo',
     'button.delete': 'Eliminar',
     'button.login': 'Ingresar',
@@ -153,6 +154,7 @@ document.localization ['es_ES'] = {
     'error.empty.configuration.name': 'Ingrese el nombre de la configuración',
     'error.empty.configuration.password': 'Ingrese la contraseña',
     'error.empty.configuration.contentApp': 'No hay contenido para aplicacion especificada',
+    'error.empty.group': 'Agregar un dispositivo a uno o más grupos',
     'error.invalid.configuration.mainApp': 'En las opciones del MDM, se uso la aplicacion incorrecta',
     'error.invalid.configuration.contentApp': 'Aplicacion de contenido especificada invalida',
     'error.mismatch.password': 'Las contraseñas deben coincidir',
@@ -528,6 +530,9 @@ document.localization ['es_ES'] = {
     'form.device.phone.number': 'Número Telefonico',
 
     'form.update.device.config': 'Configuración',
+    'form.update.device.action': 'Acción de grupo',
+    'form.device.set.group': 'Agregar a grupos',
+    'form.device.clear.group': 'Eliminar de grupos',
 
     'form.file.file': 'Archivo',
     'form.file.path': 'Ruta',

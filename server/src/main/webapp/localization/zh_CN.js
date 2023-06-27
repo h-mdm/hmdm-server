@@ -100,6 +100,7 @@ document.localization ['zh_CN'] = {
     'button.application' : "应用程式",
     'button.change.password' : "更改密码",
     'button.set.configuration':"设置配置",
+    'button.set.group': '设置一个组',
     'button.group.action': '集体行动',
     'button.delete' : "删除",
     'button.login' : "登录",
@@ -153,6 +154,7 @@ document.localization ['zh_CN'] = {
     'error.empty.configuration.name':"填写配置名称",
     'error.empty.configuration.password':"填写密码",
     'error.empty.configuration.contentApp':"未指定内容应用程式",
+    'error.empty.group': '将设备添加到一个或多个组',
     'error.invalid.configuration.mainApp':"在MDM设置中，使用了错误的主应用程式",
     'error.invalid.configuration.contentApp':"在MDM设置中使用了无效的内容应用程式",
     'error.mismatch.password':"密码和密码确认必须匹配",
@@ -528,7 +530,10 @@ document.localization ['zh_CN'] = {
     'form.device.phone.number' : "电话号码",
 		
     'form.update.device.config' : "配置",
-		
+    'form.update.device.action': '组操作',
+    'form.device.set.group': '添加到组',
+    'form.device.clear.group': '从组中删除',
+
     'form.file.file' : "文档",
     'form.file.path' : "路径",
     'form.file.path.placeholder' : '输入相对路径，例如"/files/"',

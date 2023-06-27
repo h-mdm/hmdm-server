@@ -100,6 +100,7 @@ document.localization ['ja_JP'] = {
     'button.application': 'アプリケーション',
     'button.change.password': 'パスワードの変更',
     'button.set.configuration': '設定の設定',
+    'button.set.group': 'グループを設定する',
     'button.group.action': 'グループアクション',
     'button.delete': '削除',
     'button.login': 'ログイン',
@@ -153,6 +154,7 @@ document.localization ['ja_JP'] = {
     'error.empty.configuration.name': '構成名を入力してください',
     'error.empty.configuration.password': 'パスワードを入力してください',
     'error.empty.configuration.contentApp': 'コンテンツアプリケーションが指定されていません',
+    'error.empty.group': 'デバイスを 1 つ以上のグループに追加する',
     'error.invalid.configuration.mainApp': 'MDM 設定で、間違ったメイン アプリケーションが使用されています',
     'error.invalid.configuration.contentApp': 'MDM 設定で使用されている無効なコンテンツアプリケーション',
     'error.mismatch.password': 'パスワードとパスワードの確認は一致する必要があります',
@@ -528,6 +530,9 @@ document.localization ['ja_JP'] = {
     'form.device.phone.number': '電話番号',
 
     'form.update.device.config': '構成',
+    'form.update.device.action': 'グループアクション',
+    'form.device.set.group': 'グループに追加',
+    'form.device.clear.group': 'グループから削除',
 
     'form.file.file': 'ファイル',
     'form.file.path': 'パス',

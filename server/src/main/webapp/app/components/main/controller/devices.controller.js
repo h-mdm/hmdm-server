@@ -895,6 +895,22 @@ angular.module('headwind-kiosk')
             });
         };
 
+        $scope.openBulkGroupModal = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/main/view/modal/device.group.html',
+                controller: 'DeviceGroupModalController',
+                resolve: {
+                    devices: function () {
+                        return $scope.devices;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                $scope.search();
+            });
+        };
+
         $scope.confirmBulkDelete = function() {
             let localizedText = localization.localize('question.delete.device.bulk');
             confirmModal.getUserConfirmation(localizedText, function () {
@@ -1009,6 +1025,40 @@ angular.module('headwind-kiosk')
             $modalInstance.dismiss();
         }
     })
+    .controller('DeviceGroupModalController', function ($scope, $modalInstance, groupService, deviceService, devices) {
+        $scope.device = {};
+        $scope.groupAction = 'set';
+
+        groupService.getAllGroups(function (response) {
+            $scope.groups = response.data;
+            $scope.groupsList = response.data.map(function (group) {
+                return {id: group.id, label: group.name};
+            });
+        });
+
+        $scope.groupsSelection = [];
+
+        $scope.save = function () {
+            var ids = [];
+            for (var i = 0; i < devices.length; i++) {
+                if (devices[i].selected) {
+                    ids.push(devices[i].id);
+                }
+            }
+
+            var device = {'ids': ids,
+                'action': $scope.groupAction,
+                'groups': $scope.groupsSelection
+            };
+            deviceService.updateDeviceGroupBulk(device, function () {
+                $modalInstance.close();
+            });
+        };
+
+        $scope.closeModal = function () {
+            $modalInstance.dismiss();
+        }
+    })
     .controller('DeviceModalController',
         function ($scope, $modalInstance, deviceService, configurationService, groupService, device, settings,
                   localization, authService, confirmModal) {
@@ -1069,8 +1119,12 @@ angular.module('headwind-kiosk')
             $scope.save = function () {
                 $scope.errorMessage = undefined;
 
+                var user = authService.getUser();
+
                 if (!$scope.device.configurationId) {
                     $scope.errorMessage = localization.localize('error.empty.configuration');
+                } else if (!user.allDevicesAvailable && $scope.groupsSelection.length == 0) {
+                    $scope.errorMessage = localization.localize('error.empty.group');
                 } else {
                     $scope.device.groups = $scope.groupsSelection;
 
