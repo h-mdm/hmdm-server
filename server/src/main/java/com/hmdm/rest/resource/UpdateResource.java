@@ -93,6 +93,7 @@ public class UpdateResource {
         String manifestStr = null;
         try {
             URL url = new URL(UpdateSettings.MANIFEST_URL.replace("CUSTOMER_DOMAIN", customerDomain));
+            logger.info("Checking for update: " + url.toString());
             manifestStr = FileUtil.downloadTextFile(url);
 
             JSONArray array = new JSONArray(manifestStr);
@@ -108,6 +109,7 @@ public class UpdateResource {
                     allUpdates.add(updateEntry);
                 } else {
                     if (processMobileAppEntry(updateEntry)) {
+                        logger.info("Secondary APK: " + updateEntry.getUrl());
                         allUpdates.add(updateEntry);
                     }
                 }
@@ -283,6 +285,7 @@ public class UpdateResource {
         }
 
         entry.setUrl(entry.getUrl().replace("WEB_SUFFIX", UpdateSettings.WEB_SUFFIX));
+        logger.info("Web app: " + entry.getUrl());
 
         // Check if the file is downloaded
         File file = new File(filesDirectory, getFileNameFromUrl(entry.getUrl()));
@@ -357,6 +360,7 @@ public class UpdateResource {
 
         // Use corresponding APK URL from the manifest
         entry.setUrl(entry.getUrl().replace("LAUNCHER_SUFFIX", parts[2]));
+        logger.info("Launcher APK: " + entry.getUrl());
 
         File file = new File(filesDirectory, getFileNameFromUrl(entry.getUrl()));
         entry.setDownloaded(file.exists());
