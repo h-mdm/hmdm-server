@@ -332,6 +332,7 @@ public class FilesResource {
                     dbAppCopy.setRunAtBoot(dbApp.isRunAtBoot());
                     dbAppCopy.setSystem(dbApp.isSystem());
                     dbAppCopy.setName(dbApp.getName());
+                    dbAppCopy.setPkg(dbApp.getPkg());
 
                     result.setApplication(dbAppCopy);
                 }

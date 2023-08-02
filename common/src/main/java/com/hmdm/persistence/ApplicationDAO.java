@@ -541,6 +541,10 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         return getList(customerId -> this.mapper.findByPackageId(customerId, pkg));
     }
 
+    public List<Application> findByName(String name) {
+        return getList(customerId -> this.mapper.findByName(customerId, name));
+    }
+
     public Application findById(int id) {
         return this.mapper.findById(id);
     }
@@ -1000,6 +1004,24 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     public List<Application> getApplicationsForPackageID(Application application) {
         if (application.getPkg() != null) {
             final List<Application> dbApps = findByPackageId(application.getPkg())
+                    .stream()
+                    .filter(dbApp -> !dbApp.getId().equals(application.getId()))
+                    .collect(Collectors.toList());
+            return dbApps;
+        }
+
+        return new ArrayList<>();
+    }
+
+    /**
+     * <p>Locates the applications other than specified one which have the same name.</p>
+     *
+     * @param application an application to be validated.
+     * @return a list of existing applications with same name as set for validated one.
+     */
+    public List<Application> getApplicationsForName(Application application) {
+        if (application.getName() != null) {
+            final List<Application> dbApps = findByName(application.getName())
                     .stream()
                     .filter(dbApp -> !dbApp.getId().equals(application.getId()))
                     .collect(Collectors.toList());

@@ -210,6 +210,7 @@ document.localization ['es_ES'] = {
     'error.password.weak': 'Calidad de contraseña débil',
     'error.params.missing': 'Parametros faltantes:',
     'error.empty.push.options': 'Por favor, seleccione las opciones de notificaciones "Push"',
+    'error.app.name.exists': 'Ya existe otra aplicación con este nombre. Especifique un nombre único.',
 
     'table.filtering.check.all': 'Seleccionar Todo',
     'table.filtering.uncheck.all': 'Cancelar Todo',

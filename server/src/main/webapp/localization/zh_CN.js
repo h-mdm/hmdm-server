@@ -210,7 +210,8 @@ document.localization ['zh_CN'] = {
     'error.password.weak': '密码质量弱',
     'error.params.missing' : "缺少参数",
     'error.empty.push.options':"请选择推送通知选项",
-		
+    'error.app.name.exists': '另一个同名的应用程序已存在。 请指定一个唯一的名称。',
+
     'table.filtering.check.all' : "全选",
     'table.filtering.uncheck.all':"取消全部",
     'table.filtering.suffix.configuration':"配置",

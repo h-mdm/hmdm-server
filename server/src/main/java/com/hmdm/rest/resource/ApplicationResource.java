@@ -48,6 +48,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.ApplicationDAO;
@@ -194,8 +195,14 @@ public class ApplicationResource {
                 application = this.applicationDAO.findById(appId);
                 return Response.OK(application);
             } else {
-                // TODO : ISV : Handle the scenario for inserting new version for the same package here
                 this.applicationDAO.updateApplication(application);
+                if (application.getUrl() != null && application.getLatestVersion() != null && !application.isSplit()) {
+                    ApplicationVersion version = applicationDAO.findApplicationVersionById(application.getLatestVersion());
+                    if (version != null) {
+                        version.setUrl(application.getUrl());
+                        applicationDAO.updateApplicationVersion(version);
+                    }
+                }
                 return Response.OK();
             }
         } catch (DuplicateApplicationException e) {
@@ -481,6 +488,12 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response validateApplication(Application application) {
         try {
+            final List<Application> sameNameApps = this.applicationDAO.getApplicationsForName(application);
+            for (Application app : sameNameApps) {
+                if (!app.getPkg().equalsIgnoreCase(application.getPkg())) {
+                    return Response.ERROR("error.app.name.exists");
+                }
+            }
             final List<Application> otherApps = this.applicationDAO.getApplicationsForPackageID(application);
             return Response.OK(otherApps);
         } catch (Exception e) {

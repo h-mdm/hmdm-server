@@ -261,6 +261,12 @@ public interface ApplicationMapper {
     List<Application> findByPackageId(@Param("customerId") int customerId,
                                       @Param("pkg") String pkg);
 
+    @Select({SELECT_BY_VERSION_BASE +
+            "WHERE (customerId = #{customerId} OR customers.master = TRUE )" +
+            "AND applications.name ILIKE #{name}"})
+    List<Application> findByName(@Param("customerId") int customerId,
+                                      @Param("name") String name);
+
     @Select({"SELECT COUNT(*) " +
             "FROM applications " +
             "INNER JOIN customers ON applications.customerId = customers.id " +

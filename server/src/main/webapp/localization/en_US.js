@@ -210,6 +210,7 @@ document.localization ['en_US'] = {
     'error.password.weak': 'Weak password quality',
     'error.params.missing': 'Missing parameters:',
     'error.empty.push.options': 'Please select the Push notifications options',
+    'error.app.name.exists': 'Another application with this name already exists. Please specify a unique name.',
 
     'table.filtering.check.all': 'Select All',
     'table.filtering.uncheck.all': 'Cancel All',

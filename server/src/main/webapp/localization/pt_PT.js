@@ -209,6 +209,7 @@ document.localization ['pt_PT'] = {
     'error.password.weak': 'Qualidade de senha fraca',
     'error.params.missing': 'Parâmetros ausentes:',
     'error.empty.push.options': 'Por favor, selecione as notificações de Push',
+    'error.app.name.exists': 'Já existe outro aplicativo com este nome. Especifique um nome exclusivo.',
 
     'table.filtering.check.all': 'Selecionar Tudo',
     'table.filtering.uncheck.all': 'Cancelar Tudo',

@@ -210,6 +210,7 @@ document.localization ['de_DE'] = {
     'error.password.weak': 'Schwache Passwortqualität',
     'error.params.missing': 'Fehlende Parameter:',
     'error.empty.push.options': 'Bitte wählen Sie die Push-Benachrichtigungsoptionen',
+    'error.app.name.exists': 'Eine andere Anwendung mit diesem Namen existiert bereits. Bitte geben Sie einen eindeutigen Namen an.',
 
     'table.filtering.check.all': 'Alle auswählen',
     'table.filtering.uncheck.all': 'Alle abbrechen',

@@ -210,6 +210,7 @@ document.localization ['ar_AE'] = {
     'error.password.weak': 'جودة كلمة المرور ضعيفة',
     'error.params.missing': 'معلمات مفقودة:',
     "error.empty.push.options": 'الرجاء تحديد خيارات التنبيهات الفورية',
+    'error.app.name.exists': 'يوجد بالفعل تطبيق آخر بهذا الاسم. الرجاء تحديد اسم فريد.',
 
     "table.filtering.check.all": 'تحديد الكل',
     "table.filtering.uncheck.all": 'إلغاء الكل',

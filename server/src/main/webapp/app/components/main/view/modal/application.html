@@ -110,10 +110,12 @@
         <div class='form-group'>
             <label class='col-sm-4 control-label' for="applicationUrl" localized>form.application.url</label>
             <div class='col-sm-8'>
-                <input title="{{localization.localize(application.id ? 'form.application.url.disabled' : 'form.application.url.title')}}"
+                <!-- We enable editing the URL for better user experience. The URL changes will be applied
+                to the latest app version. Only apps without split APKs could be edited -->
+                <input title="{{localization.localize(application.split ? 'form.application.url.disabled' : 'form.application.url.title')}}"
                        ng-model='application.url' type='text'
                        class='form-control' id="applicationUrl"
-                       ng-disabled="(application.system || application.id)">
+                       ng-disabled="(application.system || (application.id && application.split))">
             </div>
         </div>
 

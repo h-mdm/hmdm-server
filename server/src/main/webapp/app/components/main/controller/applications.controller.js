@@ -394,6 +394,15 @@ angular.module('headwind-kiosk')
             applicationService.validateApplicationPackage(request, function (response) {
                 if (response.status === 'OK') {
                     var existingAppsForPkg = response.data;
+                    if (existingAppsForPkg.length > 0 && request.id) {
+                        // If the user updates an existing application, check the name
+                        for (var i in existingAppsForPkg) {
+                            if (request.name == existingAppsForPkg[i].name) {
+                                $scope.errorMessage = localization.localize("error.app.name.exists");
+                                return;
+                            }
+                        }
+                    }
                     if (existingAppsForPkg.length > 0 && (!request.id || request.pkg !== $scope.application.pkg)) {
                         if (existingAppsForPkg.length != 1 ||
                             existingAppsForPkg[0].versionCode > request.versionCode ||
@@ -471,7 +480,17 @@ angular.module('headwind-kiosk')
                 if (result.changePkg) {
                     doSaveAndroidApplication(request);
                 } else if (result.newApp) {
-                    doSaveAndroidApplication(request);
+                    var uniqueName = true;
+                    for (var key in existingAppsForPkg) {
+                        if (existingAppsForPkg[key].name == request.name) {
+                            uniqueName = false;
+                        }
+                    }
+                    if (uniqueName) {
+                        doSaveAndroidApplication(request);
+                    } else {
+                        $scope.errorMessage = localization.localize("error.app.name.exists");
+                    }
                 } else if (result.newAppVersion) {
                     request.applicationId = result.targetAppId;
                     doSaveApplicationVersion(request, result.targetApp);
@@ -806,15 +825,8 @@ angular.module('headwind-kiosk')
             if (!$scope.invalidFile) {
                 if (response.data.status === 'OK') {
                     $scope.file.path = response.data.data.serverPath;
-                    if (response.data.data.application && response.data.data.application.id == applicationVersion.applicationId) {
-                        var app = response.data.data.application;
-                        $scope.application.name = app.name;
-                        $scope.application.showIcon = app.showIcon;
-                        $scope.application.useKiosk = app.useKiosk;
-                        $scope.application.runAfterInstall = app.runAfterInstall;
-                        $scope.application.runAtBoot = app.runAtBoot;
-                        $scope.application.system = app.system;
-                    } else {
+                    if (!response.data.data.application ||
+                        !response.data.data.application.pkg != response.data.data.fileDetails.pkg) {
                         $scope.errorMessage = localization.localize('error.package.not.match');
                         return;
                     }

@@ -210,6 +210,7 @@ document.localization ['ja_JP'] = {
     'error.password.weak': 'パスワードの品質が低い',
     'error.params.missing': 'パラメータがありません:',
     'error.empty.push.options': 'プッシュ通知オプションを選択してください',
+    'error.app.name.exists': 'この名前の別のアプリケーションがすでに存在します。 一意の名前を指定してください。',
 
     'table.filtering.check.all': 'すべて選択',
     'table.filtering.uncheck.all': 'すべてキャンセル',

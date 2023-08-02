@@ -14,8 +14,8 @@ angular.module('headwind-kiosk')
                 var count = v1n.length < v2n.length ? v1n.length : v2n.length;
 
                 for (var n = 0; n < count; n++) {
-                    var n1 = v1n[n];
-                    var n2 = v2n[n];
+                    var n1 = Number(v1n[n]);
+                    var n2 = Number(v2n[n]);
                     if (n1 < n2) {
                         return -1;
                     } else if (n1 > n2) {

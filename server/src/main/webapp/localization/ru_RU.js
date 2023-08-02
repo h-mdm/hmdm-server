@@ -210,6 +210,7 @@ document.localization[ 'ru_RU' ] = {
     'error.password.weak': 'Слабое качество пароля',
     'error.params.missing': 'Отсутствуют параметры:',
     'error.empty.push.options': 'Пожалуйста, выберите вариант Push-уведомлений',
+    'error.app.name.exists': 'Приложение с таким названием уже есть. Укажите уникальное имя.',
 
     'table.filtering.check.all': 'Выбрать все',
     'table.filtering.uncheck.all': 'Отменить все',
