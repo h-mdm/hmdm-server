@@ -172,5 +172,52 @@
                 </div>
             </div>
         </form>
+
+        <form class='form-horizontal' ng-if="false">
+
+            <div class="text-center">
+                <h4 localized-change-tracking>form.two.factor.auth.title</h4>
+            </div>
+
+            <div class='form-group'>
+                <label class='col-sm-6 control-label' for="twoFactor" localized-change-tracking>form.two.factor.auth.title</label>
+                <div class='col-sm-1'>
+                    <input id="twoFactor" ng-model='twoFactor.use' type='checkbox' class='form-control'
+                        ng-checked="twoFactor.use" ng-change="twoFactorToggled()"/>
+                </div>
+            </div>
+
+            <div class='form-group'>
+                <div ng-show='twoFactor.success' class='success'><span>{{twoFactor.success}}</span></div>
+            </div>
+
+            <div class='form-group' ng-if="twoFactor.use && !twoFactor.accepted">
+                <div class="center">
+                    <img ng-src="{{twoFactor.qrCodeUrl}}" alt="" />
+                </div>
+                <div localized>form.two.factor.auth.settings.hint</div>
+            </div>
+
+            <div class='form-group'>
+                <div ng-show='twoFactor.error' class='error'><span>{{twoFactor.error}}</span></div>
+            </div>
+
+            <div class='form-group' ng-if="twoFactor.use && !twoFactor.accepted">
+                <label class='col-sm-6 control-label' for='authCode' localized>form.two.factor.auth.code</label>
+                <div class="col-sm-4">
+                    <input type='text' class='form-control' id='authCode'
+                           ng-model='twoFactor.code' localized-placeholder='form.two.factor.auth.code.hint'
+                           required/>
+                </div>
+                <div class="col-sm-2">
+                    <button type='submit' class='btn btn-default' style="opacity: 1" ng-click='verifyTwoFactor()'
+                            localized>form.two.factor.auth.verify</button>
+                </div>
+            </div>
+
+            <div style="height: 30px">&nbsp;</div>
+
+        </form>
+
     </div>
 </div>

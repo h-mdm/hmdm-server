@@ -72,4 +72,10 @@ public class UserView {
     public List<LookupItem> getConfigurations() {
         return user.getConfigurations();
     }
+    public Boolean getTwoFactor() {
+        return user.isTwoFactor() ? true : null;
+    }
+    public Boolean getTwoFactorAccepted() {
+        return user.isTwoFactorAccepted() ? true : null;
+    }
 }

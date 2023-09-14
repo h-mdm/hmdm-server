@@ -663,6 +663,17 @@ document.localization ['ja_JP'] = {
     'form.password.reset.invalid': '申し訳ありませんが、このパスワードリセットリンクは無効です',
     'form.password.reset.submit': 'パスワードを設定',
 
+    'form.two.factor.auth.title': '二要素認証',
+    'form.two.factor.auth.hint': 'サインアップを完了するには、モバイル デバイスに認証アプリをインストールし、QR コードをスキャンし、確認コードを生成して入力してください。',
+    'form.two.factor.auth.code.invalid': '確認コードが無効です!',
+    'form.two.factor.auth.code': '検証コード',
+    'form.two.factor.auth.code.hint': '認証アプリからの 6 桁のコード',
+    'form.two.factor.auth.code.error': 'コードは 6 桁の数字である必要があります',
+    'form.two.factor.auth.verify': '検証',
+    'form.two.factor.auth.settings.hint': '2 要素認証を設定するには、モバイル デバイスに Authenticator アプリをインストールし、QR コードをスキャンし、確認コードを生成して入力してください。',
+    'form.two.factor.auth.set': '2 要素認証がオンになっています',
+    'form.two.factor.auth.reset': '2 要素認証はオフになっています',
+
     'form.profile.title': 'パスワードの変更',
     'form.profile.password.old': '現在のパスワード',
     'form.profile.password.old.placeholder': '現在のパスワードを入力してください',

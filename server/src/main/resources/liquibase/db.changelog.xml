@@ -2459,4 +2459,19 @@
         </rollback>
     </changeSet>
 
+
+    <changeSet id="10.09.23-10:57" author="seva" context="common">
+        <comment>Two-factor authentication: Column,new: customers#twoFactor, users#twoFactorSecret</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN twoFactor BOOLEAN NOT NULL DEFAULT false;
+            ALTER TABLE users ADD COLUMN twoFactorSecret TEXT;
+            ALTER TABLE users ADD COLUMN twoFactorAccepted BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN twoFactor;
+            ALTER TABLE users DROP COLUMN twoFactorSecret;
+            ALTER TABLE users DROP COLUMN twoFactorAccepted;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

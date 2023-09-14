@@ -663,6 +663,17 @@ document.localization ['fr_FR'] = {
     'form.password.reset.invalid': 'Désolé, ce lien de réinitialisation de mot de passe n\'est pas valide',
     'form.password.reset.submit': 'Définir le mot de passe',
 
+    'form.two.factor.auth.title': 'Authentification à deux facteurs',
+    'form.two.factor.auth.hint': 'Pour finaliser votre inscription, veuillez installer l\'application Authenticator sur votre appareil mobile, scanner le code QR, générer et saisir le code de vérification.',
+    'form.two.factor.auth.code.invalid': 'Le code de vérification n\'est pas valide !',
+    'form.two.factor.auth.code' : 'Code de vérification',
+    'form.two.factor.auth.code.hint' : 'Code à 6 chiffres de l\'application d\'authentification',
+    'form.two.factor.auth.code.error': 'Le code doit être un nombre à 6 chiffres',
+    'form.two.factor.auth.verify': 'Vérifier',
+    'form.two.factor.auth.settings.hint': 'Pour définir l\'authentification à deux facteurs, veuillez installer l\'application Authenticator sur votre appareil mobile, scannez le code QR, générez et saisissez le code de vérification.',
+    'form.two.factor.auth.set': 'L\'authentification à deux facteurs est activée',
+    'form.two.factor.auth.reset': 'L\'authentification à deux facteurs est désactivée',
+
     'form.profile.title': 'Changer le mot de passe',
     'form.profile.password.old': 'Ancien mot de passe',
     'form.profile.password.old.placeholder': 'Entrez l\'ancien mot de passe',

@@ -94,6 +94,8 @@ public class Settings implements CustomerData, Serializable {
     private int passwordLength;
     @ApiModelProperty("Password strength for users (0 - none, 1 - alphanumeric, 2 - alphanumeric + special characters")
     private int passwordStrength;
+    @ApiModelProperty("Two-factor authentication")
+    private boolean twoFactor;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
@@ -328,6 +330,14 @@ public class Settings implements CustomerData, Serializable {
 
     public void setPasswordStrength(int passwordStrength) {
         this.passwordStrength = passwordStrength;
+    }
+
+    public boolean isTwoFactor() {
+        return twoFactor;
+    }
+
+    public void setTwoFactor(boolean twoFactor) {
+        this.twoFactor = twoFactor;
     }
 
     public boolean isSingleCustomer() {

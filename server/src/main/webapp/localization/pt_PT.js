@@ -662,6 +662,17 @@ document.localization ['pt_PT'] = {
     'form.password.reset.invalid': 'Desculpe, este link de redefinição de senha é inválido',
     'form.password.reset.submit': 'Defina a senha',
 
+    'form.two.factor.auth.title': 'Autenticação de dois fatores',
+    'form.two.factor.auth.hint': 'Para concluir sua inscrição, instale o aplicativo Authenticator em seu dispositivo móvel, escaneie o código QR, gere e insira o código de verificação.',
+    'form.two.factor.auth.code.invalid': 'O código de verificação é inválido!',
+    'form.two.factor.auth.code': 'Código de verificação',
+    'form.two.factor.auth.code.hint': 'código de 6 dígitos do aplicativo autenticador',
+    'form.two.factor.auth.code.error': 'O código deve ser um número de 6 dígitos',
+    'form.two.factor.auth.verify': 'Verificar',
+    'form.two.factor.auth.settings.hint': 'Para definir a autenticação de dois fatores, instale o aplicativo Authenticator em seu dispositivo móvel, escaneie o código QR, gere e insira o código de verificação.',
+    'form.two.factor.auth.set': 'A autenticação de dois fatores está ativada',
+    'form.two.factor.auth.reset': 'A autenticação de dois fatores está desativada',
+
     'form.profile.title': 'Alterar Senha',
     'form.profile.password.old': 'Senha antiga',
     'form.profile.password.old.placeholder': 'Insira a senha antiga',

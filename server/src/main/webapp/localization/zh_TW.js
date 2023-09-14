@@ -663,6 +663,17 @@ document.localization ['zh_TW'] = {
     'form.password.reset.invalid': '抱歉，此密碼重置鏈接無效',
     'form.password.reset.submit': '設置密碼',
 
+    'form.two.factor.auth.title': '雙因素身份驗證',
+    'form.two.factor.auth.hint': '要完成註冊，請在您的移動設備上安裝身份驗證器應用程序，掃描二維碼，生成並輸入驗證碼。',
+    'form.two.factor.auth.code.invalid': '驗證碼無效！',
+    'form.two.factor.auth.code': '驗證碼',
+    'form.two.factor.auth.code.hint': '來自驗證器應用程序的 6 位代碼',
+    'form.two.factor.auth.code.error': '代碼必須是6位數字',
+    'form.two.factor.auth.verify': '驗證',
+    'form.two.factor.auth.settings.hint': '要設置雙重身份驗證，請在移動設備上安裝Authenticator應用程序，掃描二維碼，生成並輸入驗證碼。',
+    'form.two.factor.auth.set': '雙因素身份驗證已開啟',
+    'form.two.factor.auth.reset': '雙因素身份驗證已關閉',
+
     'form.profile.title' : "更改密碼",
     'form.profile.password.old' : "舊密碼",
     'form.profile.password.old.placeholder':"輸入舊密碼",

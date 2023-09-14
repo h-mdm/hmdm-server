@@ -1,0 +1,29 @@
+<div>
+    <div class='panel panel-default login' style="margin-top: 180px" ng-class='{"panel-danger": errorMessage, "panel-success": successMessage}'>
+        <div class='panel-heading' ng-if='errorMessage'>{{errorMessage}}</div>
+        <div class='panel-heading' ng-if='successMessage'>{{successMessage}}</div>
+        <div class='panel-body' style="padding: 30px; background: #f6f8fc">
+            <form name='twoFactorAuthForm'>
+                <div class='form-group'>
+                    <h3 class="center" localized>form.two.factor.auth.title</h3>
+                </div>
+                <div class='form-group' ng-if="!user.twoFactorAccepted">
+                    <div class="center">
+                        <img ng-src="{{auth.qrCodeUrl}}" alt="" />
+                    </div>
+                    <div localized>form.two.factor.auth.hint</div>
+                </div>
+
+                <div class='form-group'>
+                    <label for='authCode' localized>form.two.factor.auth.code</label>
+                    <input type='text' class='form-control' id='authCode'
+                           ng-model='auth.code' localized-placeholder='form.two.factor.auth.code.hint'
+                           required/>
+                </div>
+                <button type='submit' class='btn btn-default right' style="opacity: 1" ng-click='verify()'
+                        localized>form.two.factor.auth.verify</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>

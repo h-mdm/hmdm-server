@@ -663,6 +663,17 @@ document.localization ['de_DE'] = {
     'form.password.reset.invalid': 'Entschuldigung, dieser Link zum Zurücksetzen des Passworts ist ungültig',
     'form.password.reset.submit': 'Passwort festlegen',
 
+    'form.two.factor.auth.title': 'Zwei-Faktor-Authentifizierung',
+    'form.two.factor.auth.hint': 'Um Ihre Anmeldung abzuschließen, installieren Sie bitte die Authenticator-App auf Ihrem Mobilgerät, scannen Sie den QR-Code, generieren Sie den Bestätigungscode und geben Sie ihn ein.',
+    'form.two.factor.auth.code.invalid': 'Der Bestätigungscode ist ungültig!',
+    'form.two.factor.auth.code': 'Bestätigungscode',
+    'form.two.factor.auth.code.hint': '6-stelliger Code aus der Authentifizierungs-App',
+    'form.two.factor.auth.code.error': 'Der Code muss eine 6-stellige Zahl sein',
+    'form.two.factor.auth.verify': 'Überprüfen',
+    'form.two.factor.auth.settings.hint': 'Um die Zwei-Faktor-Authentifizierung festzulegen, installieren Sie bitte die Authenticator-App auf Ihrem Mobilgerät, scannen Sie den QR-Code, generieren Sie den Bestätigungscode und geben Sie ihn ein.',
+    'form.two.factor.auth.set': 'Zwei-Faktor-Authentifizierung ist aktiviert',
+    'form.two.factor.auth.reset': 'Zwei-Faktor-Authentifizierung ist deaktiviert',
+
     'form.profile.title': 'Passwort ändern',
     'form.profile.password.old': 'Altes Passwort',
     'form.profile.password.old.placeholder': 'Altes Passwort eingeben',

@@ -63,6 +63,13 @@ public class User implements CustomerData, Serializable {
     private String passwordResetToken;
     @ApiModelProperty("Third party authentication data")
     private String authData;
+    @ApiModelProperty("Two-factor authentication secret")
+    private String twoFactorSecret;
+    @ApiModelProperty("Is two factor authentication accepted by the user")
+    private boolean twoFactorAccepted;
+    @ApiModelProperty("Is two factor authentication needed (a transient parameter, no db entry)")
+    private boolean twoFactor = false;
+
 
     // Many-to-many relations
     private List<LookupItem> groups;
@@ -229,6 +236,30 @@ public class User implements CustomerData, Serializable {
 
     public void setAuthData(String authData) {
         this.authData = authData;
+    }
+
+    public String getTwoFactorSecret() {
+        return twoFactorSecret;
+    }
+
+    public void setTwoFactorSecret(String twoFactorSecret) {
+        this.twoFactorSecret = twoFactorSecret;
+    }
+
+    public boolean isTwoFactorAccepted() {
+        return twoFactorAccepted;
+    }
+
+    public void setTwoFactorAccepted(boolean twoFactorAccepted) {
+        this.twoFactorAccepted = twoFactorAccepted;
+    }
+
+    public boolean isTwoFactor() {
+        return twoFactor;
+    }
+
+    public void setTwoFactor(boolean twoFactor) {
+        this.twoFactor = twoFactor;
     }
 
     public List<LookupItem> getGroups() {

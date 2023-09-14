@@ -22,8 +22,11 @@
 package com.hmdm.rest.resource;
 
 import com.hmdm.auth.HmdmAuthInterface;
+import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.json.AuthOptionsResponse;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
@@ -54,10 +57,9 @@ import java.util.Base64;
 @Path( "/public/auth" )
 public class AuthResource {
 
-    private final String sessionCredentials = "credentials";
-
     private UnsecureDAO userDAO;
     private CustomerDAO customerDAO;
+    private UnsecureDAO settingsDAO;
     private BackgroundTaskRunnerService taskRunner;
     private boolean customerSignup;
     private EmailService emailService;
@@ -77,6 +79,7 @@ public class AuthResource {
     @Inject
     public AuthResource(UnsecureDAO userDAO,
                         CustomerDAO customerDAO,
+                        UnsecureDAO settingsDAO,
                         BackgroundTaskRunnerService taskRunner,
                         EmailService emailService,
                         RsaKeyService rsaKeyService,
@@ -85,6 +88,7 @@ public class AuthResource {
                         @Named("auth.class") HmdmAuthInterface authEngine) {
         this.userDAO = userDAO;
         this.customerDAO = customerDAO;
+        this.settingsDAO = settingsDAO;
         this.taskRunner = taskRunner;
         this.emailService = emailService;
         this.rsaKeyService = rsaKeyService;
@@ -137,7 +141,13 @@ public class AuthResource {
             });
 
             HttpSession userSession = req.getSession();
-            userSession.setAttribute( sessionCredentials, user );
+            userSession.setAttribute(AuthFilter.sessionCredentials, user );
+
+            Settings settings = settingsDAO.getSettings(user.getCustomerId());
+            if (settings != null && settings.isTwoFactor()) {
+                userSession.setAttribute(AuthFilter.twoFactorNeeded, "true");
+                user.setTwoFactor(true);
+            }
 
             if (user.getAuthToken() == null || user.getAuthToken().length() == 0) {
                 user.setAuthToken(PasswordUtil.generateToken());

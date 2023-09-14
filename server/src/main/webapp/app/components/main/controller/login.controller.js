@@ -28,7 +28,9 @@ angular.module('headwind-kiosk')
 
         var loginHandler = function (response) {
             if (response.status === 'OK') {
-                if (response.data.passwordReset) {
+                if (response.data.twoFactor) {
+                    $state.transitionTo('twoFactorAuth');
+                } else if (response.data.passwordReset) {
                     $state.transitionTo('passwordReset', {"token": response.data.passwordResetToken});
                 } else {
                     $state.transitionTo('main');

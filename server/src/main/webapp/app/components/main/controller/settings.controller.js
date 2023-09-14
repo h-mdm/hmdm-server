@@ -2,7 +2,7 @@
 angular.module('headwind-kiosk')
     .controller('SettingsTabController', function ($scope, $rootScope, $timeout, $modal, hintService, settingsService,
                                                    localization, authService, userService,
-                                                   groupService, configurationService) {
+                                                   groupService, configurationService, twoFactorAuthService) {
         $scope.settings = {};
         $scope.userRoleSettings = {};
         $scope.loading = false;
@@ -40,12 +40,92 @@ angular.module('headwind-kiosk')
                     settingsService.getSettings(function (response) {
                         if (response.data) {
                             $scope.settings = response.data;
+                            $scope.initTwoFactor($scope.settings);
                         }
                         $scope.loading = false;
                     }, onRequestFailure);
                 }, onRequestFailure);
             }, onRequestFailure);
 
+        };
+
+        var user = authService.getUser();
+        $scope.twoFactor = {
+            success: null,
+            error: null,
+            accepted: user.twoFactorAccepted,
+            qrCodeUrl: 'rest/private/twofactor/qr/' + user.id,
+            code: ''
+        };
+
+        $scope.initTwoFactor = function(settings) {
+            $scope.twoFactor.use = settings.twoFactor;
+        };
+
+        $scope.twoFactorToggled = function() {
+            if (!$scope.twoFactor.use) {
+                twoFactorAuthService.reset(function(response) {
+                    if (response.status === 'OK') {
+                        var user = authService.getUser();
+                        user.twoFactorSecret = null;
+                        user.twoFactorAccepted = false;
+                        authService.update(user);
+                        $scope.settings.twoFactor = false;
+                        $scope.twoFactor.accepted = false;
+                        $scope.twoFactor.code = '';
+                        $scope.twoFactor.error = '';
+                        $scope.twoFactor.success = localization.localize('form.two.factor.auth.reset');
+                        $timeout(function () {
+                            $scope.twoFactor.success = null;
+                        }, 5000);
+                    } else {
+                        $scope.twoFactor.error = localization.localizeServerResponse(response);
+                    }
+                });
+            } else {
+                // Force QR code to reload and re-generate the secret
+                $scope.twoFactor.qrCodeUrl = 'rest/private/twofactor/qr/' + authService.getUser().id +
+                    '?' + new Date().getTime();
+            }
+        };
+
+        $scope.verifyTwoFactor = function() {
+            if ($scope.twoFactor.code.length != 6 || !/^\d+$/.test($scope.twoFactor.code)) {
+                $scope.twoFactor.error = localization.localize('form.two.factor.auth.code.error');
+                return;
+            }
+
+            var data = {
+                user: authService.getUser().id,
+                code: $scope.twoFactor.code
+            };
+            twoFactorAuthService.verify(data, function (response) {
+                if (response.status === 'OK') {
+                    var user = authService.getUser();
+                    user.twoFactorAccepted = true;
+                    authService.update(user);
+                    twoFactorAuthService.set(function(response) {
+                        if (response.status === 'OK') {
+                            $scope.settings.twoFactor = true;
+                            $scope.twoFactor.accepted = true;
+                            $scope.twoFactor.code = '';
+                            $scope.twoFactor.error = '';
+                            $scope.twoFactor.success = localization.localize('form.two.factor.auth.set');
+                            $timeout(function () {
+                                $scope.twoFactor.success = null;
+                            }, 5000);
+                        } else {
+                            $scope.twoFactor.error = localization.localizeServerResponse(response);
+                        }
+                    });
+                } else if (response.status === 'ERROR') {
+                    if (response.message === 'error.permission.denied') {
+                        $scope.twoFactor.error = localization.localize('form.two.factor.auth.code.invalid');
+                    } else {
+                        $scope.twoFactor.error = localization.localizeServerResponse(response);
+                    }
+                }
+            });
         };
 
         $scope.desktopHeaderTemplatePlaceholder = localization.localize('form.configuration.settings.design.desktop.header.template.placeholder') + ' deviceId, description, custom1, custom2, custom3';

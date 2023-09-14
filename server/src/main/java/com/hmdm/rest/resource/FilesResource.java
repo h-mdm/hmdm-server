@@ -246,8 +246,23 @@ public class FilesResource {
 
     // =================================================================================================================
     @ApiOperation(
-            value = "Upload file",
-            notes = "Uploads the file to server. Returns a path to uploaded file",
+            value = "Upload raw file",
+            notes = "Uploads the raw file to server (without attempt to parse APK). Returns a path to uploaded file",
+            response = FileUploadResult.class
+    )
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("/raw")
+    public Response uploadFilesRaw(@FormDataParam("file") InputStream uploadedInputStream,
+                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+        return uploadFilesInternal(uploadedInputStream, fileDetail, false);
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Upload file or application",
+            notes = "Uploads the file or application to server. Returns a path to uploaded file",
             response = FileUploadResult.class
     )
     @POST
@@ -255,6 +270,13 @@ public class FilesResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
                                 @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+        return uploadFilesInternal(uploadedInputStream, fileDetail, true);
+    }
+
+    // =================================================================================================================
+    private Response uploadFilesInternal(InputStream uploadedInputStream,
+                                         FormDataContentDisposition fileDetail,
+                                         boolean parseFile) throws Exception {
         try {
             // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
             // it to UTF_8 and enable non-ASCII characters
@@ -289,7 +311,7 @@ public class FilesResource {
 
             result.setServerPath(uploadFile.getAbsolutePath());
 
-            if (fileName.endsWith("apk")) {
+            if (parseFile && fileName.endsWith("apk")) {
                 final APKFileDetails apkFileDetails;
                 apkFileDetails = this.apkFileAnalyzer.analyzeFile(uploadFile.getAbsolutePath());
                 result.setFileDetails(apkFileDetails);

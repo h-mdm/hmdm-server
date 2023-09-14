@@ -663,6 +663,17 @@ document.localization ['ar_AE'] = {
     'form.password.reset.invalid': 'عذرا, رابط إعادة تعيين كلمة المرور هذا غير صالح',
     'form.password.reset.submit': 'ضبط كلمة السر',
 
+    'form.two.factor.auth.title': 'المصادقة الثنائية',
+    'form.two.factor.auth.hint': 'لإكمال عملية التسجيل، برجاء تثبيت تطبيق Authenticator على جهازك المحمول، ومسح رمز الاستجابة السريعة ضوئيًا، وإنشاء رمز التحقق وإدخاله.',
+    'form.two.factor.auth.code.invalid': 'رمز التحقق غير صالح!',
+    'form.two.factor.auth.code': 'رمز التحقق',
+    'form.two.factor.auth.code.hint': 'رمز مكون من 6 أرقام من تطبيق المصادقة',
+    'form.two.factor.auth.code.error': 'يجب أن يتكون الرمز من 6 أرقام',
+    'form.two.factor.auth.verify': 'تحقق',
+    'form.two.factor.auth.settings.hint': 'لتعيين المصادقة الثنائية، يرجى تثبيت تطبيق Authenticator على جهازك المحمول، ومسح رمز QR ضوئيًا، وإنشاء رمز التحقق وإدخاله.',
+    'form.two.factor.auth.set': 'تم تشغيل المصادقة الثنائية',
+    'form.two.factor.auth.reset': 'تم إيقاف تشغيل المصادقة الثنائية',
+
     "form.profile.title": 'تغيير كلمة المرور',
     "form.profile.password.old": 'كلمة المرور القديمة',
     "form.profile.password.old.placeholder": 'أدخل كلمة المرور القديمة',

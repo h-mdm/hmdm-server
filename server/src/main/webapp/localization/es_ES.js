@@ -663,6 +663,17 @@ document.localization ['es_ES'] = {
     'form.password.reset.invalid': 'Lo sentimos, este enlace de restablecimiento de contraseña no es válido',
     'form.password.reset.submit': 'Establecer la contraseña',
 
+    'form.two.factor.auth.title': 'Autenticación de dos factores',
+    'form.two.factor.auth.hint': 'Para completar su registro, instale la aplicación Authenticator en su dispositivo móvil, escanee el código QR, genere e ingrese el código de verificación.',
+    'form.two.factor.auth.code.invalid': '¡El código de verificación no es válido!',
+    'form.two.factor.auth.code': 'Código de verificación',
+    'form.two.factor.auth.code.hint': 'Código de 6 dígitos de la aplicación de autenticación',
+    'form.two.factor.auth.code.error': 'El código debe ser un número de 6 dígitos',
+    'form.two.factor.auth.verify': 'Verificar',
+    'form.two.factor.auth.settings.hint': 'Para configurar la autenticación de dos factores, instale la aplicación Authenticator en su dispositivo móvil, escanee el código QR, genere e ingrese el código de verificación.',
+    'form.two.factor.auth.set': 'La autenticación de dos factores está activada',
+    'form.two.factor.auth.reset': 'La autenticación de dos factores está desactivada',
+
     'form.profile.title': 'Cambiar contraseña',
     'form.profile.password.old': 'Contraseña Anterior',
     'form.profile.password.old.placeholder': 'Ingrese la contraseña anterior',

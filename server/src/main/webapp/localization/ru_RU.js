@@ -663,6 +663,17 @@ document.localization[ 'ru_RU' ] = {
     'form.password.reset.invalid': 'К сожалению, эта ссылка для сброса пароля недействительна',
     'form.password.reset.submit': 'Установить пароль',
 
+    'form.two.factor.auth.title': 'Двухфакторная аутентификация',
+    'form.two.factor.auth.hint': 'Чтобы завершить регистрацию, установите приложение Authenticator на свое мобильное устройство, отсканируйте QR-код, сгенерируйте и введите проверочный код.',
+    'form.two.factor.auth.code.invalid': 'Код проверки недействителен!',
+    'form.two.factor.auth.code': 'Код проверки',
+    'form.two.factor.auth.code.hint': '6-значный код из приложения для аутентификации',
+    'form.two.factor.auth.code.error': 'Код должен представлять собой 6-значное число',
+    'form.two.factor.auth.verify': 'Проверить',
+    'form.two.factor.auth.settings.hint': 'Чтобы настроить двухфакторную аутентификацию, установите приложение Authenticator на свое мобильное устройство, отсканируйте QR-код, сгенерируйте и введите проверочный код.',
+    'form.two.factor.auth.set': 'Двухфакторная аутентификация включена',
+    'form.two.factor.auth.reset': 'Двухфакторная аутентификация отключена',
+
     'form.profile.title': 'Смена пароля',
     'form.profile.password.old': 'Старый пароль',
     'form.profile.password.old.placeholder': 'Введите старый пароль',

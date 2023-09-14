@@ -41,7 +41,7 @@ angular.module('headwind-kiosk',
         'ja_JP': 'ja_JP'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN', 'ja_JP'])
-    .constant("APP_VERSION", "5.20.1") // Update this value on each commit
+    .constant("APP_VERSION", "5.21.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -266,6 +266,11 @@ angular.module('headwind-kiosk',
                 url: '/passwordRecovery',
                 templateUrl: 'app/components/main/view/passwordRecovery.html',
                 controller: 'PasswordRecoveryController'
+            })
+            .state('twoFactorAuth', {
+                url: '/twofactor',
+                templateUrl: 'app/components/main/view/twoFactorAuth.html',
+                controller: 'TwoFactorAuthController'
             })
             .state('signup', {
                 url: '/signup',

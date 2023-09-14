@@ -663,6 +663,17 @@ document.localization ['en_US'] = {
     'form.password.reset.invalid': 'Sorry, this password reset link is invalid',
     'form.password.reset.submit': 'Set password',
 
+    'form.two.factor.auth.title': 'Two-factor authentication',
+    'form.two.factor.auth.hint': 'To complete your sign-up, please install the Authenticator app on your mobile device, scan the QR code, generate and enter the verification code.',
+    'form.two.factor.auth.code.invalid': 'The verification code is invalid!',
+    'form.two.factor.auth.code': 'Verification code',
+    'form.two.factor.auth.code.hint': '6-digit code from the authenticator app',
+    'form.two.factor.auth.code.error': 'The code must be a 6-digit number',
+    'form.two.factor.auth.verify': 'Verify',
+    'form.two.factor.auth.settings.hint': 'To set the two-factor authentication, please install the Authenticator app on your mobile device, scan the QR code, generate and enter the verification code.',
+    'form.two.factor.auth.set': 'Two-factor authentication is turned on',
+    'form.two.factor.auth.reset': 'Two-factor authentication is turned off',
+
     'form.profile.title': 'Change password',
     'form.profile.password.old': 'Old Password',
     'form.profile.password.old.placeholder': 'Enter old password',

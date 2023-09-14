@@ -65,6 +65,13 @@ angular.module('headwind-kiosk')
             recoverPassword: {url: 'rest/public/passwordReset/recover/:username', method: 'GET'}
         })
     })
+    .factory('twoFactorAuthService', function ($resource) {
+        return $resource('', {}, {
+            verify: {url: 'rest/private/twofactor/verify/:user/:code', method: 'GET'},
+            set: {url: 'rest/private/twofactor/set', method: 'GET'},
+            reset: {url: 'rest/private/twofactor/reset', method: 'GET'}
+        })
+    })
     .factory('signupService', function ($resource) {
         return $resource('', {}, {
             canSignup: {url: 'rest/public/signup/canSignup', method: 'GET'},

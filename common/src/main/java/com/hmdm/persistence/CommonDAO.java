@@ -81,6 +81,10 @@ public class CommonDAO extends AbstractDAO<Settings> {
         insertRecord(settings, this.mapper::saveMiscSettings);
     }
 
+    public void setTwoFactor(Settings settings) {
+        insertRecord(settings, this.mapper::setTwoFactor);
+    }
+
     /**
      * This function doesn't check the security context because it's called when a customer is signed up
      * There's a call of this method in UnsecureDAO.signupCustomerUnsecure()

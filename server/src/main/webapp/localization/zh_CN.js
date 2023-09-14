@@ -663,6 +663,17 @@ document.localization ['zh_CN'] = {
     'form.password.reset.invalid': '抱歉，此密码重置链接无效',
     'form.password.reset.submit': '设置密码',
 
+    'form.two.factor.auth.title': '双因素身份验证',
+    'form.two.factor.auth.hint': '要完成注册，请在您的移动设备上安装身份验证器应用程序，扫描二维码，生成并输入验证码。',
+    'form.two.factor.auth.code.invalid': '验证码无效！',
+    'form.two.factor.auth.code': '验证码',
+    'form.two.factor.auth.code.hint': '来自验证器应用程序的 6 位代码',
+    'form.two.factor.auth.code.error': '代码必须是6位数字',
+    'form.two.factor.auth.verify': '验证',
+    'form.two.factor.auth.settings.hint': '要设置双重身份验证，请在移动设备上安装Authenticator应用程序，扫描二维码，生成并输入验证码。',
+    'form.two.factor.auth.set': '双因素身份验证已开启',
+    'form.two.factor.auth.reset': '双因素身份验证已关闭',
+
     'form.profile.title' : "更改密码",
     'form.profile.password.old' : "旧密码",
     'form.profile.password.old.placeholder':"输入旧密码",

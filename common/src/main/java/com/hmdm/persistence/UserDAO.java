@@ -103,20 +103,26 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public void updateUserMainDetails(User user) {
+        updateUserMainDetails(user, true);
+    }
+
+    public void updateUserMainDetails(User user, boolean updateAccess) {
         updateRecord(user, u -> {
             this.mapper.updateUserMainDetails(u);
-            this.mapper.removeDeviceGroupsAccessByUserId(u.getCustomerId(), u.getId());
-            if (!u.isAllDevicesAvailable()) {
-                List<LookupItem> groups = u.getGroups();
-                if (groups != null && !groups.isEmpty()) {
-                    this.mapper.insertUserDeviceGroupsAccess(u.getId(), groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
+            if (updateAccess) {
+                this.mapper.removeDeviceGroupsAccessByUserId(u.getCustomerId(), u.getId());
+                if (!u.isAllDevicesAvailable()) {
+                    List<LookupItem> groups = u.getGroups();
+                    if (groups != null && !groups.isEmpty()) {
+                        this.mapper.insertUserDeviceGroupsAccess(u.getId(), groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                    }
                 }
-            }
-            this.mapper.removeConfigurationAccessByUserId(u.getCustomerId(), u.getId());
-            if (!u.isAllConfigAvailable()) {
-                List<LookupItem> configs = u.getConfigurations();
-                if (configs != null && !configs.isEmpty()) {
-                    this.mapper.insertUserConfigurationAccess(u.getId(), configs.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                this.mapper.removeConfigurationAccessByUserId(u.getCustomerId(), u.getId());
+                if (!u.isAllConfigAvailable()) {
+                    List<LookupItem> configs = u.getConfigurations();
+                    if (configs != null && !configs.isEmpty()) {
+                        this.mapper.insertUserConfigurationAccess(u.getId(), configs.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                    }
                 }
             }
         }, SecurityException::onUserAccessViolation);

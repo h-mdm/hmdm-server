@@ -49,15 +49,19 @@ public interface UserMapper {
     List<User> findAllWithOldPassword();
 
     @Insert({"INSERT INTO users (login, email, name, password, customerId, userRoleId, " +
-            "allDevicesAvailable, allConfigAvailable, passwordReset, authToken, passwordResetToken, authData) " +
+            "allDevicesAvailable, allConfigAvailable, passwordReset, authToken, " +
+            "passwordResetToken, authData, twoFactorSecret, twoFactorAccepted) " +
             "VALUES (#{login}, #{email}, #{name}, #{password}, #{customerId}, #{userRole.id}, " +
-            "#{allDevicesAvailable}, #{allConfigAvailable}, #{passwordReset}, #{authToken}, #{passwordResetToken}, #{authData})"})
+            "#{allDevicesAvailable}, #{allConfigAvailable}, #{passwordReset}, #{authToken}, " +
+            "#{passwordResetToken}, #{authData}, #{twoFactorSecret}, #{twoFactorAccepted})"})
     @SelectKey( statement = "SELECT currval('users_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insert(User user);
 
     @Update({"UPDATE users " +
-            "SET name = #{name}, login=#{login}, email=#{email}, userRoleId=#{userRole.id}, allDevicesAvailable=#{allDevicesAvailable}, " +
-            "allConfigAvailable=#{allConfigAvailable}, passwordReset=#{passwordReset}, authData=#{authData} " +
+            "SET name = #{name}, login=#{login}, email=#{email}, userRoleId=#{userRole.id}, " +
+            "allDevicesAvailable=#{allDevicesAvailable}, allConfigAvailable=#{allConfigAvailable}, " +
+            "passwordReset=#{passwordReset}, authData=#{authData}, twoFactorSecret=#{twoFactorSecret}, " +
+            "twoFactorAccepted=#{twoFactorAccepted} " +
             "WHERE id=#{id}"})
     void updateUserMainDetails(User user);
 
