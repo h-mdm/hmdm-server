@@ -2154,6 +2154,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="21.09.23-19:04" author="eretl" context="common">
+        <comment>Add mobile entrollment column to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN mobileRequireAdditionalPermissions BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN mobileRequireAdditionalPermissions;
+        </rollback>
+    </changeSet>
+
     <changeSet id="05.09.21-13:44" author="seva" context="common">
         <comment>Add permission to send Push via API</comment>
         <sql>

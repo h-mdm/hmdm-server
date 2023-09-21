@@ -150,6 +150,8 @@ public class Configuration implements CustomerData, Serializable {
     private String qrParameters;
     @ApiModelProperty("Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
+    @ApiModelProperty("Require additional permissions")
+    private boolean mobileRequireAdditionalPermissions;
     @ApiModelProperty("Flag enabling Home button in kiosk mode")
     private Boolean kioskHome;
     @ApiModelProperty("Flag enabling Recents button in kiosk mode")
@@ -438,6 +440,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setMobileEnrollment(boolean mobileEnrollment) {
         this.mobileEnrollment = mobileEnrollment;
+    }
+
+    public boolean isMobileRequireAdditionalPermissions() {
+        return mobileRequireAdditionalPermissions;
+    }
+
+    public void setMobileRequireAdditionalPermissions(boolean mobileRequireAdditionalPermissions) {
+        this.mobileRequireAdditionalPermissions = mobileRequireAdditionalPermissions;
     }
 
     public Boolean getKioskHome() {

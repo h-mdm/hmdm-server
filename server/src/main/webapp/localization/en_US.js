@@ -280,6 +280,7 @@ document.localization ['en_US'] = {
     'form.configuration.settings.mdm.mobile.enrollment': 'Enroll using mobile data',
     'form.configuration.settings.mdm.lock.safe.settings': 'Lock safe settings (WiFi, GPS, etc)',
     'form.configuration.settings.mdm.permissive': 'Permissive (unlocked) mode',
+    'form.configuration.settings.mdm.mobile.requireadditionalpermissions': 'Require additional permissions (Screen overlay, System diagnostics, Accesibility Service)',
     'form.configuration.settings.mdm.kiosk.exit': 'Kiosk exit button',
     'form.configuration.settings.mdm.allowed.classes': 'Allowed activities',
     'form.configuration.settings.mdm.allowed.classes.placeholder': 'Comma-separated classes, e.g.: com.android.settings.homepage.SettingsHomepageActivity',

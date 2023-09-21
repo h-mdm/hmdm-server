@@ -108,6 +108,7 @@ public interface ConfigurationMapper {
             "wifiSecurityType=#{wifiSecurityType}, " +
             "qrParameters=#{qrParameters}, " +
             "mobileEnrollment=#{mobileEnrollment}, " +
+            "mobileRequireAdditionalPermissions=#{mobileRequireAdditionalPermissions}, " +
             "kioskHome=#{kioskHome}, " +
             "kioskRecents=#{kioskRecents}, " +
             "kioskNotifications=#{kioskNotifications}, " +
