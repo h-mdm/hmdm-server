@@ -770,6 +770,7 @@ public class Configuration implements CustomerData, Serializable {
         this.lockSafeSettings = lockSafeSettings;
     }
 
+    
     public Boolean getPermissive() {
         return permissive;
     }

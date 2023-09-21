@@ -121,6 +121,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Flag disabling safe settings")
     private Boolean lockSafeSettings;
 
+    @ApiModelProperty("Require additional permissions")
+    private Boolean mobileRequireAdditionalPermissions;
+
     @ApiModelProperty("Flag enabling permissive mode")
     private Boolean permissive;
 
@@ -758,10 +761,19 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         this.lockSafeSettings = lockSafeSettings;
     }
 
+    public void setMobileRequireAdditionalPermissions(boolean mobileRequireAdditionalPermissions) {
+        this.mobileRequireAdditionalPermissions = mobileRequireAdditionalPermissions;
+    }
+
+    public Boolean getMobileRequireAdditionalPermissions() {
+        return mobileRequireAdditionalPermissions;
+    }
+
     @Override
     public Boolean getPermissive() {
         return permissive;
     }
+
 
     public void setPermissive(Boolean permissive) {
         this.permissive = permissive;
