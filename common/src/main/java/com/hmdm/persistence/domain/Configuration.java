@@ -150,8 +150,8 @@ public class Configuration implements CustomerData, Serializable {
     private String qrParameters;
     @ApiModelProperty("Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
-    @ApiModelProperty("Require additional permissions")
-    private boolean mobileRequireAdditionalPermissions;
+    @ApiModelProperty("Skip permissions that require user interaction")
+    private Boolean skipUserInteractivePermissions;
     @ApiModelProperty("Flag enabling Home button in kiosk mode")
     private Boolean kioskHome;
     @ApiModelProperty("Flag enabling Recents button in kiosk mode")

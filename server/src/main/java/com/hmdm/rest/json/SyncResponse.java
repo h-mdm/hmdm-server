@@ -121,8 +121,8 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Flag disabling safe settings")
     private Boolean lockSafeSettings;
 
-    @ApiModelProperty("Require additional permissions")
-    private Boolean mobileRequireAdditionalPermissions;
+    @ApiModelProperty("Skip permissions that require user interaction")
+    private Boolean skipUserInteractivePermissions;
 
     @ApiModelProperty("Flag enabling permissive mode")
     private Boolean permissive;

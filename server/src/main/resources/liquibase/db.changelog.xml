@@ -2157,10 +2157,10 @@
     <changeSet id="21.09.23-19:04" author="eretl" context="common">
         <comment>Add mobile entrollment column to configurations</comment>
         <sql>
-            ALTER TABLE configurations ADD COLUMN mobileRequireAdditionalPermissions BOOLEAN NOT NULL DEFAULT false;
+            ALTER TABLE configurations ADD COLUMN skipUserInteractivePermissions BOOLEAN NOT NULL DEFAULT false;
         </sql>
         <rollback>
-            ALTER TABLE configurations DROP COLUMN mobileRequireAdditionalPermissions;
+            ALTER TABLE configurations DROP COLUMN skipUserInteractivePermissions;
         </rollback>
     </changeSet>
 

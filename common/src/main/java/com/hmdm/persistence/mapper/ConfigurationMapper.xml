@@ -31,7 +31,7 @@
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
                                     runDefaultLauncher, disableScreenshots, autostartForeground, timeZone, allowedClasses, newServerUrl,
                                     lockSafeSettings, permissive, kioskExit, showWifi, mainAppId, eventReceivingComponent, kioskMode,
-                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, qrParameters, mobileEnrollment, mobileRequireAdditionalPermissions, kioskHome, kioskRecents,
+                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, qrParameters, mobileEnrollment, skipUserInteractivePermissions, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, kioskLockButtons, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
                                     scheduleAppUpdate, appUpdateFrom, appUpdateTo, defaultFilePath)
@@ -42,7 +42,7 @@
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
                 #{runDefaultLauncher}, #{disableScreenshots}, #{autostartForeground}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
                 #{lockSafeSettings}, #{permissive}, #{kioskExit}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode},
-                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{qrParameters}, #{mobileEnrollment}, #{mobileRequireAdditionalPermissions}, #{kioskHome}, #{kioskRecents},
+                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{qrParameters}, #{mobileEnrollment}, #{skipUserInteractivePermissions}, #{kioskHome}, #{kioskRecents},
                 #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{kioskLockButtons}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo},
                 #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{defaultFilePath})
