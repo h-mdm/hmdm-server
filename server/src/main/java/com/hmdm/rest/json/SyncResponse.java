@@ -761,12 +761,12 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         this.lockSafeSettings = lockSafeSettings;
     }
 
-    public void setMobileRequireAdditionalPermissions(boolean mobileRequireAdditionalPermissions) {
-        this.mobileRequireAdditionalPermissions = mobileRequireAdditionalPermissions;
+    public void setSkipUserInteractivePermissions(boolean skipUserInteractivePermissions) {
+        this.skipUserInteractivePermissions = skipUserInteractivePermissions;
     }
 
-    public Boolean getMobileRequireAdditionalPermissions() {
-        return mobileRequireAdditionalPermissions;
+    public Boolean getSkipUserInteractivePermissions() {
+        return skipUserInteractivePermissions;
     }
 
     @Override

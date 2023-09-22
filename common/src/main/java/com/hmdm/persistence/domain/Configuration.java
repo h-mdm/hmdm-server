@@ -442,12 +442,12 @@ public class Configuration implements CustomerData, Serializable {
         this.mobileEnrollment = mobileEnrollment;
     }
 
-    public boolean isMobileRequireAdditionalPermissions() {
-        return mobileRequireAdditionalPermissions;
+    public boolean getSkipUserInteractivePermissions() {
+        return skipUserInteractivePermissions;
     }
 
-    public void setMobileRequireAdditionalPermissions(boolean mobileRequireAdditionalPermissions) {
-        this.mobileRequireAdditionalPermissions = mobileRequireAdditionalPermissions;
+    public void setSkipUserInteractivePermissions(boolean skipUserInteractivePermissions) {
+        this.skipUserInteractivePermissions = skipUserInteractivePermissions;
     }
 
     public Boolean getKioskHome() {
