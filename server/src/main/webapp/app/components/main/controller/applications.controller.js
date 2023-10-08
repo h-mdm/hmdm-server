@@ -826,7 +826,7 @@ angular.module('headwind-kiosk')
                 if (response.data.status === 'OK') {
                     $scope.file.path = response.data.data.serverPath;
                     if (!response.data.data.application ||
-                        !response.data.data.application.pkg != response.data.data.fileDetails.pkg) {
+                        response.data.data.application.pkg != response.data.data.fileDetails.pkg) {
                         $scope.errorMessage = localization.localize('error.package.not.match');
                         return;
                     }
