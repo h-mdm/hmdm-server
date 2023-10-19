@@ -387,6 +387,9 @@ public class CustomerDAO {
      * @return a list of customer accounts matching the search parameters.
      */
     public PaginatedData<Customer> searchCustomers(CustomerSearchRequest request) {
+        if (!SecurityContext.get().isSuperAdmin()) {
+            throw SecurityException.onAdminDataAccessViolation("Search customers");
+        }
         final List<Customer> customers = this.mapper.searchCustomers(request);
         final Long totalItemsCount = this.mapper.countAllCustomers(request);
         return new PaginatedData<>(customers, totalItemsCount);

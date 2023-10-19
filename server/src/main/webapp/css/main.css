@@ -2380,3 +2380,19 @@ h4.collapse-control {
 .zIndex1000 {
     z-index: 1000;
 }
+
+.input-dropdown {
+    width: 100%;
+}
+
+.input-dropdown input {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px
+}
+
+.input-dropdown ul {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 400px;
+}

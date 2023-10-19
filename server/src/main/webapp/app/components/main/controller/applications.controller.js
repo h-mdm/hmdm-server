@@ -122,7 +122,7 @@ angular.module('headwind-kiosk')
         };
 
         $scope.pkgInfoVisible = function (application) {
-            return application.type !== 'web';
+            return application.type === 'app';
         };
 
         $scope.editVersions = function (application) {
@@ -148,6 +148,80 @@ angular.module('headwind-kiosk')
         $scope.appdesc = {};
 
         $scope.icons = [{id: -1, name: localization.localize("form.application.icon.default")}];
+
+        $scope.intentPlaceholder = localization.localize("form.application.intent.placeholder");
+        $scope.intentOptions = [
+            'android.intent.action.DIAL',
+            'android.settings.ACCESSIBILITY_SETTINGS',
+            'android.settings.AIRPLANE_MODE_SETTINGS',
+            'android.settings.ALL_APPS_NOTIFICATION_SETTINGS',
+            'android.settings.APN_SETTINGS',
+            'android.settings.APPLICATION_DEVELOPMENT_SETTINGS',
+            'android.settings.APPLICATION_SETTINGS',
+            'android.settings.APP_SEARCH_SETTINGS',
+            'android.settings.AUTO_ROTATE_SETTINGS',
+            'android.settings.BATTERY_SAVER_SETTINGS',
+            'android.settings.BIOMETRIC_ENROLL',
+            'android.settings.BLUETOOTH_SETTINGS',
+            'android.settings.CAPTIONING_SETTINGS',
+            'android.settings.CAST_SETTINGS',
+            'android.settings.ACTION_CONDITION_PROVIDER_SETTINGS',
+            'android.settings.DATA_ROAMING_SETTINGS',
+            'android.settings.DATA_USAGE_SETTINGS',
+            'android.settings.DATE_SETTINGS',
+            'android.settings.DEVICE_INFO_SETTINGS',
+            'android.settings.DISPLAY_SETTINGS',
+            'android.settings.DREAM_SETTINGS',
+            'android.settings.FINGERPRINT_ENROLL',
+            'android.settings.HARD_KEYBOARD_SETTINGS',
+            'android.settings.HOME_SETTINGS',
+            'android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS',
+            'android.settings.INPUT_METHOD_SETTINGS',
+            'android.settings.INPUT_METHOD_SUBTYPE_SETTINGS',
+            'android.settings.INTERNAL_STORAGE_SETTINGS',
+            'android.settings.LOCALE_SETTINGS',
+            'android.settings.LOCATION_SOURCE_SETTINGS',
+            'android.settings.MANAGE_ALL_APPLICATIONS_SETTINGS',
+            'android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION',
+            'android.settings.MANAGE_ALL_SIM_PROFILES_SETTINGS',
+            'android.settings.MANAGE_APPLICATIONS_SETTINGS',
+            'android.settings.MANAGE_DEFAULT_APPS_SETTINGS',
+            'android.settings.action.MANAGE_OVERLAY_PERMISSION',
+            'android.settings.MANAGE_UNKNOWN_APP_SOURCES',
+            'android.settings.action.MANAGE_WRITE_SETTINGS',
+            'android.settings.MEMORY_CARD_SETTINGS',
+            'android.settings.NETWORK_OPERATOR_SETTINGS',
+            'android.settings.NFCSHARING_SETTINGS',
+            'android.settings.NFC_PAYMENT_SETTINGS',
+            'android.settings.NFC_SETTINGS',
+            'android.settings.NIGHT_DISPLAY_SETTINGS',
+            'android.settings.NOTIFICATION_ASSISTANT_SETTINGS',
+            'android.settings.ACTION_NOTIFICATION_LISTENER_SETTING',
+            'android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS',
+            'android.settings.ACTION_PRINT_SETTINGS',
+            'android.settings.PRIVACY_SETTINGS',
+            'android.settings.QUICK_ACCESS_WALLET_SETTINGS',
+            'android.settings.QUICK_LAUNCH_SETTINGS',
+            'android.settings.REGIONAL_PREFERENCES_SETTINGS',
+            'android.search.action.SEARCH_SETTINGS',
+            'android.settings.SECURITY_SETTINGS',
+            'android.settings.SETTINGS',
+            'android.settings.SHOW_REGULATORY_INFO',
+            'android.settings.SHOW_WORK_POLICY_INFO',
+            'android.settings.SOUND_SETTINGS',
+            'android.settings.STORAGE_VOLUME_ACCESS_SETTINGS',
+            'android.settings.SYNC_SETTINGS',
+            'android.settings.USAGE_ACCESS_SETTINGS',
+            'android.settings.USER_DICTIONARY_SETTINGS',
+            'android.settings.VOICE_INPUT_SETTINGS',
+            'android.settings.VPN_SETTINGS',
+            'android.settings.VR_LISTENER_SETTINGS',
+            'android.settings.WEBVIEW_SETTINGS',
+            'android.settings.WIFI_IP_SETTINGS',
+            'android.settings.WIFI_SETTINGS',
+            'android.settings.WIRELESS_SETTINGS',
+            'android.settings.ZEN_MODE_PRIORITY_SETTINGS'
+        ];
 
         const loadIcons = function (callback) {
             iconService.getAllIcons(function (response) {
@@ -264,8 +338,8 @@ angular.module('headwind-kiosk')
             $scope.loading = false;
         };
 
-        const doSaveWebApplication = function (request) {
-            applicationService.updateWebApplication(request, function (response) {
+        const doSave = function (request, updateService) {
+            updateService(request, function (response) {
                 if (response.status === 'OK') {
                     if (!closeOnSave) {
                         if ($scope.isNewApp) {
@@ -289,29 +363,12 @@ angular.module('headwind-kiosk')
             });
         };
 
+        const doSaveWebApplication = function (request) {
+            doSave(request,  applicationService.updateWebApplication);
+        };
+
         var doSaveAndroidApplication = function (request) {
-            applicationService.updateApplication(request, function (response) {
-                if (response.status === 'OK') {
-                    if (!closeOnSave) {
-                        if ($scope.isNewApp) {
-                            $scope.application = response.data;
-                            $scope.isNewApp = false;
-                            $scope.file = {};
-                            $scope.loading = false;
-                            $scope.fileName = null;
-                            $scope.invalidFile = false;
-                            $scope.fileSelected = false;
-                            $scope.manageConfigurations(true);
-                        } else {
-                            $modalInstance.close();
-                        }
-                    } else {
-                        $modalInstance.close(response.data);
-                    }
-                } else {
-                    $scope.errorMessage = localization.localizeServerResponse(response);
-                }
-            });
+            doSave(request, applicationService.updateApplication);
         };
 
         var doSaveApplicationVersion = function (request, app) {
@@ -366,6 +423,20 @@ angular.module('headwind-kiosk')
             }
             doSaveWebApplication(request);
         };
+
+        const intentAppValidator = function() {
+            const iconRequired = $scope.application.showIcon;
+
+            if (!$scope.application.name || $scope.application.name.trim().length === 0) {
+                return 'error.empty.app.name';
+            } else if (iconRequired && (!$scope.application.iconText || $scope.application.iconText.trim().length === 0)) {
+                return 'error.empty.app.iconText';
+            }
+
+            return null;
+        };
+
+        const intentAppPersistor = webAppPersistor;
 
         const androidAppValidator = function () {
             if (!$scope.application.name || $scope.application.name.trim().length === 0) {
@@ -434,9 +505,12 @@ angular.module('headwind-kiosk')
             if ($scope.application.type === 'app') {
                 validator = androidAppValidator;
                 persistor = androidAppPersistor;
-            } else {
+            } else if ($scope.application.type === 'web') {
                 validator = webAppValidator;
                 persistor = webAppPersistor;
+            } else {
+                validator = intentAppValidator;
+                persistor = intentAppPersistor;
             }
 
             const err = validator();
@@ -582,10 +656,11 @@ angular.module('headwind-kiosk')
                 $scope.actionGroup = -1;
             };
             $scope.isInstallOptionAvailable = function (application) {
-                return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
+                return !application.system && application.type === 'app' &&
+                    (application.url || application.urlArm64 || application.urlArmeabi);
             };
             $scope.isRemoveOptionAvailable = function (application) {
-                return !application.system;
+                return !application.system && application.type === 'app';
             };
 
             $scope.application = {"id": application.id};
@@ -775,7 +850,7 @@ angular.module('headwind-kiosk')
                                                                $modal, isControlPanel, localization) {
         $scope.isControlPanel = isControlPanel;
 
-        $scope.isWebType = applicationVersion.type === 'web';
+        $scope.appType = applicationVersion.type;
 
         $scope.isNewApp = applicationVersion.id === null || applicationVersion.id === undefined;
 
@@ -826,7 +901,7 @@ angular.module('headwind-kiosk')
                 if (response.data.status === 'OK') {
                     $scope.file.path = response.data.data.serverPath;
                     if (!response.data.data.application ||
-                        !response.data.data.application.pkg != response.data.data.fileDetails.pkg) {
+                        response.data.data.application.pkg != response.data.data.fileDetails.pkg) {
                         $scope.errorMessage = localization.localize('error.package.not.match');
                         return;
                     }
@@ -962,10 +1037,11 @@ angular.module('headwind-kiosk')
                 $scope.actionGroup = -1;
             };
             $scope.isInstallOptionAvailable = function (application) {
-                return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
+                return !application.system && application.type === 'app' &&
+                    (application.intent || application.url || application.urlArm64 || application.urlArmeabi);
             };
             $scope.isRemoveOptionAvailable = function (application) {
-                return !application.system;
+                return !application.system && application.type === 'app';
             };
 
             $scope.applicationVersion = {"id": applicationVersion.id};

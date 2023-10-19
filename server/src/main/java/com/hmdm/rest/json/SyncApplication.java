@@ -147,4 +147,9 @@ public class SyncApplication implements SyncApplicationInt {
     public Boolean getLongTap() {
         return wrapped.isLongTap() ? true : null;
     }
+
+    @Override
+    public String getIntent() {
+        return wrapped.getIntent();
+    }
 }

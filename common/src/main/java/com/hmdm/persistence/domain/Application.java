@@ -98,6 +98,8 @@ public class Application implements CustomerData, Serializable {
     private boolean bottom;
     @ApiModelProperty("A flag indicating if app settings could be opened by a long tap")
     private boolean longTap;
+    @ApiModelProperty("An intent")
+    private String intent;
 
     // A flag indicating that application is to be removed from the application
     // This field is going to be removed as now action field is stored in DB and encodes the removed apps with
@@ -441,6 +443,14 @@ public class Application implements CustomerData, Serializable {
         this.longTap = longTap;
     }
 
+    public String getIntent() {
+        return intent;
+    }
+
+    public void setIntent(String intent) {
+        this.intent = intent;
+    }
+
     @Override
     public String toString() {
         return "Application{" +
@@ -458,6 +468,7 @@ public class Application implements CustomerData, Serializable {
                 ", useKiosk=" + useKiosk +
                 ", bottom=" + bottom +
                 ", longTap=" + longTap +
+                ", intent=" + intent +
                 ", iconText='" + iconText + '\'' +
                 ", iconId='" + iconId + '\'' +
                 ", runAfterInstall=" + runAfterInstall +

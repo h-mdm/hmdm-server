@@ -241,6 +241,14 @@ public class ApplicationResource {
             } else {
                 // TODO : ISV : Handle the scenario for inserting new version for the same package here
                 this.applicationDAO.updateWebApplication(application);
+                if (application.getUrl() != null && application.getLatestVersion() != null) {
+                    ApplicationVersion version = applicationDAO.findApplicationVersionById(application.getLatestVersion());
+                    if (version != null) {
+                        version.setUrl(application.getUrl());
+                        applicationDAO.updateApplicationVersion(version);
+                    }
+                }
+
                 return Response.OK();
             }
         } catch (DuplicateApplicationException e) {

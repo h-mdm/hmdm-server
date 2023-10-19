@@ -24,9 +24,13 @@ package com.hmdm.rest.resource;
 import com.google.common.io.Files;
 import com.hmdm.notification.PushService;
 import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.*;
+import com.hmdm.security.SecurityContext;
 import com.hmdm.util.*;
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -54,6 +58,7 @@ public class UpdateResource {
     private String protocol;
     private String customerDomain;
     private ApplicationDAO applicationDAO;
+    private UnsecureDAO unsecureDAO;
     private StatsSender statsSender;
     private APKFileAnalyzer apkFileAnalyzer;
 
@@ -67,11 +72,13 @@ public class UpdateResource {
     public UpdateResource(@Named("files.directory") String filesDirectory,
                           @Named("base.url") String baseUrl,
                           ApplicationDAO applicationDAO,
+                          UnsecureDAO unsecureDAO,
                           StatsSender statsSender,
                           APKFileAnalyzer apkFileAnalyzer) {
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
         this.applicationDAO = applicationDAO;
+        this.unsecureDAO = unsecureDAO;
         this.statsSender = statsSender;
         this.apkFileAnalyzer = apkFileAnalyzer;
         try {
@@ -92,6 +99,10 @@ public class UpdateResource {
 
         String manifestStr = null;
         try {
+            if (!unsecureDAO.isSingleCustomer() && !SecurityContext.get().isSuperAdmin()) {
+                throw new SecurityException("Only superadmin can check for updates");
+            }
+
             URL url = new URL(UpdateSettings.MANIFEST_URL.replace("CUSTOMER_DOMAIN", customerDomain));
             logger.info("Checking for update: " + url.toString());
             manifestStr = FileUtil.downloadTextFile(url);

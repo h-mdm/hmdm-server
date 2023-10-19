@@ -264,10 +264,10 @@ angular.module('headwind-kiosk')
         ];
 
         $scope.isInstallOptionAvailable = function (application) {
-            return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
+            return !application.system && application.type === 'app' && (application.url || application.urlArm64 || application.urlArmeabi);
         };
         $scope.isRemoveOptionAvailable = function (application) {
-            return !application.system;
+            return !application.system &&  application.type === 'app';
         };
         $scope.actionChanged = function (application) {
             application.remove = (application.action == '2');
@@ -319,7 +319,7 @@ angular.module('headwind-kiosk')
             };
 
             $scope.pkgInfoVisible = function (application) {
-                return application.type !== 'web';
+                return application.type === 'app';
             };
 
             $scope.saveButtonClass = function () {
@@ -479,10 +479,10 @@ angular.module('headwind-kiosk')
             ];
 
             $scope.isInstallOptionAvailable = function (application) {
-                return !application.system && (application.url || application.urlArm64 || application.urlArmeabi);
+                return !application.system && application.type === 'app' && (application.url || application.urlArm64 || application.urlArmeabi);
             };
             $scope.isRemoveOptionAvailable = function (application) {
-                return !application.system;
+                return !application.system && application.type === 'app';
             };
 
             $scope.desktopHeaderTemplatePlaceholder = localization.localize('form.configuration.settings.design.desktop.header.template.placeholder') + ' deviceId, description, custom1, custom2, custom3';

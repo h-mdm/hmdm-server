@@ -2474,4 +2474,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="17.10.23-10:02" author="seva" context="common">
+        <comment>Columns,new: applications#intent</comment>
+        <sql>
+            ALTER TABLE applications ADD COLUMN intent TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE applications DROP COLUMN intent;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

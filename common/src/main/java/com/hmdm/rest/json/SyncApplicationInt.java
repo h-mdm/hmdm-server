@@ -71,4 +71,6 @@ public interface SyncApplicationInt {
     Boolean getBottom();
 
     Boolean getLongTap();
+
+    String getIntent();
 }

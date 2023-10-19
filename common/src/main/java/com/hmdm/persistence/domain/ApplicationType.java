@@ -35,5 +35,10 @@ public enum ApplicationType {
     /**
      * <p>A type representing the web application.</p>
      */
-    web;
+    web,
+
+    /**
+     * <p>A type representing the intent.</p>
+     */
+    intent;
 }

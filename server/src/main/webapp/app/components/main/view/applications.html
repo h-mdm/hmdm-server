@@ -78,8 +78,8 @@
 
             <td>
                 <div>
-                    <button localized-title="button.edit.versions"
-                            type='button' class='btn btn-default' ng-click='editVersions( application )'>
+                    <button localized-title="button.edit.versions" ng-class="'btn btn-default ' + (application.type == 'app' ? '' : 'expired-device-hidden')"
+                            type='button' ng-click='editVersions( application )'>
                         <span class='glyphicon glyphicon-sound-5-1'></span>
                     </button>
                     <button localized-title="button.set.configurations"
