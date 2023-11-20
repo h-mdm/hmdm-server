@@ -26,6 +26,8 @@ import com.hmdm.plugin.rest.PluginAccessFilter;
 import com.hmdm.plugins.deviceinfo.rest.DeviceInfoPluginSettingsResource;
 import com.hmdm.plugins.deviceinfo.rest.DeviceInfoResource;
 import com.hmdm.rest.filter.AuthFilter;
+import com.hmdm.rest.filter.PrivateIPFilter;
+import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
 
 import java.util.Arrays;
@@ -47,6 +49,13 @@ public class DeviceInfoRestModule extends ServletModule {
     );
 
     /**
+     * <p> A list of patterns for URIs for plugin resources available to devices</p>
+     */
+    private static final List<String> publicResources = Arrays.asList(
+            "/rest/plugins/deviceinfo/deviceinfo/public/*"
+    );
+
+    /**
      * <p>Constructs new <code>DeviceInfoRestModule</code> instance. This implementation does nothing.</p>
      */
     public DeviceInfoRestModule() {
@@ -59,6 +68,8 @@ public class DeviceInfoRestModule extends ServletModule {
         this.filter(protectedResources).through(JWTFilter.class);
         this.filter(protectedResources).through(AuthFilter.class);
         this.filter(protectedResources).through(PluginAccessFilter.class);
+        this.filter(protectedResources).through(PrivateIPFilter.class);
+        this.filter(publicResources).through(PublicIPFilter.class);
         this.bind(DeviceInfoPluginSettingsResource.class);
         this.bind(DeviceInfoResource.class);
     }

@@ -644,6 +644,16 @@ document.localization ['fr_FR'] = {
     'form.settings.misc.password.alphanumeric': 'Lettres minuscules et majuscules, chiffres',
     'form.settings.misc.password.specialchar': 'Lettres minuscules et majuscules, chiffres, caractères spéciaux',
     'form.settings.misc.password.reset': 'L\'utilisateur doit réinitialiser le mot de passe',
+    'form.settings.misc.idle.logout': 'Se déconnecter en cas d\'inactivité',
+    'form.settings.misc.idle.logout.never': 'Jamais',
+    'form.settings.misc.idle.logout.1' : '5 minutes',
+    'form.settings.misc.idle.logout.2' : '10 minutes',
+    'form.settings.misc.idle.logout.3' : '30 minutes',
+    'form.settings.misc.idle.logout.4' : '1 heure',
+    'form.settings.security.title' : 'Paramètres de sécurité',
+
+    'idle.logout.message': 'Vous serez déconnecté dans ${sec} secondes en raison d\'inactivité',
+    'idle.logout.resume': 'Je suis là!',
 
     'form.settings.groups.title': 'Groupes',
     'form.settings.groups.search.placeholder': 'Recherche de groupe',
@@ -677,6 +687,7 @@ document.localization ['fr_FR'] = {
     'form.two.factor.auth.settings.hint': 'Pour définir l\'authentification à deux facteurs, veuillez installer l\'application Authenticator sur votre appareil mobile, scannez le code QR, générez et saisissez le code de vérification.',
     'form.two.factor.auth.set': 'L\'authentification à deux facteurs est activée',
     'form.two.factor.auth.reset': 'L\'authentification à deux facteurs est désactivée',
+    'form.two.factor.auth.off.confirm': 'Voulez-vous désactiver l’authentification à deux facteurs? Après l\'avoir réactivé, tous les authentifiants deviendront invalides.',
 
     'form.profile.title': 'Changer le mot de passe',
     'form.profile.password.old': 'Ancien mot de passe',

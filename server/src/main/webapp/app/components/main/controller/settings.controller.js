@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .controller('SettingsTabController', function ($scope, $rootScope, $timeout, $modal, hintService, settingsService,
-                                                   localization, authService, userService,
+                                                   localization, authService, userService, confirmModal, Idle,
                                                    groupService, configurationService, twoFactorAuthService) {
         $scope.settings = {};
         $scope.userRoleSettings = {};
@@ -64,23 +64,27 @@ angular.module('headwind-kiosk')
 
         $scope.twoFactorToggled = function() {
             if (!$scope.twoFactor.use) {
-                twoFactorAuthService.reset(function(response) {
-                    if (response.status === 'OK') {
-                        var user = authService.getUser();
-                        user.twoFactorSecret = null;
-                        user.twoFactorAccepted = false;
-                        authService.update(user);
-                        $scope.settings.twoFactor = false;
-                        $scope.twoFactor.accepted = false;
-                        $scope.twoFactor.code = '';
-                        $scope.twoFactor.error = '';
-                        $scope.twoFactor.success = localization.localize('form.two.factor.auth.reset');
-                        $timeout(function () {
-                            $scope.twoFactor.success = null;
-                        }, 5000);
-                    } else {
-                        $scope.twoFactor.error = localization.localizeServerResponse(response);
-                    }
+                $scope.twoFactor.use = true;
+                confirmModal.getUserConfirmation(localization.localize('form.two.factor.auth.off.confirm'), function () {
+                    twoFactorAuthService.reset(function(response) {
+                        if (response.status === 'OK') {
+                            var user = authService.getUser();
+                            user.twoFactorSecret = null;
+                            user.twoFactorAccepted = false;
+                            authService.update(user);
+                            $scope.settings.twoFactor = false;
+                            $scope.twoFactor.accepted = false;
+                            $scope.twoFactor.code = '';
+                            $scope.twoFactor.error = '';
+                            $scope.twoFactor.success = localization.localize('form.two.factor.auth.reset');
+                            $scope.twoFactor.use = false;
+                            $timeout(function () {
+                                $scope.twoFactor.success = null;
+                            }, 5000);
+                        } else {
+                            $scope.twoFactor.error = localization.localizeServerResponse(response);
+                        }
+                    });
                 });
             } else {
                 // Force QR code to reload and re-generate the secret
@@ -228,6 +232,15 @@ angular.module('headwind-kiosk')
             if ($scope.settings.createNewDevices && !$scope.settings.newDeviceConfigurationId) {
                 $scope.errorMessage = localization.localize('error.empty.configuration');
                 return;
+            }
+
+            if ($scope.settings.idleLogout) {
+                Idle.setIdle($scope.settings.idleLogout);
+                Idle.setTimeout(10);
+                Idle.watch();
+            } else {
+                $scope.settings.idleLogout = null;  // Change 0 to null
+                Idle.unwatch();
             }
 
             settingsService.updateMiscSettings($scope.settings, function (response) {

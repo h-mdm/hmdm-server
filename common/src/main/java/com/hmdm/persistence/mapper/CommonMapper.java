@@ -107,6 +107,7 @@ public interface CommonMapper {
                     "passwordReset, " +
                     "passwordLength, " +
                     "passwordStrength, " +
+                    "idleLogout, " +
                     "customerId" +
                     ") VALUES (" +
                     "#{createNewDevices}, " +
@@ -126,6 +127,7 @@ public interface CommonMapper {
                     "#{passwordReset}, " +
                     "#{passwordLength}, " +
                     "#{passwordStrength}, " +
+                    "#{idleLogout}, " +
                     "#{customerId}" +
                     ") " +
                     "ON CONFLICT ON CONSTRAINT settings_customer_unique DO " +
@@ -146,7 +148,8 @@ public interface CommonMapper {
                     "sendDescription = EXCLUDED.sendDescription, " +
                     "passwordReset = EXCLUDED.passwordReset, " +
                     "passwordLength = EXCLUDED.passwordLength, " +
-                    "passwordStrength = EXCLUDED.passwordStrength "
+                    "passwordStrength = EXCLUDED.passwordStrength, " +
+                    "idleLogout = EXCLUDED.idleLogout "
     })
     void saveMiscSettings(Settings settings);
 

@@ -96,6 +96,8 @@ public class Settings implements CustomerData, Serializable {
     private int passwordStrength;
     @ApiModelProperty("Two-factor authentication")
     private boolean twoFactor;
+    @ApiModelProperty("Timeout in seconds for logging out while idle (0 - no logout)")
+    private Integer idleLogout;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
     @ApiModelProperty(hidden = true)
@@ -338,6 +340,14 @@ public class Settings implements CustomerData, Serializable {
 
     public void setTwoFactor(boolean twoFactor) {
         this.twoFactor = twoFactor;
+    }
+
+    public Integer getIdleLogout() {
+        return idleLogout;
+    }
+
+    public void setIdleLogout(Integer idleLogout) {
+        this.idleLogout = idleLogout;
     }
 
     public boolean isSingleCustomer() {

@@ -644,6 +644,16 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.misc.password.alphanumeric': 'Строчные и прописные буквы, цифры',
     'form.settings.misc.password.specialchar': 'Строчные и прописные буквы, цифры, специальные символы',
     'form.settings.misc.password.reset': 'Пользователь должен сбросить пароль',
+    'form.settings.misc.idle.logout': 'Выход из системы при простое',
+    'form.settings.misc.idle.logout.never': 'Никогда',
+    'form.settings.misc.idle.logout.1': '5 минут',
+    'form.settings.misc.idle.logout.2': '10 минут',
+    'form.settings.misc.idle.logout.3': '30 минут',
+    'form.settings.misc.idle.logout.4': '1 час',
+    'form.settings.security.title': 'Настройки безопасности',
+
+    'idle.logout.message': 'Вы выйдете из системы через ${sec} секунд из-за неактивности',
+    'idle.logout.resume': 'Я здесь!',
 
     'form.settings.groups.title': 'Группы',
     'form.settings.groups.search.placeholder': 'Поиск группы',
@@ -677,6 +687,7 @@ document.localization[ 'ru_RU' ] = {
     'form.two.factor.auth.settings.hint': 'Чтобы настроить двухфакторную аутентификацию, установите приложение Authenticator на свое мобильное устройство, отсканируйте QR-код, сгенерируйте и введите проверочный код.',
     'form.two.factor.auth.set': 'Двухфакторная аутентификация включена',
     'form.two.factor.auth.reset': 'Двухфакторная аутентификация отключена',
+    'form.two.factor.auth.off.confirm': 'Вы хотите отключить двухфакторную аутентификацию? После повторного включения все аутентификаторы станут недействительными.',
 
     'form.profile.title': 'Смена пароля',
     'form.profile.password.old': 'Старый пароль',

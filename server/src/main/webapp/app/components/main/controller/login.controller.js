@@ -28,10 +28,10 @@ angular.module('headwind-kiosk')
 
         var loginHandler = function (response) {
             if (response.status === 'OK') {
-                if (response.data.twoFactor) {
-                    $state.transitionTo('twoFactorAuth');
-                } else if (response.data.passwordReset) {
+                if (response.data.passwordReset) {
                     $state.transitionTo('passwordReset', {"token": response.data.passwordResetToken});
+                } else if (response.data.twoFactor) {
+                    $state.transitionTo('twoFactorAuth');
                 } else {
                     $state.transitionTo('main');
                     $rootScope.$emit('aero_USER_AUTHENTICATED');

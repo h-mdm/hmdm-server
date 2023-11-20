@@ -177,15 +177,13 @@
                 )
     </select>
 
-    <select id="getPlainConfigurationSoleApplications" resultType="Application">
+    <select id="getPlainConfigurationAppsOptimized" resultType="Application">
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
-               applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
+               applications.type, applications.iconText, applications.iconId,
                applicationVersions.version, applicationVersions.url,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
                applications.latestVersion, applications.intent,
-               latestAppVersion.version AS latestVersionText,
-               customers.master AS commonApplication,
                (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
                COALESCE(configurationApplications.remove, FALSE) AS remove,
                COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
@@ -200,12 +198,8 @@
                    ELSE NULL
                    END AS skipVersion
         FROM applications
-                 INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
-                 INNER JOIN customers ON customers.id = applications.customerId
                  INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
                  JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
                  LEFT JOIN configurationapplicationparameters cap ON cap.applicationId = applications.id AND cap.configurationId = #{id}
-                 LEFT JOIN icons ON icons.id = applications.iconId
-                 LEFT JOIN uploadedFiles ON uploadedFiles.id = icons.fileId
     </select>
 </mapper>

@@ -25,6 +25,8 @@ import com.google.inject.servlet.ServletModule;
 import com.hmdm.plugin.rest.PluginAccessFilter;
 import com.hmdm.plugins.messaging.rest.MessagingResource;
 import com.hmdm.rest.filter.AuthFilter;
+import com.hmdm.rest.filter.PrivateIPFilter;
+import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
 
 import java.util.Arrays;
@@ -45,6 +47,13 @@ public class MessagingRestModule extends ServletModule {
     );
 
     /**
+     * <p> A list of patterns for URIs for plugin resources available to devices</p>
+     */
+    private static final List<String> publicResources = Arrays.asList(
+            "/rest/plugins/messaging/public/*"
+    );
+
+    /**
      * <p>Constructs new <code>MessagingRestModule</code> instance. This implementation does nothing.</p>
      */
     public MessagingRestModule() {
@@ -57,6 +66,8 @@ public class MessagingRestModule extends ServletModule {
         this.filter(protectedResources).through(JWTFilter.class);
         this.filter(protectedResources).through(AuthFilter.class);
         this.filter(protectedResources).through(PluginAccessFilter.class);
+        this.filter(protectedResources).through(PrivateIPFilter.class);
+        this.filter(publicResources).through(PublicIPFilter.class);
         this.bind(MessagingResource.class);
     }
 

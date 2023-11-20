@@ -644,6 +644,16 @@ document.localization ['zh_CN'] = {
     'form.settings.misc.password.alphanumeric': '大小写字母、数字',
     'form.settings.misc.password.specialchar': '小写和大写字母、数字、特殊字符',
     'form.settings.misc.password.reset': '用户应重置密码',
+    'form.settings.misc.idle.logout': '空闲时注销',
+    'form.settings.misc.idle.logout.never': '从不',
+    'form.settings.misc.idle.logout.1': '5 分钟',
+    'form.settings.misc.idle.logout.2': '10 分钟',
+    'form.settings.misc.idle.logout.3': '30 分钟',
+    'form.settings.misc.idle.logout.4': '1 小时',
+    'form.settings.security.title': '安全设置',
+
+    'idle.logout.message': '由于不活动，您将在 ${sec} 秒后注销',
+    'idle.logout.resume': '我在这里！',
 
     'form.settings.groups.title':"组合",
     'form.settings.groups.search.placeholder':"组合搜索",
@@ -677,6 +687,7 @@ document.localization ['zh_CN'] = {
     'form.two.factor.auth.settings.hint': '要设置双重身份验证，请在移动设备上安装Authenticator应用程序，扫描二维码，生成并输入验证码。',
     'form.two.factor.auth.set': '双因素身份验证已开启',
     'form.two.factor.auth.reset': '双因素身份验证已关闭',
+    'form.two.factor.auth.off.confirm': '您想关闭双因素身份验证吗？ 重新开启后，所有验证器都将失效。',
 
     'form.profile.title' : "更改密码",
     'form.profile.password.old' : "旧密码",

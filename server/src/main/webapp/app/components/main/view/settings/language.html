@@ -109,6 +109,10 @@
                     </div>
                 </div>
 
+                <div class="text-center" style="margin-top: 50px">
+                    <h4 localized-change-tracking>form.settings.security.title</h4>
+                </div>
+
                 <div class='form-group'>
                     <label class='col-sm-6 control-label' localized-change-tracking>form.settings.misc.password.length</label>
                     <div class='col-sm-6'>
@@ -131,6 +135,19 @@
                     <label class='col-sm-6 control-label' for="passwordReset" localized-change-tracking>form.settings.misc.password.reset</label>
                     <div class='col-sm-1'>
                         <input id="passwordReset" ng-model='settings.passwordReset' type='checkbox' class='form-control'/>
+                    </div>
+                </div>
+
+                <div class='form-group'>
+                    <label class='col-sm-6 control-label' localized-change-tracking>form.settings.misc.idle.logout</label>
+                    <div class="col-sm-6">
+                        <select name="c3_lang" ng-model="settings.idleLogout" class="form-control">
+                            <option ng-value="0" ng-selected="settings.idleLogout === null || settings.idleLogout === 0" localized-change-tracking>form.settings.misc.idle.logout.never</option>
+                            <option ng-value="300" ng-selected="settings.idleLogout === 300" localized-change-tracking>form.settings.misc.idle.logout.1</option>
+                            <option ng-value="600" ng-selected="settings.idleLogout === 600" localized-change-tracking>form.settings.misc.idle.logout.2</option>
+                            <option ng-value="1800" ng-selected="settings.idleLogout === 1800" localized-change-tracking>form.settings.misc.idle.logout.3</option>
+                            <option ng-value="3600" ng-selected="settings.idleLogout === 3600" localized-change-tracking>form.settings.misc.idle.logout.4</option>
+                        </select>
                     </div>
                 </div>
 
@@ -175,7 +192,7 @@
 
         <form class='form-horizontal' ng-if="false">
 
-            <div class="text-center">
+            <div class="text-center" style="margin-top: 50px">
                 <h4 localized-change-tracking>form.two.factor.auth.title</h4>
             </div>
 

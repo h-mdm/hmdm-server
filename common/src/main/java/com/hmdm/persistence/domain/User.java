@@ -69,7 +69,8 @@ public class User implements CustomerData, Serializable {
     private boolean twoFactorAccepted;
     @ApiModelProperty("Is two factor authentication needed (a transient parameter, no db entry)")
     private boolean twoFactor = false;
-
+    @ApiModelProperty("Timeout in seconds for logging out while idle (0 - no logout)")
+    private Integer idleLogout;
 
     // Many-to-many relations
     private List<LookupItem> groups;
@@ -260,6 +261,14 @@ public class User implements CustomerData, Serializable {
 
     public void setTwoFactor(boolean twoFactor) {
         this.twoFactor = twoFactor;
+    }
+
+    public Integer getIdleLogout() {
+        return idleLogout;
+    }
+
+    public void setIdleLogout(Integer idleLogout) {
+        this.idleLogout = idleLogout;
     }
 
     public List<LookupItem> getGroups() {

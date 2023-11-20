@@ -171,12 +171,14 @@ public interface ConfigurationMapper {
     List<Application> getPlainConfigurationApplications(@Param("customerId") Integer customerId, @Param("id") Integer id);
 
     /**
-     * <p>Gets the list of applications used by specified configuration.</p>
+     * <p>Gets the list of applications used by specified configuration. This method is optimized
+     * because it is used to recalculated the device statuses when a new info is coming, so is
+     * expected to be called regularly. Some fields of the Application objects will be null.</p>
      *
      * @param id an ID of a configuration.
      * @return a list of all existing applications with set parameters of usage by specified configuration.
      */
-    List<Application> getPlainConfigurationSoleApplications(@Param("id") Integer id);
+    List<Application> getPlainConfigurationAppsOptimized(@Param("id") Integer id);
 
     @Select("SELECT EXISTS( " +
             "SELECT * FROM configurationApplications ca " +

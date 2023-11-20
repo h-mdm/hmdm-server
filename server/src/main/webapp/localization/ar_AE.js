@@ -644,6 +644,16 @@ document.localization ['ar_AE'] = {
     'form.settings.misc.password.alphanumeric': 'الأحرف الصغيرة والكبيرة, والأرقام',
     'form.settings.misc.password.specialchar': 'الأحرف الكبيرة والصغيرة والأرقام والأحرف الخاصة',
     'form.settings.misc.password.reset': 'يجب على المستخدم إعادة تعيين كلمة المرور',
+    'form.settings.misc.idle.logout': 'تسجيل الخروج عندما يكون خاملاً',
+    'form.settings.misc.idle.logout.never': 'أبدًا',
+    'form.settings.misc.idle.logout.1': '5 دقائق',
+    'form.settings.misc.idle.logout.2': '10 دقائق',
+    'form.settings.misc.idle.logout.3': '30 دقيقة',
+    'form.settings.misc.idle.logout.4': 'ساعة واحدة',
+    'form.settings.security.title': 'إعدادات الأمان',
+
+    'idle.logout.message': 'سيتم تسجيل خروجك خلال ${sec} ثانية بسبب عدم النشاط',
+    'idle.logout.resume': 'أنا هنا!',
 
     "form.settings.groups.title": 'مجموعات',
     "form.settings.groups.search.placeholder": 'بحث المجموعة',
@@ -677,6 +687,7 @@ document.localization ['ar_AE'] = {
     'form.two.factor.auth.settings.hint': 'لتعيين المصادقة الثنائية، يرجى تثبيت تطبيق Authenticator على جهازك المحمول، ومسح رمز QR ضوئيًا، وإنشاء رمز التحقق وإدخاله.',
     'form.two.factor.auth.set': 'تم تشغيل المصادقة الثنائية',
     'form.two.factor.auth.reset': 'تم إيقاف تشغيل المصادقة الثنائية',
+    'form.two.factor.auth.off.confirm': 'هل تريد إيقاف تشغيل المصادقة الثنائية؟ بعد إعادة تشغيله مرة أخرى، ستصبح جميع أدوات المصادقة غير صالحة.',
 
     "form.profile.title": 'تغيير كلمة المرور',
     "form.profile.password.old": 'كلمة المرور القديمة',

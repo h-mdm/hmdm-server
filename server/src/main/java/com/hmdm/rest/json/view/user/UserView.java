@@ -78,4 +78,7 @@ public class UserView {
     public Boolean getTwoFactorAccepted() {
         return user.isTwoFactorAccepted() ? true : null;
     }
+    public Integer getIdleLogout() {
+        return user.getIdleLogout();
+    }
 }

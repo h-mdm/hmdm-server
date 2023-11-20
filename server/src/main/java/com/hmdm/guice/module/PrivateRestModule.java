@@ -23,6 +23,7 @@ package com.hmdm.guice.module;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import com.hmdm.rest.filter.PrivateIPFilter;
 import com.hmdm.rest.resource.HintResource;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.resource.ApplicationResource;
@@ -44,6 +45,7 @@ public class PrivateRestModule extends ServletModule {
     protected void configureServlets() {
         this.filter("/rest/private/*").through(JWTFilter.class);
         this.filter("/rest/private/*").through(AuthFilter.class);
+        this.filter("/rest/private/*").through(PrivateIPFilter.class);
         this.bind(DeviceResource.class);
         this.bind(GroupResource.class);
         this.bind(ConfigurationResource.class);

@@ -1,7 +1,7 @@
 // Localization completed
 angular.module( 'headwind-kiosk' )
 .controller( 'HeaderController', function( $scope, $rootScope, $state, $modal, $timeout, $interval, $filter, $window,
-                                           authService, localization, hintService, rebranding ) {
+                                           authService, localization, hintService, rebranding, alertService, Idle ) {
     $scope.isControlPanel = false;
     $scope.authService = authService;
     $scope.showExitReportMode = false;
@@ -28,6 +28,25 @@ angular.module( 'headwind-kiosk' )
     $scope.$on( 'HIDE_DATA_LOADING_MODAL', function() {
         $scope.dataLoadingWait = false;
     } );
+
+    $scope.$on('IdleWarn', function(e, countdown) {
+        if (!$scope.logoutAlert) {
+            $scope.logoutAlert = alertService.showAlertMessage(
+                localization.localize('idle.logout.message').replace('${sec}', countdown),
+                function() {
+                    $scope.logoutAlert = null;
+                },
+                localization.localize('idle.logout.resume'));
+        } else {
+            // How to update the logoutAlert contents??
+        }
+    });
+
+    $scope.$on('IdleTimeout', function() {
+        $scope.logoutAlert.close();
+        $scope.logoutAlert = null;
+        $scope.logout();
+    });
 
     $rootScope.$on( 'SHOW_EXPIRY_WARNING', function() {
         $scope.expiryWarning = true;

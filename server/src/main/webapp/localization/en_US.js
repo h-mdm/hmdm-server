@@ -644,6 +644,16 @@ document.localization ['en_US'] = {
     'form.settings.misc.password.alphanumeric': 'Lower and uppercase letters, digits',
     'form.settings.misc.password.specialchar': 'Lower and uppercase letters, digits, special chars',
     'form.settings.misc.password.reset': 'User should reset the password',
+    'form.settings.misc.idle.logout': 'Log out when idle',
+    'form.settings.misc.idle.logout.never': 'Never',
+    'form.settings.misc.idle.logout.1': '5 minutes',
+    'form.settings.misc.idle.logout.2': '10 minutes',
+    'form.settings.misc.idle.logout.3': '30 minutes',
+    'form.settings.misc.idle.logout.4': '1 hour',
+    'form.settings.security.title': 'Security settings',
+
+    'idle.logout.message': 'You will be signed out in ${sec} seconds because of inactivity',
+    'idle.logout.resume': 'I am here!',
 
     'form.settings.groups.title': 'Groups',
     'form.settings.groups.search.placeholder': 'Group search',
@@ -677,6 +687,7 @@ document.localization ['en_US'] = {
     'form.two.factor.auth.settings.hint': 'To set the two-factor authentication, please install the Authenticator app on your mobile device, scan the QR code, generate and enter the verification code.',
     'form.two.factor.auth.set': 'Two-factor authentication is turned on',
     'form.two.factor.auth.reset': 'Two-factor authentication is turned off',
+    'form.two.factor.auth.off.confirm': 'Do you want to turn off two-factor authentication? After turning it back on, all authenticators will become invalid.',
 
     'form.profile.title': 'Change password',
     'form.profile.password.old': 'Old Password',

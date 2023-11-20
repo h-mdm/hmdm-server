@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hmdm.notification.rest.NotificationResource;
 import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.rest.json.Response;
 import com.hmdm.util.CryptoUtil;
 import org.apache.poi.util.IOUtils;
@@ -48,6 +49,7 @@ public class DownloadFilesServlet extends HttpServlet {
     private final ApplicationDAO applicationDAO;
     private final String filesDirectory;
     private final File baseDirectory;
+    private final PublicIPFilter publicIPFilter;
 
     private boolean secureEnrollment;
     private String hashSecret;
@@ -59,12 +61,14 @@ public class DownloadFilesServlet extends HttpServlet {
 
     @Inject
     public DownloadFilesServlet(ApplicationDAO applicationDAO,
+                                PublicIPFilter publicIPFilter,
                                 @Named("files.directory") String filesDirectory,
                                 @Named("secure.enrollment") boolean secureEnrollment,
                                 @Named("hash.secret") String hashSecret) {
         this.applicationDAO = applicationDAO;
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
+        this.publicIPFilter = publicIPFilter;
         this.secureEnrollment = secureEnrollment;
         this.hashSecret = hashSecret;
         if (!this.baseDirectory.exists()) {
@@ -77,6 +81,11 @@ public class DownloadFilesServlet extends HttpServlet {
         String path = URLDecoder.decode(req.getRequestURI(), "UTF8");
         int index = path.indexOf("/files/", 0) + "/files/".length();
         path = path.substring(index);
+
+        if (!publicIPFilter.match(req)) {
+            resp.sendError(403);
+            return;
+        }
 
         if (secureEnrollment && !applicationDAO.isMainApp(req.getRequestURL().toString())) {
             String signature = req.getHeader(HEADER_ENROLLMENT_SIGNATURE);

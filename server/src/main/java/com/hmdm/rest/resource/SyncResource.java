@@ -54,6 +54,7 @@ import com.hmdm.persistence.domain.ApplicationSettingType;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Customer;
+import com.hmdm.rest.filter.BaseIPFilter;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.CryptoUtil;
@@ -102,15 +103,7 @@ public class SyncResource {
 
     private String baseUrl;
 
-    /**
-     * <p>IP addresses of reverse proxies</p>
-     */
-    private String[] proxies;
-
-    /**
-     * <p>IP addresses of reverse proxies, comma-separated</p>
-     */
-    private String ipHeader;
+    private BaseIPFilter remoteAddrResolver;
 
     private boolean secureEnrollment;
     private String hashSecret;
@@ -154,8 +147,7 @@ public class SyncResource {
         this.hashSecret = hashSecret;
         this.mobileAppName = mobileAppName;
         this.vendor = vendor;
-        this.ipHeader = !"".equals(ipHeader) ? ipHeader : "X-Real-IP";
-        this.proxies = !"".equals(proxyIps) ? proxyIps.split(",") : new String[0];
+        this.remoteAddrResolver = new BaseIPFilter("", proxyIps, ipHeader);
 
         Set<SyncResponseHook> allYourInterfaces = new HashSet<>();
         for (Key<?> key : injector.getAllBindings().keySet()) {
@@ -487,7 +479,7 @@ public class SyncResource {
             SecurityContext.release();
         }
 
-        response.setHeader(HEADER_IP_ADDRESS, getRemoteAddr(request));
+        response.setHeader(HEADER_IP_ADDRESS, remoteAddrResolver.getRemoteAddr(request));
 
         // Always add signature to enable "soft" security implementation
 //        if (secureEnrollment) {
@@ -552,7 +544,7 @@ public class SyncResource {
                 this.unsecureDAO.updateDeviceInfo(dbDevice.getId(),
                         objectMapper.writeValueAsString(deviceInfo),
                         dbDevice.getImeiUpdateTs(),
-                        getRemoteAddr(request));
+                        remoteAddrResolver.getRemoteAddr(request));
 
                 boolean needUpdate = false;
                 if (deviceInfo.getCustom1() != null) {
@@ -586,7 +578,7 @@ public class SyncResource {
 
                 this.eventService.fireEvent(new DeviceInfoUpdatedEvent(dbDevice.getId()));
 
-                response.setHeader(HEADER_IP_ADDRESS, getRemoteAddr(request));
+                response.setHeader(HEADER_IP_ADDRESS, remoteAddrResolver.getRemoteAddr(request));
                 return Response.OK();
             } else {
                 logger.warn("Requested device {} was not found", deviceInfo.getDeviceId());
@@ -674,30 +666,6 @@ public class SyncResource {
         result.addAll(morePreferred);
 
         return result;
-    }
-
-    private String getRemoteAddr(HttpServletRequest request) {
-        boolean isFromProxy = false;
-        String localAddr = request.getLocalAddr();
-//        logger.info("Local addr: " + localAddr + ", remote addr: " + request.getRemoteAddr());
-        if (request.getRemoteAddr().equals(request.getLocalAddr())) {
-            isFromProxy = true;
-        } else {
-            for (String p : proxies) {
-                if (request.getRemoteAddr().equals(p.trim())) {
-                    isFromProxy = true;
-                    break;
-                }
-            }
-        }
-        if (isFromProxy) {
-            String forwardedIp = request.getHeader(ipHeader);
-//            logger.info("fromProxy=true, ipHeader=" + ipHeader + ", forwardedIp=" + forwardedIp);
-            if (forwardedIp != null) {
-                return forwardedIp;
-            }
-        }
-        return request.getRemoteAddr();
     }
 
 }

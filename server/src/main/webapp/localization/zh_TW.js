@@ -644,6 +644,16 @@ document.localization ['zh_TW'] = {
     'form.settings.misc.password.alphanumeric': '大小寫字母、數字',
     'form.settings.misc.password.specialchar': '小寫和大寫字母、數字、特殊字符',
     'form.settings.misc.password.reset': '用戶應重置密碼',
+    'form.settings.misc.idle.logout': '空閒時登出',
+    'form.settings.misc.idle.logout.never': '從不',
+    'form.settings.misc.idle.logout.1': '5 分鐘',
+    'form.settings.misc.idle.logout.2': '10 分鐘',
+    'form.settings.misc.idle.logout.3': '30 分鐘',
+    'form.settings.misc.idle.logout.4': '1 小時',
+    'form.settings.security.title': '安全設定',
+
+    'idle.logout.message': '由於不活動，您將在 ${sec} 秒後註銷',
+    'idle.logout.resume': '我在這裡！',
 
     'form.settings.groups.title':"組合",
     'form.settings.groups.search.placeholder':"組合搜索",
@@ -677,6 +687,7 @@ document.localization ['zh_TW'] = {
     'form.two.factor.auth.settings.hint': '要設置雙重身份驗證，請在移動設備上安裝Authenticator應用程序，掃描二維碼，生成並輸入驗證碼。',
     'form.two.factor.auth.set': '雙因素身份驗證已開啟',
     'form.two.factor.auth.reset': '雙因素身份驗證已關閉',
+    'form.two.factor.auth.off.confirm': '您要關閉雙重認證嗎？ 重新開啟後，所有驗證器都會失效。',
 
     'form.profile.title' : "更改密碼",
     'form.profile.password.old' : "舊密碼",

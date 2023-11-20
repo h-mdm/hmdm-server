@@ -144,9 +144,12 @@ public class AuthResource {
             userSession.setAttribute(AuthFilter.sessionCredentials, user );
 
             Settings settings = settingsDAO.getSettings(user.getCustomerId());
-            if (settings != null && settings.isTwoFactor()) {
-                userSession.setAttribute(AuthFilter.twoFactorNeeded, "true");
-                user.setTwoFactor(true);
+            if (settings != null) {
+                if (settings.isTwoFactor()) {
+                    userSession.setAttribute(AuthFilter.twoFactorNeeded, "true");
+                    user.setTwoFactor(true);
+                }
+                user.setIdleLogout(settings.getIdleLogout());
             }
 
             if (user.getAuthToken() == null || user.getAuthToken().length() == 0) {

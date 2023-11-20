@@ -90,6 +90,8 @@ public class ConfigureModule extends AbstractModule {
     private final String ldapUserDn = "ldap.user.dn";
     private final String ldapDefaultRole = "ldap.default.role";
     private final String ldapCustomerId = "ldap.customer.id";
+    private final String deviceAllowedAddress = "device.allowed.address";
+    private final String uiAllowedAddress = "ui.allowed.address";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -244,5 +246,9 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(ldapDefaultRole)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(ldapCustomerId);
         this.bindConstant().annotatedWith(Names.named(ldapCustomerId)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 1);
+        opt = this.context.getInitParameter(deviceAllowedAddress);
+        this.bindConstant().annotatedWith(Names.named(deviceAllowedAddress)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(uiAllowedAddress);
+        this.bindConstant().annotatedWith(Names.named(uiAllowedAddress)).to(opt != null ? opt : "");
     }
 }

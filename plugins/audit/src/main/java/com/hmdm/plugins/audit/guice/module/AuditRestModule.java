@@ -26,6 +26,8 @@ import com.hmdm.plugin.rest.PluginAccessFilter;
 import com.hmdm.plugins.audit.rest.AuditResource;
 import com.hmdm.plugins.audit.rest.filter.AuditFilter;
 import com.hmdm.rest.filter.AuthFilter;
+import com.hmdm.rest.filter.PrivateIPFilter;
+import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
 
 /**
@@ -52,6 +54,7 @@ public class AuditRestModule extends ServletModule {
         this.filter("/rest/plugins/audit/private/*").through(JWTFilter.class);
         this.filter("/rest/plugins/audit/private/*").through(AuthFilter.class);
         this.filter("/rest/plugins/audit/private/*").through(PluginAccessFilter.class);
+        this.filter("/rest/plugins/audit/private/*").through(PrivateIPFilter.class);
         this.bind(AuditResource.class);
     }
 

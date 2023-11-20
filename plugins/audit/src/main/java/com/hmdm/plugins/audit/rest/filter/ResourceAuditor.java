@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.rest.AuditResource;
+import com.hmdm.rest.filter.BaseIPFilter;
 import com.hmdm.rest.json.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,15 +81,7 @@ class ResourceAuditor {
      */
     private final boolean payload;
 
-    /**
-     * <p>List of reverse proxy IPs</p>
-     */
-    private final String[] proxies;
-
-    /**
-     * <p>Name of the HTTP header containing the user IP address</p>
-     */
-    private final String ipHeader;
+    private final BaseIPFilter remoteAddrResolver;
 
     /**
      * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
@@ -105,12 +98,7 @@ class ResourceAuditor {
         this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
         this.chain = chain;
         this.payload = payload;
-        if (!"".equals(proxyIps)) {
-            proxies = proxyIps.split(",");
-        } else {
-            proxies = new String[0];
-        }
-        this.ipHeader = ipHeader;
+        this.remoteAddrResolver = new BaseIPFilter("", proxyIps, ipHeader);
     }
 
     /**
@@ -160,7 +148,7 @@ class ResourceAuditor {
 
         AuditLogRecord logRecord = new AuditLogRecord();
         logRecord.setCreateTime(System.currentTimeMillis());
-        logRecord.setIpAddress(getRemoteAddr(httpRequest));
+        logRecord.setIpAddress(remoteAddrResolver.getRemoteAddr(httpRequest));
         if (currentUser != null) {
             logRecord.setCustomerId(currentUser.getCustomerId());
             logRecord.setLogin(currentUser.getLogin());
@@ -190,39 +178,6 @@ class ResourceAuditor {
         logRecord.setAction(action);
 
         return logRecord;
-    }
-
-    private String getRemoteAddr(HttpServletRequest request) {
-        boolean isFromProxy = false;
-//        String localAddr = request.getLocalAddr();
-//        logger.info("Local address: " + localAddr);
-        if (request.getRemoteAddr().equals(request.getLocalAddr())) {
-            isFromProxy = true;
-        } else {
-            for (String p : proxies) {
-                if (request.getRemoteAddr().equals(p.trim())) {
-                    isFromProxy = true;
-                    break;
-                }
-            }
-        }
-        if (isFromProxy) {
-//            logger.info("From proxy: true");
-//            Enumeration<String> headerNames = request.getHeaderNames();
-//            if (headerNames != null) {
-//                while (headerNames.hasMoreElements()) {
-//                    String headerName = headerNames.nextElement();
-//                    String headerValue = request.getHeader(headerName);
-//                    logger.info(headerName + ": " + headerValue);
-//                }
-//            }
-
-            String forwardedIp = request.getHeader(ipHeader);
-            if (forwardedIp != null) {
-                return forwardedIp;
-            }
-        }
-        return request.getRemoteAddr();
     }
 
     private boolean needStripPassword(String action) {

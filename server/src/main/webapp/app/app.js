@@ -1,6 +1,6 @@
 angular.module('headwind-kiosk',
     ['ngResource', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ngTagsInput', 'ngAnimate', 'ngSanitize',
-        'lr.upload', 'colorpicker.module', 'inputDropdown',
+        'lr.upload', 'colorpicker.module', 'inputDropdown', 'ngIdle',
         'ui.mask', 'ncy-angular-breadcrumb', 'oc.lazyLoad', 'angularjs-dropdown-multiselect', 'angularCSS'])
     .constant("SUPPORTED_LANGUAGES", {
         'en': 'en_US',
@@ -41,7 +41,7 @@ angular.module('headwind-kiosk',
         'ja_JP': 'ja_JP'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN', 'ja_JP'])
-    .constant("APP_VERSION", "5.22.1") // Update this value on each commit
+    .constant("APP_VERSION", "5.23.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -444,12 +444,24 @@ angular.module('headwind-kiosk',
         }
     })
     .run(function ($rootScope, $state, $stateParams, authService, pluginService, $ocLazyLoad, localization, hintService,
-                   $window, $transitions, rebranding) {
+                   $window, $transitions, rebranding, Idle) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
+        var initIdleLogout = function() {
+            var user = authService.getUser();
+            if (user.idleLogout) {
+                Idle.setIdle(user.idleLogout);
+                Idle.setTimeout(10);
+                Idle.watch();
+            } else {
+                Idle.unwatch();
+            }
+        };
+
         if (authService.isLoggedIn()) {
             hintService.init();
+            initIdleLogout();
         }
 
         pluginService.getRegisteredPlugins(function (response) {
@@ -485,6 +497,7 @@ angular.module('headwind-kiosk',
         $rootScope.$on('aero_USER_AUTHENTICATED', function () {
             localization.onLogin($rootScope);
             hintService.onLogin();
+            initIdleLogout();
         });
 
         // $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {

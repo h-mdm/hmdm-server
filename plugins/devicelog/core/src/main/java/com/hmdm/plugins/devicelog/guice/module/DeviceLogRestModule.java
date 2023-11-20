@@ -27,7 +27,12 @@ import com.hmdm.plugin.rest.PluginAccessFilter;
 import com.hmdm.plugins.devicelog.rest.resource.DeviceLogPluginSettingsResource;
 import com.hmdm.plugins.devicelog.rest.resource.DeviceLogResource;
 import com.hmdm.rest.filter.AuthFilter;
+import com.hmdm.rest.filter.PrivateIPFilter;
+import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>A <code>Guice</code> module for <code>Device Log Plugin</code> REST resources.</p>
@@ -35,6 +40,22 @@ import com.hmdm.security.jwt.JWTFilter;
  * @author isv
  */
 public class DeviceLogRestModule extends ServletModule {
+    /**
+     * <p>A list of patterns for URIs for plugin resources which prohibit anonymous access.</p>
+     */
+    private static final List<String> protectedResources = Arrays.asList(
+            "/rest/plugins/devicelog/devicelog-plugin-settings/private",
+            "/rest/plugins/devicelog/devicelog-plugin-settings/private/*",
+            "/rest/plugins/devicelog/log/private/*"
+    );
+
+    /**
+     * <p> A list of patterns for URIs for plugin resources available to devices</p>
+     */
+    private static final List<String> publicResources = Arrays.asList(
+            "/rest/plugins/devicelog/log/list/*",
+            "/rest/plugins/devicelog/log/rules/*"
+    );
 
     /**
      * <p>Constructs new <code>DeviceLogRestModule</code> instance. This implementation does nothing.</p>
@@ -46,15 +67,11 @@ public class DeviceLogRestModule extends ServletModule {
      * <p>Configures the <code>Photo Plugin</code> REST resources.</p>
      */
     protected void configureServlets() {
-        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private/*").through(JWTFilter.class);
-        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private").through(JWTFilter.class);
-        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private/*").through(AuthFilter.class);
-        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private").through(AuthFilter.class);
-        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private/*").through(PluginAccessFilter.class);
-        this.filter("/rest/plugins/devicelog/devicelog-plugin-settings/private").through(PluginAccessFilter.class);
-        this.filter("/rest/plugins/devicelog/log/private/*").through(JWTFilter.class);
-        this.filter("/rest/plugins/devicelog/log/private/*").through(AuthFilter.class);
-        this.filter("/rest/plugins/devicelog/log/private/*").through(PluginAccessFilter.class);
+        this.filter(protectedResources).through(JWTFilter.class);
+        this.filter(protectedResources).through(AuthFilter.class);
+        this.filter(protectedResources).through(PluginAccessFilter.class);
+        this.filter(protectedResources).through(PrivateIPFilter.class);
+        this.filter(publicResources).through(PublicIPFilter.class);
         this.bind(DeviceLogPluginSettingsResource.class);
         this.bind(DeviceLogResource.class);
     }

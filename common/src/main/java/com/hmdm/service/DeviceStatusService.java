@@ -98,7 +98,7 @@ public class DeviceStatusService {
         AtomicInteger notRemovedCount = new AtomicInteger();
         AtomicInteger notInstalledCount = new AtomicInteger();
 
-        final List<Application> configApplications = this.configurationMapper.getPlainConfigurationSoleApplications(dbDevice.getConfigurationId());
+        final List<Application> configApplications = this.configurationMapper.getPlainConfigurationAppsOptimized(dbDevice.getConfigurationId());
 
         configApplications.forEach(configApp -> {
             // Do not test apps without URL (they are mostly system apps) as well as web pages

@@ -2484,4 +2484,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="19.11.23-16:19" author="seva" context="common">
+        <comment>Column,new: settings#idleLogout</comment>
+        <sql>
+            ALTER TABLE settings ADD COLUMN idleLogout INT;
+        </sql>
+        <rollback>
+            ALTER TABLE settings DROP COLUMN idleLogout;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -644,6 +644,16 @@ document.localization ['ja_JP'] = {
     'form.settings.misc.password.alphanumeric': '小文字と大文字、数字',
     'form.settings.misc.password.specialchar': '小文字と大文字、数字、特殊文字',
     'form.settings.misc.password.reset': 'ユーザーはパスワードをリセットする必要があります',
+    'form.settings.misc.idle.logout': 'アイドル時にログアウト',
+    'form.settings.misc.idle.logout.never': '決して',
+    'form.settings.misc.idle.logout.1': '5 分',
+    'form.settings.misc.idle.logout.2': '10 分',
+    'form.settings.misc.idle.logout.3': '30 分',
+    'form.settings.misc.idle.logout.4': '1 時間',
+    'form.settings.security.title': 'セキュリティ設定',
+
+    'idle.logout.message': '非アクティブのため ${sec} 秒後にサインアウトされます',
+    'idle.logout.resume': 'ここにいます!',
 
     'form.settings.groups.title': 'グループ',
     'form.settings.groups.search.placeholder': 'グループ検索',
@@ -677,6 +687,7 @@ document.localization ['ja_JP'] = {
     'form.two.factor.auth.settings.hint': '2 要素認証を設定するには、モバイル デバイスに Authenticator アプリをインストールし、QR コードをスキャンし、確認コードを生成して入力してください。',
     'form.two.factor.auth.set': '2 要素認証がオンになっています',
     'form.two.factor.auth.reset': '2 要素認証はオフになっています',
+    'form.two.factor.auth.off.confirm': '二要素認証をオフにしますか? 再度オンにすると、すべての認証子が無効になります。',
 
     'form.profile.title': 'パスワードの変更',
     'form.profile.password.old': '現在のパスワード',
