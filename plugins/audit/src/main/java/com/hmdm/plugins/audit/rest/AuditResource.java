@@ -28,6 +28,7 @@ import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.rest.json.AuditLogFilter;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -84,6 +85,11 @@ public class AuditResource {
     @Path("/private/log/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLogs(AuditLogFilter filter) {
+        if (!SecurityContext.get().hasPermission("plugin_audit_access")) {
+            logger.error("Unauthorized attempt to get the audit log by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             List<AuditLogRecord> records = this.auditDAO.findAll(filter);
             long count = this.auditDAO.countAll(filter);

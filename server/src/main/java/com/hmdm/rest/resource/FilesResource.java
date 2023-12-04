@@ -130,6 +130,11 @@ public class FilesResource {
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllFiles() {
+        if (!SecurityContext.get().hasPermission("files")) {
+            logger.error("Unauthorized attempt to access file list by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         return Response.OK(this.generateFilesList((String)null));
     }
 
@@ -141,6 +146,11 @@ public class FilesResource {
     @POST
     @Path("/remove")
     public Response removeFile(HFile file) {
+        if (!SecurityContext.get().hasPermission("edit_files")) {
+            logger.error("Unauthorized attempt to remove a file by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         if (!FileUtil.isSafePath(file.getPath()) || !FileUtil.isSafePath(file.getName())) {
             logger.error("Attempt to remove a file with unsafe path! path: " + file.getPath() + " name: " + file.getName());
             return Response.PERMISSION_DENIED();
@@ -186,8 +196,18 @@ public class FilesResource {
     @POST
     @Path("/move")
     public Response moveFile(MoveFileRequest moveFileRequest) {
-        if (!FileUtil.isSafePath(moveFileRequest.getLocalPath())) {
-            logger.error("Attempt to remove a file with unsafe path! local path: " + moveFileRequest.getLocalPath() +
+        if (!SecurityContext.get().hasPermission("edit_files")) {
+            logger.error("Unauthorized attempt to move a file by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
+        if (moveFileRequest.getLocalPath() == null || moveFileRequest.getLocalPath().equals("")) {
+            moveFileRequest.setLocalPath("/");
+        }
+        String tmpdir = System.getProperty("java.io.tmpdir");
+        if (!FileUtil.isSafePath(moveFileRequest.getLocalPath()) ||
+            !moveFileRequest.getPath().startsWith(tmpdir)) {
+            logger.error("Attempt to move a file with unsafe path! local path: " + moveFileRequest.getLocalPath() +
                     " path: " + moveFileRequest.getPath());
             return Response.PERMISSION_DENIED();
         }
@@ -221,6 +241,11 @@ public class FilesResource {
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFilesByName(@PathParam("value") @ApiParam("A filter value") String value) {
+        if (!SecurityContext.get().hasPermission("files")) {
+            logger.error("Unauthorized attempt to access file list by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         return Response.OK(this.generateFilesList(value));
     }
 
@@ -235,6 +260,11 @@ public class FilesResource {
     @Path("/apps/{url}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApplicationsForFile(@PathParam("url") @ApiParam("An URL referencing the file") String url) {
+        if (!SecurityContext.get().hasPermission("files")) {
+            logger.error("Unauthorized attempt to access file list by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             String decodedUrl = URLDecoder.decode(url, "UTF-8");
             return Response.OK(this.applicationDAO.getAllApplicationsByUrl(decodedUrl));
@@ -277,6 +307,11 @@ public class FilesResource {
     private Response uploadFilesInternal(InputStream uploadedInputStream,
                                          FormDataContentDisposition fileDetail,
                                          boolean parseFile) throws Exception {
+        if (!SecurityContext.get().hasPermission("edit_files")) {
+            logger.error("Unauthorized attempt to upload a file by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
             // it to UTF_8 and enable non-ASCII characters

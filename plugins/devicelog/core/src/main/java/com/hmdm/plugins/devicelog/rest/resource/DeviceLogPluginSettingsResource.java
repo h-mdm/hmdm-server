@@ -118,6 +118,11 @@ public class DeviceLogPluginSettingsResource {
     @Path("/private")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings() {
+        if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
+            log.error("Unauthorized attempt to get device log settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             DeviceLogPluginSettings pluginSettings = this.settingsDAO.getPluginSettings();
             if (pluginSettings != null) {
@@ -149,6 +154,11 @@ public class DeviceLogPluginSettingsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveMainSettings(String settingsJSON) {
+        if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
+            log.error("Unauthorized attempt to save device log settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             ObjectMapper mapper = new ObjectMapper();
             DeviceLogPluginSettings settings = mapper.readValue(settingsJSON, this.settingsDAO.getSettingsClass());
@@ -175,6 +185,11 @@ public class DeviceLogPluginSettingsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveSettingsRule(String ruleJSON) {
+        if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
+            log.error("Unauthorized attempt to save device log settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             ObjectMapper mapper = new ObjectMapper();
             DeviceLogRule rule = mapper.readValue(ruleJSON, this.settingsDAO.getSettingsRuleClass());
@@ -197,6 +212,11 @@ public class DeviceLogPluginSettingsResource {
     @Path("/private/rule/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeRule(@PathParam("id") @ApiParam("Rule ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
+            log.error("Unauthorized attempt to save device log settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             DeviceLogRule rule = this.settingsDAO.getPluginSettingsRuleById(id);
             if (rule != null) {

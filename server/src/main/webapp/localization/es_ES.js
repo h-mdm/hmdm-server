@@ -541,7 +541,7 @@ document.localization ['es_ES'] = {
 
     'form.file.file': 'Archivo',
     'form.file.path': 'Ruta',
-    'form.file.path.placeholder': 'Ingrese una ruta relativa, por ejemplo "/ archivos /"',
+    'form.file.path.placeholder': 'Ingrese una ruta relativa, por ejemplo "/files/"',
 
     'form.file.apps.name': 'Nombre de Aplicacion',
     'form.file.apps.pkg': 'ID del Paquete',

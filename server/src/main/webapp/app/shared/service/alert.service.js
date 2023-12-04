@@ -14,7 +14,7 @@ angular.module('headwind-kiosk')
                         if (okButtonTextKey) {
                             return okButtonTextKey;
                         } else {
-                            return 'message.close';
+                            return 'button.close';
                         }
                     }
                 }

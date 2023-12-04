@@ -541,7 +541,7 @@ document.localization ['ja_JP'] = {
 
     'form.file.file': 'ファイル',
     'form.file.path': 'パス',
-    'form.file.path.placeholder': '"/ files /" などの相対パスを入力してください',
+    'form.file.path.placeholder': '"/files/" などの相対パスを入力してください',
 
     'form.file.apps.name': 'アプリケーション名',
     'form.file.apps.pkg': 'パッケージ ID',

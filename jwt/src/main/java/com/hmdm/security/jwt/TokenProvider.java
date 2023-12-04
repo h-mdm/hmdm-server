@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import com.google.inject.Singleton;
+import com.hmdm.util.CryptoUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -71,7 +72,9 @@ public class TokenProvider {
      * <p>Constructs new <code>TokenProvider</code> instance with specified configuration.</p>
      */
     public TokenProvider() {
-        this.secretKey = "20c68f0d9185b1d18cf6add1e8b491fd89529a44";
+        // Use hardcoded secret key for debugging purposes only
+        //this.secretKey = "20c68f0d9185b1d18cf6add1e8b491fd89529a44";
+        this.secretKey = CryptoUtil.randomHexString(40);
         this.tokenValidityInMilliseconds = 1000 * 86400; // 24 hours
         this.tokenValidityInMillisecondsForRememberMe = 1000 * 2592000L; // 30 days
     }

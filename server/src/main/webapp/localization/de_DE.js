@@ -541,7 +541,7 @@ document.localization ['de_DE'] = {
 
     'form.file.file': 'Datei',
     'form.file.path': 'Path',
-    'form.file.path.placeholder': 'Geben Sie einen relativen Pfad ein, zum Beispiel "/Dateien/"',
+    'form.file.path.placeholder': 'Geben Sie einen relativen Pfad ein, zum Beispiel "/files/"',
 
     'form.file.apps.name': 'Anwendungsname',
     'form.file.apps.pkg': 'Paket-ID',

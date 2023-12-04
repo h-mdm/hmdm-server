@@ -138,6 +138,11 @@ public class UserResource {
     public Response getUsers(@QueryParam("filter") String filter) {
         return SecurityContext.get().getCurrentUser()
                 .map(currentUser -> {
+                    if (!SecurityContext.get().hasPermission("settings")) {
+                        logger.error("Unauthorized attempt to access user list by user " +
+                                currentUser.getLogin());
+                        return Response.PERMISSION_DENIED();
+                    }
                     List<User> userDetails;
                     if (filter == null || filter.isEmpty()) {
                         userDetails = userDAO.findAllUsers();
@@ -146,11 +151,12 @@ public class UserResource {
                     }
                     userDetails.forEach(u -> {
                         u.setPassword(null);
+                        u.setAuthToken(null);
                         u.setEditable(!u.getId().equals(currentUser.getId()));
                     });
                     return Response.OK(userDetails);
                 })
-                .orElse(Response.OK(new ArrayList()));
+                .orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================

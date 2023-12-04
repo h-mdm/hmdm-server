@@ -149,6 +149,7 @@
             OR devices.description ILIKE #{value}
             OR devices.imei ILIKE #{value}
             OR devices.phone ILIKE #{value}
+            OR devices.publicIp ILIKE #{value}
             OR devices.infojson -&gt;&gt; 'imei' ILIKE #{value}
             OR devices.infojson -&gt;&gt; 'phone' ILIKE #{value}
             OR devices.infojson -&gt;&gt; 'model' ILIKE #{value}

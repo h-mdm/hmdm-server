@@ -130,6 +130,11 @@ public class SettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/design")
     public Response updateDefaultDesignSettings(Settings settings) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            log.error("Unauthorized attempt to update settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             this.commonDAO.saveDefaultDesignSettings(settings);
             return Response.OK();
@@ -150,6 +155,11 @@ public class SettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/userRoles/common")
     public Response updateUserRoleCommonSettings(List<UserRoleSettings> settings) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            log.error("Unauthorized attempt to update settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             this.userRoleSettingsDAO.saveCommonSettings(settings);
             return Response.OK();
@@ -170,6 +180,11 @@ public class SettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/lang")
     public Response updateLanguageSettings(Settings settings) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            log.error("Unauthorized attempt to update settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             this.commonDAO.saveLanguageSettings(settings);
             return Response.OK();
@@ -190,6 +205,11 @@ public class SettingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/misc")
     public Response updateMiscSettings(Settings settings) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            log.error("Unauthorized attempt to update settings by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             if (!unsecureDAO.isSingleCustomer()) {
                 // These settings are not allowed to setup in multi-tenant mode

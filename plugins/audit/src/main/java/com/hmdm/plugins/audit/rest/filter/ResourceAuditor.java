@@ -184,6 +184,7 @@ class ResourceAuditor {
         return "plugin.audit.action.user.login".equals(action) ||
                "plugin.audit.action.api.login".equals(action) ||
                "plugin.audit.action.password.changed".equals(action) ||
+               "plugin.audit.action.update.configuration".equals(action) ||
                "plugin.audit.action.update.user".equals(action);
     }
 

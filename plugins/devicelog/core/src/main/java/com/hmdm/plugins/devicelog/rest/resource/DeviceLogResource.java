@@ -128,6 +128,11 @@ public class DeviceLogResource {
     @Path("/private/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLogs(DeviceLogFilter filter) {
+        if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
+            logger.error("Unauthorized attempt to get device logs by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         try {
             List<DeviceLogRecord> records = this.deviceLogDAO.findAll(filter);
             long count = this.deviceLogDAO.countAll(filter);
@@ -149,6 +154,12 @@ public class DeviceLogResource {
     @Path("/private/search/export")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response exportLogs(DeviceLogFilter filter) {
+        if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
+            logger.error("Unauthorized attempt to get device logs by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return javax.ws.rs.core.Response.serverError().status(403).build();
+        }
+
         filter.setPageNum(1);
         filter.setExport(true);
 

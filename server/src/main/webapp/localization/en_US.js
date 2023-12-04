@@ -541,7 +541,7 @@ document.localization ['en_US'] = {
 
     'form.file.file': 'File',
     'form.file.path': 'Path',
-    'form.file.path.placeholder': 'Enter a relative path, for example "/ files /"',
+    'form.file.path.placeholder': 'Enter a relative path, for example "/files/"',
 
     'form.file.apps.name': 'Application Name',
     'form.file.apps.pkg': 'Package ID',

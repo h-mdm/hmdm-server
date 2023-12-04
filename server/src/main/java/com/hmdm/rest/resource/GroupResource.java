@@ -27,6 +27,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import com.hmdm.rest.json.LookupItem;
+import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -124,6 +125,11 @@ public class GroupResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateGroup(Group group) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            log.error("Unauthorized attempt to update groups by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         Group dbGroup = this.groupDAO.getGroupByName(group.getName());
         if (dbGroup != null && !dbGroup.getId().equals(group.getId())) {
             return Response.DUPLICATE_ENTITY("error.duplicate.group");
@@ -147,6 +153,11 @@ public class GroupResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeGroup(@PathParam("id") @ApiParam("Device group ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            log.error("Unauthorized attempt to update groups by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
         Long count = this.groupDAO.countDevicesByGroupId(id);
         if (count > 0) {
             return Response.ERROR("error.notempty.group");

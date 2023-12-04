@@ -102,6 +102,15 @@ public class SecurityContext {
     }
 
     /**
+     * <p>Gets the user name for logging purposes</p>
+     */
+    public String getCurrentUserName() {
+        return getCurrentUser()
+                .map(u -> u.getLogin())
+                .orElse("null");
+    }
+
+    /**
      * <p>Gets the current customer ID associated with processed request.</p>
      *
      * @return an optional reference to current customer ID.

@@ -541,7 +541,7 @@ document.localization ['ar_AE'] = {
 
     'form.file.file': 'ملف',
     'form.file.path': 'مسار',
-    'form.file.path.placeholder': '/"أدخل مسارًا نسبيًا , على سبيل المثال "/الملفات',
+    'form.file.path.placeholder': 'أدخل مسارًا نسبيًا، على سبيل المثال "/files/"',
 
     'form.file.apps.name': 'اسم التطبيق' ,
     "form.file.apps.pkg": 'معرف الحزمة',

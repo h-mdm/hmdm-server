@@ -540,7 +540,7 @@ document.localization ['pt_PT'] = {
 
     'form.file.file': 'Arquivo',
     'form.file.path': 'Caminho',
-    'form.file.path.placeholder': 'Insira um caminho relativo, por exemplo "/ arquivos /"',
+    'form.file.path.placeholder': 'Insira um caminho relativo, por exemplo "/files/"',
 
     'form.file.apps.name': 'Nome da Aplicação',
     'form.file.apps.pkg': 'ID do pacote',
