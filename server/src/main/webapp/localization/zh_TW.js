@@ -542,7 +542,8 @@ document.localization ['zh_TW'] = {
     'form.file.file' : "文檔",
     'form.file.path' : "路徑",
     'form.file.path.placeholder' : '輸入相對路徑，例如"/files/"',
-		
+    'form.file.available': '可用空間：${space} Mb',
+
     'form.file.apps.name' : "應用程式名稱",
     'form.file.apps.pkg':"包裹ID",
     'form.file.apps.version' : "版本",
@@ -812,6 +813,7 @@ document.localization ['zh_TW'] = {
     'table.heading.file.name' : "文檔名",
     'table.heading.file.path' : "路徑",
     'table.heading.file.address' : "網址",
+    'table.heading.file.size': '尺寸',
     'table.heading.file.actions':"功能",
 		
     'table.heading.users.login' : "登錄",

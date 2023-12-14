@@ -13,6 +13,8 @@
         </div>
     </div>
 
+    <div ng-if="availableSpace" class="field-hint">{{availableSpace}}</div>
+
     <div class="text-center" ng-if="files.length > paging.pageSize">
         <pagination
                 boundary-links='true' class='pagination-sm'
@@ -30,6 +32,7 @@
             <th localized>table.heading.file.name</th>
             <th localized>table.heading.file.path</th>
             <th localized>table.heading.file.address</th>
+            <th localized>table.heading.file.size</th>
             <th class='actions-column' localized>table.heading.file.actions</th>
         </tr>
         </thead>
@@ -38,6 +41,7 @@
             <td>{{file.name}}</td>
             <td>{{file.path}}</td>
             <td>{{file.url}}</td>
+            <td><nobr>{{readableSizeMb(file.size)}}</nobr></td>
 
             <td>
                 <div>

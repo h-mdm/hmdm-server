@@ -17,6 +17,7 @@
                      on-upload="onStartedUpload()"
                      on-progress="onUploadProgress(progress)"
                      on-success="fileUploaded( response )"></div>
+                <div ng-if="availableSpace" class="field-hint" style="margin-bottom: 0">{{availableSpace}}</div>
             </div>
         </div>
 

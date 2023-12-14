@@ -1,7 +1,8 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .controller('ApplicationsTabController', function ($scope, $rootScope, $modal, confirmModal, applicationService,
-                                                       authService, $window, localization, alertService, $state) {
+                                                       authService, $window, localization, alertService, $state,
+                                                       fileService, storageService) {
 
         $scope.authService = authService;
 
@@ -13,6 +14,23 @@ angular.module('headwind-kiosk')
         $scope.paging = {
             currentPage: 1,
             pageSize: 50
+        };
+
+        $scope.availableSpace = null;
+        var updateLimit = function() {
+            fileService.getLimit(function(response) {
+                if (response.status === 'OK' &&
+                    response.data.sizeLimit > 0) {
+                    var availableSpace = response.data.sizeLimit - response.data.sizeUsed;
+                    if (availableSpace < 0) {
+                        availableSpace = 0;
+                    }
+                    if (availableSpace < 20) {
+                        $scope.availableSpace = localization.localize('form.file.available')
+                            .replaceAll('${space}', availableSpace);
+                    }
+                }
+            });
         };
 
         $scope.showMyAppsOnly = {
@@ -50,6 +68,7 @@ angular.module('headwind-kiosk')
         };
 
         $scope.search = function () {
+            updateLimit();
             $scope.loading = true;
             applicationService.getAllApplications({value: $scope.search.searchValue},
                 function (response) {
@@ -132,8 +151,8 @@ angular.module('headwind-kiosk')
         $scope.init();
     })
     .controller('ApplicationModalController', function ($scope, $modalInstance, applicationService, iconService,
-                                                        application,
-                                                        $modal, isControlPanel, localization, closeOnSave) {
+                                                        application, $modal, isControlPanel, localization, closeOnSave,
+                                                        fileService) {
         $scope.isControlPanel = isControlPanel;
 
         $scope.localization = localization;
@@ -146,6 +165,20 @@ angular.module('headwind-kiosk')
         }
 
         $scope.appdesc = {};
+
+        fileService.getLimit(function(response) {
+            if (response.status === 'OK' &&
+                response.data.sizeLimit > 0) {
+                var availableSpace = response.data.sizeLimit - response.data.sizeUsed;
+                if (availableSpace < 0) {
+                    availableSpace = 0;
+                }
+                if (availableSpace < 20) {
+                    $scope.availableSpace = localization.localize('form.file.available')
+                        .replaceAll('${space}', availableSpace);
+                }
+            }
+        });
 
         $scope.icons = [{id: -1, name: localization.localize("form.application.icon.default")}];
 

@@ -27,8 +27,7 @@ import javax.inject.Named;
 
 import com.hmdm.persistence.*;
 import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.rest.json.APKFileDetails;
-import com.hmdm.rest.json.FileUploadResult;
+import com.hmdm.rest.json.*;
 import com.hmdm.util.APKFileAnalyzer;
 import com.hmdm.util.StringUtil;
 import org.apache.commons.io.FileUtils;
@@ -67,8 +66,6 @@ import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.HFile;
-import com.hmdm.rest.json.MoveFileRequest;
-import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.FileExistsException;
 import com.hmdm.util.FileUtil;
@@ -275,6 +272,29 @@ public class FilesResource {
     }
 
     // =================================================================================================================
+    @GET
+    @Path("/limit")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStorageLimit() {
+        LimitResponse lr = new LimitResponse();
+        if (!unsecureDAO.isSingleCustomer()) {
+            // Check the disk size in multi-tenant mode
+            Customer currentCustomer = customerDAO.findById(SecurityContext.get().getCurrentCustomerId().get());
+            if (!currentCustomer.isMaster() && currentCustomer.getSizeLimit() > 0) {
+                File userDir = new File(this.filesDirectory, currentCustomer.getFilesDir());
+                long userDirSize = 0;
+                if (userDir.exists()) {
+                    userDirSize = FileUtils.sizeOfDirectory(userDir);
+                }
+                lr.setSizeUsed((int) (userDirSize / 1048576l));
+                lr.setSizeLimit(currentCustomer.getSizeLimit());
+            }
+        }
+        return Response.OK(lr);
+    }
+
+
+    // =================================================================================================================
     @ApiOperation(
             value = "Upload raw file",
             notes = "Uploads the raw file to server (without attempt to parse APK). Returns a path to uploaded file",
@@ -470,7 +490,7 @@ public class FilesResource {
                     url = String.format("%s/files%s", this.baseUrl, path.replace(File.separator, "/") + file.getName());
                 }
 
-                final HFile fileObj = new HFile(path, file.getName(), url);
+                final HFile fileObj = new HFile(path, file.getName(), url, file.length());
 
                 fileObj.setUsedByConfigurations(this.configurationFileDAO.getUsingConfigurations(customer.getId(), fileObj.getName()));
                 fileObj.setUsedByIcons(this.iconDAO.getUsingIcons(customer.getId(), fileObj.getName()));

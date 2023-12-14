@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .controller('FilesTabController', function ($scope, $rootScope, $state, $modal, alertService, confirmModal, fileService,
-                                                authService, $window, localization) {
+                                                authService, $window, localization, storageService) {
         $scope.search = {};
 
         $scope.paging = {
@@ -17,7 +17,29 @@ angular.module('headwind-kiosk')
 
         $scope.url = document.URL.replace("/#/login", "").replace("/#/", "");
 
+        $scope.readableSizeMb = function(size) {
+            return storageService.readableSize(size) + " Mb";
+        };
+
+        $scope.availableSpace = null;
+        var updateLimit = function() {
+            fileService.getLimit(function(response) {
+                if (response.status === 'OK' &&
+                    response.data.sizeLimit > 0) {
+                    var availableSpace = response.data.sizeLimit - response.data.sizeUsed;
+                    if (availableSpace < 0) {
+                        availableSpace = 0;
+                    }
+                    if (availableSpace < 20) {
+                        $scope.availableSpace = localization.localize('form.file.available')
+                            .replaceAll('${space}', availableSpace);
+                    }
+                }
+            });
+        };
+
         $scope.init = function () {
+            updateLimit();
             $rootScope.settingsTabActive = false;
             $rootScope.pluginsTabActive = false;
             $scope.paging.currentPage = 1;
@@ -69,6 +91,7 @@ angular.module('headwind-kiosk')
             });
 
             modalInstance.result.then(function () {
+                updateLimit();
                 $scope.search();
             });
         };
@@ -77,6 +100,7 @@ angular.module('headwind-kiosk')
             confirmModal.getUserConfirmation(localization.localize('question.delete.file').replace('${fileName}', file.name), function () {
                 fileService.removeFile(file, function (response) {
                     if (response.status === 'OK') {
+                        updateLimit();
                         $scope.search();
                     } else {
                         alertService.showAlertMessage(localization.localize(response.message));
@@ -112,8 +136,23 @@ angular.module('headwind-kiosk')
             $modalInstance.dismiss();
         }
     })
-    .controller('FileModalController', function ($scope, $modalInstance, fileService, alertService, localization) {
+    .controller('FileModalController', function ($scope, $modalInstance, fileService,
+                                                 alertService, localization) {
         $scope.file = {};
+
+        fileService.getLimit(function(response) {
+            if (response.status === 'OK' &&
+                response.data.sizeLimit > 0) {
+                var availableSpace = response.data.sizeLimit - response.data.sizeUsed;
+                if (availableSpace < 0) {
+                    availableSpace = 0;
+                }
+                if (availableSpace < 20) {
+                    $scope.availableSpace = localization.localize('form.file.available')
+                        .replaceAll('${space}', availableSpace);
+                }
+            }
+        });
 
         $scope.save = function () {
             $scope.errorMessage = '';

@@ -354,7 +354,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * @throws SecurityException if current user is not granted a permission to delete the specified application.
      */
     @Transactional
-    public void removeApplicationById(Integer id) {
+    public void removeApplicationById(Integer id, boolean removeApk) {
         Application dbApplication = this.mapper.findById(id);
         if (dbApplication != null && dbApplication.isCommonApplication()) {
             if (!SecurityContext.get().isSuperAdmin()) {
@@ -367,12 +367,37 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             throw new ApplicationReferenceExistsException(id, "configurations");
         }
 
+        List<ApplicationVersion> versions = getApplicationVersions(id);
+
         updateById(
                 id,
                 this::findById,
                 (record) -> this.mapper.removeApplicationById(record.getId()),
                 SecurityException::onApplicationAccessViolation
         );
+
+        if (removeApk) {
+            final int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
+            final Customer customer = customerDAO.findById(customerId);
+            for (ApplicationVersion version : versions) {
+                removeVersionApk(customer, version.getId(), version.getUrl());
+                removeVersionApk(customer, version.getId(), version.getUrlArmeabi());
+                removeVersionApk(customer, version.getId(), version.getUrlArm64());
+            }
+        }
+
+    }
+
+    private void removeVersionApk(Customer customer, Integer id, String url) {
+        if (url != null && !url.trim().isEmpty()) {
+            final String apkFile = FileUtil.translateURLToLocalFilePath(customer, url, baseUrl);
+            if (apkFile != null) {
+                final boolean deleted = FileUtil.deleteFile(customer, filesDirectory, apkFile);
+                if (!deleted) {
+                    log.warn("Could not delete the APK-file {} related to deleted application version #{}", apkFile, id);
+                }
+            }
+        }
     }
 
     public List<ApplicationConfigurationLink> getApplicationConfigurations(Integer id) {
@@ -804,16 +829,21 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     public void removeApplicationVersionByIdWithAPKFile(@NotNull Integer id) {
         final int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
         final Customer customer = customerDAO.findById(customerId);
-        final String url = this.removeApplicationVersionById(id);
-        if (url != null && !url.trim().isEmpty()) {
-            final String apkFile = FileUtil.translateURLToLocalFilePath(customer, url, baseUrl);
-            if (apkFile != null) {
-                final boolean deleted = FileUtil.deleteFile(customer, filesDirectory, apkFile);
-                if (!deleted) {
-                    log.warn("Could not delete the APK-file {} related to deleted application version #{}", apkFile, id);
-                }
-            }
+        final ApplicationVersion version = findApplicationVersionById(id);
+        if (version == null) {
+            log.warn("Failed to remove version id " + id + ": not found");
+            return;
         }
+
+        final String url = version.getUrl();
+        final String urlArmeabi = version.getUrlArmeabi();
+        final String urlArm64 = version.getUrlArm64();
+
+        this.removeApplicationVersionById(id);
+
+        removeVersionApk(customer, id, url);
+        removeVersionApk(customer, id, urlArmeabi);
+        removeVersionApk(customer, id, urlArm64);
     }
 
     /**

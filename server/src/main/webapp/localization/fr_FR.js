@@ -542,6 +542,7 @@ document.localization ['fr_FR'] = {
     'form.file.file': 'Fichier',
     'form.file.path': 'Chemin',
     'form.file.path.placeholder': 'Entrez un chemin relatif, par exemple "/files/"',
+    'form.file.available': 'Espace disponible : ${space} Mo',
 
     'form.file.apps.name': 'Nom de l\'application',
     'form.file.apps.pkg': 'ID du package',
@@ -812,6 +813,7 @@ document.localization ['fr_FR'] = {
     'table.heading.file.name': 'Nom de fichier',
     'table.heading.file.path': 'Chemin',
     'table.heading.file.address': 'Adresse',
+    'table.heading.file.size': 'Taille',
     'table.heading.file.actions': 'Actions',
 
     'table.heading.users.login': 'Identifiant :',

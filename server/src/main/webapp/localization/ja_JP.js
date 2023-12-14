@@ -542,6 +542,7 @@ document.localization ['ja_JP'] = {
     'form.file.file': 'ファイル',
     'form.file.path': 'パス',
     'form.file.path.placeholder': '"/files/" などの相対パスを入力してください',
+    'form.file.available': '利用可能なスペース: ${space} Mb',
 
     'form.file.apps.name': 'アプリケーション名',
     'form.file.apps.pkg': 'パッケージ ID',
@@ -812,6 +813,7 @@ document.localization ['ja_JP'] = {
     'table.heading.file.name': 'ファイル名',
     'table.heading.file.path': 'パス',
     'table.heading.file.address': 'アドレス',
+    'table.heading.file.size': 'サイズ',
     'table.heading.file.actions': 'アクション',
 
     'table.heading.users.login': 'ログイン',

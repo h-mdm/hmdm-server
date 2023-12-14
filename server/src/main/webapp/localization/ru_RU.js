@@ -542,6 +542,7 @@ document.localization[ 'ru_RU' ] = {
     'form.file.file': 'Файл',
     'form.file.path': 'Путь',
     'form.file.path.placeholder': 'Введите относительный путь, например "/files/"',
+    'form.file.available': 'Доступное место: ${space} Мб',
 
     'form.file.apps.name': 'Название приложения',
     'form.file.apps.pkg': 'ID пакета',
@@ -812,6 +813,7 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.file.name': 'Имя файла',
     'table.heading.file.path': 'Путь',
     'table.heading.file.address': 'Адрес',
+    'table.heading.file.size': 'Размер',
     'table.heading.file.actions': 'Действия',
 
     'table.heading.users.login': 'Login',

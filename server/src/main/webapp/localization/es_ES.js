@@ -542,6 +542,7 @@ document.localization ['es_ES'] = {
     'form.file.file': 'Archivo',
     'form.file.path': 'Ruta',
     'form.file.path.placeholder': 'Ingrese una ruta relativa, por ejemplo "/files/"',
+    'form.file.available': 'Espacio disponible: ${space} Mb',
 
     'form.file.apps.name': 'Nombre de Aplicacion',
     'form.file.apps.pkg': 'ID del Paquete',
@@ -812,6 +813,7 @@ document.localization ['es_ES'] = {
     'table.heading.file.name': 'Nombre Archivo',
     'table.heading.file.path': 'Ruta',
     'table.heading.file.address': 'Direccion',
+    'table.heading.file.size': 'Tamaño',
     'table.heading.file.actions': 'Acciones',
 
     'table.heading.users.login': 'Ingreso',

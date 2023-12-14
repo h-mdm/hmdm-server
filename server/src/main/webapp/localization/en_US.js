@@ -542,6 +542,7 @@ document.localization ['en_US'] = {
     'form.file.file': 'File',
     'form.file.path': 'Path',
     'form.file.path.placeholder': 'Enter a relative path, for example "/files/"',
+    'form.file.available': 'Available space: ${space} Mb',
 
     'form.file.apps.name': 'Application Name',
     'form.file.apps.pkg': 'Package ID',
@@ -809,9 +810,10 @@ document.localization ['en_US'] = {
     'table.heading.group.name': 'Name',
     'table.heading.group.actions': 'Actions',
 
-    'table.heading.file.name': 'Filename',
+    'table.heading.file.name': 'File name',
     'table.heading.file.path': 'Path',
     'table.heading.file.address': 'Address',
+    'table.heading.file.size': 'Size',
     'table.heading.file.actions': 'Actions',
 
     'table.heading.users.login': 'Login',

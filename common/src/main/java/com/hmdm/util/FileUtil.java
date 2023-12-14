@@ -126,12 +126,6 @@ public final class FileUtil {
 
     }
 
-    public static String translateURLToLocalFilePath(Customer customer, Application application, String baseUrl) {
-        // this.baseUrl + "/files/" + customer.getFilesDir() + "/" + movedFile.getName()
-        final String url = application.getUrl();
-        return translateURLToLocalFilePath(customer, url, baseUrl);
-    }
-
     public static String translateURLToLocalFilePath(Customer customer, String url, String baseUrl) {
         final String prefixWithoutCustomer = baseUrl + "/files/";
         String prefix = prefixWithoutCustomer;
@@ -139,7 +133,7 @@ public final class FileUtil {
             prefix += customer.getFilesDir() + "/";
         }
         if (url.startsWith(prefix)) {
-            final String path = url.substring(prefixWithoutCustomer.length());
+            final String path = url.substring(prefix.length());
             return path.replace("/", File.separator);
         }
 

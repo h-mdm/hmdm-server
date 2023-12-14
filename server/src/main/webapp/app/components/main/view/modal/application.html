@@ -150,6 +150,7 @@
                      on-success="fileUploaded(response)"></div>
                 <span ng-if="file.path && !invalidFile">{{fileName}}</span>
                 <button class="btn btn-default" ng-if="file.path" ng-click="clearFile()" localized>button.cleanup</button>
+                <div ng-if="availableSpace" class="field-hint" style="margin-bottom: 0">{{availableSpace}}</div>
             </div>
         </div>
 

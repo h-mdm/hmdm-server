@@ -37,14 +37,13 @@ import javax.ws.rs.core.MediaType;
 import javax.inject.Named;
 
 import com.hmdm.notification.PushService;
-import com.hmdm.persistence.ApplicationReferenceExistsException;
-import com.hmdm.persistence.ApplicationVersionPackageMismatchException;
-import com.hmdm.persistence.CommonAppAccessException;
-import com.hmdm.persistence.RecentApplicationVersionExistsException;
+import com.hmdm.persistence.*;
 import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
+import com.hmdm.util.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -52,13 +51,12 @@ import io.swagger.annotations.Authorization;
 import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.persistence.DuplicateApplicationException;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.util.FileExistsException;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -366,7 +364,7 @@ public class ApplicationResource {
             return Response.PERMISSION_DENIED();
         }
         try {
-            this.applicationDAO.removeApplicationById(id);
+            this.applicationDAO.removeApplicationById(id, true);
             return Response.OK();
         } catch (SecurityException e) {
             logger.error("Prohibited to delete application #{} by current user", id, e);

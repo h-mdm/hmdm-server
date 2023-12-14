@@ -542,6 +542,7 @@ document.localization ['ar_AE'] = {
     'form.file.file': 'ملف',
     'form.file.path': 'مسار',
     'form.file.path.placeholder': 'أدخل مسارًا نسبيًا، على سبيل المثال "/files/"',
+    'form.file.available': 'المساحة المتوفرة: ${space} ميجا بايت',
 
     'form.file.apps.name': 'اسم التطبيق' ,
     "form.file.apps.pkg": 'معرف الحزمة',
@@ -812,6 +813,7 @@ document.localization ['ar_AE'] = {
 	'table.heading.file.name': 'اسم الملف',
     'table.heading.file.path': 'مسار',
     "table.heading.file.address": 'العنوان',
+    'table.heading.file.size': 'مقاس',
     "table.heading.file.actions": 'الإجراءات',
 
     'table.heading.users.login': 'تسجيل الدخول',

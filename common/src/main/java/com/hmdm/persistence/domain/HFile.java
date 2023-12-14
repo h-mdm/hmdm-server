@@ -40,6 +40,8 @@ public class HFile implements Comparable<HFile>, Serializable {
     private String name;
     @ApiModelProperty("An URL of file")
     private String url;
+    @ApiModelProperty("File size in bytes")
+    private long size;
 
     private List<String> usedByApps;
     private List<String> usedByIcons;
@@ -48,7 +50,7 @@ public class HFile implements Comparable<HFile>, Serializable {
     public HFile() {
     }
 
-    public HFile(String path, String name, String url) {
+    public HFile(String path, String name, String url, long size) {
         this.path = path;
         if (path.length() == 0) {
             this.path = "/";
@@ -56,7 +58,7 @@ public class HFile implements Comparable<HFile>, Serializable {
 
         this.name = name;
         this.url = url;
-
+        this.size = size;
     }
 
     public String getPath() {
@@ -81,6 +83,14 @@ public class HFile implements Comparable<HFile>, Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public List<String> getUsedByApps() {

@@ -18,7 +18,9 @@
     </div>
 
     <div class="form-group">
-        <label for='cc12222' class="control-label col-sm-4" localized>form.configuration.apps.show.systeam.apps</label>
+        <div class="col-sm-2"><div ng-if="availableSpace" class="field-hint" style="margin-top: 9px">{{availableSpace}}</div></div>
+
+        <label for='cc12222' class="control-label col-sm-3" localized>form.configuration.apps.show.systeam.apps</label>
 
         <div class="col-sm-1">
             <input id="cc12222" ng-model='showMyAppsOnly.system' name="n42" type='checkbox' class='form-control'
@@ -26,7 +28,7 @@
                    ng-change="showSystemAppsOnlyToggled()"/>
         </div>
 
-        <label for="cc1" class="control-label col-sm-4" ng-if="myAppsButtonVisible"
+        <label for="cc1" class="control-label col-sm-3" ng-if="myAppsButtonVisible"
                localized>box.show.my.apps.only</label>
 
         <div class='col-sm-1' ng-if="myAppsButtonVisible">

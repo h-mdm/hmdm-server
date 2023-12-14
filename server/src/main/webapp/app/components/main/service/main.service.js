@@ -120,8 +120,24 @@ angular.module('headwind-kiosk')
             getAllFiles: {url: 'rest/private/web-ui-files/search/:value', method: 'GET'},
             getApps: {url: 'rest/private/web-ui-files/apps/:value', method: 'GET'},
             removeFile: {url: 'rest/private/web-ui-files/remove', method: 'POST'},
-            moveFile: {url: 'rest/private/web-ui-files/move', method: 'POST'}
+            moveFile: {url: 'rest/private/web-ui-files/move', method: 'POST'},
+            getLimit: {url: 'rest/private/web-ui-files/limit', method: 'GET'}
         })
+    })
+    .factory('storageService', function () {
+        return {
+            readableSize: function(size) {
+                var r;
+                if (size < 104857) {
+                    r = 0.1;
+                } else if (size < 10 * 1048576) {
+                    r = Math.ceil(size / 104857.6) / 10;
+                } else {
+                    r = Math.ceil(size / 1048576);
+                }
+                return r;
+            }
+        }
     })
     .factory('appVersionComparisonService', function () {
 

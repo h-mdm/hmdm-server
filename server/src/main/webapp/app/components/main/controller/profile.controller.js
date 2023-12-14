@@ -1,6 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('ProfileController', function ($scope, authService, userService, settingsService, localization, passwordService) {
+    .controller('ProfileController', function ($scope, authService, userService, settingsService,
+                                               localization, passwordService, fileService) {
         var resetMessages = function () {
             $scope.errorMessage = '';
             $scope.completeMessage = '';
@@ -92,8 +93,16 @@ angular.module('headwind-kiosk')
         settingsService.getSettings(function (response) {
             if (response.data) {
                 $scope.settings = response.data;
+                $scope.sizeLimit = $scope.settings.sizeLimit;
                 $scope.qualityMessage = passwordService.qualityMessage($scope.settings.passwordLength, $scope.settings.passwordStrength);
                 $scope.saveEnabled = true;
+            }
+        });
+
+        fileService.getLimit(function(response) {
+            if (response.status === 'OK' &&
+                response.data.sizeLimit > 0) {
+                $scope.sizeLimit = response.data.sizeUsed + " / " + response.data.sizeLimit;
             }
         });
 
