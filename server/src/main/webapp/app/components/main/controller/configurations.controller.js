@@ -40,7 +40,7 @@ angular.module('headwind-kiosk')
                 $timeout(function () {
                     // Onboarding hint in the configuration tab is no more needed
 //                    hintService.onStateChangeSuccess();
-                }, 100);
+                }, 300);
             });
         };
 

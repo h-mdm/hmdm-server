@@ -1,6 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('PasswordResetController', function ($scope, $state, $stateParams, passwordResetService, localization, passwordService) {
+    .controller('PasswordResetController', function ($scope, $rootScope, $state, $stateParams,
+                                                     passwordResetService, localization, passwordService) {
         var token = $stateParams.token;
 
         var resetMessages = function () {

@@ -260,7 +260,7 @@ angular.module('headwind-kiosk')
                 // Hints are shown after all devices are loaded
                 $timeout(function () {
                     hintService.onStateChangeSuccess();
-                }, 100);
+                }, 300);
             });
         };
 

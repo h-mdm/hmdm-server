@@ -170,7 +170,7 @@ angular.module('headwind-kiosk')
                 }
                 
                 if (!initialized || nonAddedHintsExist) {
-                    $timeout(onStateChangeSuccessFunc, 50);
+                    $timeout(onStateChangeSuccessFunc, 300);
                 } else {
                     onStateChangeSuccessFunc();
                 }
@@ -180,7 +180,7 @@ angular.module('headwind-kiosk')
                     nonAddedHints[hintKey] = true;
                     $timeout(function () {
                         b.addHint(hintKey);
-                    }, 100);
+                    }, 300);
                 } else {
                     delete nonAddedHints[hintKey];
                     addHintFunc(hintKey);

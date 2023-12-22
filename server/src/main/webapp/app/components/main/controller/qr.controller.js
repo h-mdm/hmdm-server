@@ -102,7 +102,7 @@ angular.module('headwind-kiosk')
 
         $timeout(function () {
             hintService.onStateChangeSuccess();
-        }, 100);
+        }, 300);
 
         $scope.helpClicked = function () {
             $scope.showHelp = !$scope.showHelp;
