@@ -50,6 +50,20 @@ document.localization ['fr_FR'] = {
 
     'header.label.username': 'Identifiant',
 
+    'summary.devices.status' : 'État de l\'appareil',
+    'summary.devices.active' : 'Actif',
+    'summary.devices.idle': 'Inactif',
+    'summary.devices.offline': 'Hors ligne',
+    'summary.devices.enrollment': 'Résumé de l\'inscription',
+    'summary.devices.enrolled.total': 'Total inscrit',
+    'summary.devices.enrolled.earlier': 'Inscrit plus tôt',
+    'summary.devices.enrolled.monthly' : '30 derniers jours',
+    'summary.devices.installation.status' : 'Statut de l\'application',
+    'summary.devices.installation.completed' : 'Terminé',
+    'summary.devices.version.mismatch': 'Faux version',
+    'summary.devices.installation.failed': 'Échec de l\'installation',
+    'summary.devices.enrolled.lastyear': '12 derniers mois',
+
     'devices.group.options.all': 'Tous les groupes',
     'devices.configuration.options.all': 'Toutes les configurations',
     'devices.permissions.all': 'Toutes les autorisations sont accordées',
@@ -853,6 +867,7 @@ document.localization ['fr_FR'] = {
 
     'plugin.name.not.specified': '<< Le nom de la fonction n\'est pas spécifié >>',
 
+    'breadcrumb.summary': 'Résumé',
     'breadcrumb.devices': 'Appareils',
     'breadcrumb.applications': 'Applications',
     'breadcrumb.configurations': 'Configurations',

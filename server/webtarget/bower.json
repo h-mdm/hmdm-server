@@ -27,7 +27,8 @@
     "angular-css": "1.0.8",
     "jsencrypt": "3.3.2",
     "angular-input-dropdown": "1.1.0",
-    "ng-idle": "1.3.2"
+    "ng-idle": "1.3.2",
+    "angular-chart.js": "1.1.1"
   },
   "resolutions": {
     "angular": "1.5.11"

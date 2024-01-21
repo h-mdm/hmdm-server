@@ -380,6 +380,74 @@
         </if>
     </select>
 
+    <select id="countAllDevicesForSummary" parameterType="DeviceSummaryRequest" resultType="long">
+        SELECT COUNT(DISTINCT devices.id) AS counter
+        FROM devices
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN deviceStatuses ON devices.id = deviceStatuses.deviceId
+        LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
+        LEFT JOIN groups ON deviceGroups.groupId = groups.id
+        LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
+        WHERE devices.customerId = #{customerId}
+        <if test="fileStatus != null">
+            AND deviceStatuses.configFilesStatus = #{fileStatus}
+        </if>
+        <if test="appStatus != null">
+            AND deviceStatuses.applicationsStatus = #{appStatus}
+        </if>
+        <if test="minEnrollTime != null">
+            AND devices.enrollTime &gt; #{minEnrollTime}
+        </if>
+        <if test="maxEnrollTime != null">
+            AND devices.enrollTime &lt; #{maxEnrollTime}
+        </if>
+        <if test="minOnlineTime != null">
+            AND devices.lastUpdate &gt; #{minOnlineTime}
+        </if>
+        <if test="maxOnlineTime != null">
+            AND devices.lastUpdate &lt; #{maxOnlineTime}
+        </if>
+        AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL);
+    </select>
+
+    <select id="countDevicesByConfig" parameterType="DeviceSummaryRequest" resultType="SummaryConfigItem">
+        SELECT COUNT(DISTINCT devices.id) AS counter, configurations.id, configurations.name
+        FROM devices
+        INNER JOIN users ON users.id = #{userId}
+        LEFT JOIN configurations on devices.configurationId = configurations.id
+        LEFT JOIN deviceStatuses ON devices.id = deviceStatuses.deviceId
+        LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
+        LEFT JOIN groups ON deviceGroups.groupId = groups.id
+        LEFT JOIN userDeviceGroupsAccess access ON groups.id = access.groupId AND access.userId = users.id
+        WHERE devices.customerId = #{customerId}
+        <if test="fileStatus != null">
+            AND deviceStatuses.configFilesStatus = #{fileStatus}
+        </if>
+        <if test="appStatus != null">
+            AND deviceStatuses.applicationsStatus = #{appStatus}
+        </if>
+        <if test="minEnrollTime != null">
+            AND devices.enrollTime &gt; #{minEnrollTime}
+        </if>
+        <if test="maxEnrollTime != null">
+            AND devices.enrollTime &lt; #{maxEnrollTime}
+        </if>
+        <if test="minOnlineTime != null">
+            AND devices.lastUpdate &gt; #{minOnlineTime}
+        </if>
+        <if test="maxOnlineTime != null">
+            AND devices.lastUpdate &lt; #{maxOnlineTime}
+        </if>
+        <if test="configIds != null">
+            AND configurations.id IN (#{configIds})
+        </if>
+        AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
+        GROUP BY configurations.id
+        ORDER BY counter DESC
+        LIMIT 5;
+    </select>
+
+
     <select id="getDeviceByNumber" resultMap="deviceResult">
         <include refid="deviceWithGroupsSelect"/>
         WHERE devices.number = #{number}

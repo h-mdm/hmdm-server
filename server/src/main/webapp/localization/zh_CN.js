@@ -49,7 +49,21 @@ document.localization ['zh_CN'] = {
     'signup.token.invalid.description': '请重试注册以创建新帐户！',
 
     'header.label.username' : "用户名",
-		
+
+    'summary.devices.status': '设备状态',
+    'summary.devices.active': '活动',
+    'summary.devices.idle': '空闲',
+    'summary.devices.offline': '离线',
+    'summary.devices.enrollment': '注册摘要',
+    'summary.devices.enrolled.total': '注册总数',
+    'summary.devices.enrolled.earlier': '较早注册',
+    'summary.devices.enrolled.monthly': '过去 30 天',
+    'summary.devices.installation.status': '应用程序状态',
+    'summary.devices.installation.completed': '完成',
+    'summary.devices.version.mismatch': '版本错误',
+    'summary.devices.installation.failed': '安装失败',
+    'summary.devices.enrolled.lastyear': '过去 12 个月',
+
     'devices.group.options.all':"所有组合",
     'devices.configuration.options.all':"所有配置",
     'devices.permissions.all':"授予所有权限",
@@ -852,7 +866,8 @@ document.localization ['zh_CN'] = {
     'menu.show.hints':"显示提示",
 		
     'plugin.name.not.specified' : "<<未指定函数名称>>",
-		
+
+    'breadcrumb.summary': '摘要',
     'breadcrumb.devices' : "设备",
     'breadcrumb.applications':"应用程式",
     'breadcrumb.configurations':"配置",

@@ -50,6 +50,20 @@ document.localization ['en_US'] = {
 
     'header.label.username': 'Username',
 
+    'summary.devices.status': 'Device status',
+    'summary.devices.active': 'Active',
+    'summary.devices.idle': 'Idle',
+    'summary.devices.offline': 'Offline',
+    'summary.devices.enrollment': 'Enrollment summary',
+    'summary.devices.enrolled.total': 'Enrolled total',
+    'summary.devices.enrolled.earlier': 'Enrolled earlier',
+    'summary.devices.enrolled.monthly': 'Last 30 days',
+    'summary.devices.installation.status': 'Application status',
+    'summary.devices.installation.completed': 'Complete',
+    'summary.devices.version.mismatch': 'Version mismatch',
+    'summary.devices.installation.failed': 'Install failed',
+    'summary.devices.enrolled.lastyear': 'Last 12 months',
+
     'devices.group.options.all': 'All groups',
     'devices.configuration.options.all': 'All configurations',
     'devices.permissions.all': 'All permissions are granted',
@@ -853,6 +867,7 @@ document.localization ['en_US'] = {
 
     'plugin.name.not.specified': '<< The function name is not specified >>',
 
+    'breadcrumb.summary': 'Summary',
     'breadcrumb.devices': 'Devices',
     'breadcrumb.applications': 'Applications',
     'breadcrumb.configurations': 'Configurations',

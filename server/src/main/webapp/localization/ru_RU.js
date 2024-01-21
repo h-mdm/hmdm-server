@@ -50,6 +50,20 @@ document.localization[ 'ru_RU' ] = {
 
     'header.label.username': 'Имя пользователя',
 
+    'summary.devices.status': 'Состояние устройства',
+    'summary.devices.active': 'Активное',
+    'summary.devices.idle': 'Требует внимания',
+    'summary.devices.offline': 'Не в сети',
+    'summary.devices.enrollment': 'Регистрация устройств',
+    'summary.devices.enrolled.total': 'Всего зарегистрировано',
+    'summary.devices.enrolled.earlier': 'Зарегистрировано ранее',
+    'summary.devices.enrolled.monthly': 'Последние 30 дней',
+    'summary.devices.installation.status': 'Состояние приложений',
+    'summary.devices.installation.completed': 'Завершено',
+    'summary.devices.version.mismatch': 'Ошибка версии',
+    'summary.devices.installation.failed': 'Ошибка установки',
+    'summary.devices.enrolled.lastyear': 'Последние 12 месяцев',
+
     'devices.group.options.all': 'Все группы',
     'devices.configuration.options.all': 'Все конфигурации',
     'devices.permissions.all': 'Все разрешения выданы',
@@ -853,6 +867,7 @@ document.localization[ 'ru_RU' ] = {
 
     'plugin.name.not.specified': '<<Имя функции не указано>>',
 
+    'breadcrumb.summary': 'Сводка',
     'breadcrumb.devices': 'Устройства',
     'breadcrumb.applications': 'Приложения',
     'breadcrumb.configurations': 'Конфигурации',

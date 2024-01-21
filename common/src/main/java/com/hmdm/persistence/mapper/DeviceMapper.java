@@ -23,8 +23,7 @@ package com.hmdm.persistence.mapper;
 
 import java.util.List;
 
-import com.hmdm.persistence.domain.ApplicationSetting;
-import com.hmdm.persistence.domain.DeviceApplication;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.service.DeviceApplicationsStatus;
 import com.hmdm.service.DeviceConfigFilesStatus;
 import org.apache.ibatis.annotations.Delete;
@@ -32,9 +31,6 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import com.hmdm.persistence.domain.Device;
-import com.hmdm.persistence.domain.DeviceSearchRequest;
-import com.hmdm.persistence.domain.Group;
 import com.hmdm.rest.json.DeviceLookupItem;
 
 public interface DeviceMapper {
@@ -90,6 +86,10 @@ public interface DeviceMapper {
     Long countOnlineDevices();
 
     Long countAllDevices(DeviceSearchRequest filter);
+
+    Long countAllDevicesForSummary(DeviceSummaryRequest filter);
+
+    List<SummaryConfigItem> countDevicesByConfig(DeviceSummaryRequest filter);
 
     @Update({"UPDATE devices SET " +
             "  info = #{info}, " +

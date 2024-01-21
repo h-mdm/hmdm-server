@@ -1,0 +1,109 @@
+<!-- Localization completed -->
+<div class="width-1000" ng-controller="SummaryTabController">
+
+    <div class='form-group' ng-show='errorMessage'>
+        <div class='error'><span>{{errorMessage}}</span></div>
+    </div>
+
+    <div class='form-group center' style="margin-top: 20px">
+        <div class="col-sm-4">
+            <h3 localized>summary.devices.enrollment</h3>
+
+            <canvas id="enrollment" class="chart chart-doughnut" style="margin-top: 60px"
+                    chart-data="enrollmentData" chart-labels="enrollmentLabels" chart-colors="enrollmentColors">
+            </canvas>
+
+            <div class="row" style="margin-top: 25px">
+            <div class="col-sm-6 align-right">
+                <span localized>summary.devices.enrolled.total</span>:<br>
+                <span localized>summary.devices.enrolled.monthly</span>:
+            </div>
+            <div class="col-sm-6" style="text-align: left">
+                <strong>{{enrollmentData[0] + enrollmentData[1]}}</strong><br>
+                <strong style="color: {{enrollmentColors[1]}}">{{enrollmentData[1]}}</strong>
+            </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <h3 localized>summary.devices.enrolled.lastyear</h3>
+
+            <canvas id="monthlyEnroll" class="chart chart-bar"
+                    chart-data="monthlyEnrollData" chart-labels="monthlyEnrollLabels" chart-colors="monthlyEnrollColors">
+            </canvas>
+        </div>
+
+        <div class="col-sm-12 delimiter" style="margin: 20px 0 20px 0"></div>
+    </div>
+
+    <div class='form-group center' style="margin-top: 20px">
+        <div class="col-sm-4">
+            <h3 localized>summary.devices.status</h3>
+
+            <canvas id="status" class="chart chart-doughnut" style="margin-top: 60px"
+                    chart-data="statusData" chart-labels="statusLabels" chart-colors="statusColors">
+            </canvas>
+
+            <div class="row" style="margin-top: 25px">
+                <div class="col-sm-6 align-right">
+                    <span localized>summary.devices.offline</span>:<br>
+                    <span localized>summary.devices.idle</span>:<br>
+                    <span localized>summary.devices.active</span>:
+                </div>
+                <div class="col-sm-6" style="text-align: left">
+                    <strong style="color: {{statusColors[0]}}">{{statusData[0]}}</strong><br>
+                    <strong style="color: {{statusColors[1]}}">{{statusData[1]}}</strong><br>
+                    <strong style="color: {{statusColors[2]}}">{{statusData[2]}}</strong>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-8">
+            <h3 localized>&nbsp;</h3>
+
+            <canvas id="statusByConfig" class="chart chart-bar"
+                    chart-series="statusByConfigSeries"
+                    chart-data="statusByConfigData"
+                    chart-labels="statusByConfigLabels"
+                    chart-colors="statusByConfigColors">
+            </canvas>
+        </div>
+
+        <div class="col-sm-12 delimiter" style="margin: 20px 0 20px 0"></div>
+    </div>
+
+
+    <div class='form-group center' style="margin-top: 20px">
+            <div class="col-sm-4">
+                <h3 localized>summary.devices.installation.status</h3>
+
+                <canvas id="install" class="chart chart-doughnut" style="margin-top: 60px"
+                        chart-data="installData" chart-labels="installLabels" chart-colors="installColors">
+                </canvas>
+
+                <div class="row" style="margin-top: 25px">
+                    <div class="col-sm-6 align-right">
+                        <span localized>summary.devices.installation.failed</span>:<br>
+                        <span localized>summary.devices.version.mismatch</span>:<br>
+                        <span localized>summary.devices.installation.completed</span>:
+                    </div>
+                    <div class="col-sm-6" style="text-align: left">
+                        <strong style="color: {{installColors[0]}}">{{installData[0]}}</strong><br>
+                        <strong style="color: {{installColors[1]}}">{{installData[1]}}</strong><br>
+                        <strong style="color: {{installColors[2]}}">{{installData[2]}}</strong>
+                    </div>
+                </div>
+            </div>
+        <div class="col-sm-8">
+            <h3 localized>&nbsp;</h3>
+
+            <canvas id="installByConfig" class="chart chart-bar"
+                    chart-series="installByConfigSeries"
+                    chart-data="installByConfigData"
+                    chart-labels="installByConfigLabels"
+                    chart-colors="installByConfigColors">
+            </canvas>
+        </div>
+
+    </div>
+
+    </div>

@@ -49,7 +49,21 @@ document.localization ['zh_TW'] = {
     'signup.token.invalid.description': '請重試註冊以創建新帳戶！',
 
     'header.label.username' : "用戶名",
-		
+
+    'summary.devices.status': '裝置狀態',
+    'summary.devices.active': '活動',
+    'summary.devices.idle': '空閒',
+    'summary.devices.offline': '離線',
+    'summary.devices.enrollment': '註冊摘要',
+    'summary.devices.enrolled.total': '註冊總數',
+    'summary.devices.enrolled.earlier': '較早註冊',
+    'summary.devices.enrolled.monthly': '過去 30 天',
+    'summary.devices.installation.status': '應用程式狀態',
+    'summary.devices.installation.completed': '完成',
+    'summary.devices.version.mismatch': '版本錯誤',
+    'summary.devices.installation.failed': '安裝失敗',
+    'summary.devices.enrolled.lastyear': '過去 12 個月',
+
     'devices.group.options.all':"所有組合",
     'devices.configuration.options.all':"所有配置",
     'devices.permissions.all':"授予所有權限",
@@ -852,7 +866,8 @@ document.localization ['zh_TW'] = {
     'menu.show.hints':"顯示提示",
 		
     'plugin.name.not.specified' : "<<未指定函數名稱>>",
-		
+
+    'breadcrumb.summary': '摘要',
     'breadcrumb.devices' : "設備",
     'breadcrumb.applications':"應用程式",
     'breadcrumb.configurations':"配置",

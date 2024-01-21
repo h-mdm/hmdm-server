@@ -6,6 +6,7 @@ angular.module('headwind-kiosk')
         $scope.localization = localization;
 
         var routes = {
+            SUMMARY: 'summary',
             DEVICES: 'main',
             APPS: 'applications',
             CONFS: 'configurations',
@@ -16,7 +17,7 @@ angular.module('headwind-kiosk')
             GROUPS: 'groups',
             LANG: 'langSettings',
             HINTS: 'hints',
-            PLUGINS: 'pluginSettings',
+            PLUGINS: 'pluginSettings'
         };
 
         var loadData = function () {

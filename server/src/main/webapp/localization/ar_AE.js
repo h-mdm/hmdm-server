@@ -50,6 +50,20 @@ document.localization ['ar_AE'] = {
     
     'header.label.username': 'اسم المستخدم',
 
+    'summary.devices.status': 'حالة الجهاز',
+    'summary.devices.active': 'نشط',
+    'summary.devices.idle': 'خامل',
+    'summary.devices.offline': 'غير متصل',
+    'summary.devices.enrollment': 'ملخص التسجيل',
+    'summary.devices.enrolled.total': 'إجمالي المسجلين',
+    'summary.devices.enrolled.earlier': 'تم التسجيل مسبقًا',
+    'summary.devices.enrolled.monthly': 'آخر 30 يومًا',
+    'summary.devices.installation.status': 'حالة التطبيق',
+    'summary.devices.installation.Completed': 'مكتمل',
+    'summary.devices.version.mismatch': 'الإصدار غير متطابق',
+    'summary.devices.installation.failed': 'فشل التثبيت',
+    'summary.devices.enrolled.lastyear': 'آخر 12 شهرًا',
+
     "devices.group.options.all": 'كل المجموعات',
     'devices.configuration.options.all': 'جميع الاعدادات',
     'devices.permissions.all': 'يتم منح جميع الأذونات',
@@ -852,7 +866,8 @@ document.localization ['ar_AE'] = {
     "menu.show.hints": 'إظهار التلميحات',
 
     'plugin.name.not.specified': '<< اسم الوظيفة غير محدد >>',
-    
+
+    'breadcrumb.summary': 'ملخص',
 	"breadcrumb.devices": 'الأجهزة',
     "breadcrumb.applications": 'التطبيقات',
     "breadcrumb.configurations": 'الاعدادات',

@@ -139,6 +139,11 @@ angular.module('headwind-kiosk')
             }
         }
     })
+    .factory('summaryService', function ($resource) {
+        return $resource('', {}, {
+            getDeviceStat: {url: 'rest/private/summary/devices', method: 'GET'}
+        });
+    })
     .factory('appVersionComparisonService', function () {
 
         var mdmAppVersionComparisonIndex = function (versionText) {

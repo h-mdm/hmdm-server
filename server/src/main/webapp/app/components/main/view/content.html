@@ -1,6 +1,11 @@
 <!-- Localization completed -->
 <div class='content-wrapper fullscreen'>
     <tabset class='tabset'>
+        <tab active="act.SUMMARY" ng-click="openTab('SUMMARY')">
+            <tab-heading>&nbsp;<span style="opacity: 0.7" class='glyphicon glyphicon-th-large'></span>&nbsp;</tab-heading>
+            <ng-include src="'app/components/main/view/summary.html'" ng-if="activeTab === 'SUMMARY'"></ng-include>
+        </tab>
+
         <tab active="act.DEVICES" ng-click="openTab('DEVICES')">
             <tab-heading localized-change-tracking>tab.devices</tab-heading>
             <ng-include src="'app/components/main/view/devices.html'" ng-if="activeTab === 'DEVICES'"></ng-include>

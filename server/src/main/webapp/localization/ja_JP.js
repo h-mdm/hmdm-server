@@ -50,6 +50,20 @@ document.localization ['ja_JP'] = {
 
     'header.label.username': 'ユーザー名',
 
+    'summary.devices.status': 'デバイスのステータス',
+    'summary.devices.active': 'アクティブ',
+    'summary.devices.idle': 'アイドル',
+    'summary.devices.offline': 'オフライン',
+    'summary.devices.enrollment': '登録概要',
+    'summary.devices.enrolled.total': '登録された合計',
+    'summary.devices.enrolled.earlier': '以前に登録されました',
+    'summary.devices.enrolled.monthly': '過去 30 日間',
+    'summary.devices.installation.status': 'アプリケーションのステータス',
+    'summary.devices.installation.completed': '完了',
+    'summary.devices.version.mismatch': 'バージョンの不一致',
+    'summary.devices.installation.failed': 'インストールに失敗しました',
+    'summary.devices.enrolled.lastyear': '過去 12 か月',
+
     'devices.group.options.all': 'すべてのグループ',
     'devices.configuration.options.all': 'すべての構成',
     'devices.permissions.all': 'すべての権限が付与されています',
@@ -853,6 +867,7 @@ document.localization ['ja_JP'] = {
 
     'plugin.name.not.specified': '<< 関数名が指定されていません >>',
 
+    'breadcrumb.summary': '概要',
     'breadcrumb.devices': 'デバイス',
     'breadcrumb.applications': 'アプリケーション',
     'breadcrumb.configurations': '設定',

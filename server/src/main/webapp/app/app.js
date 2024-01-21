@@ -1,6 +1,6 @@
 angular.module('headwind-kiosk',
     ['ngResource', 'ngCookies', 'ui.bootstrap', 'ui.router', 'ngTagsInput', 'ngAnimate', 'ngSanitize',
-        'lr.upload', 'colorpicker.module', 'inputDropdown', 'ngIdle',
+        'lr.upload', 'colorpicker.module', 'inputDropdown', 'ngIdle', 'chart.js',
         'ui.mask', 'ncy-angular-breadcrumb', 'oc.lazyLoad', 'angularjs-dropdown-multiselect', 'angularCSS'])
     .constant("SUPPORTED_LANGUAGES", {
         'en': 'en_US',
@@ -41,7 +41,7 @@ angular.module('headwind-kiosk',
         'ja_JP': 'ja_JP'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN', 'ja_JP'])
-    .constant("APP_VERSION", "5.24.3") // Update this value on each commit
+    .constant("APP_VERSION", "5.25.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -95,6 +95,18 @@ angular.module('headwind-kiosk',
                 url: '/qr/{qrCode}/{deviceId}',
                 templateUrl: 'app/components/main/view/qr.html',
                 controller: 'QRController'
+            })
+            .state('summary', {
+                url: '/summary',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.summary" | localize}}' //label to show in breadcrumbs
+                },
+                resolve: {
+                    openTab: function () {return "SUMMARY"}
+                }
+
             })
             .state('main', {
                 url: '/',
