@@ -1,6 +1,6 @@
 UPDATE users SET email='_ADMIN_EMAIL_', passwordReset=true, passwordResetToken=md5(random()::text) WHERE id=1;
 
-INSERT INTO settings (id, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, customerid, usedefaultlanguage, language) VALUES (1, '#1c40e3', '#fcfcfc', NULL, 'SMALL', 'NO_HEADER', 1, true, NULL);
+INSERT INTO settings (id, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, customerid, usedefaultlanguage, language) VALUES (1, '#678ca6', '#ffffff', NULL, 'SMALL', 'NO_HEADER', 1, true, NULL);
 
 INSERT INTO userrolesettings (id, roleid, customerid, columndisplayeddevicestatus, columndisplayeddevicedate, columndisplayeddevicenumber, columndisplayeddevicemodel, columndisplayeddevicepermissionsstatus, columndisplayeddeviceappinstallstatus, columndisplayeddeviceconfiguration, columndisplayeddeviceimei, columndisplayeddevicephone, columndisplayeddevicedesc, columndisplayeddevicegroup, columndisplayedlauncherversion) VALUES 
 (1, 1, 1, true, true, true, NULL, true, true, true, NULL, NULL, NULL, NULL, NULL),
@@ -86,9 +86,31 @@ INSERT INTO applications (id, pkg, name, showicon, customerid, system, latestver
 	(74, 'com.android.settings.intelligence', 'Поиск настроек Samsung', false, 1, true, 10073, false),
 	(75, 'com.huawei.bluetooth', 'Huawei Bluetooth', false, 1, true, 10074, false),
 	(76, 'com.google.android.gms.setup', 'Настройка Google Services', false, 1, true, 10075, false),
-	(77, 'com.samsung.android.app.telephonyui', 'Samsung Телефония', false, 1, true, 10076, false);
+	(77, 'com.samsung.android.app.telephonyui', 'Samsung Телефония', false, 1, true, 10076, false),
+	(78, 'com.android.permissioncontroller', 'Управление разрешениями Android', false, 1, true, 10078, false),
+    (79, 'com.android.vpndialogs', 'Системный пакет VPN', false, 1, true, 10079, false),
+    (80, 'com.google.android.googlequicksearchbox', 'Google-поиск', false, 1, true, 10080, false),
+    (81, 'com.android.incallui', 'Android UI звонков', false, 1, true, 10081, false),
+    (82, 'com.android.deskclock', 'Системные часы', true, 1, true, 10082, false),
+    (83, 'com.android.server.telecom', 'Android Телеком UI', false, 1, true, 10083, false),
+    (84, 'com.google.android.inputmethod.latin', 'Языковой пакет', false, 1, true, 10084, false),
+    (85, 'com.android.camera2', 'Android Камера v2', true, 1, true, 10085, false),
+    (86, 'com.android.launcher3', 'Системный лаунчер', false, 1, true, 10086, false),
+    (87, 'com.google.android.apps.meetings', 'Google Meet', true, 1, true, 10087, false),
+    (88, 'com.google.android.apps.nexuslauncher', 'Pixel Launcher', false, 1, true, 10088, false),
+    (89, 'com.google.android.calculator', 'Калькулятор (Google)', true, 1, true, 10089, false),
+    (90, 'com.google.android.calendar', 'Календарь (Google)', true, 1, true, 10090, false),
+    (91, 'com.google.android.deskclock', 'Системные часы (Google)', true, 1, true, 10091, false),
+    (92, 'com.google.android.gm', 'Gmail', true, 1, true, 10092, false),
+    (93, 'com.google.android.youtube', 'Youtube', true, 1, true, 10093, false),
+    (94, 'com.wssyncmldm', 'Samsung Updater', false, 1, true, 10094, false),
+    (95, 'com.samsung.android.incallui', 'Samsung UI звонков', false, 1, true, 10095, false),
+    (96, 'com.samsung.android.kgclient', 'Knox Guard', true, 1, true, 10096, false),
+    (97, 'com.sec.android.app.clockpackage', 'Часы Samsung', true, 1, true, 10097, false),
+    (98, 'com.sec.android.app.sbrowser', 'Безопасный браузер Samsung', true, 1, true, 10098, false),
+    (99, 'com.google.android.GoogleCamera', 'Камера Pixel', true, 1, true, 10099, false);
 	
-SELECT pg_catalog.setval('public.applications_id_seq', 77, true);
+SELECT pg_catalog.setval('public.applications_id_seq', 99, true);
 
 INSERT INTO applicationversions (id, applicationid, version, url) VALUES 
     (10000, 1, '0', NULL),
@@ -164,18 +186,41 @@ INSERT INTO applicationversions (id, applicationid, version, url) VALUES
     (10073, 74, '0', NULL),
     (10074, 75, '0', NULL),
     (10075, 76, '0', NULL),
-    (10076, 77, '0', NULL);
+    (10076, 77, '0', NULL),
+	(10078, 78, '0', NULL),
+    (10079, 79, '0', NULL),
+    (10080, 80, '0', NULL),
+    (10081, 81, '0', NULL),
+    (10082, 82, '0', NULL),
+    (10083, 83, '0', NULL),
+    (10084, 84, '0', NULL),
+    (10085, 85, '0', NULL),
+    (10086, 86, '0', NULL),
+    (10087, 87, '0', NULL),
+    (10088, 88, '0', NULL),
+    (10089, 89, '0', NULL),
+    (10090, 90, '0', NULL),
+    (10091, 91, '0', NULL),
+    (10092, 92, '0', NULL),
+    (10093, 93, '0', NULL),
+    (10094, 94, '0', NULL),
+    (10095, 95, '0', NULL),
+    (10096, 96, '0', NULL),
+    (10097, 97, '0', NULL),
+    (10098, 98, '0', NULL),
+    (10099, 99, '0', NULL);
     
-SELECT pg_catalog.setval('public.applicationversions_id_seq', 10076, true);
+SELECT pg_catalog.setval('public.applicationversions_id_seq', 10099, true);
 
 ALTER TABLE applications ADD CONSTRAINT applications_latestversion_fkey FOREIGN KEY (latestversion) REFERENCES applicationversions(id) ON DELETE SET NULL;
 
 DELETE FROM configurations;
-INSERT INTO configurations (id, name, description, type, password, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, usedefaultdesignsettings, customerid, gps, bluetooth, wifi, mobiledata, mainappid, eventreceivingcomponent, kioskmode, qrcodekey, contentappid,autoupdate, blockstatusbar, systemupdatetype, systemupdatefrom, systemupdateto, pushoptions, keepalivetime) VALUES 
-(1, 'По умолчанию', 'Подходит для большинства устройств; минимальный набор приложений на экране', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '6fb9c8dc81483173a0c0e9f8b2e46be1', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300),
-(2, 'MIUI (Xiaomi Redmi)', 'Оптимизирована для устройств на базе MIUI', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '8e6ca072ddb926a1af61578dfa9fc334', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300);
+INSERT INTO configurations (id, name, description, type, password, backgroundcolor, textcolor, backgroundimageurl, iconsize, desktopheader, usedefaultdesignsettings, customerid, gps, bluetooth, wifi, mobiledata, mainappid, eventreceivingcomponent, kioskmode, qrcodekey, contentappid,autoupdate, blockstatusbar, systemupdatetype, systemupdatefrom, systemupdateto, pushoptions, keepalivetime, rundefaultlauncher, permissive, kioskexit) VALUES 
+(1, 'Управляемый Лаунчер', 'Лаунчер Headwind MDM отображает иконки только разрешенных администратором приложений. Для управления разрешенными приложениями используйте вкладку Приложения.', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '6fb9c8dc81483173a0c0e9f8b2e46be1', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300, NULL, NULL, true),
+(2, 'MIUI (Xiaomi Redmi)', 'Оптимизирована для устройств на базе MIUI', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '8e6ca072ddb926a1af61578dfa9fc334', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300, NULL, NULL, true),
+(3, 'Фоновый режим', 'Headwind MDM работает в фоне, не ограничивая возможности пользователя.', 0, '12345678', '', '', NULL, 'SMALL', 'NO_HEADER', true, 1, NULL, NULL, NULL, NULL, 10045, 'com.hmdm.launcher.AdminReceiver', false, '350e0fb7fc3f4b7fe61cac75fd43818f', NULL, false, false, 0, NULL, NULL, 'mqttAlarm', 300, true, true, true);
 
-SELECT pg_catalog.setval('public.configurations_id_seq', 2, true);
+SELECT pg_catalog.setval('public.configurations_id_seq', 3, true);
 
 INSERT INTO configurationapplications (id, configurationid, applicationid, remove, showicon, applicationversionid) VALUES 
     (2, 1, 8, false, true, 10007),
@@ -271,9 +316,94 @@ INSERT INTO configurationapplications (id, configurationid, applicationid, remov
     (93, 1, 74, false, false, 10073),
     (94, 1, 75, false, false, 10074),
     (95, 1, 76, false, false, 10075),
-    (96, 1, 77, false, false, 10076);
+    (96, 1, 77, false, false, 10076),
+	(97, 1, 78, false, false, 10078),
+    (98, 1, 79, false, false, 10079),
+    (99, 1, 80, false, false, 10080),
+    (100, 1, 81, false, false, 10081),
+    (101, 1, 83, false, false, 10083),
+    (102, 1, 84, false, false, 10084),
+    (103, 1, 85, false, true, 10085),
+    (104, 1, 86, false, false, 10086),
+    (105, 1, 88, false, false, 10088),
+    (106, 1, 94, false, false, 10094),
+    (107, 1, 95, false, false, 10095),
+    (108, 1, 99, false, false, 10099),
+	
+	(200, 3, 8, false, true, 10007),
+    (201, 3, 37, false, false, 10036),
+    (202, 3, 2, false, false, 10001),
+    (203, 3, 10, false, true, 10009),
+    (204, 3, 19, false, false, 10018),
+    (205, 3, 20, false, false, 10019),
+    (206, 3, 18, false, false, 10017),
+    (207, 3, 21, false, true, 10020),
+    (208, 3, 22, false, true, 10021),
+    (209, 3, 23, false, true, 10022),
+    (210, 3, 24, false, true, 10023),
+    (211, 3, 26, false, true, 10025),
+    (212, 3, 25, false, true, 10024),
+    (213, 3, 9, false, true, 10008),
+    (214, 3, 29, false, true, 10028),
+    (215, 3, 30, false, false, 10029),
+    (216, 3, 34, false, true, 10033),
+    (217, 3, 36, false, false, 10035),
+    (218, 3, 35, false, false, 10034),
+    (219, 3, 43, false, false, 10042),
+    (220, 3, 31, false, false, 10030),
+    (221, 3, 13, false, false, 10012),
+    (222, 3, 6, false, false, 10005),
+    (223, 3, 14, false, false, 10013),
+    (224, 3, 4, false, false, 10003),
+    (225, 3, 27, false, false, 10026),
+    (226, 3, 15, false, false, 10014),
+    (227, 3, 3, false, false, 10002),
+    (228, 3, 33, false, false, 10032),
+    (229, 3, 12, false, false, 10011),
+    (230, 3, 38, false, true, 10037),
+    (231, 3, 39, false, true, 10038),
+    (232, 3, 16, false, false, 10015),
+    (233, 3, 5, false, false, 10004),
+    (234, 3, 17, false, false, 10016),
+    (235, 3, 42, false, true, 10041),
+    (236, 3, 40, false, true, 10039),
+    (237, 3, 41, false, true, 10040),
+    (238, 3, 11, false, false, 10010),
+    (239, 3, 28, false, false, 10027),
+    (240, 3, 1, false, false, 10000),
+    (241, 3, 46, false, false, 10045),
+    (242, 3, 47, false, false, 10046),
+    (243, 3, 48, false, true, 10047),
+    (244, 3, 50, false, false, 10049),
+    (245, 3, 59, false, false, 10058),
+    (246, 3, 60, false, false, 10059),
+    (247, 3, 61, false, false, 10060),
+    (248, 3, 62, false, false, 10061),
+    (249, 3, 63, false, true, 10062),
+    (250, 3, 64, false, true, 10063),
+    (251, 3, 66, false, true, 10065),
+    (252, 3, 67, false, true, 10066),
+    (253, 3, 68, false, true, 10067),
+    (254, 3, 69, false, true, 10068),
+    (255, 3, 71, false, false, 10070),
+    (256, 3, 74, false, false, 10073),
+    (257, 3, 75, false, false, 10074),
+    (258, 3, 76, false, false, 10075),
+    (259, 3, 77, false, false, 10076),
+    (260, 3, 78, false, false, 10078),
+    (261, 3, 79, false, false, 10079),
+    (262, 3, 80, false, false, 10080),
+    (263, 3, 81, false, false, 10081),
+    (264, 3, 83, false, false, 10083),
+    (265, 3, 84, false, false, 10084),
+    (266, 3, 85, false, true, 10085),
+    (267, 3, 86, false, false, 10086),
+    (268, 3, 88, false, false, 10088),
+    (269, 3, 94, false, false, 10094),
+    (270, 3, 95, false, false, 10095),
+    (271, 3, 99, false, false, 10099);
     
-SELECT pg_catalog.setval('public.configurationapplications_id_seq', 96, true);
+SELECT pg_catalog.setval('public.configurationapplications_id_seq', 271, true);
 
 INSERT INTO devices (id, number, description, lastupdate, configurationid, oldconfigurationid, info, imei, phone, customerid) VALUES (1, 'h0001', 'Мое первое Android-устройство', 0, 1, NULL, NULL, NULL, NULL, 1);
 
