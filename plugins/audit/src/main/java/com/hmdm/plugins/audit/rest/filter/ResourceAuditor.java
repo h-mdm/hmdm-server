@@ -81,13 +81,18 @@ class ResourceAuditor {
      */
     private final boolean payload;
 
+    /**
+     * <p>A flag indicating if response is in Headwind MDM standard format and should be checked for errors.</p>
+     */
+    private final boolean checkResponse;
+
     private final BaseIPFilter remoteAddrResolver;
 
     /**
      * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
      */
     ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response,
-                    FilterChain chain, boolean payload, String proxyIps, String ipHeader) throws IOException {
+                    FilterChain chain, boolean payload, boolean checkResponse, String proxyIps, String ipHeader) throws IOException {
         this.auditLogActionKey = auditLogActionKey;
         if (payload) {
             // Wrap request only if we need to log it
@@ -98,6 +103,7 @@ class ResourceAuditor {
         this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
         this.chain = chain;
         this.payload = payload;
+        this.checkResponse = checkResponse;
         this.remoteAddrResolver = new BaseIPFilter("", proxyIps, ipHeader);
     }
 
@@ -164,7 +170,8 @@ class ResourceAuditor {
             final byte[] content = this.response.getContent();
             ObjectMapper objectMapper = new ObjectMapper();
             final Response response = objectMapper.readValue(content, Response.class);
-            if (response == null || response.getStatus() != Response.ResponseStatus.OK) {
+            if (checkResponse &&
+                    (response == null || response.getStatus() != Response.ResponseStatus.OK)) {
                 logRecord.setErrorCode(1);
             } else {
                 logRecord.setErrorCode(0);
@@ -182,7 +189,7 @@ class ResourceAuditor {
 
     private boolean needStripPassword(String action) {
         return "plugin.audit.action.user.login".equals(action) ||
-               "plugin.audit.action.api.login".equals(action) ||
+               "plugin.audit.action.jwt.login".equals(action) ||
                "plugin.audit.action.password.changed".equals(action) ||
                "plugin.audit.action.update.configuration".equals(action) ||
                "plugin.audit.action.update.user".equals(action);

@@ -136,7 +136,7 @@
     <select id="getPlainConfigurationApplications" resultType="Application">
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
-               applicationVersions.version, applicationVersions.url,
+               applicationVersions.version, applicationVersions.versionCode, applicationVersions.url,
                applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64,
                configurationApplications.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,

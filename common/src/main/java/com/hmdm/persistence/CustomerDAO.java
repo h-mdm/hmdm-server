@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 import com.hmdm.event.CustomerCreatedEvent;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
-import com.hmdm.persistence.domain.Device;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.ApplicationMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.rest.json.CustomerSearchRequest;
@@ -37,12 +37,6 @@ import com.hmdm.util.PasswordUtil;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
 import com.hmdm.persistence.mapper.CustomerMapper;
 import com.hmdm.security.SecurityContext;
@@ -79,6 +73,7 @@ public class CustomerDAO {
     private final File filesDirectory;
     private final UserDAO userDAO;
     private final CommonDAO settingDAO;
+    private final ApplicationSettingDAO applicationSettingDAO;
     private final int orgAdminRoleId;
     private final EventService eventService;
 
@@ -89,6 +84,7 @@ public class CustomerDAO {
                        DeviceMapper deviceMapper,
                        UserDAO userDAO,
                        CommonDAO settingDAO,
+                       ApplicationSettingDAO applicationSettingDAO,
                        @Named("files.directory") String filesDirectory,
                        @Named("role.orgadmin.id") int orgAdminRoleId,
                        EventService eventService) {
@@ -99,6 +95,7 @@ public class CustomerDAO {
         this.filesDirectory = new File(filesDirectory);
         this.userDAO = userDAO;
         this.settingDAO = settingDAO;
+        this.applicationSettingDAO = applicationSettingDAO;
         this.orgAdminRoleId = orgAdminRoleId;
         this.eventService = eventService;
     }
@@ -283,12 +280,18 @@ public class CustomerDAO {
 
         Configuration newConfiguration = configurationTemplate.newCopy();
         newConfiguration.setCustomerId(customer.getId());
+        final List<ApplicationSetting> appSettings = this.applicationSettingDAO.getApplicationSettingsByConfigurationId(configurationId);
+        newConfiguration.setApplicationSettings(appSettings);
 
         configurationMapper.insertConfiguration(newConfiguration);
+        if (newConfiguration.getApplicationSettings() != null && !newConfiguration.getApplicationSettings().isEmpty()) {
+            this.configurationMapper.insertConfigurationApplicationSettings(newConfiguration.getId(), newConfiguration.getApplicationSettings());
+        }
         if (!configApplications.isEmpty()) {
             configurationMapper.insertConfigurationApplications(newConfiguration.getId(), configApplications);
             applicationMapper.getPrecedingVersion(newConfiguration.getId());
         }
+        // Files are not copied because there's no "shared files" in Headwind MDM
 
         return newConfiguration.getId();
     }

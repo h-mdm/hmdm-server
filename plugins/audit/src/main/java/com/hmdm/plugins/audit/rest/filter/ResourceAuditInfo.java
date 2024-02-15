@@ -35,33 +35,33 @@ import java.util.stream.Stream;
  * @author isv
  */
 public enum ResourceAuditInfo {
-    LOGIN("POST", "/rest/public/auth/login", true, "plugin.audit.action.user.login", true),
-    JWT_LOGIN("POST", "/rest/public/jwt/login", true, "plugin.audit.action.api.login", true),
-    UPDATE_DEVICE("PUT", "/rest/private/devices", true, "plugin.audit.action.update.device", true),
-    REMOVE_DEVICE("DELETE", "/rest/private/devices", false, "plugin.audit.action.remove.device", true),
-    UPDATE_CONFIG("PUT", "/rest/private/configurations", true, "plugin.audit.action.update.configuration", true),
-    COPY_CONFIG("PUT", "/rest/private/configurations/copy", true, "plugin.audit.action.copy.configuration", true),
-    REMOVE_CONFIG("DELETE", "/rest/private/configurations", false, "plugin.audit.action.remove.configuration", true),
-    UPDATE_APP("PUT", "/rest/private/applications/android", true, "plugin.audit.action.update.application", true),
-    UPDATE_WEBAPP("PUT", "/rest/private/applications/web", true, "plugin.audit.action.update.webapp", true),
-    REMOVE_APP("DELETE", "/rest/private/applications", false, "plugin.audit.action.remove.application", true),
-    UPDATE_APP_VERSION("PUT", "/rest/private/applications/versions", true, "plugin.audit.action.update.version", true),
-    REMOVE_APP_VERSION("DELETE", "/rest/private/applications/versions", false, "plugin.audit.action.remove.version", true),
-    UPDATE_FILE("POST", "/rest/private/web-ui-files/move", true, "plugin.audit.action.update.file", true),
-    REMOVE_FILE("POST", "/rest/private/web-ui-files/remove", true, "plugin.audit.action.remove.file", true),
-    UPDATE_APP_CONFIG("POST", "/rest/private/applications/configurations", true, "plugin.audit.action.update.app.config", true),
-    UPDATE_DESIGN("POST", "/rest/private/settings/design", true, "plugin.audit.action.update.design", true),
-    UPDATE_USERROLES("POST", "/rest/private/settings/userRoles", false, "plugin.audit.action.update.user.roles", true),
-    UPDATE_LANGUAGE("POST", "/rest/private/settings/lang", true, "plugin.audit.action.update.language", true),
-    UPDATE_PLUGINS("POST", "/rest/plugin/main/private/disabled", true, "plugin.audit.action.update.plugins", true),
-    UPDATE_USER("PUT", "/rest/private/users", true, "plugin.audit.action.update.user", true),
-    REMOVE_USER("DELETE", "/rest/private/users", false, "plugin.audit.action.remove.user", true),
-    UPDATE_GROUP("PUT", "/rest/private/groups", true, "plugin.audit.action.update.group", true),
-    REMOVE_GROUP("DELETE", "/rest/private/groups", false, "plugin.audit.action.remove.group", true),
-    PASSWORD_CHANGED("PUT", "/rest/private/users/current", true, "plugin.audit.action.password.changed", true),
-    DEVICE_PASSWORD_RESET("PUT", "/rest/plugins/devicereset/private/password", true, "plugin.audit.action.password.reset", true),
-    DEVICE_FACTORY_RESET("PUT", "/rest/plugins/devicereset/private/reset", false, "plugin.audit.action.device.reset", false),
-    DEVICE_LOCK("PUT", "/rest/plugins/devicereset/private/lock", true, "plugin.audit.action.device.lock", true);
+    LOGIN("POST", "/rest/public/auth/login", true, "plugin.audit.action.user.login", true, true),
+    JWT_LOGIN("POST", "/rest/public/jwt/login", true, "plugin.audit.action.jwt.login", true, false),
+    UPDATE_DEVICE("PUT", "/rest/private/devices", true, "plugin.audit.action.update.device", true, true),
+    REMOVE_DEVICE("DELETE", "/rest/private/devices", false, "plugin.audit.action.remove.device", true, true),
+    UPDATE_CONFIG("PUT", "/rest/private/configurations", true, "plugin.audit.action.update.configuration", true, true),
+    COPY_CONFIG("PUT", "/rest/private/configurations/copy", true, "plugin.audit.action.copy.configuration", true, true),
+    REMOVE_CONFIG("DELETE", "/rest/private/configurations", false, "plugin.audit.action.remove.configuration", true, true),
+    UPDATE_APP("PUT", "/rest/private/applications/android", true, "plugin.audit.action.update.application", true, true),
+    UPDATE_WEBAPP("PUT", "/rest/private/applications/web", true, "plugin.audit.action.update.webapp", true, true),
+    REMOVE_APP("DELETE", "/rest/private/applications", false, "plugin.audit.action.remove.application", true, true),
+    UPDATE_APP_VERSION("PUT", "/rest/private/applications/versions", true, "plugin.audit.action.update.version", true, true),
+    REMOVE_APP_VERSION("DELETE", "/rest/private/applications/versions", false, "plugin.audit.action.remove.version", true, true),
+    UPDATE_FILE("POST", "/rest/private/web-ui-files/move", true, "plugin.audit.action.update.file", true, true),
+    REMOVE_FILE("POST", "/rest/private/web-ui-files/remove", true, "plugin.audit.action.remove.file", true, true),
+    UPDATE_APP_CONFIG("POST", "/rest/private/applications/configurations", true, "plugin.audit.action.update.app.config", true, true),
+    UPDATE_DESIGN("POST", "/rest/private/settings/design", true, "plugin.audit.action.update.design", true, true),
+    UPDATE_USERROLES("POST", "/rest/private/settings/userRoles", false, "plugin.audit.action.update.user.roles", true, true),
+    UPDATE_LANGUAGE("POST", "/rest/private/settings/lang", true, "plugin.audit.action.update.language", true, true),
+    UPDATE_PLUGINS("POST", "/rest/plugin/main/private/disabled", true, "plugin.audit.action.update.plugins", true, true),
+    UPDATE_USER("PUT", "/rest/private/users", true, "plugin.audit.action.update.user", true, true),
+    REMOVE_USER("DELETE", "/rest/private/users", false, "plugin.audit.action.remove.user", true, true),
+    UPDATE_GROUP("PUT", "/rest/private/groups", true, "plugin.audit.action.update.group", true, true),
+    REMOVE_GROUP("DELETE", "/rest/private/groups", false, "plugin.audit.action.remove.group", true, true),
+    PASSWORD_CHANGED("PUT", "/rest/private/users/current", true, "plugin.audit.action.password.changed", true, true),
+    DEVICE_PASSWORD_RESET("PUT", "/rest/plugins/devicereset/private/password", true, "plugin.audit.action.password.reset", true, true),
+    DEVICE_FACTORY_RESET("PUT", "/rest/plugins/devicereset/private/reset", false, "plugin.audit.action.device.reset", false, true),
+    DEVICE_LOCK("PUT", "/rest/plugins/devicereset/private/lock", true, "plugin.audit.action.device.lock", true, true);
 
     /**
      * <p>Method for the REST resource to track audit log for.</p>
@@ -90,14 +90,20 @@ public enum ResourceAuditInfo {
     private final boolean payload;
 
     /**
+     * <p>A flag indicating if response is in Headwind MDM standard format and should be checked for errors.</p>
+     */
+    private final boolean checkResponse;
+
+    /**
      * <p>Constructs new <code>ResourceAuditInfo</code> instance. This implementation does nothing.</p>
      */
-    ResourceAuditInfo(String method, String uri, boolean uriExactMatch, String auditLogAction, boolean payload) {
+    ResourceAuditInfo(String method, String uri, boolean uriExactMatch, String auditLogAction, boolean payload, boolean checkResponse) {
         this.method = method;
         this.uri = uri;
         this.uriExactMatch = uriExactMatch;
         this.auditLogAction = auditLogAction;
         this.payload = payload;
+        this.checkResponse = checkResponse;
     }
 
     /**
@@ -110,7 +116,7 @@ public enum ResourceAuditInfo {
      */
     public ResourceAuditor getResourceAuditor(ServletRequest request, ServletResponse response, FilterChain chain,
                                               String proxyIps, String ipHeader) throws IOException {
-        return new ResourceAuditor(auditLogAction, request, response, chain, payload, proxyIps, ipHeader);
+        return new ResourceAuditor(auditLogAction, request, response, chain, payload, checkResponse, proxyIps, ipHeader);
     }
 
     /**

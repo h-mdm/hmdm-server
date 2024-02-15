@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationType;
 import io.swagger.annotations.ApiModel;
+import io.swagger.models.auth.In;
 
 import javax.validation.constraints.NotNull;
 
@@ -69,6 +70,11 @@ public class SyncApplication implements SyncApplicationInt {
     @Override
     public String getVersion() {
         return wrapped.getVersion();
+    }
+
+    @Override
+    public Integer getCode() {
+        return wrapped.getVersionCode() != 0 ? wrapped.getVersionCode() : null;
     }
 
     @Override

@@ -42,6 +42,8 @@ public interface SyncApplicationInt {
 
     String getVersion();
 
+    Integer getCode();
+
     String getUrl();
 
     Integer getId();
