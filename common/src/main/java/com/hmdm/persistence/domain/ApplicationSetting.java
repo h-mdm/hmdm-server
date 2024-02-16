@@ -112,13 +112,13 @@ public class ApplicationSetting implements Serializable {
 
     public String getValueForDevice(Device device) {
         return value
-                .replaceAll("%NUMBER%", device.getNumber())
-                .replaceAll("%IMEI%", device.getImei())
-                .replaceAll("%PHONE%", device.getPhone())
-                .replaceAll("%DESCRIPTION%", device.getDescription())
-                .replaceAll("%CUSTOM1%", device.getCustom1())
-                .replaceAll("%CUSTOM2%", device.getCustom2())
-                .replaceAll("%CUSTOM3%", device.getCustom3());
+                .replaceAll("%NUMBER%", device.getNumber() != null ? device.getNumber() : "")
+                .replaceAll("%IMEI%", device.getImei() != null ? device.getImei() : "")
+                .replaceAll("%PHONE%", device.getPhone() != null ? device.getPhone() : "")
+                .replaceAll("%DESCRIPTION%", device.getDescription() != null ? device.getDescription() : "")
+                .replaceAll("%CUSTOM1%", device.getCustom1() != null ? device.getCustom1() : "")
+                .replaceAll("%CUSTOM2%", device.getCustom2() != null ? device.getCustom2() : "")
+                .replaceAll("%CUSTOM3%", device.getCustom3() != null ? device.getCustom3() : "");
     }
 
     public String getComment() {
