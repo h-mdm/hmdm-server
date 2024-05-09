@@ -106,12 +106,23 @@ public class PushDAO extends AbstractDAO<PluginPushMessage> {
     }
 
     /**
+     * <p>Inserts the specified message into underlying persistent data store.</p>
+     *
+     * @param message message to insert
+     */
+    public void insertRawMessage(PluginPushMessage message) {
+        this.pushMessageMapper.insertMessage(message);
+    }
+
+    /**
      * <p>Deletes the message</p>
      *
      * @param id message identifier
      */
     public void deleteMessage(int id) {
-        this.pushMessageMapper.deleteMessage(id);
+        SecurityContext.get().getCurrentUser().ifPresent(user -> {
+            this.pushMessageMapper.deleteMessage(id, user.getCustomerId());
+        });
     }
 
     /**

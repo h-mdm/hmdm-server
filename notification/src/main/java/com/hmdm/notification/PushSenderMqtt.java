@@ -5,8 +5,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.hmdm.notification.guice.module.NotificationMqttTaskModule;
 import com.hmdm.notification.persistence.domain.PushMessage;
-import com.hmdm.persistence.ConfigurationDAO;
-import com.hmdm.persistence.DeviceDAO;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.CryptoUtil;
@@ -28,7 +27,7 @@ public class PushSenderMqtt implements PushSender {
     private String clientTag;
     private boolean mqttAuth;
     private String hashSecret;
-    private DeviceDAO deviceDAO;
+    private UnsecureDAO unsecureDAO;
     private MqttClient client;
     private MqttThrottledSender throttledSender;
     private BackgroundTaskRunnerService taskRunner;
@@ -43,7 +42,7 @@ public class PushSenderMqtt implements PushSender {
                           @Named("hash.secret") String hashSecret,
                           MqttThrottledSender throttledSender,
                           BackgroundTaskRunnerService taskRunner,
-                          DeviceDAO deviceDAO) {
+                          UnsecureDAO unsecureDAO) {
         this.serverUri = serverUri;
         this.clientTag = clientTag;
         this.mqttAuth = mqttAuth;
@@ -51,7 +50,7 @@ public class PushSenderMqtt implements PushSender {
         this.mqttDelay = mqttDelay;
         this.throttledSender = throttledSender;
         this.taskRunner = taskRunner;
-        this.deviceDAO = deviceDAO;
+        this.unsecureDAO = unsecureDAO;
     }
 
     @Override
@@ -82,7 +81,9 @@ public class PushSenderMqtt implements PushSender {
             // Not initialized
             return 0;
         }
-        Device device = deviceDAO.getDeviceById(message.getDeviceId());
+        // Since this method is used by scheduled task service which is impersonated,
+        // we use UnsecureDAO here (which doesn't check the signed user).
+        Device device = unsecureDAO.getDeviceById(message.getDeviceId());
         if (device == null) {
             // We shouldn't be here!
             return 0;

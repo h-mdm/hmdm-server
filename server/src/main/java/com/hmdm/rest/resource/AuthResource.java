@@ -116,8 +116,12 @@ public class AuthResource {
         }
 
         User user = authEngine.findUser(credentials.getLogin());
-        if ( user == null ) {
+        if (user == null) {
             Thread.sleep(1000);
+            return Response.ERROR();
+        }
+        if (user.getLastLoginFail() > System.currentTimeMillis() - 1000) {
+            // No delay to avoid server overload while there's a brute force attack
             return Response.ERROR();
         }
 

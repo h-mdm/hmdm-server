@@ -25,7 +25,7 @@
 
     <insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
-                                    iconSize, desktopHeader, desktopHeaderTemplate, useDefaultDesignSettings, customerId,
+                                    iconSize, desktopHeader, desktopHeaderTemplate, displayStatus, useDefaultDesignSettings, customerId,
                                     gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates, disableLocation, appPermissions,
                                     pushOptions, keepaliveTime, autoBrightness, brightness, manageTimeout, timeout,
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
@@ -36,7 +36,7 @@
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
                                     scheduleAppUpdate, appUpdateFrom, appUpdateTo, defaultFilePath)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
-                #{iconSize}, #{desktopHeader}, #{desktopHeaderTemplate}, #{useDefaultDesignSettings}, #{customerId},
+                #{iconSize}, #{desktopHeader}, #{desktopHeaderTemplate}, #{displayStatus}, #{useDefaultDesignSettings}, #{customerId},
                 #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates}, #{disableLocation}, #{appPermissions},
                 #{pushOptions}, #{keepaliveTime}, #{autoBrightness}, #{brightness}, #{manageTimeout}, #{timeout},
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},

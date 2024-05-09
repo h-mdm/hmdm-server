@@ -71,6 +71,9 @@ public class User implements CustomerData, Serializable {
     private boolean twoFactor = false;
     @ApiModelProperty("Timeout in seconds for logging out while idle (0 - no logout)")
     private Integer idleLogout;
+    @ApiModelProperty("Last time for failed login (to avoid bruteforce attacks)")
+    private long lastLoginFail;
+
 
     // Many-to-many relations
     private List<LookupItem> groups;
@@ -269,6 +272,14 @@ public class User implements CustomerData, Serializable {
 
     public void setIdleLogout(Integer idleLogout) {
         this.idleLogout = idleLogout;
+    }
+
+    public long getLastLoginFail() {
+        return lastLoginFail;
+    }
+
+    public void setLastLoginFail(long lastLoginFail) {
+        this.lastLoginFail = lastLoginFail;
     }
 
     public List<LookupItem> getGroups() {

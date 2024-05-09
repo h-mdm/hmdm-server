@@ -62,6 +62,7 @@ public class StartupTaskModule {
     public void init() {
         taskRunner.submitTask(new UpdatePasswordTask());
         taskRunner.submitTask(new UpdateDeviceFastSearchTask());
+        taskRunner.submitTask(new ResetUserLoginFailTimeTask());
         if (!sqlInitScriptPath.equals("")) {
             taskRunner.submitTask(new ExecuteInitSqlTask());
         }
@@ -89,6 +90,14 @@ public class StartupTaskModule {
         @Override
         public void run() {
             unsecureDAO.updateDeviceFastSearch(deviceFastSearchChars);
+        }
+    }
+
+    // Reset login fail times to avoid permanent auth failure if a server time occasionally changes
+    public class ResetUserLoginFailTimeTask implements Runnable {
+        @Override
+        public void run() {
+            unsecureDAO.resetUserLoginFailTime();
         }
     }
 

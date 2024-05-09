@@ -29,7 +29,9 @@ import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.*;
 import com.hmdm.rest.json.DeviceCreateOptions;
+import com.hmdm.rest.json.DeviceListHook;
 import com.hmdm.rest.json.LookupItem;
+import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 import com.hmdm.util.PasswordUtil;
@@ -141,6 +143,15 @@ public class UnsecureDAO {
 
     public void setUserNewPasswordUnsecure(User user ) {
         userMapper.setNewPassword(user);
+    }
+
+    public void setUserLoginFailTime(User user, long ts) {
+        user.setLastLoginFail(ts);
+        userMapper.setLoginFailTime(user);
+    }
+
+    public void resetUserLoginFailTime() {
+        userMapper.resetLoginFailTime();
     }
 
     public Device getDeviceByNumber(String number) {
@@ -336,6 +347,21 @@ public class UnsecureDAO {
      */
     public void saveApkFileHash(Integer appVersionId, String hashValue) {
         this.applicationMapper.saveApkFileHash(appVersionId, hashValue);
+    }
+
+    /**
+     * To use in impersonated background services only
+     */
+    public List<Device> getAllGroupDevices(int groupId, int customerId) {
+        return this.deviceMapper.getAllGroupDevices(groupId, customerId);
+    }
+
+    public List<Device> getAllConfigurationDevices(int configurationId, int customerId) {
+        return this.deviceMapper.getAllConfigurationDevices(configurationId, customerId);
+    }
+
+    public List<Device> getAllCustomerDevices(int customerId) {
+        return this.deviceMapper.getAllCustomerDevices(customerId);
     }
 
     /**

@@ -342,6 +342,7 @@ document.localization ['zh_CN'] = {
     'form.configuration.settings.design.desktop.header.hint': '确保将此参数发送到设备（设置 - 常规和语言选项）',
     'form.configuration.settings.design.desktop.header.template': '输入模板',
     'form.configuration.settings.design.desktop.header.template.placeholder': '使用变量',
+    'form.configuration.settings.design.display.status': '显示设备状态',
     'form.configuration.settings.design.upload': '上载',
     'form.configuration.settings.common.name' : "名称",
     'form.configuration.settings.common.name.placeholder':"输入配置名称",

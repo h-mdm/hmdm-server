@@ -342,6 +342,7 @@ document.localization ['ar_AE'] = {
     'form.configuration.settings.design.desktop.header.hint': 'تأكد من إرسال هذه المعلمة إلى الأجهزة (الإعدادات - الإعدادات العامة وإعدادات اللغة)',
     'form.configuration.settings.design.desktop.header.template': 'أدخل القالب',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'استخدم المتغيرات',
+    'form.configuration.settings.design.display.status': 'عرض حالة الجهاز',
     'form.configuration.settings.design.upload': 'تحميل',
     "form.configuration.settings.common.name": 'الاسم',
     "form.configuration.settings.common.name.placeholder": 'أدخل اسم الاعداد',

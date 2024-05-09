@@ -342,6 +342,7 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.settings.design.desktop.header.hint': 'Проверьте, что параметр отправляется на устройства (Настройки - Общие и языковые настройки)',
     'form.configuration.settings.design.desktop.header.template': 'Введите шаблон',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Используйте переменные',
+    'form.configuration.settings.design.display.status': 'Отображать статус устр-ва',
     'form.configuration.settings.design.upload': 'Загрузить',
     'form.configuration.settings.common.name': 'Название',
     'form.configuration.settings.common.name.placeholder': 'Введите название конфигурации',

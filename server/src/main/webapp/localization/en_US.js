@@ -342,6 +342,7 @@ document.localization ['en_US'] = {
     'form.configuration.settings.design.desktop.header.hint': 'Make sure this parameter is sent to devices (Settings - General and language settings)',
     'form.configuration.settings.design.desktop.header.template': 'Enter the template',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Use variables',
+    'form.configuration.settings.design.display.status': 'Display device status',
     'form.configuration.settings.design.upload': 'Upload',
     'form.configuration.settings.common.name': 'Name',
     'form.configuration.settings.common.name.placeholder': 'Enter the configuration name',

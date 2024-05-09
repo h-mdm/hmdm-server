@@ -73,6 +73,12 @@ public interface UserMapper {
             "authToken=#{authToken}, passwordResetToken=#{passwordResetToken} WHERE id=#{id}"})
     void setNewPassword(User user);
 
+    @Update({"UPDATE users SET lastLoginFail=#{lastLoginFail} WHERE id=#{id}"})
+    void setLoginFailTime(User user);
+
+    @Update({"UPDATE users SET lastLoginFail=0"})
+    void resetLoginFailTime();
+
     @Delete({"DELETE FROM users WHERE id=#{id} AND userRoleId <> 1"})
     void deleteUser(User user);
 

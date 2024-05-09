@@ -43,8 +43,8 @@ public interface PushMessageMapper {
             keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     int insertMessage(PluginPushMessage msg);
 
-    @Delete("DELETE FROM plugin_push_messages WHERE id = #{id}")
-    void deleteMessage(@Param("id") int id);
+    @Delete("DELETE FROM plugin_push_messages WHERE id = #{id} AND customerId = #{customerId}")
+    void deleteMessage(@Param("id") int id, @Param("customerId") int customerId);
 
     void purgeOldMessages(@Param("ts") long ts, @Param("customerId") int customerId);
 

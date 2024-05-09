@@ -59,6 +59,7 @@
         <id property="authData" column="authData" />
         <id property="twoFactorSecret" column="twoFactorSecret" />
         <id property="twoFactorAccepted" column="twoFactorAccepted" />
+        <id property="lastLoginFail" column="lastLoginFail" />
         <association property="userRole" resultMap="userRoleLite"/>
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>

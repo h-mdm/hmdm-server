@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "Configuration",
   "plugin.push.scope.all": "All devices",
   "plugin.push.label.group": "Group",
-  "plugin.push.label.configuration": "Configuration"
+  "plugin.push.label.configuration": "Configuration",
+
+  "plugin.push.schedule.tab.title": "Scheduled tasks",
+  "plugin.push.schedule.not.found": "No scheduled tasks yet",
+  "plugin.push.button.new.task": "New task",
+  "plugin.push.schedule.hint": "Enter minutes, hours, etc. to schedule the task. Use * or */x to schedule each time span.",
+  "table.heading.plugin.push.comment": "Comment",
+  "table.heading.plugin.push.scope": "Scope",
+  "table.heading.plugin.push.target": "Target",
+  "table.heading.plugin.push.min": "Minutes",
+  "table.heading.plugin.push.hour": "Hours",
+  "table.heading.plugin.push.day": "Days",
+  "table.heading.plugin.push.weekday": "Weekdays",
+  "table.heading.plugin.push.month": "Months",
+  "plugin.push.schedule.success": "Task successfully scheduled",
+  "plugin.push.delete.task": "Delete this scheduled task?"
 }

@@ -121,6 +121,8 @@ public interface SyncResponseInt {
 
     Integer getOrientation();
 
+    Boolean getDisplayStatus();
+
     Boolean getRunDefaultLauncher();
 
     Boolean getDisableScreenshots();

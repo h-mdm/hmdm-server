@@ -100,6 +100,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
     private Integer orientation;
 
+    @ApiModelProperty("Set to true if Headind MDM should display device status (time, battery, etc)")
+    private Boolean displayStatus;
+
     @ApiModelProperty("Set to true if Headwind MDM need to work together with a third-party launcher")
     private Boolean runDefaultLauncher;
 
@@ -693,6 +696,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setOrientation(Integer orientation) {
         this.orientation = orientation;
+    }
+
+    @Override
+    public Boolean getDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(Boolean displayStatus) {
+        this.displayStatus = displayStatus;
     }
 
     @Override

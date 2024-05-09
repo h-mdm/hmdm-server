@@ -42,8 +42,11 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             purgeOldMessages: {url: 'rest/plugins/push/private/purge/:days', method: 'GET'},
             getMessages: {url: 'rest/plugins/push/private/search', method: 'POST'},
             sendMessage: {url: 'rest/plugins/push/private/send', method: 'POST'},
-            deleteMessage: {url: 'rest/plugins/push/:id', method: 'DELETE'},
+            deleteMessage: {url: 'rest/plugins/push/private/:id', method: 'DELETE'},
             lookupDevices: {url: 'rest/private/devices/autocomplete', method: 'POST'},
+            getTasks: {url: 'rest/plugins/push/private/searchTasks', method: 'POST'},
+            saveTask: {url: 'rest/plugins/push/private/task', method: 'PUT'},
+            deleteTask: {url: 'rest/plugins/push/private/task/:id', method: 'DELETE'}
         });
     })
     .factory('getDevicesService', ['pluginPushService', function(pluginPushService) {
@@ -222,6 +225,103 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
 
         loadData();
     })
+    .controller('PluginPushScheduleTabController', function ($scope, $rootScope, $window, $location, $modal, $timeout, $interval,
+                                                     pluginPushService, confirmModal, authService, localization) {
+
+        $scope.hasPermission = authService.hasPermission;
+
+        $rootScope.settingsTabActive = false;
+        $rootScope.pluginsTabActive = true;
+
+        $scope.paging = {
+            pageNum: 1,
+            pageSize: 50,
+            totalItems: 0,
+            messageFilter: ''
+        };
+
+        $scope.$watch('paging.pageNum', function() {
+            $window.scrollTo(0, 0);
+        });
+
+        $scope.errorMessage = undefined;
+        $scope.successMessage = undefined;
+
+        $scope.search = function () {
+            $scope.errorMessage = undefined;
+            $scope.paging.pageNum = 1;
+            loadData();
+        };
+
+        $scope.$watch('paging.pageNum', function () {
+            loadData();
+        });
+
+        $scope.removeTask = function (task) {
+            localizedText = localization.localize('plugin.push.delete.task');
+            confirmModal.getUserConfirmation(localizedText, function () {
+                pluginPushService.deleteTask({id: task.id}, function (response) {
+                    if (response.status === 'OK') {
+                        loadData();
+                    } else {
+                        $scope.errorMessage = localization.localize('error.internal.server');
+                    }
+                });
+            });
+        };
+
+        $scope.editTask = function (task) {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/plugins/push/views/schedule.modal.html',
+                controller: 'NewPushScheduleController',
+                resolve: {
+                    task: function () {
+                        return task;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                $scope.successMessage = localization.localize('plugin.push.schedule.success');
+                $timeout(function() { $scope.successMessage = undefined;}, 5000);
+                $scope.search();
+            });
+        };
+
+        var loading = false;
+        var loadData = function () {
+            $scope.errorMessage = undefined;
+
+            if (loading) {
+                console.log("Skipping query for task list since a previous request is pending");
+                return;
+            }
+
+            loading = true;
+
+            var request = {};
+            for (var p in $scope.paging) {
+                if ($scope.paging.hasOwnProperty(p)) {
+                    request[p] = $scope.paging[p];
+                }
+            }
+
+            pluginPushService.getTasks(request, function (response) {
+                loading = false;
+                if (response.status === 'OK') {
+                    $scope.tasks = response.data.items;
+                    $scope.paging.totalItems = response.data.totalItemsCount;
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            }, function () {
+                loading = false;
+                $scope.errorMessage = localization.localize('error.request.failure');
+            })
+        };
+
+        loadData();
+    })
     .controller('PluginPushSettingsController', function ($scope, $rootScope, $modal,
                                                                confirmModal, localization, pluginPushService) {
         $scope.successMessage = undefined;
@@ -331,6 +431,121 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
                 }
             }, function () {
                 $scope.sending = false;
+                $scope.errorMessage = localization.localizeServerResponse('error.request.failure');
+            });
+        };
+
+        $scope.closeModal = function () {
+            $modalInstance.dismiss();
+        };
+    })
+    .controller('NewPushScheduleController', function ($scope, $rootScope, $modalInstance, configurationService, groupService,
+                                                      confirmModal, localization, pluginPushService, getDevicesService, task) {
+
+        var taskCopy = {};
+        for (var p in task) {
+            if (task.hasOwnProperty(p)) {
+                taskCopy[p] = task[p];
+            }
+        }
+        $scope.task = taskCopy;
+
+        $scope.sending = false;
+
+        $scope.getDevices = getDevicesService.getDevices;
+        $scope.deviceLookupFormatter = getDevicesService.deviceLookupFormatter;
+
+        groupService.getAllGroups(function (response) {
+            $scope.groups = response.data;
+        });
+
+        configurationService.getAllConfigurations(function (response) {
+            $scope.configurations = response.data;
+        });
+
+        if (!task) {
+            $scope.task = {
+                scope: "device",
+                deviceNumber: "",
+                groupId: "",
+                configurationId: "",
+                messageType: "configUpdated",
+                customMessageType: "",
+                payload: "",
+                min: "30",
+                hour: "*/12",
+                day: "*",
+                weekday: "*",
+                month: "*"
+            };
+        }
+
+        if ($scope.task.messageType !== "configUpdated" &&
+            $scope.task.messageType !== "runApp" &&
+            $scope.task.messageType !== "uninstallApp" &&
+            $scope.task.messageType !== "deleteFile" &&
+            $scope.task.messageType !== "deleteDir" &&
+            $scope.task.messageType !== "purgeDir" &&
+            $scope.task.messageType !== "permissiveMode" &&
+            $scope.task.messageType !== "reboot") {
+            $scope.task.customMessageType = $scope.task.messageType;
+            $scope.task.messageType = "(custom)"
+        }
+
+        var samplePayloads = {
+            configUpdated: "",
+            runApp: "{pkg: \"app.package.id\"}",
+            uninstallApp: "{pkg: \"app.package.id\"}",
+            deleteFile: "{path: \"/path/to/file\"}",
+            deleteDir: "{path: \"/path/to/dir\"}",
+            purgeDir: "{path: \"/path/to/dir\", recursive: \"1\"}",
+            permissiveMode: "",
+            "(custom)": ""
+        };
+
+        $scope.typeChanged = function() {
+            $scope.task.payload = samplePayloads[$scope.task.messageType];
+        };
+
+        $scope.save = function () {
+            $scope.errorMessage = undefined;
+
+            if ($scope.task.scope === 'device' && $scope.task.deviceNumber.trim() === '') {
+                $scope.errorMessage = localization.localize('plugin.push.error.empty.device');
+                return;
+            }
+
+            if ($scope.task.scope === 'group' && !$scope.task.groupId) {
+                $scope.errorMessage = localization.localize('plugin.push.error.empty.group');
+                return;
+            }
+
+            if ($scope.task.scope === 'configuration' && !$scope.task.configurationId) {
+                $scope.errorMessage = localization.localize('plugin.push.error.empty.configuration');
+                return;
+            }
+
+            $scope.task.deviceNumber = getDevicesService.deviceLookupFormatter($scope.task.deviceNumber)
+
+            $scope.saving = true;
+
+            if ($scope.task.messageType == '(custom)') {
+                if (!$scope.task.customMessageType) {
+                    $scope.errorMessage = localization.localize('plugin.push.error.empty.messageType');
+                    return;
+                }
+                $scope.task.messageType = $scope.task.customMessageType;
+            }
+
+            pluginPushService.saveTask($scope.task).$promise.then(function(response) {
+                $scope.saving = false;
+                if (response.status === 'OK') {
+                    $modalInstance.close();
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            }, function () {
+                $scope.saving = false;
                 $scope.errorMessage = localization.localizeServerResponse('error.request.failure');
             });
         };

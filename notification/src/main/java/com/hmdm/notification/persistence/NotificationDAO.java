@@ -25,10 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.notification.persistence.mapper.NotificationMapper;
-import com.hmdm.persistence.ConfigurationDAO;
-import com.hmdm.persistence.DeviceDAO;
-import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.Device;
 import org.mybatis.guice.transactional.Transactional;
 
 import java.util.List;
@@ -43,17 +39,13 @@ import java.util.stream.Collectors;
 public class NotificationDAO {
 
     private final NotificationMapper notificationMapper;
-    private final DeviceDAO deviceDAO;
-    private final ConfigurationDAO configurationDAO;
 
     /**
      * <p>Constructs new <code>NotificationDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public NotificationDAO(NotificationMapper notificationMapper, DeviceDAO deviceDAO, ConfigurationDAO configurationDAO) {
+    public NotificationDAO(NotificationMapper notificationMapper) {
         this.notificationMapper = notificationMapper;
-        this.deviceDAO = deviceDAO;
-        this.configurationDAO = configurationDAO;
     }
 
     /**

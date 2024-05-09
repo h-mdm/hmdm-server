@@ -69,6 +69,20 @@ public interface DeviceMapper {
 
     Device getDeviceById(@Param("id") Integer id);
 
+    @Select({"SELECT * FROM devices " +
+            "WHERE configurationId = #{configurationId} AND customerId = #{customerId}"})
+    List<Device> getAllConfigurationDevices(@Param("configurationId") int configurationId,
+                                            @Param("customerId") int customerId);
+
+    @Select({"SELECT * FROM devices " +
+            "LEFT JOIN deviceGroups ON deviceGroups.deviceId = devices.id " +
+            "WHERE deviceGroups.groupId = #{groupId} AND devices.customerId = #{customerId}"})
+    List<Device> getAllGroupDevices(@Param("groupId") int groupId, @Param("customerId") int customerId);
+
+    @Select({"SELECT * FROM devices " +
+            "WHERE customerId = #{customerId}"})
+    List<Device> getAllCustomerDevices(@Param("customerId") int customerId);
+
     List<Device> getAllDevices(DeviceSearchRequest deviceSearchRequest);
 
     @Select({"SELECT COUNT(*) " +

@@ -23,13 +23,16 @@ package com.hmdm.plugins.push;
 
 import com.google.inject.Module;
 import com.hmdm.plugin.PluginConfiguration;
+import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.push.guice.module.PushLiquibaseModule;
 import com.hmdm.plugins.push.guice.module.PushPersistenceModule;
 import com.hmdm.plugins.push.guice.module.PushRestModule;
+import com.hmdm.plugins.push.guice.module.PushScheduleTaskModule;
 
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>A configuration for <code>Push Messaging</code> plugin.</p>
@@ -83,4 +86,21 @@ public class PushPluginConfigurationImpl implements PluginConfiguration {
 
         return modules;
     }
+
+
+    /**
+     * <p>Gets the list of task modules to be initialized upon application startup.</p>
+     *
+     * @param context a context for plugin usage.
+     * @return an optional list of task modules for plugins.
+     */
+    @Override
+    public Optional<List<Class<? extends PluginTaskModule>>> getTaskModules(ServletContext context) {
+        List<Class<? extends PluginTaskModule>> modules = new ArrayList<>();
+
+        modules.add(PushScheduleTaskModule.class);
+
+        return Optional.of(modules);
+    }
+
 }

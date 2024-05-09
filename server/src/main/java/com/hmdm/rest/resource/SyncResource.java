@@ -372,6 +372,7 @@ public class SyncResource {
         }
         data.setPasswordMode(configuration.getPasswordMode());
         data.setOrientation(configuration.getOrientation());
+        data.setDisplayStatus(configuration.isDisplayStatus() ? true : null);
         data.setRunDefaultLauncher(configuration.getRunDefaultLauncher());
         data.setDisableScreenshots(configuration.getDisableScreenshots());
         data.setAutostartForeground(configuration.getAutostartForeground());

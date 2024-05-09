@@ -83,4 +83,34 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="plugin-push-02.05.2024-16:06" author="seva" context="common">
+        <comment>Table, new: plugin_push_schedule</comment>
+        <sql>
+            CREATE TABLE plugin_push_schedule (
+            id serial NOT NULL CONSTRAINT plugin_push_schedule_pr_key PRIMARY KEY,
+            customerId INT NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
+            deviceId INT NOT NULL DEFAULT 0,
+            groupId INT NOT NULL DEFAULT 0,
+            configurationId INT NOT NULL DEFAULT 0,
+            scope VARCHAR(255),
+            messageType VARCHAR(255),
+            payload TEXT,
+            comment TEXT,
+            min VARCHAR(1024),
+            minBit BIT(60),
+            hour VARCHAR(1024),
+            hourBit BIT(24),
+            day VARCHAR(1024),
+            dayBit BIT(31),
+            weekday VARCHAR(1024),
+            weekdayBit BIT(7),
+            month VARCHAR(1024),
+            monthBit BIT(12)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE plugin_push_schedule;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

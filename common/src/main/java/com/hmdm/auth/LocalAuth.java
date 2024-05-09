@@ -26,6 +26,10 @@ public class LocalAuth implements HmdmAuthInterface {
 
     @Override
     public boolean authenticate(User user, String password) {
-        return PasswordUtil.passwordMatch(password, user.getPassword());
+        boolean match = PasswordUtil.passwordMatch(password, user.getPassword());
+        if (!match) {
+            userDAO.setUserLoginFailTime(user, System.currentTimeMillis());
+        }
+        return match;
     }
 }

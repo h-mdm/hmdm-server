@@ -342,6 +342,7 @@ document.localization ['de_DE'] = {
     'form.configuration.settings.design.desktop.header.hint': 'Stellen Sie sicher, dass dieser Parameter an Geräte gesendet wird (Einstellungen - Allgemeine- und Spracheinstellungen)',
     'form.configuration.settings.design.desktop.header.template': 'Vorlage',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Variablen verwenden',
+    'form.configuration.settings.design.display.status': 'Gerätestatus anzeigen',
     'form.configuration.settings.design.upload': 'Hochladen',
     'form.configuration.settings.common.name': 'Name',
     'form.configuration.settings.common.name.placeholder': 'Geben Sie den Konfigurationsnamen ein',

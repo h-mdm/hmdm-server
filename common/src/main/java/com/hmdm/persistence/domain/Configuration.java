@@ -179,6 +179,8 @@ public class Configuration implements CustomerData, Serializable {
     private DesktopHeader desktopHeader = NO_HEADER;
     @ApiModelProperty("Desktop header template")
     private String desktopHeaderTemplate;
+    @ApiModelProperty("If checked, the data of the device status bar (time, battery, etc) are displayed by Headwind MDM")
+    private boolean displayStatus;
 
     // An unique key used for retrieving the QR code for configuration
     @ApiModelProperty(hidden = true)
@@ -308,6 +310,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setDesktopHeaderTemplate(String desktopHeaderTemplate) {
         this.desktopHeaderTemplate = desktopHeaderTemplate;
+    }
+
+    public boolean isDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(boolean displayStatus) {
+        this.displayStatus = displayStatus;
     }
 
     public boolean isUseDefaultDesignSettings() {
@@ -882,6 +892,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setIconSize(getIconSize());
         copy.setDesktopHeader(getDesktopHeader());
         copy.setDesktopHeaderTemplate(getDesktopHeaderTemplate());
+        copy.setDisplayStatus(isDisplayStatus());
 
         copy.setDefaultFilePath(getDefaultFilePath());
 

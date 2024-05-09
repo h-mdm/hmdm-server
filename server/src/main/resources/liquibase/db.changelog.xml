@@ -2494,4 +2494,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="25.04.24-15:58" author="seva" context="common">
+        <comment>Column,new: users#lastLoginFail, configurations#displayStatus</comment>
+        <sql>
+            ALTER TABLE users ADD COLUMN lastLoginFail BIGINT NOT NULL DEFAULT 0;
+            ALTER TABLE configurations ADD COLUMN displayStatus BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE users DROP COLUMN lastLoginFail;
+            ALTER TABLE configurations DROP COLUMN displayStatus;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -69,6 +69,7 @@ public interface ConfigurationMapper {
             "iconSize=#{iconSize}, " +
             "desktopHeader=#{desktopHeader}, " +
             "desktopHeaderTemplate=#{desktopHeaderTemplate}, " +
+            "displayStatus=#{displayStatus}, " +
             "requestUpdates=#{requestUpdates}, " +
             "disableLocation=#{disableLocation}, " +
             "appPermissions=#{appPermissions}, " +
