@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "Configuration",
   "plugin.push.scope.all": "Tous les appareils",
   "plugin.push.label.group": "Groupe",
-  "plugin.push.label.configuration": "Configuration"
+  "plugin.push.label.configuration": "Configuration",
+
+  "plugin.push.schedule.tab.title": "Tâches planifiées",
+  "plugin.push.schedule.not.found": "Aucune tâche planifiée pour l'instant",
+  "plugin.push.button.new.task": "Nouvelle tâche",
+  "plugin.push.schedule.hint": "Entrez les minutes, les heures, etc. pour planifier la tâche. Utilisez * ou */x pour planifier chaque période.",
+  "table.heading.plugin.push.comment": "Commentaire",
+  "table.heading.plugin.push.scope": "Portée",
+  "table.heading.plugin.push.target": "Cible",
+  "table.heading.plugin.push.min": "Minutes",
+  "table.heading.plugin.push.hour": "Heures",
+  "table.heading.plugin.push.day": "Jours",
+  "table.heading.plugin.push.weekday": "Jours de la semaine",
+  "table.heading.plugin.push.month": "Mois",
+  "plugin.push.schedule.success": "Tâche planifiée avec succès",
+  "plugin.push.delete.task": "Supprimer cette tâche planifiée?"
 }

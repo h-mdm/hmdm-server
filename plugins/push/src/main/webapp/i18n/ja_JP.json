@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "設定",
   "plugin.push.scope.all": "すべてのデバイス",
   "plugin.push.label.group": "グループ",
-  "plugin.push.label.configuration": "構成"
+  "plugin.push.label.configuration": "構成",
+
+  "plugin.push.schedule.tab.title": "スケジュールされたタスク",
+  "plugin.push.schedule.not.found": "スケジュールされたタスクはまだありません",
+  "plugin.push.button.new.task": "新しいタスク",
+  "plugin.push.schedule.hint": "タスクをスケジュールするには、分、時間などを入力します。各期間をスケジュールするには、* または */x を使用します。",
+  "table.Heading.plugin.push.comment": "コメント",
+  "table.Heading.plugin.push.scope": "スコープ",
+  "table.Heading.plugin.push.target": "ターゲット",
+  "table.Heading.plugin.push.min": "分",
+  "table.Heading.plugin.push.hour": "時間",
+  "table.Heading.plugin.push.day": "日数",
+  "table.Heading.plugin.push.weekday": "平日",
+  "table.Heading.plugin.push.month": "月",
+  "plugin.push.schedule.success": "タスクは正常にスケジュールされました",
+  "plugin.push.delete.task": "このスケジュールされたタスクを削除しますか?"
 }

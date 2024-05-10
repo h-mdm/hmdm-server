@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "Konfiguration",
   "plugin.push.scope.all": "Alle Geräte",
   "plugin.push.label.group": "Gruppe",
-  "plugin.push.label.configuration": "Konfiguration"
+  "plugin.push.label.configuration": "Konfiguration",
+
+  "plugin.push.schedule.tab.title": "Geplante Aufgaben",
+  "plugin.push.schedule.not.found": "Noch keine geplanten Aufgaben",
+  "plugin.push.button.new.task": "Neue Aufgabe",
+  "plugin.push.schedule.hint": "Geben Sie Minuten, Stunden usw. ein, um die Aufgabe zu planen. Verwenden Sie * oder */x, um jede Zeitspanne zu planen.",
+  "table.heading.plugin.push.comment": "Kommentar",
+  "table.heading.plugin.push.scope": "Umfang",
+  "table.heading.plugin.push.target": "Ziel",
+  "table.heading.plugin.push.min": "Minuten",
+  "table.heading.plugin.push.hour": "Stunden",
+  "table.heading.plugin.push.day": "Tage",
+  "table.heading.plugin.push.weekday": "Wochentage",
+  "table.heading.plugin.push.month": "Monate",
+  "plugin.push.schedule.success": "Aufgabe erfolgreich geplant",
+  "plugin.push.delete.task": "Diese geplante Aufgabe löschen?"
 }

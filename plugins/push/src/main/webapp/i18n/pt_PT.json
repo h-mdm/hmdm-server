@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "Configuração",
   "plugin.push.scope.all": "Todos os dispositivos",
   "plugin.push.label.group": "Grupo",
-  "plugin.push.label.configuration": "Configuração"
+  "plugin.push.label.configuration": "Configuração",
+
+  "plugin.push.schedule.tab.title": "Tarefas agendadas",
+  "plugin.push.schedule.not.found": "Nenhuma tarefa agendada ainda",
+  "plugin.push.button.new.task": "Nova tarefa",
+  "plugin.push.schedule.hint": "Insira minutos, horas, etc. para agendar a tarefa. Use * ou */x para agendar cada intervalo de tempo.",
+  "table.heading.plugin.push.comment": "Comentário",
+  "table.heading.plugin.push.scope": "Escopo",
+  "table.heading.plugin.push.target": "Destino",
+  "table.heading.plugin.push.min": "Minutos",
+  "table.heading.plugin.push.hour": "Horas",
+  "table.heading.plugin.push.day": "Dias",
+  "table.heading.plugin.push.weekday": "Dias da semana",
+  "table.heading.plugin.push.month": "Meses",
+  "plugin.push.schedule.success": "Tarefa agendada com sucesso",
+  "plugin.push.delete.task": "Excluir esta tarefa agendada?"
 }

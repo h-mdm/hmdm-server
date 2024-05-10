@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "Конфигурация",
   "plugin.push.scope.all": "Все устройства",
   "plugin.push.label.group": "Группа",
-  "plugin.push.label.configuration": "Конфигурация"
+  "plugin.push.label.configuration": "Конфигурация",
+
+  "plugin.push.schedule.tab.title": "Запланированные задачи",
+  "plugin.push.schedule.not.found": "Запланированных задач пока нет",
+  "plugin.push.button.new.task": "Новая задача",
+  "plugin.push.schedule.hint": "Введите минуты, часы и т. д., чтобы запланировать задачу. Используйте * или */x, чтобы запланировать каждый временной интервал.",
+  "table.heading.plugin.push.comment": "Комментарий",
+  "table.heading.plugin.push.scope": "Область",
+  "table.heading.plugin.push.target": "Цель",
+  "table.heading.plugin.push.min": "Минуты",
+  "table.heading.plugin.push.hour": "Часы",
+  "table.heading.plugin.push.day": "Дни",
+  "table.heading.plugin.push.weekday": "Дни недели",
+  "table.heading.plugin.push.month": "Месяцы",
+  "plugin.push.schedule.success": "Задача успешно запланирована",
+  "plugin.push.delete.task": "Удалить это запланированное задание?"
 }

@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "إعدادات",
   "plugin.push.scope.all": "جميع الاجهزة",
   "plugin.push.label.group": "مجموعة",
-  "plugin.push.label.configuration": "إعدادات"
+  "plugin.push.label.configuration": "إعدادات",
+
+  "plugin.push.schedule.tab.title": "المهام المجدولة",
+  "plugin.push.schedule.not.found": "لا توجد مهام مجدولة بعد",
+  "plugin.push.button.new.task": "مهمة جديدة",
+  "plugin.push.schedule.hint": "أدخل الدقائق والساعات وما إلى ذلك لجدولة المهمة. استخدم * أو */x لجدولة كل فترة زمنية.",
+  "table.heading.plugin.push.comment": "تعليق",
+  "table.heading.plugin.push.scope": "النطاق",
+  "table.heading.plugin.push.target": "الهدف",
+  "table.heading.plugin.push.min": "الدقائق",
+  "table.heading.plugin.push.hour": "الساعات",
+  "table.heading.plugin.push.day": "الأيام",
+  "table.heading.plugin.push.weekday": "أيام الأسبوع",
+  "table.heading.plugin.push.month": "الأشهر",
+  "plugin.push.schedule.success": "تم جدولة المهمة بنجاح",
+  "plugin.push.delete.task": "هل تريد حذف هذه المهمة المجدولة؟"
 }

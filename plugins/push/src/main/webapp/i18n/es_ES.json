@@ -36,5 +36,20 @@
   "plugin.push.scope.configuration": "Configuración",
   "plugin.push.scope.all": "Todos los dispositivos",
   "plugin.push.label.group": "Grupo",
-  "plugin.push.label.configuration": "Configuración"
+  "plugin.push.label.configuration": "Configuración",
+
+  "plugin.push.schedule.tab.title": "Tareas programadas",
+  "plugin.push.schedule.not.found": "Aún no hay tareas programadas",
+  "plugin.push.button.new.task": "Nueva tarea",
+  "plugin.push.schedule.hint": "Ingrese minutos, horas, etc. para programar la tarea. Utilice * o */x para programar cada intervalo de tiempo.",
+  "table.heading.plugin.push.comment": "Comentar",
+  "table.heading.plugin.push.scope": "Alcance",
+  "table.heading.plugin.push.target": "Destino",
+  "table.heading.plugin.push.min": "Minutos",
+  "table.heading.plugin.push.hour": "Horas",
+  "table.heading.plugin.push.day": "Días",
+  "table.heading.plugin.push.weekday": "Días laborables",
+  "table.heading.plugin.push.month": "Meses",
+  "plugin.push.schedule.success": "Tarea programada exitosamente",
+  "plugin.push.delete.task": "¿Eliminar esta tarea programada?"
 }
