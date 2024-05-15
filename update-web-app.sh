@@ -32,6 +32,7 @@ if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
 fi
 
 mv $NEW_WAR_FILE $WAR_FILE
+chmod 644 $WAR_FILE
 service $TOMCAT_SERVICE restart
 rm -f $MANIFEST_FILE
 
