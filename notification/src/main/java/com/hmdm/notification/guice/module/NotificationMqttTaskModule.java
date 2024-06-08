@@ -87,7 +87,7 @@ public class NotificationMqttTaskModule {
                 authorizationEntry.setTopic(">");
                 authorizationEntry.setRead("users,admins");
                 authorizationEntry.setWrite("admins");
-                authorizationEntry.setAdmin("admins");
+                authorizationEntry.setAdmin("users,admins");
                 entries.add(authorizationEntry);
 
                 authorizationEntry = new AuthorizationEntry();
