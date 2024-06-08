@@ -6,8 +6,10 @@ import com.hmdm.notification.PushSender;
 import com.hmdm.util.CryptoUtil;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.security.AuthenticationUser;
-import org.apache.activemq.security.SimpleAuthenticationPlugin;
+import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.filter.DestinationMap;
+import org.apache.activemq.filter.DestinationMapEntry;
+import org.apache.activemq.security.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +21,26 @@ public class NotificationMqttTaskModule {
     private String serverUri;
     private String mqttExternal;
     private boolean mqttAuth;
+    private String mqttAdminPassword;
     private String hashSecret;
     private BrokerService brokerService;
     private PushSender pushSender;
     private static final Logger log = LoggerFactory.getLogger(NotificationMqttTaskModule.class);
     public static final String MQTT_USERNAME = "hmdm";
+    public static final String MQTT_ADMIN_USERNAME = "admin";
 
     @Inject
     public NotificationMqttTaskModule(@Named("mqtt.server.uri") String serverUri,
                                       @Named("mqtt.external") String mqttExternal,
                                       @Named("mqtt.auth") boolean mqttAuth,
+                                      @Named("mqtt.admin.password") String mqttAdminPassword,
                                       @Named("hash.secret") String hashSecret,
                                       @Named("MQTT") PushSender pushSender) {
         this.serverUri = serverUri;
         this.mqttExternal = mqttExternal;
         this.pushSender = pushSender;
         this.mqttAuth = mqttAuth;
+        this.mqttAdminPassword = mqttAdminPassword;
         this.hashSecret = hashSecret;
     }
 
@@ -67,10 +73,36 @@ public class NotificationMqttTaskModule {
             authPlugin.setAnonymousAccessAllowed(false);
             AuthenticationUser user = new AuthenticationUser(MQTT_USERNAME,
                     CryptoUtil.getSHA1String(MQTT_USERNAME + hashSecret), "users");
+            AuthenticationUser admin = new AuthenticationUser(MQTT_ADMIN_USERNAME, mqttAdminPassword, "admins");
             List<AuthenticationUser> users = new LinkedList<>();
             users.add(user);
+            users.add(admin);
             authPlugin.setUsers(users);
-            brokerService.setPlugins(new BrokerPlugin[]{authPlugin});
+
+            AuthorizationPlugin authorizationPlugin = new AuthorizationPlugin();
+            try {
+                List<DestinationMapEntry> entries = new LinkedList<>();
+
+                AuthorizationEntry authorizationEntry = new AuthorizationEntry();
+                authorizationEntry.setTopic(">");
+                authorizationEntry.setRead("users,admins");
+                authorizationEntry.setWrite("admins");
+                authorizationEntry.setAdmin("admins");
+                entries.add(authorizationEntry);
+
+                authorizationEntry = new AuthorizationEntry();
+                authorizationEntry.setTopic("ActiveMQ.Advisory.>");
+                authorizationEntry.setRead("users,admins");
+                authorizationEntry.setWrite("users,admins");
+                authorizationEntry.setAdmin("users,admins");
+                entries.add(authorizationEntry);
+
+                AuthorizationMap authorizationMap = new DefaultAuthorizationMap(entries);
+                authorizationPlugin.setMap(authorizationMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            brokerService.setPlugins(new BrokerPlugin[]{authPlugin, authorizationPlugin});
         }
 
         try {

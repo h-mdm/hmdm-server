@@ -234,6 +234,8 @@ public class UserResource {
     }
 
     private User updatePasswordWithReset(User user, String password, boolean reset) {
+        user.setTwoFactorSecret(null);
+        user.setTwoFactorAccepted(false);
         user.setPassword(PasswordUtil.getHashFromMd5(password));
         user.setAuthToken(PasswordUtil.generateToken());
         if (reset) {

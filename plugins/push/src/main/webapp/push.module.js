@@ -542,7 +542,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
                 if (response.status === 'OK') {
                     $modalInstance.close();
                 } else {
-                    $scope.errorMessage = localization.localizeServerResponse(response);
+                    $scope.errorMessage = localization.localize('plugin.push.invalid.mask');
                 }
             }, function () {
                 $scope.saving = false;

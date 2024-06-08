@@ -52,12 +52,29 @@ public class NotificationDAO {
      * <p>Gets the list of messages to be delivered to specified device. The returned messages are immediately marked as
      * delivered.</p>
      *
-     * @param deviceId a device number identifying the device.
+     * @param deviceNumber a device number identifying the device.
      * @return a list of messages to be delivered to device.
      */
     @Transactional
-    public List<PushMessage> getPendingMessagesForDelivery(String deviceId) {
-        final List<PushMessage> messages = this.notificationMapper.getPendingMessagesForDelivery(deviceId);
+    public List<PushMessage> getPendingMessagesForDelivery(String deviceNumber) {
+        final List<PushMessage> messages = this.notificationMapper.getPendingMessagesByNumber(deviceNumber);
+        if (!messages.isEmpty()) {
+            final List<Integer> messageIds = messages.stream().map(PushMessage::getId).collect(Collectors.toList());
+            this.notificationMapper.markMessagesAsDelivered(messageIds);
+        }
+        return messages;
+    }
+
+    /**
+     * <p>Gets the list of messages to be delivered to specified device. The returned messages are immediately marked as
+     * delivered.</p>
+     *
+     * @param deviceId a device id in the database.
+     * @return a list of messages to be delivered to device.
+     */
+    @Transactional
+    public List<PushMessage> getPendingMessagesForDelivery(int deviceId) {
+        final List<PushMessage> messages = this.notificationMapper.getPendingMessagesById(deviceId);
         if (!messages.isEmpty()) {
             final List<Integer> messageIds = messages.stream().map(PushMessage::getId).collect(Collectors.toList());
             this.notificationMapper.markMessagesAsDelivered(messageIds);

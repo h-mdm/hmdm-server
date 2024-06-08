@@ -66,7 +66,9 @@ public interface UserMapper {
     void updateUserMainDetails(User user);
 
     @Update({"UPDATE users SET password=#{password}, passwordReset=#{passwordReset}, " +
-            "authToken=#{authToken}, passwordResetToken=#{passwordResetToken} WHERE id=#{id}"})
+            "authToken=#{authToken}, passwordResetToken=#{passwordResetToken}, " +
+            "twoFactorSecret=#{twoFactorSecret}, twoFactorAccepted=#{twoFactorAccepted} " +
+            "WHERE id=#{id}"})
     void updatePassword(User user);
 
     @Update({"UPDATE users SET password=#{newPassword}, passwordReset=#{passwordReset}, " +

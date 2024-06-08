@@ -143,11 +143,11 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
     public List<PluginPushSchedule> findMatchingTime() {
         Calendar c = Calendar.getInstance();
         return pushScheduleMapper.findMatchingTime(
-                parseScheduleMask("" + c.get(Calendar.MINUTE), 60),
-                parseScheduleMask("" + c.get(Calendar.HOUR), 24),
-                parseScheduleMask("" + c.get(Calendar.DAY_OF_MONTH), 31),
-                parseScheduleMask("" + c.get(Calendar.DAY_OF_WEEK), 7),
-                parseScheduleMask("" + c.get(Calendar.MONTH), 12)
+                parseScheduleMask("" + c.get(Calendar.MINUTE), 60, false, "minute"),
+                parseScheduleMask("" + c.get(Calendar.HOUR), 24, false, "hour"),
+                parseScheduleMask("" + c.get(Calendar.DAY_OF_MONTH), 31, true, "day"),
+                parseScheduleMask("" + c.get(Calendar.DAY_OF_WEEK), 7, true, "weekday"),
+                parseScheduleMask("" + c.get(Calendar.MONTH), 12, true, "month")
         );
     }
 
@@ -167,31 +167,31 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
     }
 
     private static boolean prepareAllMasks(PluginPushSchedule message) {
-        String minBit = parseScheduleMask(message.getMin(), 60);
+        String minBit = parseScheduleMask(message.getMin(), 60, false, "minute");
         if (minBit == null) {
             return false;
         }
         message.setMinBit(minBit);
 
-        String hourBit = parseScheduleMask(message.getHour(), 24);
+        String hourBit = parseScheduleMask(message.getHour(), 24, false, "hour");
         if (hourBit == null) {
             return false;
         }
         message.setHourBit(hourBit);
 
-        String dayBit = parseScheduleMask(message.getDay(), 31);
+        String dayBit = parseScheduleMask(message.getDay(), 31, true, "day");
         if (dayBit == null) {
             return false;
         }
         message.setDayBit(dayBit);
 
-        String weekdayBit = parseScheduleMask(message.getWeekday(), 7);
+        String weekdayBit = parseScheduleMask(message.getWeekday(), 7, true, "weekday");
         if (weekdayBit == null) {
             return false;
         }
         message.setWeekdayBit(weekdayBit);
 
-        String monthBit = parseScheduleMask(message.getMonth(), 12);
+        String monthBit = parseScheduleMask(message.getMonth(), 12, true, "month");
         if (monthBit == null) {
             return false;
         }
@@ -200,7 +200,7 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
         return true;
     }
 
-    private static String parseScheduleMask(String rawMask, int length) {
+    private static String parseScheduleMask(String rawMask, int length, boolean startFromOne, String scope) {
         String mask = rawMask.replaceAll("\\s+","");
         StringBuilder res = new StringBuilder(length);
         if (mask.equals("*")) {
@@ -213,11 +213,11 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
             try {
                  n = Integer.parseInt(ns);
             } catch (NumberFormatException e) {
-                logger.error("Failed to parse schedule mask: " + mask + " (length=" + length + ")");
+                logger.error("Failed to parse schedule mask for " + scope + ": " + mask);
                 return null;
             }
             if (n < 1) {
-                logger.error("Failed to parse schedule mask: " + mask + " (length=" + length + ")");
+                logger.error("Failed to parse schedule mask for " + scope + ": " + mask);
                 return null;
             }
             for (int i = 0; i < length; i++) {
@@ -228,11 +228,14 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
             try {
                 n = Integer.parseInt(mask);
             } catch (NumberFormatException e) {
-                logger.error("Failed to parse schedule mask: " + mask + " (length=" + length + ")");
+                logger.error("Failed to parse schedule mask for " + scope + ": " + mask);
                 return null;
             }
+            if (startFromOne) {
+                n--;
+            }
             if (n < 0 || n >= length) {
-                logger.error("Failed to parse schedule mask: " + mask + " (length=" + length + ")");
+                logger.error("Failed to parse schedule mask for " + scope + ": " + mask);
                 return null;
             }
             for (int i = 0; i < length; i++) {

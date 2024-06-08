@@ -83,6 +83,7 @@ public class DownloadFilesServlet extends HttpServlet {
         path = path.substring(index);
 
         if (!publicIPFilter.match(req)) {
+            log.warn("Request blocked by IP: " + req.getRemoteAddr());
             resp.sendError(403);
             return;
         }

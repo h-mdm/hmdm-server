@@ -26,7 +26,7 @@ public class PushSenderMqtt implements PushSender {
     private String serverUri;
     private String clientTag;
     private boolean mqttAuth;
-    private String hashSecret;
+    private String mqttAdminPassword;
     private UnsecureDAO unsecureDAO;
     private MqttClient client;
     private MqttThrottledSender throttledSender;
@@ -38,15 +38,15 @@ public class PushSenderMqtt implements PushSender {
     public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri,
                           @Named("mqtt.client.tag") String clientTag,
                           @Named("mqtt.auth") boolean mqttAuth,
+                          @Named("mqtt.admin.password") String mqttAdminPassword,
                           @Named("mqtt.message.delay") long mqttDelay,
-                          @Named("hash.secret") String hashSecret,
                           MqttThrottledSender throttledSender,
                           BackgroundTaskRunnerService taskRunner,
                           UnsecureDAO unsecureDAO) {
         this.serverUri = serverUri;
         this.clientTag = clientTag;
         this.mqttAuth = mqttAuth;
-        this.hashSecret = hashSecret;
+        this.mqttAdminPassword = mqttAdminPassword;
         this.mqttDelay = mqttDelay;
         this.throttledSender = throttledSender;
         this.taskRunner = taskRunner;
@@ -61,8 +61,8 @@ public class PushSenderMqtt implements PushSender {
             options.setCleanSession(true);
             options.setAutomaticReconnect(true);
             if (mqttAuth) {
-                options.setUserName(NotificationMqttTaskModule.MQTT_USERNAME);
-                options.setPassword(CryptoUtil.getSHA1String(NotificationMqttTaskModule.MQTT_USERNAME + hashSecret).toCharArray());
+                options.setUserName(NotificationMqttTaskModule.MQTT_ADMIN_USERNAME);
+                options.setPassword(mqttAdminPassword.toCharArray());
             }
             client.connect(options);
 

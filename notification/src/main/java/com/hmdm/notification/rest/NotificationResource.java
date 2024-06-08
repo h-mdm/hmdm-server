@@ -80,21 +80,21 @@ public class NotificationResource {
             response = PlainPushMessage.class,
             responseContainer = "List"
     )
-    @Path("/device/{deviceId}")
+    @Path("/device/{deviceNumber}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPushMessages(@PathParam("deviceId")
+    public Response getPushMessages(@PathParam("deviceNumber")
                                         @ApiParam("An identifier of device within MDM server")
-                                                String deviceId) {
-        log.debug("#getPushMessages: deviceId = {}", deviceId);
+                                                String deviceNumber) {
+        log.debug("#getPushMessages: deviceNumber = {}", deviceNumber);
         try {
-            Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceId);
+            Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
             if (dbDevice == null) {
-                dbDevice = this.unsecureDAO.getDeviceByOldNumber(deviceId);
+                dbDevice = this.unsecureDAO.getDeviceByOldNumber(deviceNumber);
             }
             if (dbDevice != null) {
-                List<PushMessage> messages = this.notificationDAO.getPendingMessagesForDelivery(deviceId);
-                log.info("Delivering push-messages to device '{}': {}", deviceId, messages);
+                List<PushMessage> messages = this.notificationDAO.getPendingMessagesForDelivery(deviceNumber);
+                log.info("Delivering push-messages to device '{}': {}", deviceNumber, messages);
 
                 final List<PlainPushMessage> messagesToDeliver
                         = messages.stream().map(PlainPushMessage::new).collect(Collectors.toList());
@@ -103,7 +103,7 @@ public class NotificationResource {
                 return Response.DEVICE_NOT_FOUND_ERROR();
             }
         } catch (Exception e) {
-            log.error("Unexpected error when querying for pending messages for device: {}", deviceId, e);
+            log.error("Unexpected error when querying for pending messages for device: {}", deviceNumber, e);
             return Response.INTERNAL_ERROR();
         }
     }

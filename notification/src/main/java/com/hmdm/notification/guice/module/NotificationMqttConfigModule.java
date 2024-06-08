@@ -49,6 +49,12 @@ public class NotificationMqttConfigModule extends AbstractModule {
                 mqttAuthTag != null && (mqttAuthTag.equals("1") || mqttAuthTag.equalsIgnoreCase("true"))
         );
 
+        String mqttAdminPassword = context.getInitParameter("mqtt.admin.password");
+        if (mqttAdminPassword == null) {
+            mqttAdminPassword = "dd3V5YDkrX";
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.admin.password")).to(mqttAdminPassword);
+
         String mqttDelayTag = this.context.getInitParameter("mqtt.message.delay");
         long mqttDelay = 0;
         try {
@@ -59,6 +65,17 @@ public class NotificationMqttConfigModule extends AbstractModule {
             e.printStackTrace();
         }
         this.bindConstant().annotatedWith(Names.named("mqtt.message.delay")).to(mqttDelay);
+
+        String pollTimeoutTag = this.context.getInitParameter("polling.timeout");
+        long pollTimeout = 60;
+        try {
+            if (pollTimeoutTag != null) {
+                pollTimeout = Long.parseLong(pollTimeoutTag);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        this.bindConstant().annotatedWith(Names.named("polling.timeout")).to(pollTimeout);
 
     }
 }

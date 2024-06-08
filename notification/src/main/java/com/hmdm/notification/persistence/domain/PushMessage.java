@@ -22,6 +22,7 @@
 package com.hmdm.notification.persistence.domain;
 
 import com.hmdm.persistence.domain.CustomerData;
+import com.hmdm.util.StringUtil;
 
 import java.io.Serializable;
 
@@ -98,5 +99,17 @@ public class PushMessage implements Serializable {
                 ", deviceId='" + deviceId + '\'' +
                 ", payload='" + payload + '\'' +
                 '}';
+    }
+
+    public String toJsonString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"messageType\":\"" + StringUtil.jsonEscape(messageType) + "\",\"payload\":");
+        if (payload != null) {
+            sb.append("\"" + StringUtil.jsonEscape(payload) + "\"");
+        } else {
+            sb.append("null");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }
