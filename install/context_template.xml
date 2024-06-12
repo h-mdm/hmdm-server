@@ -42,7 +42,7 @@
 
     <Parameter name="log4j.config" value="file://_BASE_DIRECTORY_/log4j-hmdm.xml"/>
 
-    <Parameter name="aapt.command" value="aapt"/>
+    <Parameter name="aapt.command" value="aapt2"/>
 
     <!-- MQTT notification service parameters -->
     <Parameter name="mqtt.server.uri" value="_BASE_DOMAIN_:31000"/>
