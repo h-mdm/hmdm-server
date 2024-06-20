@@ -26,7 +26,7 @@ if [ ! -d $SSL_DIR ]; then
     mkdir -p $SSL_DIR
 fi
 
-certbot certonly --standalone --force-renewal -d $DOMAIN
+certbot certonly --agree-tos --no-eff-email --standalone --force-renewal -d $DOMAIN
 
 # Add the HTTP rule back
 if [ "$HTTP_REDIRECT" = "1" ]; then
@@ -41,13 +41,20 @@ keytool -importkeystore -destkeystore $SSL_DIR/$DOMAIN.jks -srckeystore $SSL_DIR
 
 chown -R $TOMCAT_USER:$TOMCAT_USER $SSL_DIR
 
+ENCRYPTION=RSA
+CERTBOT_VERSION=`certbot --version | awk '{print $2}' | awk '{n=split($1,A,"."); print A[1]}'`
+if [ "$CERTBOT_VERSION" != "" ] && [ "$CERTBOT_VERSION" -ge "2" ]; then
+    # In certbot 2, default encryption is ECDSA so we need to adjust it in Tomcat config
+    ENCRYPTION=EC
+fi
+
 echo "The certificates should be stored here: $SSL_DIR/$DOMAIN.jks"
 echo "Please add / uncomment the following section in $TOMCAT_HOME/conf/server.xml:"
 echo "<Connector port=\"8443\" protocol=\"org.apache.coyote.http11.Http11NioProtocol\""
 echo "           maxThreads=\"150\" SSLEnabled=\"true\">"
 echo "    <SSLHostConfig>"
 echo "        <Certificate certificateKeystoreFile=\"$SSL_DIR/$DOMAIN.jks\""
-echo "                     type=\"RSA\" certificateKeystorePassword=\"$PASSWORD\" />"
+echo "                     type=\"$ENCRYPTION\" certificateKeystorePassword=\"$PASSWORD\" />"
 echo "    </SSLHostConfig>"
 echo "</Connector>"
 

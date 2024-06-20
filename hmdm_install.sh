@@ -410,7 +410,14 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         cp $TOMCAT_HOME/conf/server.xml $TOMCAT_HOME/conf/server.xml~
 	# EPIC MAGIC!!!
         sed -z -e "s^<\!\-\-\n    <Connector port=\"8443\" protocol=\"org.apache.coyote.http11.Http11NioProtocol\"^<Connector port=\"8443\" protocol=\"org.apache.coyote.http11.Http11NioProtocol\"^" -e "s^\-\->\n    <\!\-\- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2^<\!\-\- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2^" -e "s^certificateKeystoreFile=\"conf/localhost-rsa.jks\"^certificateKeystoreFile=\"/var/lib/tomcat9/ssl/$BASE_DOMAIN.jks\" certificateKeystorePassword=\"123456\"^" $TOMCAT_HOME/conf/server.xml~ > $TOMCAT_HOME/conf/server.xml
-	service $TOMCAT_SERVICE restart
+        CERTBOT_VERSION=`certbot --version | awk '{print $2}' | awk '{n=split($1,A,"."); print A[1]}'`
+        if [ "$CERTBOT_VERSION" != "" ] && [ "$CERTBOT_VERSION" -ge "2" ]; then
+        # In certbot 2, default encryption is ECDSA so we need to adjust it in Tomcat config
+            cp $TOMCAT_HOME/conf/server.xml $TOMCAT_HOME/conf/server.xml.1
+            sed -z -e "s^type=\"RSA\" />^type=\"EC\" />^" $TOMCAT_HOME/conf/server.xml.1 > $TOMCAT_HOME/conf/server.xml
+            rm -f $TOMCAT_HOME/conf/server.xml.1
+        fi
+        service $TOMCAT_SERVICE restart
     fi
 
     echo
