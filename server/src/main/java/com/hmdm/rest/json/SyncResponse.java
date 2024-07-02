@@ -124,6 +124,9 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("Flag disabling safe settings")
     private Boolean lockSafeSettings;
 
+    @ApiModelProperty("Skip permissions that require user interaction")
+    private Boolean skipUserInteractivePermissions;
+
     @ApiModelProperty("Flag enabling permissive mode")
     private Boolean permissive;
 
@@ -770,10 +773,19 @@ public class SyncResponse implements Serializable, SyncResponseInt {
         this.lockSafeSettings = lockSafeSettings;
     }
 
+    public void setSkipUserInteractivePermissions(boolean skipUserInteractivePermissions) {
+        this.skipUserInteractivePermissions = skipUserInteractivePermissions;
+    }
+
+    public Boolean getSkipUserInteractivePermissions() {
+        return skipUserInteractivePermissions;
+    }
+
     @Override
     public Boolean getPermissive() {
         return permissive;
     }
+
 
     public void setPermissive(Boolean permissive) {
         this.permissive = permissive;

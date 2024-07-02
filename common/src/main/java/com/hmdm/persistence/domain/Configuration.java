@@ -150,6 +150,8 @@ public class Configuration implements CustomerData, Serializable {
     private String qrParameters;
     @ApiModelProperty("Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
+    @ApiModelProperty("Skip permissions that require user interaction")
+    private Boolean skipUserInteractivePermissions;
     @ApiModelProperty("Flag enabling Home button in kiosk mode")
     private Boolean kioskHome;
     @ApiModelProperty("Flag enabling Recents button in kiosk mode")
@@ -448,6 +450,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setMobileEnrollment(boolean mobileEnrollment) {
         this.mobileEnrollment = mobileEnrollment;
+    }
+
+    public boolean getSkipUserInteractivePermissions() {
+        return skipUserInteractivePermissions;
+    }
+
+    public void setSkipUserInteractivePermissions(boolean skipUserInteractivePermissions) {
+        this.skipUserInteractivePermissions = skipUserInteractivePermissions;
     }
 
     public Boolean getKioskHome() {
@@ -770,6 +780,7 @@ public class Configuration implements CustomerData, Serializable {
         this.lockSafeSettings = lockSafeSettings;
     }
 
+    
     public Boolean getPermissive() {
         return permissive;
     }
