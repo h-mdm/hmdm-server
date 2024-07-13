@@ -121,6 +121,10 @@ public class UnsecureDAO {
         return user;
     }
 
+    public User findByLogin(String login) {
+        return userMapper.findByLogin(login);
+    }
+
     public User findByEmail(String email) {
         return userMapper.findByEmail(email);
     }

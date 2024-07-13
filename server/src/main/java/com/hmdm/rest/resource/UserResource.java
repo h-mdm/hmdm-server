@@ -207,6 +207,11 @@ public class UserResource {
                 }
                 Settings settings = Optional.ofNullable(settingsDAO.getSettings()).orElse(new Settings());
                 if (user.getId() == null) {
+                    User dbUser = unsecureDAO.findByLogin(user.getLogin());
+                    if (dbUser != null) {
+                        logger.error("Failed to create user {}: duplicate login", user.getLogin());
+                        return Response.ERROR("error.duplicate.login");
+                    }
                     // Password is required for new users only
                     if (user.getNewPassword() == null) {
                         logger.warn("Failed to create user {}: empty password", user.getLogin());
@@ -216,6 +221,11 @@ public class UserResource {
                     updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
                     this.userDAO.insert(user);
                 } else {
+                    User dbUser = unsecureDAO.findByLogin(user.getLogin());
+                    if (dbUser != null && dbUser.getId() != user.getId()) {
+                        logger.error("Failed to create user {}: duplicate login", user.getLogin());
+                        return Response.ERROR("error.duplicate.login");
+                    }
                     this.userDAO.updateUserMainDetails(user);
                     // Update password only if it's specified
                     if (user.getNewPassword() != null && !user.getNewPassword().isEmpty()) {

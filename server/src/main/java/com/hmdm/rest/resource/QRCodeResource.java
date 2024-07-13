@@ -53,10 +53,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.BufferedInputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -74,6 +76,7 @@ public class QRCodeResource {
     private UnsecureDAO unsecureDAO;
     private CustomerDAO customerDAO;
 
+    private String filesDirectory;
     private String baseUrlForQrCode;
 
     /**
@@ -88,9 +91,11 @@ public class QRCodeResource {
     @Inject
     public QRCodeResource(UnsecureDAO unsecureDAO,
                           CustomerDAO customerDAO,
+                          @Named("files.directory") String filesDirectory,
                           @Named("base.url") String baseUrl) throws MalformedURLException {
         this.unsecureDAO = unsecureDAO;
         this.customerDAO = customerDAO;
+        this.filesDirectory = filesDirectory;
         final URL url = new URL(baseUrl);
         final int port = url.getPort();
         this.baseUrlForQrCode = url.getProtocol() + "://" + url.getHost() + (port != -1 ? ":" + port : "");
@@ -174,22 +179,7 @@ public class QRCodeResource {
                         final String apkUrl = appVersion.getUrl().replace(" ", "%20");
                         final String sha256;
                         if (appVersion.getApkHash() == null) {
-                            logger.info("Digesting the application file: {}", apkUrl);
-
-                            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                            byte[] buffer= new byte[8192];
-                            int count;
-                            try (BufferedInputStream bis = new BufferedInputStream(new URL(apkUrl).openStream())) {
-                                while ((count = bis.read(buffer)) > 0) {
-                                    digest.update(buffer, 0, count);
-                                }
-                            }
-
-                            final byte[] hash = digest.digest();
-                            sha256 = CryptoUtil.getBase64String(hash);
-
-                            logger.info("Finished digesting the application file: {}. Hash: {}", apkUrl, sha256);
-
+                            sha256 = calculateApkHash(apkUrl);
                             this.unsecureDAO.saveApkFileHash(appVersion.getId(), sha256);
                         } else {
                             sha256 = appVersion.getApkHash();
@@ -271,6 +261,45 @@ public class QRCodeResource {
             logger.error("Unexpected error while generating the QR-code image", e);
             return javax.ws.rs.core.Response.serverError().build();
         }
+    }
+
+    private String calculateApkHash(String apkUrl) throws NoSuchAlgorithmException, IOException {
+        logger.info("Digesting the application file: {}", apkUrl);
+
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] buffer= new byte[8192];
+        int count;
+
+        URL url = new URL(apkUrl);
+        if (apkUrl.startsWith(baseUrlForQrCode + "/files/")) {
+            // Local URL, use the file system
+            String urlPath = url.getPath();
+            int index = urlPath.indexOf("/files/", 0) + "/files/".length();
+            String path = urlPath.substring(index);
+            File file = new File(String.format("%s/%s", this.filesDirectory, path));
+            if (file.exists()) {
+                try (InputStream input = new FileInputStream(file)) {
+                    while ((count = input.read(buffer)) > 0) {
+                        digest.update(buffer, 0, count);
+                    }
+                }
+            } else {
+                throw new FileNotFoundException();
+            }
+        } else {
+            // Remote URL, use HTTP
+            try (BufferedInputStream bis = new BufferedInputStream(url.openStream())) {
+                while ((count = bis.read(buffer)) > 0) {
+                    digest.update(buffer, 0, count);
+                }
+            }
+        }
+
+        final byte[] hash = digest.digest();
+        String sha256 = CryptoUtil.getBase64String(hash);
+
+        logger.info("Finished digesting the application file: {}. Hash: {}", apkUrl, sha256);
+        return sha256;
     }
 
     private String generateExtrasBundle(String deviceID, String createOnDemand, Configuration configuration,
