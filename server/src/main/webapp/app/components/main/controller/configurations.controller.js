@@ -311,7 +311,51 @@ angular.module('headwind-kiosk')
         function ($scope, configurationService, settingsService, $stateParams, $state, $rootScope, $window, $timeout,
                   $transitions, localization, confirmModal, alertService, $modal, appVersionComparisonService, settingsService) {
 
+            
             $scope.successMessage = null;
+            
+            $scope.configuration = {
+                kioskMode: false,
+                kioskHome: false,
+                kioskRecents: false,
+                kioskNotifications: false,
+                kioskSystemInfo: false,
+                kioskKeyguard: false,
+                kioskLockButtons: false,
+                kioskExit: false
+            };
+
+
+            $scope.onKioskModeChange = function() {
+                if ($scope.configuration.kioskMode) {
+                    console.log("Kiosk Mode activado");
+                } else {
+                    console.log("Kiosk Mode desactivado");
+                }
+            };
+
+            $scope.logKioskMode = function () {
+                console.log("Kiosk Mode:", $scope.configuration.kioskMode);
+                console.log("Kiosk Home:", $scope.configuration.kioskHome);
+                console.log("Kiosk Recents:", $scope.configuration.kioskRecents);
+                console.log("Kiosk Notifications:", $scope.configuration.kioskNotifications);
+                console.log("Kiosk System Info:", $scope.configuration.kioskSystemInfo);
+                console.log("Kiosk Keyguard:", $scope.configuration.kioskKeyguard);
+                console.log("Kiosk Lock Buttons:", $scope.configuration.kioskLockButtons);
+                console.log("Kiosk Exit:", $scope.configuration.kioskExit);
+            };
+
+            $scope.printKioskModeConfig = function() {
+                console.log("Kiosk Mode Configuration:");
+                console.log("kioskMode:", $scope.configuration.kioskMode);
+                console.log("kioskHome:", $scope.configuration.kioskHome);
+                console.log("kioskRecents:", $scope.configuration.kioskRecents);
+                console.log("kioskNotifications:", $scope.configuration.kioskNotifications);
+                console.log("kioskSystemInfo:", $scope.configuration.kioskSystemInfo);
+                console.log("kioskKeyguard:", $scope.configuration.kioskKeyguard);
+                console.log("kioskLockButtons:", $scope.configuration.kioskLockButtons);
+                console.log("kioskExit:", $scope.configuration.kioskExit);
+            };
 
             let sortItem = $window.localStorage.getItem('HMDM_configAppsSortBy');
             $scope.sort = {
@@ -658,6 +702,7 @@ angular.module('headwind-kiosk')
                     }
                 });
             };
+            
 
             $scope.save = function (doClose) {
                 $scope.errorMessage = '';
@@ -672,6 +717,10 @@ angular.module('headwind-kiosk')
                 } else if ($scope.configuration.kioskMode && (!contentAppSelected)) {
                     $scope.errorMessage = localization.localize('error.empty.configuration.contentApp');
                 } else {
+
+                    $scope.logKioskMode();
+                    $scope.printKioskModeConfig();
+
                     var request = {};
 
                     for (var prop in $scope.configuration) {

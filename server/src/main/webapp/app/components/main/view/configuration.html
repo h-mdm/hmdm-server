@@ -703,9 +703,9 @@
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.kiosk.mode</label>
                         <div class='col-sm-1'>
-                            <input ng-model='configuration.kioskMode' name="mdm3" type='checkbox' class='form-control'/>
+                            <input ng-model='configuration.kioskMode' ng-change="onKioskModeChange()" name="mdm3" type='checkbox' class='form-control'/>
                         </div>
-                    </div>
+                    </div>                    
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.app.main</label>
