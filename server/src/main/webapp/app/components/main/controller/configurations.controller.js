@@ -346,16 +346,20 @@ angular.module('headwind-kiosk')
             };
 
             $scope.printKioskModeConfig = function() {
-                console.log("Kiosk Mode Configuration:");
-                console.log("kioskMode:", $scope.configuration.kioskMode);
-                console.log("kioskHome:", $scope.configuration.kioskHome);
-                console.log("kioskRecents:", $scope.configuration.kioskRecents);
-                console.log("kioskNotifications:", $scope.configuration.kioskNotifications);
-                console.log("kioskSystemInfo:", $scope.configuration.kioskSystemInfo);
-                console.log("kioskKeyguard:", $scope.configuration.kioskKeyguard);
-                console.log("kioskLockButtons:", $scope.configuration.kioskLockButtons);
-                console.log("kioskExit:", $scope.configuration.kioskExit);
+                var message = "Configuración del Kiosk Mode:\n";
+                message += "Kiosk Mode: " + $scope.configuration.kioskMode + "\n";
+                message += "Kiosk Home: " + $scope.configuration.kioskHome + "\n";
+                message += "Kiosk Recents: " + $scope.configuration.kioskRecents + "\n";
+                message += "Kiosk Notifications: " + $scope.configuration.kioskNotifications + "\n";
+                message += "Kiosk System Info: " + $scope.configuration.kioskSystemInfo + "\n";
+                message += "Kiosk Keyguard: " + $scope.configuration.kioskKeyguard + "\n";
+                message += "Kiosk Lock Buttons: " + $scope.configuration.kioskLockButtons + "\n";
+                message += "Kiosk Exit: " + $scope.configuration.kioskExit;
+            
+                // Mostrar un mensaje de advertencia en la pantalla
+                $window.alert(message);
             };
+            
 
             let sortItem = $window.localStorage.getItem('HMDM_configAppsSortBy');
             $scope.sort = {
