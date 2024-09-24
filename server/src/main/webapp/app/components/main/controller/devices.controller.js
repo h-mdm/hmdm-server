@@ -1005,7 +1005,25 @@ angular.module('headwind-kiosk')
         configurationService.getAllConfigurations(function (response) {
             $scope.device.configurationId = response.data[0].id;
             $scope.configurations = response.data;
+        
+            // Agregamos aquí el código para mostrar las configuraciones del modo kiosko
+            var config = response.data[0]; // Recupera la primera configuración, puedes ajustar si necesitas otra
+        
+            // Crear el mensaje con las configuraciones recuperadas
+            var message = 
+                "Kiosk Mode: " + config.kioskMode + "\n" +
+                "Kiosk Home: " + config.kioskHome + "\n" +
+                "Kiosk Recents: " + config.kioskRecents + "\n" +
+                "Kiosk Notifications: " + config.kioskNotifications + "\n" +
+                "Kiosk System Info: " + config.kioskSystemInfo + "\n" +
+                "Kiosk Keyguard: " + config.kioskKeyguard + "\n" +
+                "Kiosk Lock Buttons: " + config.kioskLockButtons + "\n" +
+                "Kiosk Exit: " + config.kioskExit;
+        
+            // Mostrar el mensaje en una ventana emergente
+            alert(message);
         });
+        
 
         $scope.save = function () {
             var ids = [];
