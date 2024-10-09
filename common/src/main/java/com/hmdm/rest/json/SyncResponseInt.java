@@ -89,6 +89,8 @@ public interface SyncResponseInt {
 
     String getAppUpdateTo();
 
+    String getDownloadUpdates();
+
     List<SyncApplicationSettingInt> getApplicationSettings();
 
     Boolean getUsbStorage();

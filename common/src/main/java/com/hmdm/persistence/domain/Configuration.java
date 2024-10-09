@@ -71,6 +71,8 @@ public class Configuration implements CustomerData, Serializable {
     private String appUpdateFrom;
     @ApiModelProperty(value = "An end time for system update period formatted as HH:MM.")
     private String appUpdateTo;
+    @ApiModelProperty("Limits downloading updates")
+    private DownloadUpdatesType downloadUpdates = DownloadUpdatesType.UNLIMITED;
 
     @ApiModelProperty("A flag indicating if GPS is enabled on device")
     private Boolean gps;
@@ -146,6 +148,8 @@ public class Configuration implements CustomerData, Serializable {
     private String wifiPassword;
     @ApiModelProperty("WiFi security type for provisioning: NONE/WPA/WEP/EAP")
     private String wifiSecurityType;
+    @ApiModelProperty("Device encryption")
+    private boolean encryptDevice;
     @ApiModelProperty("Additional QR code parameters")
     private String qrParameters;
     @ApiModelProperty("Prefer mobile data for provisioning")
@@ -434,6 +438,14 @@ public class Configuration implements CustomerData, Serializable {
         this.wifiSecurityType = wifiSecurityType;
     }
 
+    public boolean isEncryptDevice() {
+        return encryptDevice;
+    }
+
+    public void setEncryptDevice(boolean encryptDevice) {
+        this.encryptDevice = encryptDevice;
+    }
+
     public String getQrParameters() {
         return qrParameters;
     }
@@ -576,6 +588,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setAppUpdateTo(String appUpdateTo) {
         this.appUpdateTo = appUpdateTo;
+    }
+
+    public DownloadUpdatesType getDownloadUpdates() {
+        return downloadUpdates;
+    }
+
+    public void setDownloadUpdates(DownloadUpdatesType downloadUpdates) {
+        this.downloadUpdates = downloadUpdates;
     }
 
     public List<ApplicationSetting> getApplicationSettings() {
@@ -838,6 +858,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setScheduleAppUpdate(isScheduleAppUpdate());
         copy.setAppUpdateFrom(getAppUpdateFrom());
         copy.setAppUpdateTo(getAppUpdateTo());
+        copy.setDownloadUpdates(getDownloadUpdates());
 
         copy.setMainAppId(getMainAppId());
         copy.setContentAppId(getContentAppId());
@@ -846,6 +867,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setWifiSSID(getWifiSSID());
         copy.setWifiPassword(getWifiPassword());
         copy.setWifiSecurityType(getWifiSecurityType());
+        copy.setEncryptDevice(isEncryptDevice());
         copy.setQrParameters(getQrParameters());
         copy.setKioskHome(getKioskHome());
         copy.setKioskRecents(getKioskRecents());

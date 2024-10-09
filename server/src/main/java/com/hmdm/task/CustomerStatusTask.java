@@ -144,7 +144,8 @@ public class CustomerStatusTask implements Runnable {
                     c.getInactiveState() + "/P" + c.getPauseState() + "/A" + c.getAbandonState() + "<br>\n";
         }
         if (!adminEmail.equals("")) {
-            emailService.sendEmail(adminEmail, adminSubj, adminBody);
+            // This info is not required now
+//            emailService.sendEmail(adminEmail, adminSubj, adminBody);
         }
 
         // Notify Mailchimp

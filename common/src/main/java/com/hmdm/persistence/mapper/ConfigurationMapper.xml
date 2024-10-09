@@ -31,10 +31,10 @@
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
                                     runDefaultLauncher, disableScreenshots, autostartForeground, timeZone, allowedClasses, newServerUrl,
                                     lockSafeSettings, permissive, kioskExit, showWifi, mainAppId, eventReceivingComponent, kioskMode,
-                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, qrParameters, mobileEnrollment, kioskHome, kioskRecents,
+                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, encryptDevice, qrParameters, mobileEnrollment, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, kioskLockButtons, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
-                                    scheduleAppUpdate, appUpdateFrom, appUpdateTo, defaultFilePath)
+                                    scheduleAppUpdate, appUpdateFrom, appUpdateTo, downloadUpdates, defaultFilePath)
         VALUES (#{name}, #{description}, #{type}, #{password}, #{backgroundColor}, #{textColor}, #{backgroundImageUrl},
                 #{iconSize}, #{desktopHeader}, #{desktopHeaderTemplate}, #{displayStatus}, #{useDefaultDesignSettings}, #{customerId},
                 #{gps}, #{bluetooth}, #{wifi}, #{mobileData}, #{usbStorage}, #{requestUpdates}, #{disableLocation}, #{appPermissions},
@@ -42,10 +42,10 @@
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
                 #{runDefaultLauncher}, #{disableScreenshots}, #{autostartForeground}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
                 #{lockSafeSettings}, #{permissive}, #{kioskExit}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode},
-                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{qrParameters}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
+                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{encryptDevice}, #{qrParameters}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
                 #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{kioskLockButtons}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo},
-                #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{defaultFilePath})
+                #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{downloadUpdates}, #{defaultFilePath})
     </insert>
 
     <insert id="insertConfigurationApplications">
@@ -90,6 +90,7 @@
     </insert>
 
     <select id="getConfigurationApplications" resultType="Application">
+        CREATE TEMP TABLE ${tempTable} ON COMMIT DROP AS SELECT * FROM configurationApplications WHERE configurationApplications.configurationId = #{id};
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId,
                applicationVersions.version, applicationVersions.url,
@@ -117,7 +118,7 @@
         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
         INNER JOIN customers ON customers.id = applications.customerId
         INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
-        LEFT JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
+        LEFT JOIN ${tempTable} configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
         LEFT JOIN configurationApplicationParameters cap ON applications.id = cap.applicationId AND cap.configurationId = #{id}
         WHERE (applications.customerId=#{customerId}
            OR customers.master

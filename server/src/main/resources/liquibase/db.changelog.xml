@@ -2506,4 +2506,24 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="21.09.24-14:21" author="seva" context="common">
+        <comment>Add MDM device encryption column to configurations</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN encryptDevice BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN encryptDevice;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="25.09.24-11:49" author="seva" context="common">
+        <comment>Column,new: configurations#downloadUpdates</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN downloadUpdates VARCHAR(20) NOT NULL DEFAULT 'UNLIMITED';
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN downloadUpdates;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -212,7 +212,7 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
         return getLinkedList(
                 id,
                 this.mapper::getConfigurationById,
-                customerId -> this.mapper.getConfigurationApplications(customerId, id),
+                customerId -> this.mapper.getConfigurationApplications(customerId, id, "ca" + CryptoUtil.randomHexString(8)),
                 SecurityException::onConfigurationAccessViolation
         );
     }

@@ -107,6 +107,7 @@ public interface ConfigurationMapper {
             "wifiSSID=#{wifiSSID}, " +
             "wifiPassword=#{wifiPassword}, " +
             "wifiSecurityType=#{wifiSecurityType}, " +
+            "encryptDevice=#{encryptDevice}, " +
             "qrParameters=#{qrParameters}, " +
             "mobileEnrollment=#{mobileEnrollment}, " +
             "kioskHome=#{kioskHome}, " +
@@ -124,6 +125,7 @@ public interface ConfigurationMapper {
             "scheduleAppUpdate=#{scheduleAppUpdate}, " +
             "appUpdateFrom=#{appUpdateFrom}, " +
             "appUpdateTo=#{appUpdateTo}, " +
+            "downloadUpdates=#{downloadUpdates}, " +
             "defaultFilePath=#{defaultFilePath} " +
             "WHERE id=#{id}"})
     void updateConfiguration(Configuration configuration);
@@ -160,7 +162,8 @@ public interface ConfigurationMapper {
      * @param id an ID of a configuration.
      * @return a list of all existing applications with set parameters of usage by specified configuration.
      */
-    List<Application> getConfigurationApplications(@Param("customerId") Integer customerId, @Param("id") Integer id);
+    List<Application> getConfigurationApplications(@Param("customerId") Integer customerId, @Param("id") Integer id,
+                                                   @Param("tempTable") String tempTable);
 
     /**
      * <p>Gets the list of applications used by specified configuration.</p>

@@ -225,6 +225,10 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String appUpdateTo;
 
+    @ApiModelProperty("Limitations of downloading updates")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String downloadUpdates;
+
     @ApiModelProperty(value = "A list of application settings to apply on device")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<SyncApplicationSettingInt> applicationSettings;
@@ -563,6 +567,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setAppUpdateTo(String appUpdateTo) {
         this.appUpdateTo = appUpdateTo;
+    }
+
+    @Override
+    public String getDownloadUpdates() {
+        return downloadUpdates;
+    }
+
+    public void setDownloadUpdates(String downloadUpdates) {
+        this.downloadUpdates = downloadUpdates;
     }
 
     @Override

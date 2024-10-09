@@ -60,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class='row'>
+<!-- Commented as a deprecated option                    <div class='row'>
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.block.status.bar</label>
                         <div class='col-sm-1'>
                             <input ng-model='configuration.blockStatusBar' name="mdm32323" type='checkbox' class='form-control common-checkbox'/>
@@ -69,7 +69,7 @@
                     <div class='form-group'>
                         <div class='col-sm-3'>&nbsp;</div>
                         <div class='col-sm-9 field-hint' localized>form.configuration.settings.block.status.bar.hint</div>
-                    </div>
+                    </div> -->
 
                     <div class='form-group'>
                         <label class='col-sm-3 control-label' for="requestUpdates-c"
@@ -340,6 +340,22 @@
                             <div class="col-sm-4">
                                 <timepicker ng-model='dates.appUpdateTo' show-meridian='false'></timepicker>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' for="passwordMode-c"
+                               localized>form.configuration.settings.download.updates</label>
+                        <div class='col-sm-9'>
+                            <select class='form-control' id="downloadUpdates-c" name="downloadUpdates"
+                                    ng-model='configuration.downloadUpdates'>
+                                <option ng-value="'UNLIMITED'" ng-selected="configuration.downloadUpdates === 'UNLIMITED'"
+                                        localized>form.configuration.settings.download.updates.unlimited</option>
+                                <option ng-value="'LIMITED'" ng-selected="configuration.downloadUpdates === 'LIMITED'"
+                                        localized>form.configuration.settings.download.updates.limited</option>
+                                <option ng-value="'WIFI'" ng-selected="configuration.downloadUpdates === 'WIFI'"
+                                        localized>form.configuration.settings.download.updates.wifi</option>
+                            </select>
                         </div>
                     </div>
 
@@ -845,6 +861,13 @@
                         <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.mobile.enrollment</label>
                         <div class='col-sm-1'>
                             <input ng-model='configuration.mobileEnrollment' name="mobileEnrollment-c" type='checkbox' class='form-control'/>
+                        </div>
+                    </div>
+
+                    <div class='form-group'>
+                        <label class='col-sm-3 control-label' localized>form.configuration.settings.mdm.encrypt.device</label>
+                        <div class='col-sm-1'>
+                            <input ng-model='configuration.encryptDevice' name="encryptDevice-c" type='checkbox' class='form-control'/>
                         </div>
                     </div>
 

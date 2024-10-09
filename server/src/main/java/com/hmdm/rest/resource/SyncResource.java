@@ -370,6 +370,7 @@ public class SyncResource {
             data.setAppUpdateFrom(configuration.getAppUpdateFrom());
             data.setAppUpdateTo(configuration.getAppUpdateTo());
         }
+        data.setDownloadUpdates(configuration.getDownloadUpdates().getTransmittedValue());
         data.setPasswordMode(configuration.getPasswordMode());
         data.setOrientation(configuration.getOrientation());
         data.setDisplayStatus(configuration.isDisplayStatus() ? true : null);
