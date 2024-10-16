@@ -413,8 +413,8 @@ public class SyncResource {
             }
         }
         
-        data.setWifi(false);  // Bloquea el acceso a la configuración de Wi-Fi
-        data.setBluetooth(false);  // Bloquea el acceso a la configuración de Bluetooth
+        //data.setWifi(false);  // Bloquea el acceso a la configuración de Wi-Fi
+        //data.setBluetooth(false);  // Bloquea el acceso a la configuración de Bluetooth
 
         data.setKioskHome(configuration.getKioskHome() != null && configuration.getKioskHome() ? true : null);
         data.setKioskRecents(configuration.getKioskRecents() != null && configuration.getKioskRecents() ? true : null);
