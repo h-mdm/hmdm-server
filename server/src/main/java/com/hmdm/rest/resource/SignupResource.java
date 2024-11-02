@@ -264,6 +264,11 @@ public class SignupResource {
                         emailService.getSignupNotifyEmailBody(customer));
             }
 
+            // Save to Mailchimp
+            if (mailchimpService.initialize()) {
+                mailchimpService.subscribe(customer, "self_signup");
+            }
+
             return Response.OK();
         } catch (Exception e) {
             logger.error("Unexpected error when signing up a customer {}", data, e);

@@ -26,6 +26,8 @@ import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
@@ -46,6 +48,7 @@ import java.util.stream.Collectors;
 @Path("/private/groups")
 public class GroupResource {
     private GroupDAO groupDAO;
+    private UserDAO userDAO;
 
     /**
      * <p>A logger to be used for logging the events.</p>
@@ -59,8 +62,10 @@ public class GroupResource {
     }
 
     @Inject
-    public GroupResource(GroupDAO groupDAO) {
+    public GroupResource(GroupDAO groupDAO,
+                         UserDAO userDAO) {
         this.groupDAO = groupDAO;
+        this.userDAO = userDAO;
     }
 
     // =================================================================================================================
@@ -136,6 +141,12 @@ public class GroupResource {
         } else {
             if (group.getId() == null) {
                 this.groupDAO.insertGroup(group);
+                User user = SecurityContext.get().getCurrentUser().get();
+                if (!user.isAllDevicesAvailable()) {
+                    // User should get permissions to view and edit a group he created
+                    user.getGroups().add(new LookupItem(group.getId(), null));
+                    userDAO.updateUserMainDetails(user);
+                }
             } else {
                 this.groupDAO.updateGroup(group);
             }

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
-import java.net.HttpURLConnection;
 import java.util.List;
 
 @Singleton
@@ -20,13 +19,16 @@ public class MailchimpService {
     private static final Logger logger = LoggerFactory.getLogger(MailchimpService.class);
 
     private final String baseUrl;
+    private final String mailchimpUrl;
     private final String apiKey;
     private String listId;
 
     @Inject
-    public MailchimpService(@Named("mailchimp.url") String baseUrl,
+    public MailchimpService(@Named("base.url") String baseUrl,
+                            @Named("mailchimp.url") String mailchimpUrl,
                             @Named("mailchimp.key") String apiKey) {
         this.baseUrl = baseUrl;
+        this.mailchimpUrl = mailchimpUrl;
         this.apiKey = apiKey;
     }
 
@@ -36,11 +38,11 @@ public class MailchimpService {
             // Already initialized
             return true;
         }
-        if (baseUrl.equals("")) {
+        if (mailchimpUrl.equals("")) {
             // Intentionally not using Mailchimp Service
             return false;
         }
-        String location = baseUrl + "/3.0/lists";
+        String location = mailchimpUrl + "/3.0/lists";
         String lists = RESTUtil.send(location, "GET", "Basic " + apiKey, null);
         if (lists != null) {
             try {
@@ -62,8 +64,8 @@ public class MailchimpService {
         }
     }
 
-    public boolean subscribe(Customer customer) {
-        if (baseUrl.equals("")) {
+    public boolean subscribe(Customer customer, String sourceTag) {
+        if (mailchimpUrl.equals("")) {
             // Intentionally not using Mailchimp Service
             return false;
         }
@@ -75,11 +77,16 @@ public class MailchimpService {
             logger.warn("Can't subscribe customer " + customer.getName() + ": empty email");
             return false;
         }
-        String location = baseUrl + "/3.0/lists/" + listId;
+        String location = mailchimpUrl + "/3.0/lists/" + listId;
         StringBuilder requestBody = new StringBuilder();
         requestBody.append("{\"members\":[{\"email_address\":\"");
         requestBody.append(customer.getEmail().trim());
         requestBody.append("\",\"email_type\":\"html\",\"status\":\"subscribed\",");
+        if (customer.getLanguage() != null && !customer.getLanguage().trim().equals("")) {
+            requestBody.append("\"language\":\"");
+            requestBody.append(customer.getLanguage().trim());
+            requestBody.append("\",");
+        }
         requestBody.append("\"merge_fields\":{\"FNAME\":\"");
         if (customer.getFirstName() != null) {
             requestBody.append(customer.getFirstName().trim());
@@ -88,7 +95,16 @@ public class MailchimpService {
         if (customer.getLastName() != null) {
             requestBody.append(customer.getLastName().trim());
         }
-        requestBody.append("\"}}]}");
+        requestBody.append("\",\"ACCOUNT\":\"");
+        if (customer.getName() != null) {
+            requestBody.append(customer.getName().trim());
+        }
+        requestBody.append("\",\"SERVER\":\"");
+        requestBody.append(baseUrl);
+        requestBody.append("\"},\"tags\":[\"");
+        requestBody.append(sourceTag);
+        requestBody.append("\"]");
+        requestBody.append("}]}");
 
         String result = RESTUtil.send(location, "POST", "Basic " + apiKey, requestBody.toString());
         if (result == null) {
@@ -118,7 +134,7 @@ public class MailchimpService {
 
     // Send the command to add new tags to customers
     public boolean updateStatus(List<Customer> customers) {
-        if (baseUrl.equals("")) {
+        if (mailchimpUrl.equals("")) {
             // Intentionally not using Mailchimp Service
             return false;
         }
@@ -132,7 +148,7 @@ public class MailchimpService {
             return true;
         }
 
-        String baseLocation = baseUrl + "/3.0/lists/" + listId + "/members/";
+        String baseLocation = mailchimpUrl + "/3.0/lists/" + listId + "/members/";
         for (Customer customer : customers) {
             if (customer.getEmail() == null || customer.getEmail().trim().equals("")) {
                 continue;
@@ -169,7 +185,7 @@ public class MailchimpService {
             }
         } else if (customer.getCustomerStatus().equals(Customer.CUSTOMER_PAUSE)) {
             tag.append("pause");
-            if (customer.getInactiveState() == 2) {
+            if (customer.getPauseState() == 2) {
                 tag.append("_2");
             }
         } else if (customer.getCustomerStatus().equals(Customer.CUSTOMER_ABANDON)) {

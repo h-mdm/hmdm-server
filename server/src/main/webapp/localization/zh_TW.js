@@ -136,10 +136,11 @@ document.localization ['zh_TW'] = {
     'question.delete.file' : "要刪除文檔\"${fileName}\"嗎？",
     'question.delete.customer':"刪除組織\"${customerName}\"？",
     'question.delete.user':"刪除用戶\"${username}\"？",
-    'question.delete.application' : "是否刪除應用程式\"${applicationName}\" ？，",
-    'question.delete.application.version':"刪除版本\"${applicationVersion}\"嗎？",
-    'question.delete.configuration' : "刪除配置\"${configurationName}\" ??",
+    'question.delete.application' : "是否刪除應用程式\"${applicationName}\"？",
+    'question.delete.application.version':"刪除版本\"${applicationVersion}\"？",
+    'question.delete.configuration' : "刪除配置\"${configurationName}\"？",
     'question.delete.group':"刪除組合\"${groupName}\"？",
+    'question.delete.role': 'Delete the role "${roleName}"?',
     'question.delete.device.bulk': '刪除所選設備？',
     'question.delete.device' : "刪除數字為\"${deviceNumber}\"的設備嗎？",
     'question.exit.without.saving' : "更改未儲存。無論如何要離開此頁面？",
@@ -206,6 +207,8 @@ document.localization ['zh_TW'] = {
     'error.used.file':"已使用此文檔",
     'error.version.exists':"此應用程式的相同版本已存在",
     'error.duplicate.configuration':"具有該名稱的配置已存在",
+    'error.duplicate.role.name': '已存在同名角色',
+    'error.empty.role.name': '請註明角色名稱',
     'error.notfound.customer.admin':"找不到管理員帳戶",
     'error.apk.file.required':"選擇擴展名為.apk或.xapk的文檔",
     'error.apk.parse':"解析文檔時發生錯誤",
@@ -230,9 +233,11 @@ document.localization ['zh_TW'] = {
     'table.filtering.uncheck.all':"取消全部",
     'table.filtering.suffix.configuration':"配置",
     'table.filtering.suffix.group':"組合",
+    'table.filtering.suffix.permission': '權限',
     'table.filtering.no.selected.configuration':"未選擇配置",
     'table.filtering.no.selected.group':"未選擇組合",
-		
+    'table.filtering.no.selected.permission': '未選擇權限',
+
     'success.admin.created' : "管理員帳戶已創建:\n ${adminCredentials}",
     'success.uploading.file':"文檔已上傳到服務器...",
     'success.loading.devices':"正在加載設備列表...",
@@ -570,7 +575,11 @@ document.localization ['zh_TW'] = {
 		
     'form.group.name' : "名稱",
     'form.group.name.placeholder':"輸入組合名稱",
-		
+
+    'form.role.name': '名称',
+    'form.role.name.placeholder': '输入角色的名称',
+    'form.role.permissions': '权限',
+
     'form.user.login' : "登錄",
     'form.user.login.placeholder':"輸入用戶登錄名",
     'form.user.name' : "名稱",
@@ -682,6 +691,8 @@ document.localization ['zh_TW'] = {
     'form.settings.users.title':"用戶",
     'form.settings.users.search.placeholder':"搜索用戶",
 
+    'form.settings.roles.title': '使用者角色',
+
     'form.qr.device.number': '設備編號',
     'form.qr.auto.create': '添加到設備列表（如果不存在）',
     'form.qr.number.use': '設備編號分配',
@@ -728,6 +739,7 @@ document.localization ['zh_TW'] = {
     'tab.default.design':"默認設計",
     'tab.common.settings':"設備表視圖",
     'tab.users':"用戶",
+    'tab.roles': '角色',
     'tab.groups':"組合",
     'tab.language':"常規和語言選項",
     'tab.license' : "軟件許可證",
@@ -829,7 +841,10 @@ document.localization ['zh_TW'] = {
 		
     'table.heading.group.name' : "名稱",
     'table.heading.group.actions':"功能",
-		
+
+    'table.heading.role.name' : "名稱",
+    'table.heading.role.actions':"功能",
+
     'table.heading.file.name' : "文檔名",
     'table.heading.file.path' : "路徑",
     'table.heading.file.address' : "網址",
@@ -859,7 +874,8 @@ document.localization ['zh_TW'] = {
     'notfound.users' : '找不到用戶。嘗試其他查詢。',
     'notfound.apps.for.display':"沒有要顯示的應用程式。",
     'notfound.app.versions.for.display':"沒有要顯示的版本。",
-		
+    'notfound.roles':'角色列表為空。',
+
     'format.date.header' : "HH:mm dd / MM / yyyy",
 		
     'menu.about' : "關於",
@@ -883,6 +899,7 @@ document.localization ['zh_TW'] = {
     'breadcrumb.language.settings':"語言和其他設置",
     'breadcrumb.license.settings' : "軟件許可證",
     'breadcrumb.users':"用戶",
+    'breadcrumb.roles': '角色',
     'breadcrumb.groups':"組合",
     'breadcrumb.hints':"提示",
     'breadcrumb.plugins':"插件",
@@ -1013,6 +1030,43 @@ document.localization ['zh_TW'] = {
     'updates.getting': '正在獲取更新...',
     'updates.success': '更新完成',
     'updates.web.hint': '要完成 Web 應用程序更新，請在 SSH 控制台中運行 shell 腳本 /opt/hmdm/update-web-app.sh',
+
+    'permission.edit_device_app_settings': '管理特定於裝置的應用程式設定',
+    'permission.plugins_customer_access_management': '管理可用插件',
+    'permission.plugin_audit_access': '檢視審核日誌',
+    'permission.plugin_contacts_access': '管理聯絡人',
+    'permission.plugin_deviceexport_access': '匯出裝置',
+    'permission.plugin_deviceimport_access': '導入裝置',
+    'permission.plugin_deviceinfo_access': '查看裝置詳細資料',
+    'permission.plugin_devicelocations_access': '在地圖上檢視裝置',
+    'permission.plugin_devicelocations_settings_access': '配置地圖插件',
+    'permission.plugin_devicelog_access': '檢視裝置日誌',
+    'permission.plugin_devicereset_access': '重設並重新啟動裝置',
+    'permission.plugin_licensing_access': '存取授權（已棄用）',
+    'permission.plugin_messaging_send': '發送訊息',
+    'permission.plugin_messaging_delete': '刪除已傳送的訊息',
+    'permission.plugin_photo_remove_photo': '刪除照片',
+    'permission.settings': '管理設定',
+    'permission.configurations': '查看配置',
+    'permission.edit_devices': '編輯裝置資訊',
+    'permission.edit_device_desc': '編輯裝置描述',
+    'permission.plugin_apuppet_access': '遠端控制',
+    'permission.plugin_knox_access': 'Knox 插件',
+    'permission.add_config': '新增設定',
+    'permission.copy_config': '重複配置',
+    'permission.plugin_openvpn_access': 'OpenVPN 外掛程式',
+    'permission.plugin_photo_access': '照片插件',
+    'permission.push_api': '存取推送API',
+    'permission.plugin_urlfilter_access': 'URL過濾',
+    'permission.plugin_push_send': '發送推播訊息',
+    'permission.plugin_push_delete': '刪除推播訊息',
+    'permission.get_updates': '檢查更新',
+    'permission.plugin_xtra_access': '請求高級版本',
+    'permission.applications': '查看應用程式',
+    'permission.edit_applications': '管理應用程式',
+    'permission.edit_application_versions': '管理應用程式版本',
+    'permission.files': '檢視檔案',
+    'permission.edit_files': '管理檔案',
 
     'yes' : 'yes',
     'no' : 'No'

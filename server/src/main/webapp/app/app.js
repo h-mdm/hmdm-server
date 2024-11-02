@@ -41,7 +41,7 @@ angular.module('headwind-kiosk',
         'ja_JP': 'ja_JP'
     })
     .constant("LOCALIZATION_BUNDLES", ['en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE', 'zh_TW', 'zh_CN', 'ja_JP'])
-    .constant("APP_VERSION", "5.28.1") // Update this value on each commit
+    .constant("APP_VERSION", "5.29.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
         this.f = function () {
@@ -205,6 +205,17 @@ angular.module('headwind-kiosk',
                 },
                 resolve: {
                     openTab: function () {return "USERS"}
+                }
+            })
+            .state('roles', {
+                url: '/roles',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.roles" | localize}}' //label to show in breadcrumbs
+                },
+                resolve: {
+                    openTab: function () {return "ROLES"}
                 }
             })
             .state('groups', {

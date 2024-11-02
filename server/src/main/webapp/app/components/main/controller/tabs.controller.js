@@ -14,6 +14,7 @@ angular.module('headwind-kiosk')
             DESIGN: 'designSettings',
             COMMON: 'commonSettings',
             USERS: 'users',
+            ROLES: 'roles',
             GROUPS: 'groups',
             LANG: 'langSettings',
             HINTS: 'hints',
@@ -52,6 +53,9 @@ angular.module('headwind-kiosk')
         $scope.currentUser = {};
 
         $scope.hasPermission = authService.hasPermission;
+        $scope.canManageRoles = function() {
+            return authService.isSingleCustomer() || authService.isSuperAdmin();
+        };
 
         $scope.activeTab = openTab;
 

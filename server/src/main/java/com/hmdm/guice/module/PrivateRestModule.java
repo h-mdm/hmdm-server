@@ -24,18 +24,8 @@ package com.hmdm.guice.module;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.rest.filter.PrivateIPFilter;
-import com.hmdm.rest.resource.HintResource;
+import com.hmdm.rest.resource.*;
 import com.hmdm.rest.filter.AuthFilter;
-import com.hmdm.rest.resource.ApplicationResource;
-import com.hmdm.rest.resource.ConfigurationResource;
-import com.hmdm.rest.resource.CustomerResource;
-import com.hmdm.rest.resource.DeviceResource;
-import com.hmdm.rest.resource.FilesResource;
-import com.hmdm.rest.resource.GroupResource;
-import com.hmdm.rest.resource.IconFileResource;
-import com.hmdm.rest.resource.IconResource;
-import com.hmdm.rest.resource.SettingsResource;
-import com.hmdm.rest.resource.UserResource;
 import com.hmdm.security.jwt.JWTFilter;
 
 public class PrivateRestModule extends ServletModule {
@@ -57,5 +47,6 @@ public class PrivateRestModule extends ServletModule {
         this.bind(FilesResource.class);
         this.bind(IconFileResource.class);
         this.bind(HintResource.class);
+        this.bind(UserRoleResource.class);
     }
 }

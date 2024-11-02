@@ -155,7 +155,7 @@ public class CustomerResource {
                 String adminCredentials = this.customerDAO.insertCustomer(customer);
                 if (customer.getEmail() != null && !customer.getEmail().trim().equals("")) {
                     if (mailchimpService.initialize()) {
-                        mailchimpService.subscribe(customer);
+                        mailchimpService.subscribe(customer, "cloud_demo");
                     }
                 }
 

@@ -20,7 +20,7 @@ public class CustomerStatusTask implements Runnable {
     private final String adminEmail;
 
     private final int INTERVAL_PAUSE_1   = 3;
-    private final int INTERVAL_PAUSE_2   = 3;
+    private final int INTERVAL_PAUSE_2   = 5;
     private final int INTERVAL_ABANDON_1 = 7;
     private final int INTERVAL_ABANDON_2 = 14;
     private final int INTERVAL_DENIAL    = 14;

@@ -136,10 +136,11 @@ document.localization ['zh_CN'] = {
     'question.delete.file' : "要删除文档\"${fileName}\"吗？",
     'question.delete.customer':"删除组织\"${customerName}\"？",
     'question.delete.user':"删除用户\"${username}\"？",
-    'question.delete.application' : "是否删除应用程式\"${applicationName}\" ？，",
+    'question.delete.application' : "是否删除应用程式\"${applicationName}\" ？",
     'question.delete.application.version':"删除版本\"${applicationVersion}\"吗？",
-    'question.delete.configuration' : "删除配置\"${configurationName}\" ??",
+    'question.delete.configuration' : "删除配置\"${configurationName}\" ？",
     'question.delete.group':"删除组合\"${groupName}\"？",
+    'question.delete.role': '删除角色"${roleName}"？',
     'question.delete.device.bulk': '删除所选设备？',
     'question.delete.device' : "删除数字为\"${deviceNumber}\"的设备吗？",
     'question.exit.without.saving' : "更改未储存。无论如何要离开此页面？",
@@ -206,6 +207,8 @@ document.localization ['zh_CN'] = {
     'error.used.file':"已使用此文档",
     'error.version.exists':"此应用程式的相同版本已存在",
     'error.duplicate.configuration':"具有该名称的配置已存在",
+    'error.duplicate.role.name': '同名角色已存在',
+    'error.empty.role.name': '请指定角色名称',
     'error.notfound.customer.admin':"找不到管理员帐户",
     'error.apk.file.required':"选择扩展名为.apk或.xapk的文档",
     'error.apk.parse':"解析文档时发生错误",
@@ -230,9 +233,11 @@ document.localization ['zh_CN'] = {
     'table.filtering.uncheck.all':"取消全部",
     'table.filtering.suffix.configuration':"配置",
     'table.filtering.suffix.group':"组合",
+    'table.filtering.suffix.permission': '权限',
     'table.filtering.no.selected.configuration':"未选择配置",
     'table.filtering.no.selected.group':"未选择组合",
-		
+    'table.filtering.no.selected.permission': '未选择权限',
+
     'success.admin.created' : "管理员帐户已创建:\n ${adminCredentials}",
     'success.uploading.file':"文档已上传到服务器...",
     'success.loading.devices':"正在加载设备列表...",
@@ -570,7 +575,11 @@ document.localization ['zh_CN'] = {
 		
     'form.group.name' : "名称",
     'form.group.name.placeholder':"输入组合名称",
-		
+
+    'form.role.name': '名称',
+    'form.role.name.placeholder': '输入角色的名称',
+    'form.role.permissions': '权限',
+
     'form.user.login' : "登录",
     'form.user.login.placeholder':"输入用户登录名",
     'form.user.name' : "名称",
@@ -682,6 +691,8 @@ document.localization ['zh_CN'] = {
     'form.settings.users.title':"用户",
     'form.settings.users.search.placeholder':"搜索用户",
 
+    'form.settings.roles.title': '用户角色',
+
     'form.qr.device.number': '设备ID分配',
     'form.qr.auto.create': '添加到设备列表（如果不存在）',
     'form.qr.number.use': '设备编号分配',
@@ -728,6 +739,7 @@ document.localization ['zh_CN'] = {
     'tab.default.design':"默认设计",
     'tab.common.settings':"设备表视图",
     'tab.users':"用户",
+    'tab.roles': '角色',
     'tab.groups':"组合",
     'tab.language':"常规和语言选项",
     'tab.license' : "软件许可證",
@@ -829,7 +841,10 @@ document.localization ['zh_CN'] = {
 		
     'table.heading.group.name' : "名称",
     'table.heading.group.actions':"功能",
-		
+
+    'table.heading.role.name' : "名称",
+    'table.heading.role.actions':"功能",
+
     'table.heading.file.name' : "文档名",
     'table.heading.file.path' : "路径",
     'table.heading.file.address' : "网址",
@@ -859,7 +874,8 @@ document.localization ['zh_CN'] = {
     'notfound.users' : '找不到用户。尝试其他查询。',
     'notfound.apps.for.display':"没有要显示的应用程式。",
     'notfound.app.versions.for.display':"没有要显示的版本。",
-		
+    'notfound.roles':'角色列表为空。',
+
     'format.date.header' : "HH:mm dd / MM / yyyy",
 		
     'menu.about' : "关於",
@@ -883,6 +899,7 @@ document.localization ['zh_CN'] = {
     'breadcrumb.language.settings':"语言和其他设置",
     'breadcrumb.license.settings' : "软件许可證",
     'breadcrumb.users':"用户",
+    'breadcrumb.roles': '角色',
     'breadcrumb.groups':"组合",
     'breadcrumb.hints':"提示",
     'breadcrumb.plugins':"插件",
@@ -1013,6 +1030,43 @@ document.localization ['zh_CN'] = {
     'updates.getting': '正在获取更新...',
     'updates.success': '更新完成',
     'updates.web.hint': '要完成 Web 应用程序更新，请在 SSH 控制台中运行 shell 脚本 /opt/hmdm/update-web-app.sh',
+
+    'permission.edit_device_app_settings': '管理设备特定的应用设置',
+    'permission.plugins_customer_access_management': '管理可用插件',
+    'permission.plugin_audit_access': '查看审核日志',
+    'permission.plugin_contacts_access': '管理联系人',
+    'permission.plugin_deviceexport_access': '导出设备',
+    'permission.plugin_deviceimport_access': '导入设备',
+    'permission.plugin_deviceinfo_access': '查看设备详细信息',
+    'permission.plugin_devicelocations_access': '在地图上查看设备',
+    'permission.plugin_devicelocations_settings_access': '配置地图插件',
+    'permission.plugin_devicelog_access': '查看设备日志',
+    'permission.plugin_devicereset_access': '重置并重启设备',
+    'permission.plugin_licensing_access': '访问许可证（已弃用）',
+    'permission.plugin_messaging_send': '发送消息',
+    'permission.plugin_messaging_delete': '删除已发送的消息',
+    'permission.plugin_photo_remove_photo': '删除照片',
+    'permission.settings': '管理设置',
+    'permission.configurations': '查看配置',
+    'permission.edit_devices': '编辑设备信息',
+    'permission.edit_device_desc': '编辑设备描述',
+    'permission.plugin_apuppet_access': '远程控制',
+    'permission.plugin_knox_access': 'Knox插件',
+    'permission.add_config': '添加配置',
+    'permission.copy_config': '重复配置',
+    'permission.plugin_openvpn_access': 'OpenVPN 插件',
+    'permission.plugin_photo_access': '照片插件',
+    'permission.push_api': '访问推送 API',
+    'permission.plugin_urlfilter_access': 'URL 过滤',
+    'permission.plugin_push_send': '发送推送消息',
+    'permission.plugin_push_delete': '删除推送消息',
+    'permission.get_updates': '检查更新',
+    'permission.plugin_xtra_access': '请求高级版本',
+    'permission.applications': '查看应用程序',
+    'permission.edit_applications': '管理应用程序',
+    'permission.edit_application_versions': '管理应用程序版本',
+    'permission.files': '查看文件',
+    'permission.edit_files': '管理文件',
 
     'yes' : 'yes',
     'no' : 'No'

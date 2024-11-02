@@ -34,7 +34,7 @@ public class UserRole implements Serializable {
     private static final long serialVersionUID = 5723531788626059664L;
     
     @ApiModelProperty("A user role ID")
-    private int id;
+    private Integer id;
     @ApiModelProperty("A user role name")
     private String name;
     @ApiModelProperty("A user role description")
@@ -47,11 +47,11 @@ public class UserRole implements Serializable {
     public UserRole() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

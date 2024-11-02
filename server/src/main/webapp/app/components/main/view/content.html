@@ -42,6 +42,10 @@
                     <tab-heading localized-change-tracking>tab.users</tab-heading>
                     <ng-include src="'app/components/main/view/settings/users.html'" ng-if="activeTab === 'USERS'"></ng-include>
                 </tab>
+                <tab ng-if="canManageRoles()" active="act.ROLES" ng-click="openTab('ROLES')">
+                    <tab-heading localized-change-tracking>tab.roles</tab-heading>
+                    <ng-include src="'app/components/main/view/settings/roles.html'" ng-if="activeTab === 'ROLES'"></ng-include>
+                </tab>
                 <tab  active="act.GROUPS" ng-click="openTab('GROUPS')">
                     <tab-heading localized-change-tracking>tab.groups</tab-heading>
                     <ng-include src="'app/components/main/view/settings/groups.html'" ng-if="activeTab === 'GROUPS'"></ng-include>

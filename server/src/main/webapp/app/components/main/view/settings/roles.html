@@ -1,0 +1,43 @@
+<!-- Localization completed -->
+<div class="width-1000" ng-controller="RolesTabController">
+
+    <div class="text-center">
+        <h4 localized>form.settings.roles.title</h4>
+    </div>
+
+    <div>
+        <div class='form-group'>
+            <div class='configurations-search-buttons'>
+                <button type='button' class='btn btn-default' ng-click='editRole( {} )' localized>button.add</button>
+            </div>
+        </div>
+
+        <table ng-if='roles && roles.length > 0' class='table'>
+            <thead>
+            <tr>
+                <th localized>table.heading.role.name</th>
+                <th class='actions-column' localized>table.heading.role.actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat='role in roles'>
+                <td>{{role.name}}</td>
+                <td>
+                    <div>
+                        <button type='button' class='btn btn-default' ng-click='editRole(role)'>
+                            <span class='glyphicon glyphicon-pencil'></span>
+                        </button>
+                        <button type='button'
+                                class='btn btn-default'
+                                ng-click='removeRole(role)'>
+                            <span class='glyphicon glyphicon-trash'></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div ng-if='roles && roles.length === 0' class='center' localized>notfound.roles</div>
+    </div>
+</div>

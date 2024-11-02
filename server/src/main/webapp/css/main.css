@@ -875,6 +875,10 @@ td.app-desc span {
     display: inline-block;
 }
 
+.limited-multi-select .dropdown-menu-form {
+    height: 300px !important;
+}
+
 .tags-wrapper .tags .tag-item {
     background: #f5f5f5 !important;
 }
