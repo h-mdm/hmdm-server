@@ -57,7 +57,9 @@ public final class StringUtil {
 
     public static String jsonEscape(String text) {
         return text.replace("\\", "\\\\")
-                .replace("\"", "\\\"");
+                .replace("\"", "\\\"")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n");
     }
 
     public static boolean isEmpty(String s) {

@@ -567,6 +567,8 @@ public class UnsecureDAO {
 
     public Device createNewDeviceOnDemand(String deviceId, DeviceCreateOptions createOptions) {
         int customerId = DEFAULT_CUSTOMER_ID;
+        int deviceLimit = 0;
+        int deviceCount = 0;
         if (!isSingleCustomer()) {
             if (createOptions.getCustomer() == null) {
                 logger.warn("Customer is not set, device not created");
@@ -579,7 +581,18 @@ public class UnsecureDAO {
                 logger.warn("Failed to get a customer by name '" + createOptions.getCustomer() + "', device not created");
                 return null;
             }
+            deviceLimit = customer.getDeviceLimit();
+            Long deviceCountLong = deviceMapper.countAllDevicesForCustomer(customerId);
+            if (deviceCountLong != null) {
+                deviceCount = deviceCountLong.intValue();
+            }
         }
+
+        if (deviceLimit != 0 && deviceCount >= deviceLimit) {
+            logger.warn("New device " + deviceId + " not created by customer " + customerId + ": license limit");
+            return null;
+        }
+
         Settings settings = getSettings(customerId);
         Device newDevice = new Device();
         newDevice.setCustomerId(customerId);

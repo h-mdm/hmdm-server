@@ -39,9 +39,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.hmdm.notification.PushService;
-import com.hmdm.persistence.ConfigurationFileDAO;
-import com.hmdm.persistence.domain.ApplicationSetting;
-import com.hmdm.persistence.domain.ConfigurationFile;
+import com.hmdm.persistence.*;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.*;
 import com.hmdm.rest.json.view.devicelist.DeviceListView;
 import com.hmdm.rest.json.view.devicelist.DeviceView;
@@ -51,12 +50,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-import com.hmdm.persistence.ConfigurationDAO;
-import com.hmdm.persistence.DeviceDAO;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.Device;
-import com.hmdm.persistence.domain.DeviceSearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +64,8 @@ public class DeviceResource {
     private ConfigurationDAO configurationDAO;
     private PushService pushService;
     private ConfigurationFileDAO configurationFileDAO;
+    private CommonDAO commonDAO;
+    private UnsecureDAO unsecureDAO;
 
     /**
      * <p>A constructor required by Swagger.</p>
@@ -82,11 +77,15 @@ public class DeviceResource {
     public DeviceResource(DeviceDAO deviceDAO,
                           ConfigurationDAO configurationDAO,
                           PushService pushService,
-                          ConfigurationFileDAO configurationFileDAO) {
+                          ConfigurationFileDAO configurationFileDAO,
+                          CommonDAO commonDAO,
+                          UnsecureDAO unsecureDAO) {
         this.deviceDAO = deviceDAO;
         this.configurationDAO = configurationDAO;
         this.pushService = pushService;
         this.configurationFileDAO = configurationFileDAO;
+        this.commonDAO = commonDAO;
+        this.unsecureDAO = unsecureDAO;
     }
 
     // =================================================================================================================
@@ -237,8 +236,18 @@ public class DeviceResource {
                         }
                     }
                 } else {
-                    device.setLastUpdate(0L);
-                    this.deviceDAO.insertDevice(device);
+                    Settings settings = new Settings();
+                    if (!unsecureDAO.isSingleCustomer()) {
+                        commonDAO.loadCustomerSettings(settings);
+                    }
+                    if (settings.getDeviceLimit() == 0 || settings.getDeviceCount() < settings.getDeviceLimit()) {
+                        device.setLastUpdate(0L);
+                        this.deviceDAO.insertDevice(device);
+                    } else {
+                        log.warn("New device {} not added by customer {} due to the license limit", device.getNumber(),
+                                SecurityContext.get().getCurrentCustomerId().get());
+                        return Response.ERROR();
+                    }
                 }
 
                 return Response.OK();
