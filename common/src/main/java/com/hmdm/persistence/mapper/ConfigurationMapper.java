@@ -26,11 +26,7 @@ import java.util.List;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ConfigurationApplicationParameters;
 import com.hmdm.persistence.domain.ConfigurationFile;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Configuration;
 
@@ -172,7 +168,12 @@ public interface ConfigurationMapper {
      * @param id an ID of a configuration.
      * @return a list of all existing applications with set parameters of usage by specified configuration.
      */
-    List<Application> getPlainConfigurationApplications(@Param("customerId") Integer customerId, @Param("id") Integer id);
+    List<Application> getPlainConfigurationApplications(@Param("customerId") Integer customerId, @Param("caTableName") String caTableName, @Param("id") Integer id);
+
+    @Insert("CREATE TEMP TABLE ${tableName} ON COMMIT DROP AS SELECT * FROM configurationApplications WHERE configurationId=${configurationId};"
+    )
+    void createTempConfigAppTable(@Param("tableName") String tableName, @Param("configurationId") Integer configurationId);
+
 
     /**
      * <p>Gets the list of applications used by specified configuration. This method is optimized

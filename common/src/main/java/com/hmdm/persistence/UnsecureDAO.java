@@ -34,6 +34,7 @@ import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
+import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.PasswordUtil;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -200,8 +201,11 @@ public class UnsecureDAO {
         }
     }
 
+    @Transactional
     public List<Application> getPlainConfigurationApplications(Integer customerId, Integer id) {
-        return this.configurationMapper.getPlainConfigurationApplications(customerId, id);
+        String tblName = "ca" + CryptoUtil.randomHexString(8);
+        configurationMapper.createTempConfigAppTable(tblName, id);
+        return this.configurationMapper.getPlainConfigurationApplications(customerId, tblName, id);
     }
 
     @Transactional

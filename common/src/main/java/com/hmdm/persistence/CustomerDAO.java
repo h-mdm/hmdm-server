@@ -272,7 +272,7 @@ public class CustomerDAO {
     public Integer copyConfigurationForCustomer(Customer customer, int masterCustomerId, Integer configurationId) {
         Configuration configurationTemplate = this.configurationMapper.getConfigurationById(configurationId);
         List<Application> configApplications = this.configurationMapper.getPlainConfigurationApplications(
-                masterCustomerId, configurationId);
+                masterCustomerId, "configurationApplications", configurationId);
         configApplications = configApplications
                 .stream()
                 .filter(Application::isCommon)

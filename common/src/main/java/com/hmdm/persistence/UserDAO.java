@@ -138,6 +138,11 @@ public class UserDAO extends AbstractDAO<User> {
         });
     }
 
+    // Plain fields only, no permissions, groups and configurations
+    public User findOrgAdminLite(Integer id) {
+        return mapper.findFirstByRole(id, this.orgAdminRoleId);
+    }
+
     public User findOrgAdmin(Integer id) {
         return mapper.findAll(id).stream().filter(u -> u.getUserRole().getId() == this.orgAdminRoleId).findFirst().orElse(null);
     }

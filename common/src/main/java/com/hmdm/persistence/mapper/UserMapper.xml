@@ -94,6 +94,10 @@
         WHERE userRoles.superAdmin = #{includeSuperAdmin} OR NOT userRoles.superAdmin
     </select>
 
+    <select id="findFirstByRole" resultType="User">
+        SELECT * FROM users WHERE customerId=#{customerId} AND userRoleId=#{roleId} LIMIT 1
+    </select>
+
     <sql id="userDataSelect">
         SELECT users.*,
                customers.master AS masterCustomer,

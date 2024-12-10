@@ -44,6 +44,8 @@ public interface UserMapper {
 
     List<User> findAll(@Param("customerId") Integer customerId);
 
+    User findFirstByRole(@Param("customerId") Integer customerId, @Param("roleId") Integer roleId);
+
     List<User> findAllByFilter(@Param("customerId") Integer customerId, @Param("value") String value);
 
     List<User> findAllWithOldPassword();

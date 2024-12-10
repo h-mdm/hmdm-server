@@ -217,11 +217,14 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
         );
     }
 
+    @Transactional
     public List<Application> getPlainConfigurationApplications(Integer id) {
+        String tblName = "ca" + CryptoUtil.randomHexString(8);
+        mapper.createTempConfigAppTable(tblName, id);
         return getLinkedList(
                 id,
                 this.mapper::getConfigurationById,
-                customerId -> this.mapper.getPlainConfigurationApplications(customerId, id),
+                customerId -> this.mapper.getPlainConfigurationApplications(customerId, tblName, id),
                 SecurityException::onConfigurationAccessViolation
         );
     }

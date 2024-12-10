@@ -139,20 +139,20 @@
                applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
                applicationVersions.version, applicationVersions.versionCode, applicationVersions.url,
                applicationVersions.split, applicationVersions.urlArmeabi, applicationVersions.urlArm64,
-               configurationApplications.applicationVersionId AS usedVersionId,
+               ${caTableName}.applicationVersionId AS usedVersionId,
                applications.system, applications.customerId,
                applications.latestVersion, applications.intent,
                latestAppVersion.version AS latestVersionText,
                customers.master AS commonApplication,
-               (configurationApplications.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
-               COALESCE(configurationApplications.remove, FALSE) AS remove,
-               COALESCE(configurationApplications.showIcon, applications.showIcon) AS showIcon,
+               (${caTableName}.configurationId IS NOT NULL AND applications.latestVersion &lt;&gt; applicationVersions.id) as outdated,
+               COALESCE(${caTableName}.remove, FALSE) AS remove,
+               COALESCE(${caTableName}.showIcon, applications.showIcon) AS showIcon,
                applications.useKiosk,
-               configurationApplications.action AS action,
-               configurationApplications.screenOrder AS screenOrder,
-               configurationApplications.keyCode AS keyCode,
-               configurationApplications.bottom AS bottom,
-               configurationApplications.longTap AS longTap,
+               ${caTableName}.action AS action,
+               ${caTableName}.screenOrder AS screenOrder,
+               ${caTableName}.keyCode AS keyCode,
+               ${caTableName}.bottom AS bottom,
+               ${caTableName}.longTap AS longTap,
                CASE
                    WHEN cap.skipVersionCheck IS TRUE THEN TRUE
                    ELSE NULL
@@ -161,7 +161,7 @@
         INNER JOIN applicationVersions AS latestAppVersion ON latestAppVersion.applicationId = applications.id AND latestAppVersion.id=applications.latestversion
         INNER JOIN customers ON customers.id = applications.customerId
         INNER JOIN applicationVersions ON applicationVersions.applicationId = applications.id
-        JOIN configurationApplications ON applicationVersions.id = configurationApplications.applicationVersionId AND configurationApplications.configurationId = #{id}
+        JOIN ${caTableName} ON applicationVersions.id = ${caTableName}.applicationVersionId AND ${caTableName}.configurationId = #{id}
         LEFT JOIN configurationapplicationparameters cap ON cap.applicationId = applications.id AND cap.configurationId = #{id}
         LEFT JOIN icons ON icons.id = applications.iconId
         LEFT JOIN uploadedFiles ON uploadedFiles.id = icons.fileId
