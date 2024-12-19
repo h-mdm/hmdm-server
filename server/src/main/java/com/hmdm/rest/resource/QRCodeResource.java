@@ -168,14 +168,18 @@ public class QRCodeResource {
                                                     @QueryParam("useId") @ApiParam("Which parameter to use as a device ID") String useId,
                                                     @QueryParam("group") @ApiParam("Groups to assign when creating a device") List<String> groups,
                                                     @Context HttpServletRequest req) {
-        logger.info("Generating QR-code image for configuration key: {}", id);
+        //logger.info("Generating QR-code image for configuration key: {}", id);
+        logger.info("Iniciando la generación del código QR para la configuración: {}", id);
         try {
             Configuration configuration = this.unsecureDAO.getConfigurationByQRCodeKey(id);
             if (configuration != null) {
                 Integer mainAppId = configuration.getMainAppId();
+                logger.info("Configuración encontrada para la clave QR: {}", id);
                 if (mainAppId != null) {
                     ApplicationVersion appVersion = this.unsecureDAO.findApplicationVersionById(mainAppId);
+                    logger.info("Main App encontrada para la clave QR: {}", id);
                     if (appVersion != null && appVersion.getUrl() != null && !appVersion.getUrl().trim().isEmpty()) {
+                        logger.info("Versión de la app encontrada para la clave QR: {}", id);
                         final String apkUrl = appVersion.getUrl().replace(" ", "%20");
                         final String sha256;
                         if (appVersion.getApkHash() == null) {
@@ -234,7 +238,7 @@ public class QRCodeResource {
                         final String s = sb.toString();
 
                         logger.info("The base for QR code generation:\n{}", s);
-
+                        
                         return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
                             int imageSize = 250;
                             if (size != null) {
