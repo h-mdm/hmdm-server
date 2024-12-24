@@ -16,6 +16,7 @@
   "plugin.audit.action.update.file": "文件已更新",
   "plugin.audit.action.remove.file": "文件已删除",
   "plugin.audit.action.update.app.config":"应用程序配置已更改",
+  "plugin.audit.action.version.config": "版本配置已更改",
   "plugin.audit.action.update.design":"设计设置已更新",
   "plugin.audit.action.update.user.roles":"用户角色设置已更新",
   "plugin.audit.action.update.language":"语言设置已更新",

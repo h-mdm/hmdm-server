@@ -16,6 +16,7 @@
   "plugin.audit.action.update.file": "Fichier actualisée",
   "plugin.audit.action.remove.file": "Fichier supprimé",
   "plugin.audit.action.update.app.config": "Les configurations d'application ont changé",
+  "plugin.audit.action.version.config": "Les configurations de version ont changé",
   "plugin.audit.action.update.design": "Paramètres de conception actualisés",
   "plugin.audit.action.update.user.roles": "Paramètres de rôle utilisateur actualisés",
   "plugin.audit.action.update.language": "Paramètres de langue actualisés",

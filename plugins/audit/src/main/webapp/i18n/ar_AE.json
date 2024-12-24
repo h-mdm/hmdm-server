@@ -12,6 +12,7 @@
   "plugin.audit.action.update.webapp": "تم تحديث تطبيق الويب" ,
   "plugin.audit.action.remove.application": "تمت إزالة التطبيق" ,
   "plugin.audit.action.update.app.config": "تم تغيير تكوينات التطبيق" ,
+  "plugin.audit.action.version.config": "تم تغيير تكوينات الإصدار",
   "plugin.audit.action.update.design": "تم تحديث إعدادات التصميم" ,
   "plugin.audit.action.update.user.roles": "تم تحديث إعدادات دور المستخدم" ,
   "plugin.audit.action.update.language": "تم تحديث إعدادات اللغة" ,

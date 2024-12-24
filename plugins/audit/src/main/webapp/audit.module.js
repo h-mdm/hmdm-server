@@ -65,7 +65,12 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
             "plugin.audit.action.update.application",
             "plugin.audit.action.update.webapp",
             "plugin.audit.action.remove.application",
+            "plugin.audit.action.update.version",
+            "plugin.audit.action.remove.version",
+            "plugin.audit.action.update.file",
+            "plugin.audit.action.remove.file",
             "plugin.audit.action.update.app.config",
+            "plugin.audit.action.version.config",
             "plugin.audit.action.update.design",
             "plugin.audit.action.update.user.roles",
             "plugin.audit.action.update.language",
@@ -73,7 +78,11 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
             "plugin.audit.action.update.user",
             "plugin.audit.action.remove.user",
             "plugin.audit.action.update.group",
-            "plugin.audit.action.remove.group"
+            "plugin.audit.action.remove.group",
+            "plugin.audit.action.password.changed",
+            "plugin.audit.action.password.reset",
+            "plugin.audit.action.device.reset",
+            "plugin.audit.action.device.lock"
         ];
         $scope.filters = [{item: '', localized: localization.localize('plugin.audit.all.items')}];
         filters.forEach(function(item, index) {

@@ -469,9 +469,9 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     }
 
     @Transactional
-    public void updateApplicationVersionConfigurations(LinkConfigurationsToAppVersionRequest request) {
+    public void updateApplicationVersionConfigurations(LinkConfigurationsToAppVersionRequest request, User user) {
         final int applicationVersionId = request.getApplicationVersionId();
-        this.removeApplicationConfigurationsByVersionId(applicationVersionId);
+        this.removeApplicationConfigurationsByVersionId(applicationVersionId, user);
 
         // If this version is set for installation, then other versions of same app must be set for de-installation
         final List<ApplicationVersionConfigurationLink> configurations = request.getConfigurations();
@@ -498,20 +498,22 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
         this.insertApplicationVersionConfigurations(applicationVersionId, configurations);
 
-        SecurityContext.get().getCurrentUser().ifPresent(user -> {
-            this.mapper.recheckConfigurationMainApplications(user.getCustomerId());
-            this.mapper.recheckConfigurationContentApplications(user.getCustomerId());
-            this.mapper.recheckConfigurationKioskModes(user.getCustomerId());
-        });
+        this.mapper.recheckConfigurationMainApplications(user.getCustomerId());
+        this.mapper.recheckConfigurationContentApplications(user.getCustomerId());
+        this.mapper.recheckConfigurationKioskModes(user.getCustomerId());
     }
 
-    public void removeApplicationConfigurationsByVersionId(Integer applicationVersionId) {
+    public void removeApplicationConfigurationsByVersionId(Integer applicationVersionId, User user) {
         final ApplicationVersion applicationVersion = findApplicationVersionById(applicationVersionId);
         final Application application = this.mapper.findById(applicationVersion.getApplicationId());
         final int userCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
 
         if (application.isCommon() || application.getCustomerId() == userCustomerId) {
-            this.mapper.removeApplicationVersionConfigurationsById(userCustomerId, applicationVersionId);
+            if (!user.isAllConfigAvailable()) {
+                this.mapper.removeApplicationVersionConfigurationsForLimitedUser(user.getId(), applicationVersionId);
+            } else {
+                this.mapper.removeApplicationVersionConfigurationsById(userCustomerId, applicationVersionId);
+            }
         } else {
             throw SecurityException.onApplicationAccessViolation(application);
         }

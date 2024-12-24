@@ -16,6 +16,7 @@
   "plugin.audit.action.update.file": "ファイルが更新されました",
   "plugin.audit.action.remove.file": "ファイルが削除されました",
   "plugin.audit.action.update.app.config": "アプリケーション構成が変更されました",
+  "plugin.audit.action.version.config": "バージョン構成が変更されました",
   "plugin.audit.action.update.design": "デザイン設定を更新しました",
   "plugin.audit.action.update.user.roles": "ユーザー役割の設定が更新されました",
   "plugin.audit.action.update.language": "言語設定が更新されました",

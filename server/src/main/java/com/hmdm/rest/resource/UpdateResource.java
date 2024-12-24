@@ -285,7 +285,8 @@ public class UpdateResource {
             link.setApplicationVersionId(newVersion.getId());
         }
         request.setConfigurations(linkList);
-        applicationDAO.updateApplicationVersionConfigurations(request);
+        logger.info("Application versions updated by the superadmin through 'Check for updates'");
+        applicationDAO.updateApplicationVersionConfigurations(request, SecurityContext.get().getCurrentUser().get());
     }
 
     private void processWebAppEntry(UpdateEntry entry) {

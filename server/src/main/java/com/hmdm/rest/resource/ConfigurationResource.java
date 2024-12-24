@@ -160,7 +160,8 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateConfiguration(Configuration configuration) {
         if (!SecurityContext.get().hasPermission("configurations")) {
-            log.error("Unauthorized attempt to update the configuration " + configuration.getId());
+            log.error("Unauthorized attempt to update the configuration " + configuration.getId() +
+            ", user " + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -183,6 +184,7 @@ public class ConfigurationResource {
                         userDAO.updateUserMainDetails(user);
                     }
                 } else {
+                    log.info("Configuration " + configuration.getName() + " updated by user "  + SecurityContext.get().getCurrentUserName());
                     this.configurationDAO.updateConfiguration(configuration);
                     this.pushService.notifyDevicesOnUpdate(configuration.getId());
                 }

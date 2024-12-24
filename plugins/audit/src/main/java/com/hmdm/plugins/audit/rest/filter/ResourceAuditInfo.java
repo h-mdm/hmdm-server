@@ -50,6 +50,7 @@ public enum ResourceAuditInfo {
     UPDATE_FILE("POST", "/rest/private/web-ui-files/move", true, "plugin.audit.action.update.file", true, true),
     REMOVE_FILE("POST", "/rest/private/web-ui-files/remove", true, "plugin.audit.action.remove.file", true, true),
     UPDATE_APP_CONFIG("POST", "/rest/private/applications/configurations", true, "plugin.audit.action.update.app.config", true, true),
+    UPDATE_VERSION_CONFIG("POST", "/rest/private/applications/version/configurations", true, "plugin.audit.action.version.config", true, true),
     UPDATE_DESIGN("POST", "/rest/private/settings/design", true, "plugin.audit.action.update.design", true, true),
     UPDATE_USERROLES("POST", "/rest/private/settings/userRoles", false, "plugin.audit.action.update.user.roles", true, true),
     UPDATE_LANGUAGE("POST", "/rest/private/settings/lang", true, "plugin.audit.action.update.language", true, true),

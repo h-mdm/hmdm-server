@@ -40,6 +40,7 @@ import com.hmdm.notification.PushService;
 import com.hmdm.persistence.*;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
@@ -225,6 +226,8 @@ public class ApplicationResource {
                     if (version != null) {
                         version.setUrl(application.getUrl());
                         applicationDAO.updateApplicationVersion(version);
+                        logger.info("Application " + application.getPkg() + " updated to version " + version.getVersion() +
+                                ", user " + SecurityContext.get().getCurrentUserName());
                     }
                 }
                 return Response.OK();
@@ -320,6 +323,8 @@ public class ApplicationResource {
                 applicationVersion = this.applicationDAO.findApplicationVersionById(applicationVersion.getId());
                 return Response.OK(applicationVersion);
             } else {
+                logger.info("Application " + applicationVersion.getApplicationId() + " version updated: " + applicationVersion.getVersion() +
+                        ", user " + SecurityContext.get().getCurrentUserName());
                 this.applicationDAO.updateApplicationVersion(applicationVersion);
                 return Response.OK();
             }
@@ -468,6 +473,13 @@ public class ApplicationResource {
             return Response.PERMISSION_DENIED();
         }
         try {
+            User user = SecurityContext.get().getCurrentUser().get();
+            if (!user.isAllConfigAvailable()) {
+                // Remove all configurations unavailable to user
+                request.getConfigurations().removeIf(c ->
+                        user.getConfigurations().stream().filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
+            }
+            logger.info("Application configurations updated by user " + SecurityContext.get().getCurrentUserName());
             this.applicationDAO.updateApplicationConfigurations(request);
 
             for (ApplicationConfigurationLink configurationLink : request.getConfigurations()) {
@@ -499,7 +511,15 @@ public class ApplicationResource {
             return Response.PERMISSION_DENIED();
         }
         try {
-            this.applicationDAO.updateApplicationVersionConfigurations(request);
+            User user = SecurityContext.get().getCurrentUser().get();
+            if (!user.isAllConfigAvailable()) {
+                // Remove all configurations unavailable to user
+                request.getConfigurations().removeIf(c ->
+                        user.getConfigurations().stream().filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
+            }
+            logger.info("Application version configurations updated by user " +
+                    SecurityContext.get().getCurrentUserName());
+            this.applicationDAO.updateApplicationVersionConfigurations(request, user);
             for (ApplicationVersionConfigurationLink configurationLink : request.getConfigurations()) {
                 if (configurationLink.isNotify()) {
                     this.pushService.notifyDevicesOnUpdate(configurationLink.getConfigurationId());
@@ -536,6 +556,7 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response turnApplicationIntoCommon(@PathParam("id") Integer id) {
         try {
+            logger.info("Turn application into common: " + id);
             this.applicationDAO.turnApplicationIntoCommon(id);
             return Response.OK();
         } catch (DuplicateApplicationException e) {

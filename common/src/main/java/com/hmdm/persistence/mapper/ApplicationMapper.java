@@ -231,6 +231,14 @@ public interface ApplicationMapper {
     void removeApplicationVersionConfigurationsById(@Param("customerId") int customerId,
                                                     @Param("id") Integer applicationVersionId);
 
+    @Delete({"DELETE FROM configurationApplications " +
+            "WHERE applicationVersionId=#{id} " +
+            "AND configurationId IN (SELECT configurationId " +
+            "                        FROM userConfigurationAccess " +
+            "                        WHERE userId=#{userId})"})
+    void removeApplicationVersionConfigurationsForLimitedUser(@Param("userId") int userId,
+                                                              @Param("id") Integer applicationVersionId);
+
     void insertApplicationConfigurations(@Param("applicationId") Integer applicationId,
                                          @Param("versionId") Integer applicationVersionId,
                                          @Param("confs") List<ApplicationConfigurationLink> configurations);

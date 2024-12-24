@@ -16,6 +16,7 @@
   "plugin.audit.action.update.file": "Файл изменен",
   "plugin.audit.action.remove.file": "Файл удален",
   "plugin.audit.action.update.app.config": "Изменена привязка приложения к конфигурациям",
+  "plugin.audit.action.version.config": "Изменена привязка версии к конфигурациям",
   "plugin.audit.action.update.design": "Настройки дизайна изменены",
   "plugin.audit.action.update.user.roles": "Настройки ролей изменены",
   "plugin.audit.action.update.language": "Настройки языка изменены",
