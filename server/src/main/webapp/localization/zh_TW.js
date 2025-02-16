@@ -352,7 +352,7 @@ document.localization ['zh_TW'] = {
     'form.configuration.settings.design.desktop.header.hint': '確保將此參數發送到設備（設置 - 常規和語言選項）',
     'form.configuration.settings.design.desktop.header.template': '輸入模板',
     'form.configuration.settings.design.desktop.header.template.placeholder': '使用變量',
-    'form.configuration.settings.design.display.status': '顯示設備狀態',
+    'form.configuration.settings.design.display.status': '顯示時間和電池狀態',
     'form.configuration.settings.design.upload': '上載',
     'form.configuration.settings.common.name' : "名稱",
     'form.configuration.settings.common.name.placeholder':"輸入配置名稱",

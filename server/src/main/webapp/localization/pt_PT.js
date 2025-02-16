@@ -351,7 +351,7 @@ document.localization ['pt_PT'] = {
     'form.configuration.settings.design.desktop.header.hint': 'Certifique-se de que este parâmetro seja enviado aos dispositivos (Configurações - Opções gerais e de idioma)',
     'form.configuration.settings.design.desktop.header.template': 'Insira o modelo',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Use variáveis',
-    'form.configuration.settings.design.display.status': 'Status do dispositivo',
+    'form.configuration.settings.design.display.status': 'Exibir hora e estado da bateria',
     'form.configuration.settings.design.upload': 'Upload',
     'form.configuration.settings.common.name': 'Nome',
     'form.configuration.settings.common.name.placeholder': 'Insira o nome da configuração',

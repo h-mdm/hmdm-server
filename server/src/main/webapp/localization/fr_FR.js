@@ -352,7 +352,7 @@ document.localization ['fr_FR'] = {
     'form.configuration.settings.design.desktop.header.hint': 'Assurez-vous que ce paramètre est envoyé aux appareils (Paramètres - Options générales et de langue)',
     'form.configuration.settings.design.desktop.header.template': 'Entrez le modèle',
     'form.configuration.settings.design.desktop.header.template.placeholder': 'Utiliser des variables',
-    'form.configuration.settings.design.display.status': 'Afficher l\'état de l\'appareil',
+    'form.configuration.settings.design.display.status': 'Afficher l\'heure et l\'état de la batterie',
     'form.configuration.settings.design.upload': 'Télécharger',
     'form.configuration.settings.common.name': 'Nom',
     'form.configuration.settings.common.name.placeholder': 'Entrez le nom de la configuration',

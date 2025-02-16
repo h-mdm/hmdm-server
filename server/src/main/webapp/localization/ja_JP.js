@@ -352,7 +352,7 @@ document.localization ['ja_JP'] = {
     'form.configuration.settings.design.desktop.header.hint': 'このパラメーターがデバイスに送信されていることを確認してください (設定 - 一般および言語設定)',
     'form.configuration.settings.design.desktop.header.template': 'テンプレートを入力してください',
     'form.configuration.settings.design.desktop.header.template.placeholder': '変数を使用',
-    'form.configuration.settings.design.display.status': 'デバイスのステータスを表示する',
+    'form.configuration.settings.design.display.status': '時間とバッテリーの状態を表示する',
     'form.configuration.settings.design.upload': 'アップロード',
     'form.configuration.settings.common.name': '名前',
     'form.configuration.settings.common.name.placeholder': '設定名を入力してください',
