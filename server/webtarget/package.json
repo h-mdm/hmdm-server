@@ -10,6 +10,7 @@
     "grunt-contrib-copy": "~1.0.0"
   },
   "dependencies": {
+    "controlled-launcher-webclient": "file:",
     "leaflet.gridlayer.googlemutant": "~0.8.0"
   },
   "resolutions": {
