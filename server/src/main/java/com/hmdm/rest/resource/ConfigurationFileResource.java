@@ -35,7 +35,7 @@ import com.hmdm.util.FileUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.lf5.util.StreamUtils;
+import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -53,6 +53,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -128,7 +129,12 @@ public class ConfigurationFileResource {
 //                        return Response.FILE_EXISTS();
                     }
 
-                    StreamUtils.copyThenClose(uploadedInputStream, new BufferedOutputStream(new FileOutputStream(configFile)));
+                    FileOutputStream fos = new FileOutputStream(configFile);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+                    IOUtils.copy(uploadedInputStream, bos);
+                    uploadedInputStream.close();
+                    bos.close();
+                    fos.close();
 
                     if (!unsecureDAO.isSingleCustomer()) {
                         // Check the disk size in multi-tenant mode

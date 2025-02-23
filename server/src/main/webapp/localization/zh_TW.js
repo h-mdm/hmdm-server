@@ -655,6 +655,8 @@ document.localization ['zh_TW'] = {
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
     'form.settings.lang.ja': '日本',
+    'form.settings.lang.tr': 'Türkçe',
+    'form.settings.lang.it': 'Italiano',
 
     'form.settings.misc.title':"其他設置",
     'form.settings.misc.phone.format':"電話號碼格式",
@@ -1051,6 +1053,7 @@ document.localization ['zh_TW'] = {
     'permission.configurations': '查看配置',
     'permission.edit_devices': '編輯裝置資訊',
     'permission.edit_device_desc': '編輯裝置描述',
+    'permission.enroll_devices': '透過二維碼註冊設備',
     'permission.plugin_apuppet_access': '遠端控制',
     'permission.plugin_knox_access': 'Knox 插件',
     'permission.add_config': '新增設定',

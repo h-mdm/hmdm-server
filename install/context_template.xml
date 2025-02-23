@@ -24,6 +24,8 @@
     <!-- A shared secret between mobile app and control panel. 
          Don't change this unless you know what you're doing -->
     <Parameter name="hash.secret" value="changeme-C3z9vi54"/>
+    <!-- If set to 1, Strict-Transport-Security (HSTS) is turned on -->
+<!--    <Parameter name="strict.transport.security" value="${strict.transport.security}"/> -->
 
     <!-- This directory is used to store files by plugins, must be accessible for tomcat user -->
     <Parameter name="plugins.files.directory" value="_BASE_DIRECTORY_/plugins"/>

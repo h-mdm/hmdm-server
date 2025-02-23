@@ -655,6 +655,8 @@ document.localization[ 'ru_RU' ] = {
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
     'form.settings.lang.ja': '日本',
+    'form.settings.lang.tr': 'Türkçe',
+    'form.settings.lang.it': 'Italiano',
 
     'form.settings.misc.title': 'Прочие настройки',
     'form.settings.misc.phone.format': 'Формат номера телефона',
@@ -1051,6 +1053,7 @@ document.localization[ 'ru_RU' ] = {
     'permission.configurations': 'Просмотр конфигураций',
     'permission.edit_devices': 'Изменение информации об устройстве',
     'permission.edit_device_desc': 'Изменение описания устройства',
+    'permission.enroll_devices': 'Регистрация устройств по QR-коду',
     'permission.plugin_apuppet_access': 'Удаленное управление',
     'permission.plugin_knox_access': 'Плагин Knox',
     'permission.add_config': 'Добавление конфигураций',

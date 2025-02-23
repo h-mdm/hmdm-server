@@ -655,6 +655,8 @@ document.localization ['ar_AE'] = {
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
     'form.settings.lang.ja': '日本',
+    'form.settings.lang.tr': 'Türkçe',
+    'form.settings.lang.it': 'Italiano',
 
 	"form.settings.misc.title": 'إعدادات متنوعة',
     "form.settings.misc.phone.format": 'تنسيق رقم الهاتف',
@@ -1051,6 +1053,7 @@ document.localization ['ar_AE'] = {
     'permission.configurations': 'عرض التكوينات',
     'permission.edit_devices': 'تحرير معلومات الجهاز',
     'permission.edit_device_desc': 'تحرير الجهاز الوصف',
+    'permission.enroll_devices': 'تسجيل الأجهزة عن طريق رمز الاستجابة السريعة',
     'permission.plugin_apuppet_access': 'التحكم عن بعد',
     'permission.plugin_knox_access': 'مكون إضافي لـ Knox',
     'permission.add_config': 'إضافة تكوينات',

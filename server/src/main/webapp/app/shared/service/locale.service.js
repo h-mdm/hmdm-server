@@ -76,7 +76,8 @@ angular.module('headwind-kiosk')
             loadPluginResourceBundles: function (pluginId) {
 
                 const loadLocalizationBundle = function (bundleId) {
-                    $http.get('app/components/plugins/' + pluginId + '/i18n/' + bundleId + ".json")
+                    var bundleUrl = 'app/components/plugins/' + pluginId + '/i18n/' + bundleId + ".json";
+                    $http.get(bundleUrl)
                         .then(function (response) {
                             if (response.status === 200) {
                                 if (response.data) {
@@ -84,6 +85,8 @@ angular.module('headwind-kiosk')
                                         angular.extend(document.localization[bundleId], response.data);
                                     }
                                 }
+                            } else {
+                                console.log('Failed to get resource ' + bundleUrl + ": status " + response.status);
                             }
                         });
                 };

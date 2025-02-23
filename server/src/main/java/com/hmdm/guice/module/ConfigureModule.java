@@ -37,6 +37,7 @@ public class ConfigureModule extends AbstractModule {
     private final String usageScenarioParameter = "usage.scenario";
     private final String secureEnrollmentParameter = "secure.enrollment";
     private final String hashSecretParameter = "hash.secret";
+    private final String hstsParameter = "strict.transport.security";
     private final String transmitPasswordParameter = "transmit.password";
     private final String authClassParameter = "auth.class";
     private final String aaptCommandParameter = "aapt.command";
@@ -108,6 +109,10 @@ public class ConfigureModule extends AbstractModule {
                 secureEnrollment != null && (secureEnrollment.equals("1") || secureEnrollment.equalsIgnoreCase("true"))
         );
         this.bindConstant().annotatedWith(Names.named(hashSecretParameter)).to(this.context.getInitParameter(hashSecretParameter));
+        String hsts = this.context.getInitParameter(hstsParameter);
+        this.bindConstant().annotatedWith(Names.named(hstsParameter)).to(
+                hsts != null && (hsts.equals("1") || hsts.equalsIgnoreCase("true"))
+        );
         this.bindConstant().annotatedWith(Names.named(aaptCommandParameter)).to(this.context.getInitParameter(aaptCommandParameter));
         this.bindConstant().annotatedWith(Names.named(roleOrgadminIdParameter)).to(
                 Integer.parseInt(this.context.getInitParameter(roleOrgadminIdParameter))

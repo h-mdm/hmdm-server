@@ -22,6 +22,7 @@
 package com.hmdm.guice.module;
 
 import com.google.inject.servlet.ServletModule;
+import com.hmdm.rest.filter.HstsFilter;
 import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.rest.resource.*;
 import com.hmdm.security.jwt.rest.JWTAuthResource;
@@ -31,6 +32,7 @@ public class PublicRestModule extends ServletModule {
     }
 
     protected void configureServlets() {
+        this.filter("*").through(HstsFilter.class);
         this.filter("/rest/public/*").through(PublicIPFilter.class);
         this.serve("/files/*").with(DownloadFilesServlet.class);
         this.bind(AuthResource.class);

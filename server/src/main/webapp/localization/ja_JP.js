@@ -655,6 +655,8 @@ document.localization ['ja_JP'] = {
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
     'form.settings.lang.ja': '日本',
+    'form.settings.lang.tr': 'Türkçe',
+    'form.settings.lang.it': 'Italiano',
 
     'form.settings.misc.title': 'その他の設定',
     'form.settings.misc.phone.format': '電話番号の形式',
@@ -1051,6 +1053,7 @@ document.localization ['ja_JP'] = {
     'permission.configurations': '構成の表示',
     'permission.edit_devices': 'デバイス情報の編集',
     'permission.edit_device_desc': 'デバイスの説明の編集',
+    'permission.enroll_devices': 'QRコードでデバイスを登録する',
     'permission.plugin_apuppet_access': 'リモート コントロール',
     'permission.plugin_knox_access': 'Knoxプラグイン',
     'permission.add_config': '設定の追加',

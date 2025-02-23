@@ -655,6 +655,8 @@ document.localization ['fr_FR'] = {
     'form.settings.lang.cn': '繁体中文',
     'form.settings.lang.tw': '繁體中文',
     'form.settings.lang.ja': '日本',
+    'form.settings.lang.tr': 'Türkçe',
+    'form.settings.lang.it': 'Italiano',
 
     'form.settings.misc.title': 'Paramètres divers',
     'form.settings.misc.phone.format': 'Format du numéro de téléphone',
@@ -1051,6 +1053,7 @@ document.localization ['fr_FR'] = {
     'permission.configurations': 'Afficher les configurations',
     'permission.edit_devices': 'Modifier les informations sur l\'appareil',
     'permission.edit_device_desc': 'Modifier la description de l\'appareil',
+    'permission.enroll_devices': 'Enregistrer les appareils par code QR',
     'permission.plugin_apuppet_access': 'Contrôle à distance',
     'permission.plugin_knox_access': 'Plugin Knox',
     'permission.add_config': 'Ajouter des configurations',

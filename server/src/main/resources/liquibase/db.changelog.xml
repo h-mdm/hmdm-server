@@ -2526,4 +2526,18 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="23.02.25-15:56" author="seva" context="common">
+        <comment>Separate permission for device enrollment (display QR icon) for limited users</comment>
+        <sql>
+            INSERT INTO permissions (name, description) VALUES ('enroll_devices', 'Can enroll devices by QR code');
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (2, currval('permissions_id_seq'));
+            INSERT INTO userRolePermissions (roleId, permissionId) VALUES (3, currval('permissions_id_seq'));
+        </sql>
+        <rollback>
+            DELETE FROM permissions WHERE name = 'enroll_devices';
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>
