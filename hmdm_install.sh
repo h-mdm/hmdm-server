@@ -473,7 +473,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     cd $LOCATION/files
     for FILE in $FILES; do
         echo "Downloading $FILE..."
-	wget $FILE
+	wget https://h-mdm.com/files/hmdm-5.19-os.apk
     done
     chown $TOMCAT_USER:$TOMCAT_USER *
     echo "UPDATE applicationversions SET url=REPLACE(url, 'https://h-mdm.com', '$PROTOCOL://$BASE_HOST$BASE_PATH') WHERE url IS NOT NULL" | psql $PSQL_CONNSTRING >/dev/null 2>&1
