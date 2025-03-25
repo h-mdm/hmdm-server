@@ -38,6 +38,7 @@ public class ConfigureModule extends AbstractModule {
     private final String secureEnrollmentParameter = "secure.enrollment";
     private final String hashSecretParameter = "hash.secret";
     private final String hstsParameter = "strict.transport.security";
+    private final String preventDuplicateParameter = "prevent.duplicate.enrollment";
     private final String transmitPasswordParameter = "transmit.password";
     private final String authClassParameter = "auth.class";
     private final String aaptCommandParameter = "aapt.command";
@@ -112,6 +113,10 @@ public class ConfigureModule extends AbstractModule {
         String hsts = this.context.getInitParameter(hstsParameter);
         this.bindConstant().annotatedWith(Names.named(hstsParameter)).to(
                 hsts != null && (hsts.equals("1") || hsts.equalsIgnoreCase("true"))
+        );
+        String preventDuplicate = this.context.getInitParameter(preventDuplicateParameter);
+        this.bindConstant().annotatedWith(Names.named(preventDuplicateParameter)).to(
+                preventDuplicate != null && (preventDuplicate.equals("1") || preventDuplicate.equalsIgnoreCase("true"))
         );
         this.bindConstant().annotatedWith(Names.named(aaptCommandParameter)).to(this.context.getInitParameter(aaptCommandParameter));
         this.bindConstant().annotatedWith(Names.named(roleOrgadminIdParameter)).to(

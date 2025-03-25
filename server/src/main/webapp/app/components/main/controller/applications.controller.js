@@ -666,6 +666,7 @@ angular.module('headwind-kiosk')
                 return localizedText;
             };
 
+            // This method is never used!
             $scope.upgradeApp = function (appConfigurationLink) {
                 let localizedText = localization.localize('question.app.upgrade')
                     .replace('${v1}', appConfigurationLink.applicationName)

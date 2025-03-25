@@ -288,8 +288,7 @@ angular.module('headwind-kiosk')
                 'dynamicButtonTextSuffix': localization.localize('table.filtering.suffix.configuration')
             };
 
-            configurationService.getAllConfigurations(function (response) {
-                $scope.configurations = response.data;
+            configurationService.getAllConfigNames(function (response) {
                 $scope.configurationsList = response.data.map(function (config) {
                     return {id: config.id, label: config.name};
                 });

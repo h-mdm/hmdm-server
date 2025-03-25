@@ -16,6 +16,7 @@ angular.module('headwind-kiosk')
     .factory('configurationService', function ($resource) {
         return $resource('', {}, {
             getAllConfigurations: {url: 'rest/private/configurations/search/:value', method: 'GET'},
+            getAllConfigNames: {url: 'rest/private/configurations/list', method: 'GET'},
             getById: {url: 'rest/private/configurations/:id', method: 'GET'},
             getAllTypicalConfigurations: {url: 'rest/private/configurations/typical/search/:value', method: 'GET'},
             updateConfiguration: {url: 'rest/private/configurations', method: 'PUT'},

@@ -107,6 +107,7 @@ public class SyncResource {
 
     private boolean secureEnrollment;
     private String hashSecret;
+    private boolean preventDuplicateEnrollment;
 
     private static final String HEADER_IP_ADDRESS = "X-IP-Address";
     private static final String HEADER_CPU_ARCH = "X-CPU-Arch";
@@ -134,6 +135,7 @@ public class SyncResource {
                         @Named("base.url") String baseUrl,
                         @Named("secure.enrollment") boolean secureEnrollment,
                         @Named("hash.secret") String hashSecret,
+                        @Named("prevent.duplicate.enrollment") boolean preventDuplicateEnrollment,
                         @Named("rebranding.mobile.name") String mobileAppName,
                         @Named("rebranding.vendor.name") String vendor,
                         @Named("proxy.addresses") String proxyIps,
@@ -145,6 +147,7 @@ public class SyncResource {
         this.baseUrl = baseUrl;
         this.secureEnrollment = secureEnrollment;
         this.hashSecret = hashSecret;
+        this.preventDuplicateEnrollment = preventDuplicateEnrollment;
         this.mobileAppName = mobileAppName;
         this.vendor = vendor;
         this.remoteAddrResolver = new BaseIPFilter("", proxyIps, ipHeader);
@@ -169,12 +172,12 @@ public class SyncResource {
     @Path("/configuration/{deviceId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDeviceSettingExtended(DeviceCreateOptions createOptions,
-                                     @PathParam("deviceId")
+    public Response enrollDevice(DeviceCreateOptions createOptions,
+                                 @PathParam("deviceId")
                                      @ApiParam("An identifier of device within MDM server")
                                              String number,
-                                     @Context HttpServletRequest request,
-                                     @Context HttpServletResponse response) {
+                                 @Context HttpServletRequest request,
+                                 @Context HttpServletResponse response) {
         logger.debug("/public/sync/configuration/{}", number);
 
         if (secureEnrollment) {
@@ -197,6 +200,9 @@ public class SyncResource {
             if (dbDevice == null) {
                 dbDevice = this.unsecureDAO.getDeviceByImeiOrSerial(number);
                 foundByImeiOrSerial = dbDevice != null;
+                if (foundByImeiOrSerial) {
+                    logger.info("IMEI/Serial {}: assigned existing number: {}", number, dbDevice.getNumber());
+                }
             }
 
             // Device creation on demand
@@ -206,6 +212,12 @@ public class SyncResource {
             }
 
             if (dbDevice != null) {
+                // Protection against double enrollment
+                if (preventDuplicateEnrollment && dbDevice.getLastUpdate() != 0l) {
+                    logger.warn("Device {} already enrolled. To enroll, delete device from the list and add back", dbDevice.getNumber());
+                    return Response.DEVICE_EXISTS();
+                }
+
                 return getDeviceSettingInternal(dbDevice, migration, foundByImeiOrSerial, request, response);
             } else {
                 logger.warn("Requested device {} was not found", number);
@@ -254,6 +266,9 @@ public class SyncResource {
             if (dbDevice == null) {
                 dbDevice = this.unsecureDAO.getDeviceByImeiOrSerial(number);
                 foundByImeiOrSerial = dbDevice != null;
+                if (foundByImeiOrSerial) {
+                    logger.info("IMEI/Serial {}: assigned existing number: {}", number, dbDevice.getNumber());
+                }
             }
 
             // Device creation on demand

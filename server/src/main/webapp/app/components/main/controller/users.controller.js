@@ -98,9 +98,9 @@ angular.module('headwind-kiosk')
             });
         });
 
-        configurationService.getAllConfigurations(function (response) {
-            $scope.configsList = response.data.map(function (group) {
-                return {id: group.id, label: group.name};
+        configurationService.getAllConfigNames(function (response) {
+            $scope.configsList = response.data.map(function (config) {
+                return {id: config.id, label: config.name};
             });
         });
 

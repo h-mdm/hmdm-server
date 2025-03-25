@@ -169,7 +169,7 @@ angular.module('headwind-kiosk')
             $scope.groups.unshift({id: -1, name: localization.localize('devices.group.options.all')});
         });
 
-        configurationService.getAllConfigurations(function (response) {
+        configurationService.getAllConfigNames(function (response) {
             $scope.configurations = response.data;
             $scope.configurations.unshift({id: -1, name: localization.localize('devices.configuration.options.all')});
         });
@@ -1002,7 +1002,7 @@ angular.module('headwind-kiosk')
     .controller('DeviceUpdateModalController', function ($scope, $modalInstance, configurationService, deviceService, devices) {
         $scope.device = {};
 
-        configurationService.getAllConfigurations(function (response) {
+        configurationService.getAllConfigNames(function (response) {
             $scope.device.configurationId = response.data[0].id;
             $scope.configurations = response.data;
         });
@@ -1125,6 +1125,8 @@ angular.module('headwind-kiosk')
                     $scope.errorMessage = localization.localize('error.empty.configuration');
                 } else if (!user.allDevicesAvailable && $scope.groupsSelection.length == 0) {
                     $scope.errorMessage = localization.localize('error.empty.group');
+                } else if (/[\/?&]/.test($scope.device.number)) {
+                    $scope.errorMessage = localization.localize('error.invalid.character');
                 } else {
                     $scope.device.groups = $scope.groupsSelection;
 
@@ -1169,7 +1171,7 @@ angular.module('headwind-kiosk')
                 $modalInstance.dismiss();
             };
 
-            configurationService.getAllConfigurations(function (response) {
+            configurationService.getAllConfigNames(function (response) {
                 $scope.configurations = response.data;
             });
 

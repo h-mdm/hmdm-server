@@ -90,15 +90,32 @@ public class ConfigurationResource {
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllConfigurations() {
-        // There should be different permissions to view and edit configurations
-        // By now, let's just remove this check to avoid issues with getting config lists
-//        if (!SecurityContext.get().hasPermission("configurations")) {
-//            log.error("Unauthorized attempt to access configurations");
-//            return Response.PERMISSION_DENIED();
-//        }
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configurations");
+            return Response.PERMISSION_DENIED();
+        }
         List<Configuration> configurations = this.configurationDAO.getAllConfigurations();
         configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Get configuration names",
+            notes = "Gets the list of available configuration names",
+            response = LookupItem.class,
+            responseContainer = "List"
+    )
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllConfigurationNames() {
+        // This list is available to users with all permissions
+        List<LookupItem> items = this.configurationDAO.getAllConfigurations()
+                .stream()
+                .map(configuration -> new LookupItem(configuration.getId(), configuration.getName()))
+                .collect(Collectors.toList());
+        return Response.OK(items);
     }
 
     // =================================================================================================================
@@ -112,10 +129,10 @@ public class ConfigurationResource {
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchConfigurations(@PathParam("value") String value) {
-//        if (!SecurityContext.get().hasPermission("configurations")) {
-//            log.error("Unauthorized attempt to access configurations");
-//            return Response.PERMISSION_DENIED();
-//        }
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configurations");
+            return Response.PERMISSION_DENIED();
+        }
         List<Configuration> configurations = this.configurationDAO.getAllConfigurationsByValue(value);
         configurations.forEach(c -> c.setBaseUrl(this.configurationDAO.getBaseUrl()));
         return Response.OK(configurations);
@@ -129,7 +146,8 @@ public class ConfigurationResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of configurations matching the specified filter.
      */
-    @ApiOperation(value = "Get configurations for autocompletions")
+    // This method is never used so I comment it out for security
+/*    @ApiOperation(value = "Get configurations for autocompletions")
     @POST
     @Path("/autocomplete")
     @Produces(MediaType.APPLICATION_JSON)
@@ -148,7 +166,7 @@ public class ConfigurationResource {
             log.error("Failed to search the configurations due to unexpected error. Filter: {}", filter, e);
             return Response.INTERNAL_ERROR();
         }
-    }
+    } */
 
     // =================================================================================================================
     @ApiOperation(
@@ -305,10 +323,10 @@ public class ConfigurationResource {
     @Path("/applications/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationApplications(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
-//        if (!SecurityContext.get().hasPermission("configurations")) {
-//            log.error("Unauthorized attempt to access configuration applications");
-//            return Response.PERMISSION_DENIED();
-//        }
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access configuration applications");
+            return Response.PERMISSION_DENIED();
+        }
         return Response.OK(this.configurationDAO.getConfigurationApplications(id));
     }
 
@@ -322,10 +340,10 @@ public class ConfigurationResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationById(@PathParam("id") Integer id) {
-//        if (!SecurityContext.get().hasPermission("configurations")) {
-//            log.error("Unauthorized attempt to access the configuration " + id);
-//            return Response.PERMISSION_DENIED();
-//        }
+        if (!SecurityContext.get().hasPermission("configurations")) {
+            log.error("Unauthorized attempt to access the configuration " + id);
+            return Response.PERMISSION_DENIED();
+        }
 
         Configuration configurationById = getConfiguration(id);
 
