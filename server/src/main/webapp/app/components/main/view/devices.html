@@ -180,17 +180,17 @@
             style="float: left; margin: 10px 10px 10px 30px">
             <span style="float: left; margin: 7px 0 0 0" localized>form.devices.fast.search</span>
 
-            <span class="btn-group dropdown" ng-if="hasPermission('edit_devices')">
+            <div class="btn-group dropdown" uib-dropdown ng-if="hasPermission('edit_devices')">
                     <button id="group-actions-button" type="button"
-                            class="btn btn-default dropdown-toggle" ng-disabled='isNotSelected()' localized>button.group.action</button>
-                    <ul class="dropdown-menu dropdown-menu-devices" role="menu">
+                            class="btn btn-default dropdown-toggle" uib-dropdown-toggle ng-disabled='isNotSelected()' localized>button.group.action</button>
+                    <ul class="dropdown-menu dropdown-menu-devices" uib-dropdown-menu role="menu">
                         <li role="menuitem">
                             <a ng-click="openBulkUpdateModal()" localized>button.set.configuration</a>
                             <a ng-click="openBulkGroupModal()" localized>button.set.group</a>
                             <a ng-click="confirmBulkDelete()" localized>button.delete</a>
                         </li>
                     </ul>
-                    </span>
+                    </div>
             <button type='button' ng-if="hasPermission('edit_devices')"
                     ng-disabled='commonSettings.deviceLimit > 0 && commonSettings.deviceCount >= commonSettings.deviceLimit'
                     class='btn btn-default' ng-click='editDevice( {} )' localized>button.add</button>
@@ -451,12 +451,12 @@
                         localized-title="button.delete" ng-if="hasPermission('edit_devices')">
                     <span class='glyphicon glyphicon-trash'></span>
                 </button>
-                <span class="btn-group dropdown" ng-if="plugins && plugins.length > 0 || hasPermission('edit_device_app_settings')">
-                    <button id="single-button-{{device.id}}" type="button" localized-title="button.more"
+                <span class="btn-group dropdown" uib-dropdown ng-if="plugins && plugins.length > 0 || hasPermission('edit_device_app_settings')">
+                    <button id="single-button-{{device.id}}" uib-dropdown-toggle type="button" localized-title="button.more"
                             class="btn btn-default dropdown-toggle">
                         <span class='glyphicon glyphicon-option-horizontal'></span> <span style="padding-bottom: 3px" class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-devices" role="menu" aria-labelledby="single-button-{{device.id}}">
+                    <ul class="dropdown-menu dropdown-menu-devices" uib-dropdown-menu role="menu" aria-labelledby="single-button-{{device.id}}">
                         <li role="menuitem" ng-if="hasPermission('edit_device_app_settings')">
                             <a ng-click="manageApplicationSettings(device)" localized>button.app.settings</a>
                         </li>

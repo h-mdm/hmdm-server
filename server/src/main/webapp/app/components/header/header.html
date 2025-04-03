@@ -6,13 +6,13 @@
         <li class='hide-on-small-screen'>
             <a id='headerDateTime'>{{dateTime}}</a>
         </li>
-        <li class='dropdown margin-right'>
-            <a class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
+        <li class='dropdown margin-right' uib-dropdown>
+            <a class='dropdown-toggle' uib-dropdown-toggle role='button' aria-expanded='false'>
 <!--                <span class='hide-on-small-screen username-tip' localized-change-tracking>header.label.username</span> -->
                 <span class='username-label'>{{getUserName()}}</span>
                 <span class='caret username-caret'></span>
             </a>
-            <ul class='dropdown-menu' role='menu'>
+            <ul class='dropdown-menu' uib-dropdown-menu role='menu'>
                 <li><a ng-style='color' ng-click="about()" localized-change-tracking>menu.about</a></li>
                 <li><a ui-sref='profile' ng-style='color' localized-change-tracking>menu.profile</a></li>
                 <li ng-if="updatesAllowed()"><a ui-sref='updates' ng-style='color' localized-change-tracking>menu.updates</a></li>

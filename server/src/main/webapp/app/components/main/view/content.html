@@ -27,9 +27,9 @@
         </tab>
 
         <li ng-if="hasPermission('settings')"
-                class="dropdown" ng-class="{'active': settingsTabActive}">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span localized-change-tracking>menu.settings</span><span class="caret"></span></a>
-            <ul class="dropdown-menu">
+                class="dropdown" uib-dropdown ng-class="{'active': settingsTabActive}">
+            <a class="dropdown-toggle" uib-dropdown-toggle href="#"><span localized-change-tracking>menu.settings</span><span class="caret"></span></a>
+            <ul class="dropdown-menu" uib-dropdown-menu>
                 <tab active="act.DESIGN" ng-click="openTab('DESIGN')">
                     <tab-heading localized-change-tracking>tab.default.design</tab-heading>
                     <ng-include src="'app/components/main/view/settings/design.html'" ng-if="activeTab === 'DESIGN'"></ng-include>
@@ -76,11 +76,11 @@
             </ul>
         </li>
 
-        <li class="dropdown" ng-if="functionsPlugins.length > 0" ng-class="{'active': pluginsTabActive}">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <li class="dropdown" uib-dropdown ng-if="functionsPlugins.length > 0" ng-class="{'active': pluginsTabActive}">
+            <a class="dropdown-toggle" uib-dropdown-toggle href="#">
                 <span localized-change-tracking>menu.functions</span><span class="caret"></span>
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" uib-dropdown-menu>
                 <tab ng-repeat="plugin in functionsPlugins" active="act['plugin-' + plugin.identifier]"
                      ng-if="!plugin.functionsPermission || hasPermission(plugin.functionsPermission)"
                      ng-click="openTab('plugin-' + plugin.identifier)">
