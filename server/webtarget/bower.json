@@ -10,7 +10,7 @@
   "dependencies": {
     "angular": "~1.8.3",
     "angular-resource": "~1.8.3",
-    "angular-bootstrap": "~0.11.2",
+    "angular-bootstrap": "~0.14.3",
     "angular-cookies": "~1.8.3",
     "angular-ui-router": "~1.0.29",
     "bootstrap-css-only": "~3.3.7",
