@@ -1,0 +1,50 @@
+Java 
+install Java (1.8)
+https://www.azul.com/downloads/?package=jdk#zulu
+
+
+Idea:
+Install intellij Idea community edition.
+
+mosquitto
+1. Install mosquitto 
+https://mosquitto.org/download/
+mosquitto-2.0.21a-install-windows-x86.exe
+
+2. Add mosquitto path to path variable 
+
+3. test mosquitto
+cmd > mosquitto_sub -t testing -h 127.0.0.1
+cmd > mosquitto_pub -t testing -h 127.0.0.1 -m test:123
+
+
+git
+Install git bash 
+1. run below git commands
+git config --global ssl.verify false
+git config --global http.proxy http://168.219.61.252:8080
+git config --global https.proxy http://168.219.61.252:8080
+
+2. Create a Folder for project. Move to the folder and run below command
+git clone https://github.com/ai-test-2025/hmdm-server.git
+
+3. Verify remote branch and checkout
+git branch -r
+git checkout -b develop-intellij origin/develop-intellij
+
+
+Maven
+1. Download Maven 3.9.9 and unzip it
+https://maven.apache.org/download.cgi
+
+2. Add maven Path to Path Environment variable 
+(e.g. C:\MDM\maven\bin)
+
+3. open hmdm-server project with intellij
+intellij > Settings > Build Execution and Deployment > Maven 
+Change maven path to above (e.g. C:\MDM\maven)
+4. intellij > Settings > Build Execution and Deployment > Maven  > Runner
+Set runner version to java 1.8
+check skip tests
+
+5. Configure settings.xml with proxy
