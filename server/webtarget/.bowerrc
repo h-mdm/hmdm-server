@@ -1,0 +1,1 @@
+{ "strict-ssl": false, "https-proxy": "http://168.219.61.252:8080", "http-proxy": "http://168.219.61.252:8080" }
