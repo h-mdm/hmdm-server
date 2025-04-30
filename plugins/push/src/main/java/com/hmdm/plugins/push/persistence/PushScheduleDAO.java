@@ -144,7 +144,7 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
         Calendar c = Calendar.getInstance();
         return pushScheduleMapper.findMatchingTime(
                 parseScheduleMask("" + c.get(Calendar.MINUTE), 60, false, "minute"),
-                parseScheduleMask("" + c.get(Calendar.HOUR), 24, false, "hour"),
+                parseScheduleMask("" + c.get(Calendar.HOUR_OF_DAY), 24, false, "hour"),
                 parseScheduleMask("" + c.get(Calendar.DAY_OF_MONTH), 31, true, "day"),
                 parseScheduleMask("" + c.get(Calendar.DAY_OF_WEEK), 7, true, "weekday"),
                 parseScheduleMask("" + c.get(Calendar.MONTH), 12, true, "month")

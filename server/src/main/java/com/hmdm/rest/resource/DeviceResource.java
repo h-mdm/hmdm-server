@@ -105,6 +105,16 @@ public class DeviceResource {
         for (Device device : devices.getItems()) {
             final Integer deviceConfigurationId = device.getConfigurationId();
 
+            Configuration dbConfig = null;
+            if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
+                dbConfig = configurationDAO.getConfigurationById(deviceConfigurationId);
+                if (dbConfig == null) {
+                    log.error("Device " + device.getNumber() + ": configuration does not exist: " + deviceConfigurationId);
+                    device.setConfigurationId(null);     // Will be filtered out when converting to DeviceView
+                    continue;
+                }
+            }
+
             if (!configIdToApplicationsMap.containsKey(deviceConfigurationId)) {
                 configIdToApplicationsMap.put(deviceConfigurationId, this.configurationDAO.getConfigurationApplications(deviceConfigurationId));
             }
@@ -113,8 +123,6 @@ public class DeviceResource {
             }
 
             if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
-                Configuration dbConfig = configurationDAO.getConfigurationById(deviceConfigurationId);
-
                 // Here we keep only required properties
                 Configuration configuration = new Configuration();
                 configuration.setId(deviceConfigurationId);
@@ -133,7 +141,10 @@ public class DeviceResource {
             device.setConfiguration(configIdToConfigurationsMap.get(deviceConfigurationId));
         }
 
-        final List<DeviceView> deviceViews = devices.getItems().stream().map(DeviceView::new).collect(Collectors.toList());
+        final List<DeviceView> deviceViews = devices.getItems().stream()
+                .filter(d -> d.getConfigurationId() != null)
+                .map(DeviceView::new)
+                .collect(Collectors.toList());
         PaginatedData<DeviceView> devicesPage = new PaginatedData<>(deviceViews, devices.getTotalItemsCount());
 
         DeviceListView view = new DeviceListView(configIdToConfigurationsMap.values(), devicesPage);

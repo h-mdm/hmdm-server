@@ -385,10 +385,12 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             deleteDir: "{path: \"/path/to/dir\"}",
             purgeDir: "{path: \"/path/to/dir\", recursive: \"1\"}",
             permissiveMode: "",
+            intent: "{action: \"android.intent.action.VIEW\", data: \"https://h-mdm.com\"}",
             runCommand: "{command: \"shell command\"}",
             reboot: "",
             exitKiosk: "",
             clearDownloadHistory: "",
+            grantPermissions: "{pkg: \"app.package.id\"}",
             "(custom)": ""
         };
 

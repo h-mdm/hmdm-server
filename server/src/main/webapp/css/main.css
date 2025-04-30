@@ -34,6 +34,11 @@
     color: #a0a0a0;
 }
 
+.list-desc {
+    color: #888;
+    font-size: 13px;
+}
+
 .field-hint {
     color: #888;
     font-size: 13px;
