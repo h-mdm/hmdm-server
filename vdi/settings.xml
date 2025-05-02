@@ -1,0 +1,23 @@
+<settings>
+  <proxies>
+   <proxy>
+      <id>vdi-proxy</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>168.219.61.252</host>
+      <port>8080</port>
+      <nonProxyHosts>127.0.01|localhost</nonProxyHosts>
+    </proxy>
+  </proxies>
+    <profiles>
+    <profile>
+      <id>vdi-proxy</id>
+      <properties>
+        <aether.connector.https.securityMode>insecure</aether.connector.https.securityMode>
+      </properties>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>vdi-proxy</activeProfile>
+  </activeProfiles>
+</settings>

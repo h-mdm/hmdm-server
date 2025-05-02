@@ -1,0 +1,72 @@
+# Install Gitbash
+1. Download and Install
+https://git-scm.com/downloads/win
+Download : Git-2.49.0-64-bit
+
+2. Run below git commands
+git config --global ssl.verify false
+git config --global http.proxy http://168.219.61.252:8080
+git config --global https.proxy http://168.219.61.252:8080
+
+3. Clone Project 
+https://github.com/ai-test-2025/hmdm-server.git
+move to project directory
+cd hmdm-server
+git checkout dev-hmdm-server
+git checkout -b dev-abhi-hmdm-server #create your dev branch
+git push -u origin @ #this does not upload any data. only creates your remote branch
+
+# Java Installation
+1. Download JDK 1.8 64 bit(zipped) for windows
+https://www.azul.com/downloads/?package=jdk#zulu
+
+2. Extract the downloaded file to a desired folder (e.g. C:\AI\zulu8)
+
+#3. Add cert
+#keytool -import -trustcacerts -alias SuwonDigital -file  DigitalCity.crt -keystore cacerts -storepass changeit
+
+# Intellij Idea Installtion
+1. Download and Install Intellij Idea Community Edition for winodws 
+https://www.jetbrains.com/idea/download/?section=windows
+
+
+
+# Download and install maven 3.9.9 (Optional) - You may use embeded maven in intellij
+1. Download apache-maven-3.9.9-bin.zip
+https://maven.apache.org/download.cgi
+
+2. Extract the downloaded file to a desired folder (e.g. C:\AI\maven)
+
+3. Launch Intellij Idea anc click on settings icon (typically bottom left)
+Go to Build, Exceution, Demployment > Build Tools > Maven
+Select Maven home path to the Maven folder.
+
+4. Apply the sttings and Exit Intellij Idea
+
+5. Add maven bin path to the User PATH variable (e.g. C:\AI\maven\bin)
+
+# Configure maven settings 
+1. Create a settings.xml file under C:\Users\{user}\.m2\
+Enter proxy information
+Ref: https://maven.apache.org/guides/mini/guide-proxies.html
+
+2. open "hmdm-server" folder as project in Intellij Idea
+
+3. Go to intellij Settings
+Go to Build, Exceution, Demployment > Build Tools > Maven > runner
+a) JRE path should be path zulu8 path
+b) choose skip tests
+
+4. right click on project root > module settings > Project
+a) Choose JDK 1.8, Language Level 8
+
+5. Open hmdm-server\server and make a copy of build.properties.example in the same folder
+   rename to build.properties (ignore if file is already present)
+   
+# Build:
+1. open "hmdm-server" folder as project in Intellij Idea 
+2. Go to Maven lifecycles and click on install
+   
+   
+   
+
