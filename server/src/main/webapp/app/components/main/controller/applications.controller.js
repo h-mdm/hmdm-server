@@ -151,7 +151,7 @@ angular.module('headwind-kiosk')
         $scope.init();
     })
     .controller('ApplicationModalController', function ($scope, $modalInstance, applicationService, iconService,
-                                                        application, $modal, isControlPanel, localization, closeOnSave,
+                                                        application, $modal, $q, isControlPanel, localization, closeOnSave,
                                                         fileService) {
         $scope.isControlPanel = isControlPanel;
 
@@ -255,6 +255,16 @@ angular.module('headwind-kiosk')
             'android.settings.WIRELESS_SETTINGS',
             'android.settings.ZEN_MODE_PRIORITY_SETTINGS'
         ];
+
+        $scope.filterIntents = function(userInput) {
+            var filtered = $scope.intentOptions.filter(function(intent) {
+                return intent
+                    .toLowerCase()
+                    .indexOf(userInput.toLowerCase()) !== -1;
+            });
+            // wrap in a resolved promise
+            return $q.when(filtered);
+        };
 
         const loadIcons = function (callback) {
             iconService.getAllIcons(function (response) {

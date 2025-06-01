@@ -26,11 +26,7 @@ import java.util.List;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.service.DeviceApplicationsStatus;
 import com.hmdm.service.DeviceConfigFilesStatus;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import com.hmdm.rest.json.DeviceLookupItem;
 
 public interface DeviceMapper {
@@ -163,6 +159,7 @@ public interface DeviceMapper {
     Group getGroupByName(@Param("customerId") int customerId, @Param("name") String name);
 
     @Insert({"INSERT INTO groups (name, customerId) VALUES (#{name}, #{customerId})"})
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertGroup(Group group);
 
     @Update({"UPDATE groups SET name = #{name} WHERE id = #{id}"})
