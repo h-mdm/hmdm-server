@@ -177,6 +177,7 @@ angular.module('headwind-kiosk')
 
         $scope.onMainAppSelected = function ($item) {
             $scope.mainApp = $item;
+            bConfigurationWasLost = false;
         };
 
         $scope.getApps = getApps;
@@ -608,6 +609,7 @@ angular.module('headwind-kiosk')
             $scope.loadApps = function (configId) {
                 configurationService.getApplications({"id": configId}, function (response) {
                     if (response.status === 'OK') {
+                      setTimeout(function () {
                         response.data.forEach(function (app) {
                             app.actionChanged = false;
                         });
@@ -632,6 +634,15 @@ angular.module('headwind-kiosk')
                             }
                         }
 
+                        if (!$scope.configuration.mainAppId)   {
+                            console.warn("AngularJS Digest Cycle issue");
+                            // Issue caused by AngularJS Digest Cycle
+                            // Workaround protects configuration
+                            // Against unintended changes
+                            // Temporary solution for stability
+                            bConfigurationWasLost = true;
+                        }
+
                         if ($scope.configuration.mainAppId) {
                             let mainApps = response.data.filter(function (app) {
                                 return app.usedVersionId === $scope.configuration.mainAppId;
@@ -653,6 +664,7 @@ angular.module('headwind-kiosk')
                                 contentAppSelected = true;
                             }
                         }
+                      }, 600);
                     } else {
                         $scope.errorMessage = localization.localize(response.message);
                     }
@@ -671,6 +683,8 @@ angular.module('headwind-kiosk')
                     $scope.errorMessage = localization.localize('error.empty.configuration.password');
                 } else if ($scope.configuration.kioskMode && (!contentAppSelected)) {
                     $scope.errorMessage = localization.localize('error.empty.configuration.contentApp');
+                } else if (bConfigurationWasLost) {
+                    $scope.errorMessage = localization.localize('error.invalid.configuration.mainApp');
                 } else {
                     var request = {};
 
@@ -1276,6 +1290,7 @@ angular.module('headwind-kiosk')
             var mainAppSelected = false;
             var contentAppSelected = false;
             var allApplications;
+            let bConfigurationWasLost = false;
 
             $scope.configuration = {
                 defaultFilePath: "/"
