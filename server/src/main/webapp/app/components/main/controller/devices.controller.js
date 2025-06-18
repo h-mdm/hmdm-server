@@ -493,6 +493,10 @@ angular.module('headwind-kiosk')
         $scope.getDevicePermissionIndicatorImage = function (device) {
             var info = $scope.getDeviceInfo(device);
             if (info) {
+                if (info.kioskMode === true) {
+                    // Do not check permissions in kiosk mode
+                    return 'images/online.png';
+                }
                 var permissions = info.permissions[0] + info.permissions[1] + info.permissions[2];
                 if (permissions === 0) {
                     return 'images/offline.png';
@@ -509,6 +513,10 @@ angular.module('headwind-kiosk')
         $scope.getDevicePermissionTitle = function (device) {
             var info = $scope.getDeviceInfo(device);
             if (info) {
+                if (info.kioskMode === true) {
+                    // Do not check permissions in kiosk mode
+                    return localization.localize('devices.permissions.all');
+                }
                 var permissions = info.permissions[0] + info.permissions[1] + info.permissions[2];
                 if (permissions === 3) {
                     return localization.localize('devices.permissions.all');
@@ -678,13 +686,22 @@ angular.module('headwind-kiosk')
             return null;
         };
 
-        $scope.getIsKioskMode = function (device) {
+        $scope.isKioskMode = function (device) {
             var info = $scope.getDeviceInfo(device);
             if (info) {
                 if (info.kioskMode === true) {
                     return localization.localize('yes');
-                } else if (info.defaultLauncher === false) {
-                    return localization.localize('no');
+                }
+            }
+
+            return null;
+        };
+
+        $scope.isBackgroundMode = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                if (info.defaultLauncher === false) {
+                    return localization.localize('yes');
                 }
             }
 

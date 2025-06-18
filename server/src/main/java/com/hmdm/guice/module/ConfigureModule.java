@@ -94,6 +94,7 @@ public class ConfigureModule extends AbstractModule {
     private final String ldapCustomerId = "ldap.customer.id";
     private final String deviceAllowedAddress = "device.allowed.address";
     private final String uiAllowedAddress = "ui.allowed.address";
+    private final String apkTrustedUrlParameter = "apk.trusted.url";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -260,5 +261,7 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(deviceAllowedAddress)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(uiAllowedAddress);
         this.bindConstant().annotatedWith(Names.named(uiAllowedAddress)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(apkTrustedUrlParameter);
+        this.bindConstant().annotatedWith(Names.named(apkTrustedUrlParameter)).to(opt != null ? opt : "");
     }
 }

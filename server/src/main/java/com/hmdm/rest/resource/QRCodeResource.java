@@ -193,13 +193,13 @@ public class QRCodeResource {
                             if (wifiSecurityType == null || wifiSecurityType.isEmpty()) {
                                 wifiSecurityType = "WPA";   // De-facto standard
                             }
-                            wifiSsidEntry = "\"android.app.extra.PROVISIONING_WIFI_SSID\":\"" + configuration.getWifiSSID().trim() + "\",\n" +
+                            wifiSsidEntry = "\"android.app.extra.PROVISIONING_WIFI_SSID\":" + JSONObject.quote(configuration.getWifiSSID().trim()) + ",\n" +
                                             "\"android.app.extra.PROVISIONING_WIFI_SECURITY_TYPE\":\"" + wifiSecurityType + "\",\n";
                         }
 
                         String wifiPasswordEntry = "";
                         if (configuration.getWifiPassword() != null && !configuration.getWifiPassword().trim().isEmpty()) {
-                            wifiPasswordEntry = "\"android.app.extra.PROVISIONING_WIFI_PASSWORD\":\"" + configuration.getWifiPassword().trim() + "\",\n";
+                            wifiPasswordEntry = "\"android.app.extra.PROVISIONING_WIFI_PASSWORD\":" + JSONObject.quote(configuration.getWifiPassword().trim()) + ",\n";
                         }
 
                         String mobileEnrollmentEntry = "";
@@ -220,7 +220,7 @@ public class QRCodeResource {
 
                         StringBuffer sb = new StringBuffer("{\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
-                                "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\"" + apkUrl + "\",\n" +
+                                "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":" + JSONObject.quote(apkUrl) + ",\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM\":\"" + sha256 + "\",\n" +
                                 wifiSsidEntry + wifiPasswordEntry + mobileEnrollmentEntry +
                                 "\"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\":true,\n");

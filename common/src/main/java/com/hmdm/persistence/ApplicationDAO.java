@@ -69,17 +69,20 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     private final CustomerDAO customerDAO;
     private final String filesDirectory;
     private final String baseUrl;
+    private final String apkTrustedUrl;
     private APKFileAnalyzer apkFileAnalyzer;
 
     @Inject
     public ApplicationDAO(ApplicationMapper mapper, CustomerDAO customerDAO,
                           @Named("files.directory") String filesDirectory,
                           @Named("base.url") String baseUrl,
+                          @Named("apk.trusted.url") String apkTrustedUrl,
                           APKFileAnalyzer apkFileAnalyzer) {
         this.mapper = mapper;
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
+        this.apkTrustedUrl = apkTrustedUrl;
         this.apkFileAnalyzer = apkFileAnalyzer;
     }
 
@@ -328,7 +331,9 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         boolean urlChanged = newUrl == null && existingUrl != null ||
                 newUrl != null && existingUrl == null ||
                 newUrl != null && !newUrl.equals(existingUrl);
-        if (urlChanged) {
+        boolean isTrustedUrl = newUrl != null && !apkTrustedUrl.equals("") &&
+                newUrl.startsWith(apkTrustedUrl);
+        if (urlChanged && !isTrustedUrl) {
             applicationVersion.setApkHash(null);
         } else {
             applicationVersion.setApkHash(dbApplicationVersion.getApkHash());

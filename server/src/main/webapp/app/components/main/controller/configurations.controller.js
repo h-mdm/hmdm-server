@@ -177,7 +177,6 @@ angular.module('headwind-kiosk')
 
         $scope.onMainAppSelected = function ($item) {
             $scope.mainApp = $item;
-            bConfigurationWasLost = false;
         };
 
         $scope.getApps = getApps;
@@ -534,6 +533,7 @@ angular.module('headwind-kiosk')
 
             $scope.onMainAppSelected = function ($item) {
                 $scope.mainApp = $item;
+                bConfigurationWasLost = false;
             };
             $scope.onContentAppSelected = function ($item) {
                 $scope.contentApp = $item;
@@ -609,62 +609,64 @@ angular.module('headwind-kiosk')
             $scope.loadApps = function (configId) {
                 configurationService.getApplications({"id": configId}, function (response) {
                     if (response.status === 'OK') {
-                      setTimeout(function () {
-                        response.data.forEach(function (app) {
-                            app.actionChanged = false;
-                        });
-
-                        allApplications = response.data.map(function (app) {
-                            return app;
-                        });
-                        $scope.applications = response.data.filter(function (app) {
-                            // Application com.hmdm.launcher is made available by default when creating new configuration
-                            return app.action != '0' && (!app.system || $scope.showSystemApps) || (!configId && app.pkg === 'com.hmdm.launcher' && app.action != '2');
-                        });
-
-                        // For new configuration use default app for main app and content receiver
-                        if (!configId) {
-                            let mainAppCandidates = response.data.filter(function (app) {
-                                return app.pkg === 'com.hmdm.launcher' && app.action != '2';
+                        setTimeout(function () {
+                            // Workaround against occasional loss of mainAppId due to AngularJS Digest Cycle
+                            // Thanks to @GlebMan-n
+                            response.data.forEach(function (app) {
+                                app.actionChanged = false;
                             });
 
-                            if (mainAppCandidates.length > 0) {
-                                $scope.configuration.mainAppId = mainAppCandidates[0].usedVersionId;
-                                mainAppCandidates[0].action = 1; // Install
-                            }
-                        }
-
-                        if (!$scope.configuration.mainAppId)   {
-                            console.warn("AngularJS Digest Cycle issue");
-                            // Issue caused by AngularJS Digest Cycle
-                            // Workaround protects configuration
-                            // Against unintended changes
-                            // Temporary solution for stability
-                            bConfigurationWasLost = true;
-                        }
-
-                        if ($scope.configuration.mainAppId) {
-                            let mainApps = response.data.filter(function (app) {
-                                return app.usedVersionId === $scope.configuration.mainAppId;
+                            allApplications = response.data.map(function (app) {
+                                return app;
+                            });
+                            $scope.applications = response.data.filter(function (app) {
+                                // Application com.hmdm.launcher is made available by default when creating new configuration
+                                return app.action != '0' && (!app.system || $scope.showSystemApps) || (!configId && app.pkg === 'com.hmdm.launcher' && app.action != '2');
                             });
 
-                            if (mainApps.length > 0) {
-                                $scope.mainApp = mainApps[0];
-                                mainAppSelected = true;
-                            }
-                        }
+                            // For new configuration use default app for main app and content receiver
+                            if (!configId) {
+                                let mainAppCandidates = response.data.filter(function (app) {
+                                    return app.pkg === 'com.hmdm.launcher' && app.action != '2';
+                                });
 
-                        if ($scope.configuration.contentAppId) {
-                            let contentApps = response.data.filter(function (app) {
-                                return app.usedVersionId === $scope.configuration.contentAppId;
-                            });
-
-                            if (contentApps.length > 0) {
-                                $scope.contentApp = contentApps[0];
-                                contentAppSelected = true;
+                                if (mainAppCandidates.length > 0) {
+                                    $scope.configuration.mainAppId = mainAppCandidates[0].usedVersionId;
+                                    mainAppCandidates[0].action = 1; // Install
+                                }
                             }
-                        }
-                      }, 600);
+
+                            if (!$scope.configuration.mainAppId) {
+                                console.warn("AngularJS Digest Cycle issue");
+                                // Issue caused by AngularJS Digest Cycle
+                                // Workaround protects configuration
+                                // Against unintended changes
+                                // Temporary solution for stability
+                                bConfigurationWasLost = true;
+                            }
+
+                            if ($scope.configuration.mainAppId) {
+                                let mainApps = response.data.filter(function (app) {
+                                    return app.usedVersionId === $scope.configuration.mainAppId;
+                                });
+
+                                if (mainApps.length > 0) {
+                                    $scope.mainApp = mainApps[0];
+                                    mainAppSelected = true;
+                                }
+                            }
+
+                            if ($scope.configuration.contentAppId) {
+                                let contentApps = response.data.filter(function (app) {
+                                    return app.usedVersionId === $scope.configuration.contentAppId;
+                                });
+
+                                if (contentApps.length > 0) {
+                                    $scope.contentApp = contentApps[0];
+                                    contentAppSelected = true;
+                                }
+                            }
+                        }, 600)
                     } else {
                         $scope.errorMessage = localization.localize(response.message);
                     }
@@ -685,7 +687,7 @@ angular.module('headwind-kiosk')
                     $scope.errorMessage = localization.localize('error.empty.configuration.contentApp');
                 } else if (bConfigurationWasLost) {
                     $scope.errorMessage = localization.localize('error.invalid.configuration.mainApp');
-                } else {
+                } {
                     var request = {};
 
                     for (var prop in $scope.configuration) {

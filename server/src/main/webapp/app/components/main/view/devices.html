@@ -406,13 +406,13 @@
                 <span>{{getDeviceBatteryLevel(device)}}</span>
             </td>
             <td ng-if="settings.columnDisplayedDefaultLauncher">
-                <span ng-class="{'device-data-mismatch': device.info.defaultLauncher === false}">{{getIsDefaultLauncher(device)}}</span>
+                <span>{{isBackgroundMode(device)}}</span>
             </td>
             <td ng-if="settings.columnDisplayedMdmMode">
                 <span ng-class="{'device-data-mismatch': device.info.mdmMode === false}">{{getIsMdmMode(device)}}</span>
             </td>
             <td ng-if="settings.columnDisplayedKioskMode">
-                <span>{{getIsKioskMode(device)}}</span>
+                <span>{{isKioskMode(device)}}</span>
             </td>
             <td ng-if="settings.columnDisplayedAndroidVersion">
                 {{getAndroidVersion(device)}}
