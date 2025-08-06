@@ -919,7 +919,7 @@ document.localization ['en_US'] = {
     'configuration.app.version.upgrade.message': 'Installed version ${installedVersion}, available version ${latestVersion}',
 
     'about.line.1': '${appName} control panel',
-    'about.line.2': 'Enterprise launcher for Android',
+    'about.line.2': 'Open source MDM for Android',
     'about.line.3': 'Version ${versionNumber}',
     'about.line.4': 'Installed plugins',
 

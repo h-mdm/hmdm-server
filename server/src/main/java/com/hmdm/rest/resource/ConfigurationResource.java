@@ -146,16 +146,11 @@ public class ConfigurationResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of configurations matching the specified filter.
      */
-    // This method is never used so I comment it out for security
-/*    @ApiOperation(value = "Get configurations for autocompletions")
+    @ApiOperation(value = "Get configurations for autocompletions")
     @POST
     @Path("/autocomplete")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurations(String filter) {
-//        if (!SecurityContext.get().hasPermission("configurations")) {
-//            log.error("Unauthorized attempt to access configurations");
-//            return Response.PERMISSION_DENIED();
-//        }
         try {
             List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByValue(filter)
                     .stream()
@@ -166,7 +161,7 @@ public class ConfigurationResource {
             log.error("Failed to search the configurations due to unexpected error. Filter: {}", filter, e);
             return Response.INTERNAL_ERROR();
         }
-    } */
+    }
 
     // =================================================================================================================
     @ApiOperation(

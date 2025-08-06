@@ -191,12 +191,12 @@
 
         <div class='form-group' ng-if="application.showIcon">
             <label class='col-sm-4 control-label' for="iconInput" localized>form.application.icon</label>
-            <div class='col-sm-6'>
+            <div class='col-sm-5'>
                 <select ng-options="icon.id as icon.name for icon in icons" name="icon"
                         ng-model='application.iconId' class='form-control' id="iconInput">
                 </select>
             </div>
-            <dic class="col-sm-2">
+            <dic class="col-sm-3 align-right">
                 <button class="btn btn-default" type="button" ng-click="addNewIcon()" localized>button.add.icon</button>
             </dic>
         </div>

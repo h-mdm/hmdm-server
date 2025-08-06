@@ -35,6 +35,8 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -55,6 +57,11 @@ public class APKFileAnalyzer {
      * <p>A command line string to call the <code>aapt</code> command.</p>
      */
     private final String aaptCommand;
+
+    /**
+     * Pattern matcher to parse the first line of aapt
+     */
+    Pattern pattern = Pattern.compile("(\\w+)=\\'([^\\']*)\\'");
 
     /**
      * <p>Constructs new <code>APKFileAnalyzer</code> instance. This implementation does nothing.</p>
@@ -161,48 +168,20 @@ public class APKFileAnalyzer {
                                final AtomicReference<String> appPkg,
                                final AtomicReference<String> appVersion,
                                final AtomicReference<Integer> appVersionCode) {
-        String l = line;
-        final String namePrefix = "package: name='";
-        final String versionCodePrefix = "' versionCode='";
-        final String versionNamePrefix = "' versionName='";
-        final String sdkVersionPrefix = "' compileSdkVersion='";
-        final String platformBuildPrefix = "' platformBuildVersionName='";
-        int pos;
 
-        pos = l.indexOf(namePrefix);
-        if (pos == -1) {
-            return;
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            if (matcher.group(1).equals("name")) {
+                appPkg.set(matcher.group(2));
+            } else if (matcher.group(1).equals("versionName")) {
+                appVersion.set(matcher.group(2));
+            } else if (matcher.group(1).equals("versionCode")) {
+                try {
+                    appVersionCode.set(Integer.parseInt(matcher.group(2)));
+                } catch (NumberFormatException e) {
+                }
+            }
         }
-        l = l.substring(pos + namePrefix.length());
-
-        pos = l.indexOf(versionCodePrefix);
-        if (pos == -1) {
-            return;
-        }
-        appPkg.set(l.substring(0, pos));
-        l = l.substring(pos + versionCodePrefix.length());
-
-        pos = l.indexOf(versionNamePrefix);
-        if (pos == -1) {
-            return;
-        }
-        // Here we get the version code
-        String versionCode = l.substring(0, pos);
-        try {
-            appVersionCode.set(Integer.parseInt(versionCode));
-        } catch (NumberFormatException e) {
-        }
-        l = l.substring(pos + versionNamePrefix.length());
-
-        // Different versions of aapt may give different output
-        pos = l.indexOf(platformBuildPrefix);
-        if (pos == -1) {
-            pos = l.indexOf(sdkVersionPrefix);
-        }
-        if (pos == -1) {
-            return;
-        }
-        appVersion.set(l.substring(0, pos));
     }
 
     private void parseInfoLineLegacy(final String line,

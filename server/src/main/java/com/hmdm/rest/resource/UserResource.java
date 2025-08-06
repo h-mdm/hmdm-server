@@ -222,7 +222,7 @@ public class UserResource {
                     this.userDAO.insert(user);
                 } else {
                     User dbUser = unsecureDAO.findByLogin(user.getLogin());
-                    if (dbUser != null && dbUser.getId() != user.getId()) {
+                    if (dbUser != null && !user.getId().equals(dbUser.getId())) {
                         logger.error("Failed to create user {}: duplicate login", user.getLogin());
                         return Response.ERROR("error.duplicate.login");
                     }
