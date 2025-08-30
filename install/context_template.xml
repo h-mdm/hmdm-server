@@ -47,7 +47,10 @@
     <Parameter name="aapt.command" value="aapt"/>
 
     <!-- MQTT notification service parameters -->
-    <Parameter name="mqtt.server.uri" value="_BASE_DOMAIN_:31000"/>
+    <Parameter name="mqtt.server.uri" value="_MQTT_SERVER_URI_"/>
+    <Parameter name="mqtt.admin.password" value="_MQTT_ADMIN_PASSWORD_"/>
+    <Parameter name="mqtt.ssl.keystore.password" value="_MQTT_SSL_KEYSTORE_PASSWORD_"/>
+    <Parameter name="mqtt.ssl.protocols" value="_MQTT_SSL_PROTOCOLS_"/>
 
     <!-- Optional tag for delaying MQTT messages in milliseconds
      to avoid congestion when all devices are updating configuration at the same time -->
