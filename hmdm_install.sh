@@ -33,6 +33,12 @@ SMTP_USERNAME=
 SMTP_PASSWORD=
 SMTP_FROM=
 
+# MQTT Configuration Variables
+MQTT_SERVER_URI=${MQTT_SERVER_URI:-}
+MQTT_ADMIN_PASSWORD=${MQTT_ADMIN_PASSWORD:-}
+MQTT_SSL_KEYSTORE_PASSWORD=${MQTT_SSL_KEYSTORE_PASSWORD:-123456}
+MQTT_SSL_PROTOCOLS=${MQTT_SSL_PROTOCOLS:-TLS}
+
 install_soft() {
     read -e -p "Install missing package(s) automatically? (Y/n)?" -n 1 -r
     echo
@@ -285,7 +291,7 @@ fi
 TOMCAT_DEPLOY_PATH=$BASE_PATH
 if [ "$BASE_PATH" == "ROOT" ]; then
     BASE_PATH=""
-fi 
+fi
 
 if [[ ! -z "$PORT" ]]; then
     BASE_HOST="$BASE_DOMAIN:$PORT"
@@ -323,17 +329,97 @@ if [ -d $TOMCAT_HOME/webapps/$TOMCAT_DEPLOY_PATH ]; then
     echo
 fi
 
+# Configure MQTT SSL settings
+echo "Configuring MQTT..."
+
+# Set default MQTT_SERVER_URI if not provided
+if [[ -z "$MQTT_SERVER_URI" ]]; then
+    MQTT_SERVER_URI="tcp://$BASE_DOMAIN:31000"
+fi
+
+# Parse MQTT_SERVER_URI to extract components
+if [[ $MQTT_SERVER_URI =~ ^(tcp|ssl|mqtt|mqtts)://([^:]+):([0-9]+)$ ]]; then
+    MQTT_PROTOCOL="${BASH_REMATCH[1]}"
+    MQTT_DOMAIN="${BASH_REMATCH[2]}"
+    MQTT_PORT="${BASH_REMATCH[3]}"
+else
+    echo "Invalid MQTT_SERVER_URI format: $MQTT_SERVER_URI"
+    exit 1
+fi
+
+# Handle SSL certificate setup if using SSL protocols
+if [[ "$MQTT_PROTOCOL" == "ssl" || "$MQTT_PROTOCOL" == "mqtts" ]]; then
+    SSL_DIR=$TOMCAT_HOME/ssl
+    if [ ! -d $SSL_DIR ]; then
+        mkdir -p $SSL_DIR
+        chown $TOMCAT_USER:$TOMCAT_USER $SSL_DIR
+    fi
+
+    MQTT_JKS_PATH="$SSL_DIR/$MQTT_DOMAIN.jks"
+    MQTT_P12_PATH="$SSL_DIR/$MQTT_DOMAIN.p12"
+
+    # Check if JKS already exists (e.g., same domain as web server)
+    if [[ ! -f "$MQTT_JKS_PATH" ]]; then
+        echo "Creating MQTT SSL keystore for $MQTT_DOMAIN..."
+
+        # Check for custom PEM files via environment variables
+        if [[ -n "$MQTT_CERT_FILE" && -n "$MQTT_KEY_FILE" ]]; then
+            echo "Converting PEM certificates to JKS for MQTT..."
+
+            # Convert PEM to PKCS12 first
+            openssl pkcs12 -export -out "$MQTT_P12_PATH" \
+                -inkey "$MQTT_KEY_FILE" \
+                -in "$MQTT_CERT_FILE" \
+                ${MQTT_CA_FILE:+-certfile "$MQTT_CA_FILE"} \
+                -password pass:$MQTT_SSL_KEYSTORE_PASSWORD
+
+            # Convert PKCS12 to JKS
+            keytool -importkeystore \
+                -destkeystore "$MQTT_JKS_PATH" \
+                -srckeystore "$MQTT_P12_PATH" \
+                -srcstoretype PKCS12 \
+                -srcstorepass $MQTT_SSL_KEYSTORE_PASSWORD \
+                -deststorepass $MQTT_SSL_KEYSTORE_PASSWORD \
+                -noprompt
+
+            # Clean up temporary P12 file
+            rm -f "$MQTT_P12_PATH"
+
+            # Set ownership
+            chown $TOMCAT_USER:$TOMCAT_USER "$MQTT_JKS_PATH"
+
+            echo "MQTT SSL keystore created: $MQTT_JKS_PATH"
+        else
+            echo "WARNING: SSL protocol specified but no certificate files found"
+            echo "Set MQTT_CERT_FILE and MQTT_KEY_FILE environment variables"
+            echo "or ensure $MQTT_JKS_PATH exists"
+            exit 1
+        fi
+    else
+        echo "Using existing MQTT SSL keystore: $MQTT_JKS_PATH"
+    fi
+fi
+
+# Generate secure admin password if not provided
+if [[ -z "$MQTT_ADMIN_PASSWORD" ]]; then
+    MQTT_ADMIN_PASSWORD=$(openssl rand -base64 12)
+    echo "Generated MQTT admin password: $MQTT_ADMIN_PASSWORD"
+fi
+
+echo "MQTT configured: $MQTT_SERVER_URI"
+
+
 TOMCAT_CONFIG_PATH=$TOMCAT_HOME/conf/$TOMCAT_ENGINE/$TOMCAT_HOST
 if [ ! -d $TOMCAT_CONFIG_PATH ]; then
     mkdir -p $TOMCAT_CONFIG_PATH || exit 1
     chown root:$TOMCAT_USER $TOMCAT_CONFIG_PATH
     chmod 755 $TOMCAT_CONFIG_PATH
 fi
-cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_DOMAIN_|$BASE_DOMAIN|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g; s|_SMTP_HOST_|$SMTP_HOST|g; s|_SMTP_PORT_|$SMTP_PORT|g;  s|_SMTP_SSL_|$SMTP_SSL|g; s|_SMTP_STARTTLS_|$SMTP_STARTTLS|g; s|_SMTP_USERNAME_|$SMTP_USERNAME|g; s|_SMTP_PASSWORD_|$SMTP_PASSWORD|g; s|_SMTP_FROM_|$SMTP_FROM|g;" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
+cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_|$SQL_PORT|g; s|_SQL_BASE_|$SQL_BASE|g; s|_SQL_USER_|$SQL_USER|g; s|_SQL_PASS_|$SQL_PASS|g; s|_BASE_DIRECTORY_|$LOCATION|g; s|_PROTOCOL_|$PROTOCOL|g; s|_BASE_HOST_|$BASE_HOST|g; s|_BASE_DOMAIN_|$BASE_DOMAIN|g; s|_BASE_PATH_|$BASE_PATH|g; s|_INSTALL_FLAG_|$INSTALL_FLAG_FILE|g; s|_SMTP_HOST_|$SMTP_HOST|g; s|_SMTP_PORT_|$SMTP_PORT|g;  s|_SMTP_SSL_|$SMTP_SSL|g; s|_SMTP_STARTTLS_|$SMTP_STARTTLS|g; s|_SMTP_USERNAME_|$SMTP_USERNAME|g; s|_SMTP_PASSWORD_|$SMTP_PASSWORD|g; s|_SMTP_FROM_|$SMTP_FROM|g; s|_MQTT_SERVER_URI_|$MQTT_SERVER_URI|g; s|_MQTT_ADMIN_PASSWORD_|$MQTT_ADMIN_PASSWORD|g; s|_MQTT_SSL_KEYSTORE_PASSWORD_|$MQTT_SSL_KEYSTORE_PASSWORD|g; s|_MQTT_SSL_PROTOCOLS_|$MQTT_SSL_PROTOCOLS|g;" > $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 if [ "$?" -ne 0 ]; then
     echo "Failed to create a Tomcat config file $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml!"
     exit 1
-fi 
+fi
 echo "Tomcat config file created: $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml"
 chmod 644 $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 cp $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml~
@@ -435,7 +521,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     echo
 
     CERTBOT_RENEWAL=$(crontab -l | grep letsencrypt-ssl.sh)
-    if [ -z "$CERTBOT_RENEWAL" ]; then 
+    if [ -z "$CERTBOT_RENEWAL" ]; then
         read -e -p "Setup regular HTTPS certificate renewal [Y/n]?: " -i "Y" REPLY
         if [[ "$REPLY" =~ ^[Yy]$ ]]; then
             crontab -l > /tmp/current-crontab

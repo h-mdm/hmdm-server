@@ -66,6 +66,18 @@ public class NotificationMqttConfigModule extends AbstractModule {
         }
         this.bindConstant().annotatedWith(Names.named("mqtt.message.delay")).to(mqttDelay);
 
+        String sslKeystorePassword = context.getInitParameter("mqtt.ssl.keystore.password");
+        if (sslKeystorePassword == null) {
+            sslKeystorePassword = "123456"; // Default fallback matching letsencrypt-ssl.sh
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.ssl.keystore.password")).to(sslKeystorePassword);
+
+        String sslProtocols = context.getInitParameter("mqtt.ssl.protocols");
+        if (sslProtocols == null || sslProtocols.trim().isEmpty()) {
+            sslProtocols = "TLS"; // Default to JVM-decided TLS version
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.ssl.protocols")).to(sslProtocols);
+
         String pollTimeoutTag = this.context.getInitParameter("polling.timeout");
         long pollTimeout = 60;
         try {

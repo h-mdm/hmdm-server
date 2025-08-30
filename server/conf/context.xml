@@ -43,6 +43,15 @@
     -->
     <Parameter name="mqtt.server.uri" value="${mqtt.server.uri}"/>
 
+    <!-- MQTT admin password for secure authentication -->
+    <Parameter name="mqtt.admin.password" value="${mqtt.admin.password}"/>
+
+    <!-- SSL keystore password for MQTT certificates -->
+    <Parameter name="mqtt.ssl.keystore.password" value="${mqtt.ssl.keystore.password}"/>
+
+    <!-- TLS protocol versions for MQTT SSL connections -->
+    <Parameter name="mqtt.ssl.protocols" value="${mqtt.ssl.protocols}"/>
+
     <!-- Fast device search by last characters, here's the length -->
     <Parameter name="device.fast.search.chars" value="${device.fast.search.chars}"/>
 

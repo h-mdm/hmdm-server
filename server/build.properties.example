@@ -20,7 +20,7 @@ base.url=http://localhost:9090
 # private: the application hosts the data just for a single customer
 usage.scenario=private
 
-# If set to 1, the device configuration request must be signed by a shared secret (setup in hash.secret and in the Android app) 
+# If set to 1, the device configuration request must be signed by a shared secret (setup in hash.secret and in the Android app)
 # 0 or empty value does not require request signature which is less secure
 secure.enrollment=0
 
@@ -47,13 +47,37 @@ log4j.config=file:///log4j-hmdm.xml
 # The parameters specific to Device Log plugin
 plugin.devicelog.persistence.config.class=com.hmdm.plugins.devicelog.persistence.postgres.DeviceLogPostgresPersistenceConfiguration
 
-# MQTT notification server local URI
-mqtt.server.uri=localhost:31000
+# mqtt notification server URI
+# Use tcp:// for plain connections, ssl:// for SSL/TLS connections
+mqtt.server.uri=tcp://localhost:31000
 
-# MQTT authentication for more security (supported by Headwind MDM launcher v5.05 and above)
+# For SSL/TLS connections, use format: ssl://domain:port
+# Examples:
+# mqtt.server.uri=ssl://mqtt.example.com:8883  (custom domain)
+# mqtt.server.uri=ssl://example.com:8883       (same domain as web server)
+
+# mqtt authentication for more security (supported by Headwind MDM launcher v5.05 and above)
 mqtt.auth=true
 
-# Delaying MQTT messages in milliseconds to avoid congestion
+# mqtt admin password (auto-generated if not specified during installation)
+# mqtt.admin.password=secure-password-here
+
+# SSL keystore password for mqtt certificates (defaults to 123456 if not specified)
+# mqtt.ssl.keystore.password=secure-keystore-password
+
+# TLS protocol versions for mqtt SSL connections (defaults to TLS - JVM decides best version)
+# mqtt.ssl.protocols=TLS                    # Use JVM default (recommended for security)
+# mqtt.ssl.protocols=TLSv1.2                # Force TLS 1.2 only
+# mqtt.ssl.protocols=TLSv1.3                # Force TLS 1.3 only (requires Java 11+)
+# mqtt.ssl.protocols=TLSv1.2,TLSv1.3        # Allow TLS 1.2 or 1.3 (comma-separated)
+
+# For custom SSL domains: Set these environment variables before running the installer.
+# The installer will read these environment variables and convert PEM certificates to JKS format:
+# mqtt.cert.file=/path/to/certificate.pem      (required for custom domain SSL)
+# mqtt.key.file=/path/to/private-key.pem       (required for custom domain SSL) 
+# mqtt.ca.file=/path/to/ca-certificate.pem     (optional, for certificate chain)
+
+# Delaying mqtt messages in milliseconds to avoid congestion
 mqtt.message.delay=1000
 
 # Fast device search by last characters, here's the length
