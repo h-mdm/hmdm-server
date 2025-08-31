@@ -141,6 +141,7 @@ document.localization ['zh_CN'] = {
     'question.delete.configuration' : "删除配置\"${configurationName}\" ？",
     'question.delete.group':"删除组合\"${groupName}\"？",
     'question.delete.role': '删除角色"${roleName}"？',
+    'question.delete.icon': '删除图标“${iconName}”？',
     'question.delete.device.bulk': '删除所选设备？',
     'question.delete.device' : "删除数字为\"${deviceNumber}\"的设备吗？",
     'question.exit.without.saving' : "更改未储存。无论如何要离开此页面？",
@@ -192,7 +193,8 @@ document.localization ['zh_CN'] = {
     'error.configuration.file.empty.name':"输入文档名",
     'error.configuration.file.empty.desc':"指定文档资讯",
     'error.configuration.file.empty.path':"指定设备上的路径",
-    'error.configuration.file.empty.file':"输入URL或上传文档",
+    'error.configuration.file.empty.file': '请上传文件',
+    'error.configuration.file.empty.url': '请指定文件 URL',
 
     'error.notfound.device' : "找不到设备",
     'error.duplicate.device':"已经存在具有相同编号的设备",
@@ -210,6 +212,7 @@ document.localization ['zh_CN'] = {
     'error.duplicate.configuration':"具有该名称的配置已存在",
     'error.duplicate.role.name': '同名角色已存在',
     'error.empty.role.name': '请指定角色名称',
+    'error.duplicate.icon.name': '同名图标已存在',
     'error.notfound.customer.admin':"找不到管理员帐户",
     'error.apk.file.required':"选择扩展名为.apk或.xapk的文档",
     'error.apk.parse':"解析文档时发生错误",
@@ -437,6 +440,8 @@ document.localization ['zh_CN'] = {
     'form.configuration.files.variables.hint': '字符串DEVICE_NUMBER，IMEI，CUSTOM*将替换为其值',
 
     'form.configuration.file.name' : "文档名",
+    'form.configuration.file.select': '选择文件',
+    'form.configuration.file.create': '(创建新文件)',
     'form.configuration.file.description' : "文档资讯",
     'form.configuration.file.description.placeholder':"可选，为了您的方便",
     'form.configuration.file.path':"设备上的路径",
@@ -567,7 +572,20 @@ document.localization ['zh_CN'] = {
     'form.device.clear.group': '从组中删除',
 
     'form.file.file' : "文档",
-    'form.file.path' : "路径",
+    'form.file.name': '文件名',
+    'form.file.description': '描述（可选）',
+    'form.file.external': '外部',
+    'form.file.external.title': '您可以指定外部资源的 URL，而不是上传文件',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': '外部资源上的文件 URL',
+    'form.file.path': '服务器路径',
+    'form.file.device.path': '设备路径',
+    'form.file.device.path.placeholder': '相对于 /storage/emulated/0 的路径',
+    'form.file.deleted': '已删除',
+    'form.file.copy.link': '复制链接：${link}',
+    'form.file.configurations.file': '文件',
+    'form.file.configurations.configs': '配置',
+    'form.file.configurations.upload': '上传',
     'form.file.path.placeholder' : '输入相对路径，例如"/files/"',
     'form.file.available': '可用空间：${space} Mb',
 
@@ -697,6 +715,9 @@ document.localization ['zh_CN'] = {
 
     'form.settings.roles.title': '用户角色',
 
+    'form.settings.icons.title': '图标',
+    'form.settings.icons.search.placeholder': '搜索图标',
+
     'form.qr.device.number': '设备ID分配',
     'form.qr.auto.create': '添加到设备列表（如果不存在）',
     'form.qr.number.use': '设备编号分配',
@@ -745,6 +766,7 @@ document.localization ['zh_CN'] = {
     'tab.users':"用户",
     'tab.roles': '角色',
     'tab.groups':"组合",
+    'tab.icons': '图标',
     'tab.language':"常规和语言选项",
     'tab.license' : "软件许可證",
     'tab.hints':"提示",
@@ -850,6 +872,13 @@ document.localization ['zh_CN'] = {
     'table.heading.role.actions':"功能",
 
     'table.heading.file.name' : "文档名",
+    'table.heading.file.comment': '描述',
+    'table.heading.file.device.path': '设备路径',
+    'table.heading.file.update.time': '更新时间',
+    'table.heading.file.external': '外部',
+    'table.heading.file.variable': '变量',
+    'table.heading.file.remove': '删除',
+    'table.heading.file.remove.hint': '强制从设备存储中删除文件',
     'table.heading.file.path' : "路径",
     'table.heading.file.address' : "网址",
     'table.heading.file.size': '尺寸',
@@ -879,6 +908,7 @@ document.localization ['zh_CN'] = {
     'notfound.apps.for.display':"没有要显示的应用程式。",
     'notfound.app.versions.for.display':"没有要显示的版本。",
     'notfound.roles':'角色列表为空。',
+    'notfound.icons':'图标列表为空。',
 
     'format.date.header' : "HH:mm dd / MM / yyyy",
 		

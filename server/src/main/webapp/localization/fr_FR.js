@@ -141,6 +141,7 @@ document.localization ['fr_FR'] = {
     'question.delete.configuration': 'Supprimer la configuration "${configurationName}"?',
     'question.delete.group': 'Supprimer le groupe "${groupName}"?',
     'question.delete.role': 'Supprimer le rôle "${roleName}"?',
+    'question.delete.icon': 'Supprimer l\'icône "${iconName}"?',
     'question.delete.device.bulk': 'Supprimer les appareils sélectionnés?',
     'question.delete.device': 'Supprimer l\'appareil avec le numéro "${deviceNumber}"?',
     'question.exit.without.saving': 'Aucune modification est conservée. Bref, quittez la page.?',
@@ -192,8 +193,9 @@ document.localization ['fr_FR'] = {
     'error.configuration.file.empty.name': 'Entrez nom de fichier',
     'error.configuration.file.empty.desc': 'Spécifiez description de fichier',
     'error.configuration.file.empty.path': 'Spécifiez chemin sur l\'appareil',
-    'error.configuration.file.empty.file': 'Entrez URL ou téléchargez un fichier',
-    
+    'error.configuration.file.empty.file': 'Veuillez télécharger un fichier',
+    'error.configuration.file.empty.url': 'Veuillez spécifier l\'URL du fichier',
+
 	'error.notfound.device': 'Appareil non trouvé',
     'error.duplicate.device': 'Un appareil avec le même numéro existe déjà',
     'error.duplicate.login': 'Un tel identifiant est déjà utilisé',
@@ -209,7 +211,8 @@ document.localization ['fr_FR'] = {
     'error.version.exists': 'La même version de cette application existe',
     'error.duplicate.configuration': 'Une configuration avec ce nom existe',
     'error.duplicate.role.name': 'Un rôle portant le même nom existe déjà',
-    'error.empty.role.name': 'Veuillez préciser le nom du rôle',
+    'error.empty.role.name': 'Une icône portant le même nom existe déjà',
+    'error.duplicate.icon.name': 'An icon with the same name already exists',
     'error.notfound.customer.admin': 'Compte administrateur introuvable',
     'error.apk.file.required': 'Sélectionnez le fichier avec l\'extension .apk ou .xapk',
     'error.apk.parse': 'Une erreur s\'est produite lors de l\'analyse du fichier',
@@ -437,6 +440,8 @@ document.localization ['fr_FR'] = {
     'form.configuration.files.variables.hint': 'Les chaînes DEVICE_NUMBER, IMEI, CUSTOM* seront remplacées par leurs valeurs',
 
 	'form.configuration.file.name': 'Nom du fichier',
+    'form.configuration.file.select': 'Sélectionner un fichier',
+    'form.configuration.file.create': '(créer un nouveau fichier)',
     'form.configuration.file.description': 'Description',
     'form.configuration.file.description.placeholder': 'En option, pour votre commodité',
     'form.configuration.file.path': 'Chemin sur l\'appareil',
@@ -567,7 +572,20 @@ document.localization ['fr_FR'] = {
     'form.device.clear.group': 'Supprimer des groupes',
 
     'form.file.file': 'Fichier',
-    'form.file.path': 'Chemin',
+    'form.file.name': 'Nom du fichier',
+    'form.file.description': 'Description (facultatif)',
+    'form.file.external': 'Externe',
+    'form.file.external.title': 'Au lieu de télécharger le fichier, vous pouvez spécifier l\'URL sur une ressource externe',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': 'URL du fichier sur une ressource externe',
+    'form.file.path': 'Chemin sur le serveur',
+    'form.file.device.path': 'Chemin sur l\'appareil',
+    'form.file.device.path.placeholder': 'Chemin relatif à /storage/emulated/0',
+    'form.file.deleted': 'SUPPRIMÉ',
+    'form.file.copy.link': 'Copier le lien : ${link}',
+    'form.file.configurations.file': 'Fichier',
+    'form.file.configurations.configs': 'Configurations',
+    'form.file.configurations.upload': 'Télécharger',
     'form.file.path.placeholder': 'Entrez un chemin relatif, par exemple "/files/"',
     'form.file.available': 'Espace disponible : ${space} Mo',
 
@@ -697,6 +715,9 @@ document.localization ['fr_FR'] = {
 
     'form.settings.roles.title': 'Rôles des utilisateurs',
 
+    'form.settings.icons.title': 'Icônes',
+    'form.settings.icons.search.placeholder': 'Rechercher les icônes',
+
     'form.qr.device.number': 'ID d\'appareil',
     'form.qr.auto.create': 'Ajouter à la liste des appareils s\'il n\'existe pas',
     'form.qr.number.use': 'Attribution d\'ID d\'appareil',
@@ -745,6 +766,7 @@ document.localization ['fr_FR'] = {
     'tab.users': 'Utilisateurs',
     'tab.roles': 'Rôles',
     'tab.groups': 'Groupes',
+    'tab.icons': 'Icônes',
     'tab.language': 'Options générales et de langue',
     'tab.license': 'Licence',
     'tab.hints': 'Indications',
@@ -850,6 +872,13 @@ document.localization ['fr_FR'] = {
     'table.heading.role.actions': 'Actions',
 
     'table.heading.file.name': 'Nom de fichier',
+    'table.heading.file.comment': 'Description',
+    'table.heading.file.device.path': 'Chemin sur l\'appareil',
+    'table.heading.file.update.time': 'Mis à jour à',
+    'table.heading.file.external': 'Externe',
+    'table.heading.file.variable': 'Variable',
+    'table.heading.file.remove': 'Supprimer',
+    'table.heading.file.remove.hint': 'Force la suppression du fichier du stockage de l\'appareil',
     'table.heading.file.path': 'Chemin',
     'table.heading.file.address': 'Adresse',
     'table.heading.file.size': 'Taille',
@@ -879,6 +908,7 @@ document.localization ['fr_FR'] = {
     'notfound.apps.for.display': 'Il n\'y a aucune application à afficher.',
     'notfound.app.versions.for.display': 'Il n\'y a aucune version à afficher.',
     'notfound.roles':'La liste des rôles est vide.',
+    'notfound.icons':'La liste des icônes est vide.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 

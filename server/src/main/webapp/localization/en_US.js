@@ -141,6 +141,7 @@ document.localization ['en_US'] = {
     'question.delete.configuration': 'Delete configuration "${configurationName}"?',
     'question.delete.group': 'Delete group "${groupName}"?',
     'question.delete.role': 'Delete the role "${roleName}"?',
+    'question.delete.icon': 'Delete the icon "${iconName}"?',
     'question.delete.device.bulk': 'Delete selected devices?',
     'question.delete.device': 'Delete the device with the number "${deviceNumber}"?',
     'question.exit.without.saving': 'Changes are not saved. Anyway leave this page?',
@@ -192,8 +193,9 @@ document.localization ['en_US'] = {
     'error.configuration.file.empty.name': 'Enter a file name',
     'error.configuration.file.empty.desc': 'Specify a file description',
     'error.configuration.file.empty.path': 'Specify the path on the device',
-    'error.configuration.file.empty.file': 'Enter a URL or upload a file',
-    
+    'error.configuration.file.empty.file': 'Please upload a file',
+    'error.configuration.file.empty.url': 'Please specify the file URL',
+
     'error.notfound.device': 'Device not found',
     'error.duplicate.device': 'A device with the same number already exists',
     'error.duplicate.login': 'Such a login is already in use',
@@ -210,6 +212,7 @@ document.localization ['en_US'] = {
     'error.duplicate.configuration': 'A configuration with this name already exists',
     'error.duplicate.role.name': 'A role with the same name already exists',
     'error.empty.role.name': 'Please specify the role name',
+    'error.duplicate.icon.name': 'An icon with the same name already exists',
     'error.notfound.customer.admin': 'Administrator account not found',
     'error.apk.file.required': 'Select the file with the .apk or .xapk extension',
     'error.apk.parse': 'An error occurred while parsing the file',
@@ -437,6 +440,8 @@ document.localization ['en_US'] = {
     'form.configuration.files.variables.hint': 'Strings DEVICE_NUMBER, IMEI, CUSTOM* will be replaced by their values',
 
     'form.configuration.file.name': 'File name',
+    'form.configuration.file.select': 'Select a file',
+    'form.configuration.file.create': '(create a new file)',
     'form.configuration.file.description': 'File description',
     'form.configuration.file.description.placeholder': 'Optional, for your convenience',
     'form.configuration.file.path': 'Path on device',
@@ -567,7 +572,20 @@ document.localization ['en_US'] = {
     'form.device.clear.group': 'Remove from groups',
 
     'form.file.file': 'File',
-    'form.file.path': 'Path',
+    'form.file.name': 'File name',
+    'form.file.description': 'Description (optional)',
+    'form.file.external': 'External',
+    'form.file.external.title': 'Instead of uploading the file, you can specify the URL on an external resource',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': 'File URL on an external resource',
+    'form.file.path': 'Path on server',
+    'form.file.device.path': 'Path on device',
+    'form.file.device.path.placeholder': 'Path relative to /storage/emulated/0',
+    'form.file.deleted': 'DELETED',
+    'form.file.copy.link': 'Copy link: ${link}',
+    'form.file.configurations.file': 'File',
+    'form.file.configurations.configs': 'Configurations',
+    'form.file.configurations.upload': 'Upload',
     'form.file.path.placeholder': 'Enter a relative path, for example "/files/"',
     'form.file.available': 'Available space: ${space} Mb',
 
@@ -697,6 +715,9 @@ document.localization ['en_US'] = {
 
     'form.settings.roles.title': 'User roles',
 
+    'form.settings.icons.title': 'Icons',
+    'form.settings.icons.search.placeholder': 'Search icons',
+
     'form.qr.device.number': 'Device number',
     'form.qr.auto.create': 'Add to device list if not exists',
     'form.qr.number.use': 'Device number assignment',
@@ -745,6 +766,7 @@ document.localization ['en_US'] = {
     'tab.users': 'Users',
     'tab.roles': 'Roles',
     'tab.groups': 'Groups',
+    'tab.icons': 'Icons',
     'tab.language': 'General and language settings',
     'tab.license': 'License',
     'tab.hints': 'Hints',
@@ -850,6 +872,13 @@ document.localization ['en_US'] = {
     'table.heading.role.actions': 'Actions',
 
     'table.heading.file.name': 'File name',
+    'table.heading.file.comment': 'Description',
+    'table.heading.file.device.path': 'Path on device',
+    'table.heading.file.update.time': 'Updated at',
+    'table.heading.file.external': 'External',
+    'table.heading.file.variable': 'Variable',
+    'table.heading.file.remove': 'Remove',
+    'table.heading.file.remove.hint': 'Forces the file removal from the device storage',
     'table.heading.file.path': 'Path',
     'table.heading.file.address': 'Address',
     'table.heading.file.size': 'Size',
@@ -879,6 +908,7 @@ document.localization ['en_US'] = {
     'notfound.apps.for.display': 'There are no applications to display.',
     'notfound.app.versions.for.display': 'There are no versions to display.',
     'notfound.roles':'The role list is empty.',
+    'notfound.icons':'The icon list is empty.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 

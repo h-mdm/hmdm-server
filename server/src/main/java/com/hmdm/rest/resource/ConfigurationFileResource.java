@@ -53,7 +53,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -156,7 +155,7 @@ public class ConfigurationFileResource {
                     uploadedFile.setFilePath(configFile.getName());
                     uploadedFile.setUploadTime(System.currentTimeMillis());
 
-                    uploadedFile = this.uploadedFileDAO.insertFile(uploadedFile);
+                    uploadedFile = this.uploadedFileDAO.insert(uploadedFile);
 
                     // Calculate checksum
                     final String checksum = CryptoUtil.calculateChecksum(Files.newInputStream(configFile.toPath()));

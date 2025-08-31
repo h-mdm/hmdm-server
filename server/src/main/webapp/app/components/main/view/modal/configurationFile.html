@@ -9,53 +9,73 @@
     <form class='form-horizontal'>
 
         <div class='form-group'>
+            <label class='col-sm-4 control-label' for="fileSelection" localized>form.configuration.file.select</label>
+            <div class='col-sm-8'>
+                <select ng-options="file as file.name for file in files track by file.id" name="selectedFile"
+                        ng-model='file' class='form-control' id="fileSelection">
+                </select>
+            </div>
+        </div>
+
+        <div class='form-group'>
             <label class='col-sm-4 control-label' for="description" localized>form.configuration.file.description</label>
             <div class='col-sm-8'>
                 <input ng-model='file.description' type='text' class='form-control' id="description"
+                       ng-disabled="file.id"
                        localized-placeholder="form.configuration.file.description.placeholder" />
             </div>
         </div>
 
         <div class='form-group'>
-            <label class='col-sm-4 control-label' for="path" localized>form.configuration.file.path</label>
+            <label class='col-sm-4 control-label' for="fileExternal" localized>form.file.external</label>
             <div class='col-sm-8'>
-                <input ng-model='file.path' type='text' class='form-control' id="path"
-                       localized-placeholder="form.configuration.file.path.placeholder"/>
+                <input localized-title="form.file.external.title" ng-model='file.external' type='checkbox'
+                       ng-disabled="file.id" class='form-control' id="fileExternal"/>
             </div>
         </div>
 
-        <div class='form-group'>
-            <label class='col-sm-4 control-label' for="externalUrl" localized>form.configuration.file.url</label>
-            <div class='col-sm-8'>
-                <input ng-model='file.externalUrl' type='text' class='form-control' id="externalUrl"
-                       localized-placeholder="form.configuration.file.url.placeholder" ng-disabled="(file.filePath && file.filePath.length > 0)"/>
-            </div>
-        </div>
-
-        <div class='form-group'>
+        <div ng-if='!file.id && !file.external' class='form-group'>
             <label class='col-sm-4 control-label' localized>form.configuration.file.file</label>
             <div class='col-sm-8'>
-                <div class="btn btn-default full-width btn-upload" ng-if="!file.filePath"
-                     file-input-disabler input-disabled="{{file.externalUrl && file.externalUrl.length > 0}}"
+                <div class="btn btn-default full-width btn-upload"
                      upload-button
-                     url="rest/private/config-files"
+                     url="rest/private/web-ui-files/raw"
                      on-upload="onStartedUpload(files)"
                      on-progress="onUploadProgress(progress)"
-                     on-success="fileUploaded( response )"></div>
-                <span ng-if="file.filePath">{{file.filePath}}</span>
-                <button class="btn btn-default" ng-if="file.filePath" ng-click="clearFile()" localized>button.cleanup</button>
+                     on-success="fileUploaded(response)"></div>
+                <div ng-if="availableSpace" class="field-hint" style="margin-bottom: 0">{{availableSpace}}</div>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="!file.external">
+            <label class='col-sm-4 control-label' localized>form.file.name</label>
+            <div class='col-sm-8'>
+                <input type='text'
+                       ng-disabled="file.id"
+                       ng-model='file.filePath'
+                       class='form-control'>
+            </div>
+        </div>
+
+        <div class='form-group' ng-if="file.external">
+            <label class='col-sm-4 control-label' localized>form.configuration.file.url</label>
+            <div class='col-sm-8'>
+                <input type='text'
+                       ng-disabled="file.id"
+                       ng-model='file.externalUrl'
+                       class='form-control'
+                       localized-placeholder='form.file.external.url.placeholder'>
             </div>
         </div>
 
         <div class='form-group'>
-            <label class='col-sm-4 control-label' for="action" localized>form.configuration.file.action</label>
+            <label class='col-sm-4 control-label' localized>form.configuration.file.path</label>
             <div class='col-sm-8'>
-                <select class='form-control' id="action" ng-model="file.remove">
-                    <option ng-selected="file.remove == false" ng-value="false"
-                            localized>form.configuration.file.action.prompt.1</option>
-                    <option ng-selected="file.remove == true" ng-value="true"
-                            localized>form.configuration.file.action.prompt.2</option>
-                </select>
+                <input type='text'
+                       ng-disabled="file.id"
+                       ng-model='file.devicePath'
+                       localized-placeholder="form.file.device.path.placeholder"
+                       class='form-control'>
             </div>
         </div>
 
@@ -65,11 +85,16 @@
                 <span class="field-hint" localized>form.configuration.files.variables.hint</span>
             </div>
             <div class='col-sm-1'>
-                <input ng-model='file.replaceVariables' type='checkbox' class='form-control' id="replaceVariables"/>
+                <input ng-disabled="file.id" ng-model='file.replaceVariables' type='checkbox' class='form-control' id="replaceVariables"/>
             </div>
         </div>
 
         <div class='form-group'>
+            <div class='col-sm-4'>
+                <div ng-if='loading'>
+                    <img class='loading-spinner' src='images/loading.gif'/>
+                </div>
+            </div>
             <div class='col-sm-offset-4 col-sm-8'>
                 <button type='submit' class='btn btn-default' ng-click='save()' ng-disabled="loading" localized>button.save</button>
                 <button type='button' class='btn btn-default' ng-click='closeModal()' ng-disabled="loading" localized >button.cancel</button>

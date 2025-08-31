@@ -128,7 +128,7 @@ public class PublicResource {
     // =================================================================================================================
     @ApiOperation(
             value = "Upload application",
-            notes = "Uploads application specification to MDM server"
+            notes = "Uploads application to MDM server. This method is only used by the AppList utility, no usage by the web backend"
     )
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -189,8 +189,8 @@ public class PublicResource {
             if (!expectedHash.equalsIgnoreCase(hash)) {
                 logger.error("Hash invalid for upload app request from device {}. Expected: {} but got {}",
                         deviceId, expectedHash, hash.toUpperCase());
-    //            System.out.println("Hash invalid: " + expectedHash + " vs " + hash);
-    //            return Response.ERROR("Invalid hash"); // TODO : ISV : Commented for now #5854
+                System.out.println("Hash invalid: " + expectedHash + " vs " + hash);
+                return Response.ERROR("Invalid hash");
             }
 
             // Find device and get the customer

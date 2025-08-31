@@ -108,18 +108,6 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
 
             final List<ConfigurationFile> files = configuration.getFiles();
             if (files != null && !files.isEmpty()) {
-                files.stream()
-                        .filter(file -> file.getExternalUrl() != null)
-                        .forEach(file -> {
-                            try {
-                                final String checksum = CryptoUtil.calculateChecksum(new URL(file.getExternalUrl()).openStream());
-                                file.setChecksum(checksum);
-                            } catch (NoSuchAlgorithmException | IOException e) {
-                                log.error("Failed to calculate checksum for content URL: {}", file.getExternalUrl(), e);
-                                file.setChecksum("");
-                            }
-                        });
-                files.forEach(file -> file.setLastUpdate(System.currentTimeMillis()));
                 this.mapper.insertConfigurationFiles(configuration.getId(), files);
             }
         });
@@ -180,12 +168,13 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                         this.mapper.insertConfigurationFiles(configuration.getId(), files);
                     }
 
-                    final List<Integer> filesToRemove = config.getFilesToRemove();
+                    // Deprecated and not used any more
+/*                    final List<Integer> filesToRemove = config.getFilesToRemove();
                     if (filesToRemove != null) {
                         filesToRemove.forEach(fileId -> {
                             this.configurationFileDAO.removeFileFromDisk(fileId);
                         });
-                    }
+                    } */
 
                     this.eventService.fireEvent(new ConfigurationUpdatedEvent(configuration.getId()));
                 },

@@ -61,6 +61,11 @@ public class IconDAO extends AbstractDAO<Icon> {
         return getSingleRecord(() -> this.iconMapper.getIconById(icon.getId()), SecurityException::onIconAccessViolation);
     }
 
+    public Icon updateIcon(Icon icon) {
+        updateRecord(icon, this.iconMapper::updateIcon, SecurityException::onIconAccessViolation);
+        return icon;
+    }
+
     /**
      * <p>Gets all the icons for the current customer</p>
      *
@@ -70,11 +75,24 @@ public class IconDAO extends AbstractDAO<Icon> {
         return getList(this.iconMapper::getAllIcons);
     }
 
-    public boolean isFileUsed(String fileName) {
-        return this.iconMapper.countFileUsedAsIcon(fileName) > 0;
+    public List<Icon> getAllIconsByValue(String value) {
+        return getListWithCurrentUser(currentUser -> this.iconMapper.getAllIconsByValue(currentUser.getCustomerId(), "%" + value + "%"));
     }
 
-    public List<String> getUsingIcons(Integer customerId, String fileName) {
-        return this.iconMapper.getUsingIcons(customerId, fileName);
+    public void removeById(Integer id) {
+        updateById(id, this.iconMapper::getById, icon -> this.iconMapper.removeById(icon.getId()),
+                SecurityException::onIconAccessViolation);
+    }
+
+    public Icon getById(Integer id) {
+        return getSingleRecord(() -> this.iconMapper.getById(id), SecurityException::onIconAccessViolation);
+    }
+
+    public boolean isFileUsed(Integer fileId) {
+        return this.iconMapper.countFileUsedAsIcon(fileId) > 0;
+    }
+
+    public List<String> getUsingIcons(Integer customerId, Integer fileId) {
+        return this.iconMapper.getUsingIcons(customerId, fileId);
     }
 }

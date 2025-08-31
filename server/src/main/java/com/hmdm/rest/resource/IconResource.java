@@ -24,17 +24,16 @@ package com.hmdm.rest.resource;
 import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -63,6 +62,7 @@ public class IconResource {
         this.iconDAO = iconDAO;
     }
 
+    // =================================================================================================================
     /**
      * <p>Creates new icon record on server.</p>
      *
@@ -74,14 +74,18 @@ public class IconResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createIcon(Icon icon) {
         try {
-            final Icon newIcon = this.iconDAO.insertIcon(icon);
+            final Icon newIcon = icon.getId() == null ?
+                        iconDAO.insertIcon(icon) :
+                        iconDAO.updateIcon(icon);
             return Response.OK(newIcon);
         } catch (Exception e) {
             return Response.INTERNAL_ERROR();
         }
     }
 
+    // =================================================================================================================
     @GET
+    @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getIcons() {
@@ -93,4 +97,35 @@ public class IconResource {
         }
     }
 
+    // =================================================================================================================
+    @GET
+    @Path("/search/{value}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response searchIcons(@PathParam("value") @ApiParam("A filter value") String value) {
+        try {
+            final List<Icon> allIcons = this.iconDAO.getAllIconsByValue(value);
+            return Response.OK(allIcons);
+        } catch (Exception e) {
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    @ApiOperation(
+            value = "Delete an icon",
+            notes = "Delete an existing icon"
+    )
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeIcon(@PathParam("id") @ApiParam("Icon ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("settings")) {
+            logger.error("Unauthorized attempt to update icons by user " +
+                    SecurityContext.get().getCurrentUserName());
+            return Response.PERMISSION_DENIED();
+        }
+        this.iconDAO.removeById(id);
+        return Response.OK();
+    }
 }

@@ -1103,26 +1103,23 @@
                                     <thead>
                                     <tr>
                                         <th localized>table.heading.file.url</th>
-                                        <th localized>table.heading.file.devicepath</th>
                                         <th localized>table.heading.file.description</th>
-                                        <th localized>table.heading.file.lastUpdate</th>
-                                        <th localized>table.heading.file.action</th>
+                                        <th localized>table.heading.file.devicepath</th>
+                                        <th localized>table.heading.file.variable</th>
+                                        <th localized>table.heading.file.remove</th>
                                         <th localized class="actions-column-110"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="file in files | orderBy:'name'">
+                                    <tr ng-repeat="file in files | orderBy:'name' | limitTo:filesPaging.pageSize:(filesPaging.currentPage-1)*filesPaging.pageSize">
                                         <td>{{file.url}}</td>
-                                        <td>{{file.path}}</td>
                                         <td>{{file.description}}</td>
-                                        <td>{{file.lastUpdate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-                                        <td ng-if="!file.remove" localized>form.configuration.files.action.upload</td>
-                                        <td ng-if="file.remove" localized>form.configuration.files.action.remove</td>
-                                        <td>
+                                        <td>{{file.path}}</td>
+                                        <td>{{file.replaceVariables ? '✓' : ''}}</td>
+                                        <td style="text-align: center; padding-top: 11px"><input type="checkbox" ng-model="file.remove"
+                                                                              localized-title="table.heading.file.remove.hint"></td>
+                                        <td class="text-right" style="padding-right: 16px">
                                             <div>
-                                                <button class="btn btn-default" ng-click="editFile(file)">
-                                                    <span class="glyphicon glyphicon-pencil"></span>
-                                                </button>
                                                 <button class="btn btn-default" ng-click="removeFile(file)">
                                                     <span class="glyphicon glyphicon-trash"></span>
                                                 </button>

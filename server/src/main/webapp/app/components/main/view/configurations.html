@@ -7,11 +7,11 @@
         <input type='text'
                ng-enter='search()'
                ng-model='searchObj.searchValue'
+               ng-change="search()"
                localized-placeholder='search.placeholder.configuration'
                class='form-control configurations-search-input'>
 
         <div class='configurations-search-buttons'>
-            <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
             <button type='button' class='btn btn-default' ng-if="hasPermission('add_config')" ng-click='addConfiguration()' localized>button.add</button>
         </div>
     </div>

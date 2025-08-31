@@ -141,6 +141,7 @@ document.localization[ 'ru_RU' ] = {
     'question.delete.configuration': 'Удалить конфигурацию "${configurationName}"?',
     'question.delete.group': 'Удалить группу "${groupName}"?',
     'question.delete.role': 'Удалить роль "${roleName}"?',
+    'question.delete.icon': 'Удалить иконку "${iconName}"?',
     'question.delete.device.bulk': 'Удалить выбранные устройства?',
     'question.delete.device': 'Удалить устройство с номером "${deviceNumber}"?',
     'question.exit.without.saving': 'Изменения не сохранены. Всё равно покинуть эту страницу?',
@@ -191,8 +192,9 @@ document.localization[ 'ru_RU' ] = {
 
     'error.configuration.file.empty.name': 'Укажите название файла',
     'error.configuration.file.empty.desc': 'Укажите описание файла',
-    'error.configuration.file.empty.path': 'Укажить путь на устройстве',
-    'error.configuration.file.empty.file': 'Укажите URL или загрузите файл',
+    'error.configuration.file.empty.path': 'Укажите путь на устройстве',
+    'error.configuration.file.empty.file': 'Пожалуйста, загрузите файл',
+    'error.configuration.file.empty.url': 'Пожалуйста, укажите URL файла',
 
     'error.notfound.device': 'Устройство не найдено',
     'error.duplicate.device': 'Устройство с таким номером уже существует',
@@ -210,6 +212,7 @@ document.localization[ 'ru_RU' ] = {
     'error.duplicate.configuration': 'Конфигурация с таким именем уже существует',
     'error.duplicate.role.name': 'Роль с таким названием уже существует',
     'error.empty.role.name': 'Пожалуйста, укажите название роли',
+    'error.duplicate.icon.name': 'Иконка с таким именем уже существует',
     'error.notfound.customer.admin': 'Не найдена учетная запись администратора',
     'error.apk.file.required': 'Выберите файл с расширением .apk или .xapk',
     'error.apk.parse': 'При разборе файла на сервере возникла ошибка',
@@ -437,6 +440,8 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.files.variables.hint': 'Строки DEVICE_NUMBER, IMEI, CUSTOM* будут заменены их значениями',
 
     'form.configuration.file.name': 'Имя файла',
+    'form.configuration.file.select': 'Выберите файл',
+    'form.configuration.file.create': '(создать новый файл)',
     'form.configuration.file.description': 'Описание файла',
     'form.configuration.file.description.placeholder': 'Опционально, для вашего удобства',
     'form.configuration.file.path': 'Путь на устройстве',
@@ -567,7 +572,20 @@ document.localization[ 'ru_RU' ] = {
     'form.device.clear.group': 'Удалить из групп',
 
     'form.file.file': 'Файл',
-    'form.file.path': 'Путь',
+    'form.file.name': 'Имя файла',
+    'form.file.description': 'Описание (необязательно)',
+    'form.file.external': 'Внешний',
+    'form.file.external.title': 'Вместо загрузки файла вы можете указать URL на внешнем ресурсе',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': 'URL файла на внешнем ресурсе',
+    'form.file.path': 'Путь на сервере',
+    'form.file.device.path': 'Путь на устройстве',
+    'form.file.device.path.placeholder': 'Путь относительно /storage/emulated/0',
+    'form.file.deleted': 'УДАЛЕН',
+    'form.file.copy.link': 'Копировать ссылку: ${link}',
+    'form.file.configurations.file': 'Файл',
+    'form.file.configurations.configs': 'Конфигурации',
+    'form.file.configurations.upload': 'Загрузить',
     'form.file.path.placeholder': 'Введите относительный путь, например "/files/"',
     'form.file.available': 'Доступное место: ${space} Мб',
 
@@ -697,6 +715,9 @@ document.localization[ 'ru_RU' ] = {
 
     'form.settings.roles.title': 'Роли пользователей',
 
+    'form.settings.icons.title': 'Иконки',
+    'form.settings.icons.search.placeholder': 'Поиск иконок',
+
     'form.qr.device.number': 'ID устройства',
     'form.qr.auto.create': 'Добавить в список устройств, если ещё нет',
     'form.qr.number.use': 'Назначение ID устройства',
@@ -745,6 +766,7 @@ document.localization[ 'ru_RU' ] = {
     'tab.users': 'Пользователи',
     'tab.roles': 'Роли',
     'tab.groups': 'Группы',
+    'tab.icons': 'Иконки',
     'tab.language': 'Общие и языковые настройки',
     'tab.license': 'Лицензия',
     'tab.hints': 'Подсказки',
@@ -850,6 +872,13 @@ document.localization[ 'ru_RU' ] = {
     'table.heading.role.actions': 'Действия',
 
     'table.heading.file.name': 'Имя файла',
+    'table.heading.file.comment': 'Описание',
+    'table.heading.file.device.path': 'Путь на устройстве',
+    'table.heading.file.update.time': 'Обновлен',
+    'table.heading.file.external': 'Внешний',
+    'table.heading.file.variable': 'Переменные',
+    'table.heading.file.remove': 'Удалить',
+    'table.heading.file.remove.hint': 'Принудительно удалить файл из хранилища устройства',
     'table.heading.file.path': 'Путь',
     'table.heading.file.address': 'Адрес',
     'table.heading.file.size': 'Размер',
@@ -879,6 +908,7 @@ document.localization[ 'ru_RU' ] = {
     'notfound.apps.for.display': 'Нет приложений для отображения.',
     'notfound.app.versions.for.display': 'Нет версий для отображения.',
     'notfound.roles':'Нет ролей пользователей для отображения.',
+    'notfound.icons':'Список иконок пуст.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 

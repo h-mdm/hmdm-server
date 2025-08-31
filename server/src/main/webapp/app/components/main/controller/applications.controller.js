@@ -1243,7 +1243,7 @@ angular.module('headwind-kiosk')
             $modalInstance.dismiss();
         };
     })
-    .controller('AddIconController', function ($scope, $modalInstance, iconService, localization) {
+    .controller('AddIconController', function ($scope, $modalInstance, iconService, fileService, localization) {
         $scope.errorMessage = undefined;
         $scope.successMessage = undefined;
 
@@ -1252,30 +1252,47 @@ angular.module('headwind-kiosk')
             fileId: undefined
         };
 
-        $scope.newIconFile = undefined;
+        $scope.files = [];
+        fileService.getAllFiles({},
+            function (response) {
+                if (response.status === 'OK') {
+                    // Exclude non-image files
+                    response.data = response.data.filter(f => f.filePath != null &&
+                        (f.filePath.endsWith(".jpg") || f.filePath.endsWith(".png") || f.filePath.endsWith(".jpeg")));
 
-        $scope.loading = false;
+                    response.data.forEach(function (file) {
+                        file.name = file.description ? file.description :
+                            file.external ? file.url : file.filePath;
+                        if (file.external) {
+                            file.externalUrl = file.url;
+                        }
+                    });
+                    $scope.files = response.data;
+                    if ($scope.files.length > 0) {
+                        $scope.file = $scope.files[0];
+                    }
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            });
 
         $scope.save = function () {
             clearMessages();
 
+            $scope.icon.fileId = $scope.file.id;
             if (!$scope.icon.name || $scope.icon.name.trim().length === 0) {
                 $scope.errorMessage = localization.localize('error.icon.empty.name');
             } else if (!$scope.icon.fileId) {
                 $scope.errorMessage = localization.localize('error.icon.empty.file');
             } else {
-                $scope.loading = true;
-
                 const request = angular.copy($scope.icon, {});
                 iconService.createIcon(request, function (response) {
-                    $scope.loading = false;
                     if (response.status === 'OK') {
                         $modalInstance.close(response.data);
                     } else {
                         $scope.errorMessage = localization.localizeServerResponse(response);
                     }
                 }, function () {
-                    $scope.loading = false;
                     $scope.errorMessage = localization.localize('error.request.failure');
                 });
             }
@@ -1285,37 +1302,6 @@ angular.module('headwind-kiosk')
             $modalInstance.dismiss();
         };
 
-        $scope.onStartedUploadIcon = function (files) {
-            clearMessages();
-
-            if (files.length > 0) {
-                $scope.loading = true;
-                $scope.successMessage = localization.localize('success.uploading.file');
-            }
-        };
-
-        $scope.fileUploadedIcon = function (response) {
-            clearMessages();
-
-            $scope.loading = false;
-
-            if (response.data.status === 'OK') {
-                $scope.newIconFile = response.data.data;
-                $scope.icon.fileId = response.data.data.id;
-                $scope.successMessage = localization.localize('success.file.uploaded');
-            } else {
-                $scope.errorMessage = localization.localize(response.data.message);
-            }
-        };
-
-        $scope.clearFileIcon = function () {
-            $scope.newIconFile = undefined;
-            $scope.icon.fileId = undefined;
-
-            $scope.loading = false;
-            clearMessages();
-        };
-        
         const clearMessages = function () {
             $scope.successMessage = undefined;
             $scope.errorMessage = undefined;

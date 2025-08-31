@@ -4,12 +4,12 @@
         <input type='text'
                ng-enter='search()'
                ng-model='search.searchValue'
+               ng-change="search()"
                localized-placeholder='search.placeholder.file'
                class='form-control configurations-search-input'>
 
         <div class='configurations-search-buttons'>
-            <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
-            <button ng-if="hasPermission('edit_files')" type='button' class='btn btn-default' ng-click='addFile()' localized>button.add</button>
+            <button ng-if="hasPermission('edit_files')" type='button' class='btn btn-default' ng-click='editFile({})' localized>button.add</button>
         </div>
     </div>
 
@@ -30,36 +30,52 @@
         <thead>
         <tr>
             <th localized>table.heading.file.name</th>
-            <th localized>table.heading.file.path</th>
-            <th localized>table.heading.file.address</th>
+            <th localized>table.heading.file.comment</th>
             <th localized>table.heading.file.size</th>
+            <th localized>table.heading.file.update.time</th>
+            <th localized>table.heading.file.device.path</th>
+            <th localized>table.heading.file.external</th>
+            <th localized>table.heading.file.variable</th>
             <th class='actions-column' localized>table.heading.file.actions</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat='file in files.slice(((paging.currentPage-1)*paging.pageSize), ((paging.currentPage)*paging.pageSize))'>
-            <td>{{file.name}}</td>
-            <td>{{file.path}}</td>
-            <td>{{file.url}}</td>
-            <td><nobr>{{readableSizeMb(file.size)}}</nobr></td>
+            <td>{{file.filePath}}</td>
+            <td>{{file.description}}</td>
+            <td>{{!file.external ? readableSizeMb(file.size) : ''}}</td>
+            <td>{{!file.external && file.size != -1 ? (file.uploadTime|date:updateTimeFormat) : ''}}</td>
+            <td>{{file.devicePath}}</td>
+            <td>{{file.external ? '✓' : ''}}</td>
+            <td>{{file.replaceVariables ? '✓' : ''}}</td>
 
             <td>
-                <div>
-                    <button type='button' localized-title="button.application"
-                            class='btn btn-default' ng-click='showApps( file )'>
+                <div><nobr>
+                    <button type='button' title="{{file.copyLinkTooltip}}"
+                            class='btn btn-default' ng-click='copyLink(file)'>
+                        <span class='glyphicon glyphicon-link'></span>
+                    </button>
+                    <button type='button' localized-title="button.set.configurations"
+                            class='btn btn-default' ng-click='editConfiguration(file)'>
                         <span class='glyphicon glyphicon-list'></span>
                     </button>
+                    <button ng-if="hasPermission('edit_files')"
+                            ng-disabled="file.size == -1"
+                            localized-title="button.edit"
+                            type='button' class='btn btn-default' ng-click='editFile(file)'>
+                        <span class='glyphicon glyphicon-pencil'></span>
+                    </button>
                     <button type='button' ng-if="hasPermission('edit_files') && !file.removalDisabled" localized-title="button.delete"
-                            class='btn btn-default' ng-click='removeFile( file )'>
+                            class='btn btn-default' ng-click='removeFile(file)'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
-                    <button type='button' ng-if="file.removalDisabled"
+                    <button type='button' ng-if="hasPermission('edit_files') && file.removalDisabled"
                             disabled="disabled"
                             title="{{file.removeButtonTooltip}}"
                             class='btn btn-default'>
                         <span class='glyphicon glyphicon-trash'></span>
                     </button>
-                </div>
+                </nobr></div>
             </td>
         </tr>
         </tbody>

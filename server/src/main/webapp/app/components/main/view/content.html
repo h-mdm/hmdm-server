@@ -50,6 +50,10 @@
                     <tab-heading localized-change-tracking>tab.groups</tab-heading>
                     <ng-include src="'app/components/main/view/settings/groups.html'" ng-if="activeTab === 'GROUPS'"></ng-include>
                 </tab>
+                <tab  active="act.ICONS" ng-click="openTab('ICONS')">
+                    <tab-heading localized-change-tracking>tab.icons</tab-heading>
+                    <ng-include src="'app/components/main/view/settings/icons.html'" ng-if="activeTab === 'ICONS'"></ng-include>
+                </tab>
                 <tab  active="act.LANG" ng-click="openTab('LANG')">
                     <tab-heading localized-change-tracking>tab.language</tab-heading>
                     <ng-include src="'app/components/main/view/settings/language.html'" ng-if="activeTab === 'LANG'"></ng-include>
