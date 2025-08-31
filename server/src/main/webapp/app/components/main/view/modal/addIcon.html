@@ -40,20 +40,16 @@
         <div class='form-group'>
             <label class='col-sm-3 control-label' localized>form.icon.file</label>
             <div class='col-sm-9'>
-                <div class="btn btn-default full-width btn-upload" ng-if="!newIconFile"
-                     upload-button
-                     url="rest/private/icon-files"
-                     on-upload="onStartedUploadIcon(files)"
-                     on-success="fileUploadedIcon( response )"></div>
-                <span ng-if="newIconFile">{{newIconFile.filePath}}</span>
-                <button class="btn btn-default" ng-if="newIconFile" ng-click="clearFileIcon()" localized>button.cleanup</button>
+                <select ng-options="file as file.name for file in files track by file.id" name="selectedFile"
+                        ng-model='file' class='form-control' id="fileSelection">
+                </select>
             </div>
         </div>
 
 
         <div class='form-group'>
             <div class='text-center'>
-                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.add</button>
+                <button type='submit' class='btn btn-default' ng-click='save()' localized>button.save</button>
                 <button type='button' class='btn btn-default' ng-click='cancel()' localized>button.cancel</button>
             </div>
         </div>

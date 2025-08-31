@@ -141,6 +141,7 @@ document.localization ['tr_TR'] = {
 	'question.delete.configuration': 'Yapılandırma silinsin mi? "${configurationName}"?',
 	'question.delete.group': '"${groupName}" grubu silinsin mi?',
 	'question.delete.role': '"${roleName}" rolü silinsin mi?',
+    'question.delete.icon': '"${iconName}" simgesi silinsin mi?',
 	'question.delete.device.bulk': 'Seçili cihazlar silinsin mi?',
 	'question.delete.device': '"${deviceNumber}" numaralı cihaz silinsin mi?',
 	'question.exit.without.saving': 'Değişiklikler kaydedilmedi. Neyse bu sayfadan ayrılalım mı?',
@@ -192,7 +193,8 @@ document.localization ['tr_TR'] = {
 	'error.configuration.file.empty.name': 'Bir dosya adı girin',
 	'error.configuration.file.empty.desc': 'Bir dosya açıklaması belirtin',
 	'error.configuration.file.empty.path': 'Cihazdaki yolu belirtin',
-	'error.configuration.file.empty.file': 'Bir URL girin veya bir dosya yükleyin',
+    'error.configuration.file.empty.file': 'Lütfen bir dosya yükleyin',
+    'error.configuration.file.empty.url': 'Lütfen dosya URL\'sini belirtin',
 
 	'error.notfound.device': 'Cihaz bulunamadı',
 	'error.duplicate.device': 'Aynı numaraya sahip bir cihaz zaten mevcut',
@@ -210,6 +212,7 @@ document.localization ['tr_TR'] = {
 	'error.duplicate.configuration': 'Bu ada sahip bir yapılandırma zaten var',
 	'error.duplicate.role.name': 'Aynı ada sahip bir rol zaten var',
 	'error.empty.role.name': 'Lütfen rol adını belirtin',
+    'error.duplicate.icon.name': 'Aynı ada sahip bir simge zaten mevcut',
 	'error.notfound.customer.admin': 'Yönetici hesabı bulunamadı',
 	'error.apk.file.required': '.apk veya .xapk uzantılı dosyayı seçin',
 	'error.apk.parse': 'Dosya ayrıştırılırken bir hata oluştu',
@@ -437,6 +440,8 @@ document.localization ['tr_TR'] = {
 	'form.configuration.files.variables.hint': 'DEVICE_NUMBER, IMEI, CUSTOM* dizeleri değerleriyle değiştirilecek',
 
 	'form.configuration.file.name': 'Dosya adı',
+    'form.configuration.file.select': 'Bir dosya seçin',
+    'form.configuration.file.create': '(yeni bir dosya oluştur)',
 	'form.configuration.file.description': 'Dosya açıklaması',
 	'form.configuration.file.description.placeholder': 'İsteğe bağlı, kolaylığınız için',
 	'form.configuration.file.path': 'Cihazdaki yol',
@@ -567,7 +572,20 @@ document.localization ['tr_TR'] = {
 	'form.device.clear.group': 'Gruplardan kaldır',
 
 	'form.file.file': 'Dosya',
-	'form.file.path': 'Yol',
+    'form.file.name': 'Dosya adı',
+    'form.file.description': 'Açıklama (isteğe bağlı)',
+    'form.file.external': 'Harici',
+    'form.file.external.title': 'Dosyayı yüklemek yerine, harici bir kaynaktaki URL\'yi belirtebilirsiniz',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': 'Harici bir kaynaktaki dosya URL\'si',
+    'form.file.path': 'Sunucudaki yol',
+    'form.file.device.path': 'Cihazdaki yol',
+    'form.file.device.path.placeholder': '/storage/emulated/0\'a göre yol',
+    'form.file.deleted': 'SİLİNDİ',
+    'form.file.copy.link': 'Bağlantıyı kopyala: ${link}',
+    'form.file.configurations.file': 'Dosya',
+    'form.file.configurations.configs': 'Yapılandırmalar',
+    'form.file.configurations.upload': 'Yükle',
 	'form.file.path.placeholder': 'Örneğin "/files/" gibi bir göreli yol girin',
 	'form.file.available': 'Kullanılabilir alan: ${space} Mb',
 
@@ -697,6 +715,9 @@ document.localization ['tr_TR'] = {
 
 	'form.settings.roles.title': 'Kullanıcı rolleri',
 
+    'form.settings.icons.title': 'Simgeler',
+    'form.settings.icons.search.placeholder': 'Simgeleri ara',
+
 	'form.qr.device.number': 'Cihaz numarası',
 	'form.qr.auto.create': 'Var değilse cihaz listesine ekle',
 	'form.qr.number.use': 'Cihaz numarası ataması',
@@ -745,6 +766,7 @@ document.localization ['tr_TR'] = {
 	'tab.users': 'Kullanıcılar',
 	'tab.roles': 'Roller',
 	'tab.groups': 'Gruplar',
+    'tab.icons': 'Simgeler',
 	'tab.language': 'Genel ve dil ayarları',
 	'tab.license': 'Lisans',
 	'tab.hints': 'İpuçları',
@@ -850,7 +872,14 @@ document.localization ['tr_TR'] = {
 	'table.heading.role.actions': 'Eylemler',
 
 	'table.heading.file.name': 'Dosya adı',
-	'table.heading.file.path': 'Yol',
+    'table.heading.file.comment': 'Açıklama',
+    'table.heading.file.device.path': 'Cihazdaki yol',
+    'table.heading.file.update.time': 'Güncellendi',
+    'table.heading.file.external': 'Harici',
+    'table.heading.file.variable': 'Değişken',
+    'table.heading.file.remove': 'Kaldır',
+    'table.heading.file.remove.hint': 'Dosyanın cihaz depolama alanından kaldırılmasını zorlar',
+    'table.heading.file.path': 'Yol',
 	'table.heading.file.address': 'Adres',
 	'table.heading.file.size': 'Boyut',
 	'table.heading.file.actions': 'Eylemler',
@@ -879,6 +908,7 @@ document.localization ['tr_TR'] = {
 	'notfound.apps.for.display': 'Görüntülenecek uygulama yok.',
 	'notfound.app.versions.for.display': 'Görüntülenecek sürüm yok.',
 	'notfound.roles':'Rol listesi boş.',
+    'notfound.icons':'Simge listesi boş.',
 
 	'format.date.header': 'HH:mm dd/MM/yyyy',
 

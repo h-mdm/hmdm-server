@@ -80,7 +80,8 @@ public final class FileUtil {
     }
 
     /**
-     * <p>Moves the specified uploaded file to desired location related to specified customer account.</p>
+     * <p>Moves the specified uploaded file to desired location related to specified customer account.
+     * The target file name is determined from the tmp file name</p>
      *
      * @param customer a customer account which the file belongs to.
      * @param filesDirectory a directory which holds all the files maintained by the application.
@@ -90,8 +91,26 @@ public final class FileUtil {
      * @throws FileExistsException if file already exists in
      */
     public static File moveFile(Customer customer, String filesDirectory, String localPath, String tmpFilePath) {
+        return moveFile(customer, filesDirectory, localPath, tmpFilePath, null);
+    }
+
+    /**
+     * <p>Moves the specified uploaded file to desired location related to specified customer account.
+     * The target file name is explicitly specified</p>
+     *
+     * @param customer a customer account which the file belongs to.
+     * @param filesDirectory a directory which holds all the files maintained by the application.
+     * @param localPath an optional local path to move file to.
+     * @param tmpFilePath a path to a temorary file to be moved.
+     * @return a file referencing the moved file if operation was successful; <code>null</code> otherwise.
+     * @throws FileExistsException if file already exists in
+     */
+    public static File moveFile(Customer customer, String filesDirectory, String localPath, String tmpFilePath, String newName) {
         File localFile = new File(tmpFilePath);
-        String fileName = getNameFromTmpPath(tmpFilePath);
+        String fileName = newName != null ? newName : getNameFromTmpPath(tmpFilePath);
+        while (fileName.startsWith("/")) {
+            fileName = fileName.substring(1);
+        }
 
         String filePath;
         if (localPath == null || localPath.isEmpty()) {
@@ -154,6 +173,7 @@ public final class FileUtil {
     }
 
     public static String createFileUrl(String baseUrl, String customerDir, String fileName) {
+        // TODO: Use files.directory from XML config!
         String url = baseUrl + "/files/";
         if (customerDir != null && !customerDir.equals("")) {
             url += customerDir + "/";
@@ -191,6 +211,6 @@ public final class FileUtil {
     }
 
     public static boolean isSafePath(String path) {
-        return !path.contains("..");
+        return path == null || !path.contains("..");
     }
 }

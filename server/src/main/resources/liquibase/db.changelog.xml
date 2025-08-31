@@ -2539,5 +2539,37 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="17.08.25-14:47" author="seva" context="common">
+        <comment>Add columns to uploadedFiles</comment>
+        <sql>
+            ALTER TABLE uploadedFiles
+                ADD COLUMN description TEXT,
+                ADD COLUMN devicePath TEXT,
+                ADD COLUMN external BOOLEAN NOT NULL DEFAULT false,
+                ADD COLUMN externalUrl TEXT,
+                ADD COLUMN replaceVariables BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE uploadedFiles
+                DROP COLUMN description,
+                DROP COLUMN devicePath,
+                DROP COLUMN external,
+                DROP COLUMN externalURL,
+                DROP COLUMN replaceVariables;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="24.08.25-16:57" author="seva" context="common">
+        <comment>Update nullable in uploadedFiles</comment>
+        <sql>
+            ALTER TABLE configurationFiles
+            ALTER COLUMN devicePath DROP NOT NULL,
+            ALTER COLUMN lastUpdate DROP NOT NULL;
+            ALTER TABLE uploadedFiles
+            ALTER COLUMN filePath DROP NOT NULL;
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

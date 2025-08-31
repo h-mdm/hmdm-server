@@ -62,6 +62,7 @@ public class UnsecureDAO {
     private final ConfigurationMapper configurationMapper;
     private final CommonMapper settingsMapper;
     private final ApplicationMapper applicationMapper;
+    private final UploadedFileMapper uploadedFileMapper;
     private final ApplicationDAO applicationDAO;
     private final ApplicationSettingDAO applicationSettingDAO;
     private final UserDAO userDAO;
@@ -85,6 +86,7 @@ public class UnsecureDAO {
                        ConfigurationMapper configurationMapper,
                        CommonMapper settingsMapper,
                        ApplicationMapper applicationMapper,
+                       UploadedFileMapper uploadedFileMapper,
                        ApplicationDAO applicationDAO,
                        ApplicationSettingDAO applicationSettingDAO,
                        UserDAO userDAO,
@@ -101,6 +103,7 @@ public class UnsecureDAO {
         this.configurationMapper = configurationMapper;
         this.settingsMapper = settingsMapper;
         this.applicationMapper = applicationMapper;
+        this.uploadedFileMapper = uploadedFileMapper;
         this.applicationDAO = applicationDAO;
         this.applicationSettingDAO = applicationSettingDAO;
         this.userDAO = userDAO;
@@ -206,6 +209,10 @@ public class UnsecureDAO {
         String tblName = "ca" + CryptoUtil.randomHexString(8);
         configurationMapper.createTempConfigAppTable(tblName, id);
         return this.configurationMapper.getPlainConfigurationApplications(customerId, tblName, id);
+    }
+
+    public Configuration getConfigurationById(Integer id) {
+        return this.configurationMapper.getConfigurationById(id);
     }
 
     @Transactional
@@ -675,4 +682,17 @@ public class UnsecureDAO {
     public UserRole findRoleByNameUnsecure(String name) {
         return userMapper.findUserRoleByName(name);
     }
+
+    public UploadedFile getUploadedFileByPath(Integer customerId, String path) {
+        return uploadedFileMapper.findByPath(customerId, path);
+    }
+
+    public int insertUploadedFile(UploadedFile uploadedFile) {
+        return uploadedFileMapper.insert(uploadedFile);
+    }
+
+    public void updateUploadedFile(UploadedFile uploadedFile) {
+        uploadedFileMapper.update(uploadedFile);
+    }
+
 }

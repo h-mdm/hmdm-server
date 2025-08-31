@@ -10,11 +10,11 @@
                     <input type='text'
                            ng-enter='newSearch()'
                            ng-model='paging.searchValue'
+                           ng-change="newSearch()"
                            localized-placeholder='search.placeholder.customer'
                            class='form-control configurations-search-input'>
 
                     <div class='configurations-search-buttons'>
-                        <button type='button' class='btn btn-default' ng-click='newSearch()' localized>button.search</button>
                         <button type='button' class='btn btn-default' ng-click='editCustomer( {} )' localized>button.add</button>
                     </div>
                 </div>
@@ -154,11 +154,11 @@
                     <input type='text'
                            ng-model='search.searchValue'
                            ng-enter='search()'
+                           ng-change='search()'
                            localized-placeholder='search.placeholder.application'
                            class='form-control application-search-input'>
 
                     <div class='device-search-buttons'>
-                        <button type='button' class='btn btn-default' ng-click='search()' localized>button.search</button>
                         <button type='button' class='btn btn-default' ng-click='editApplication( {} )' localized>button.add</button>
                     </div>
                 </div>
@@ -194,7 +194,7 @@
                         <td>{{application.name}}</td>
                         <td>{{application.version}}</td>
                         <td>{{application.url}}</td>
-                        <td>{{application.showIcon ? '+' : ''}}</td>
+                        <td>{{application.showIcon ? '✓' : ''}}</td>
 
                         <td>
                             <div>

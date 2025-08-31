@@ -22,10 +22,7 @@
 package com.hmdm.persistence.mapper;
 
 import com.hmdm.persistence.domain.Icon;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -40,22 +37,49 @@ public interface IconMapper {
     @SelectKey(statement = "SELECT currval('icons_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class)
     int insertIcon(Icon icon);
 
+    @Update("UPDATE icons SET name=#{name}, fileId=#{fileId} WHERE id=#{id} AND customerId=#{customerId}")
+    int updateIcon(Icon icon);
+
     @Select("SELECT icons.* FROM icons WHERE icons.id = #{iconId}")
     Icon getIconById(@Param("iconId") int iconId);
 
-    @Select("SELECT icons.* FROM icons WHERE icons.customerId = #{customerId} ORDER BY icons.name")
+    @Select("SELECT icons.*, CASE " +
+            "    WHEN f.description IS NOT NULL AND f.description <> '' " +
+            "        THEN f.description " +
+            "        ELSE CASE " +
+            "                 WHEN f.external THEN f.externalUrl " +
+            "                 ELSE f.filePath " +
+            "             END " +
+            "    END AS fileName FROM icons " +
+            "    LEFT JOIN uploadedFiles f ON icons.fileId = f.id " +
+            "WHERE icons.customerId = #{customerId} ORDER BY icons.name")
     List<Icon> getAllIcons(@Param("customerId") int customerId);
+
+    @Select("SELECT icons.*, CASE " +
+            "    WHEN f.description IS NOT NULL AND f.description <> '' " +
+            "        THEN f.description " +
+            "        ELSE CASE " +
+            "                 WHEN f.external THEN f.externalUrl " +
+            "                 ELSE f.filePath " +
+            "             END " +
+            "    END AS fileName FROM icons " +
+            "    LEFT JOIN uploadedFiles f ON icons.fileId = f.id " +
+            "WHERE icons.customerId = #{customerId} AND icons.name ILIKE #{value} ORDER BY icons.name")
+    List<Icon> getAllIconsByValue(@Param("customerId") int customerId, @Param("value") String value);
+
+    @Delete({"DELETE FROM icons WHERE id = #{id}"})
+    void removeById(@Param("id") Integer id);
+
+    @Select({"SELECT * FROM icons WHERE id = #{id}"})
+    Icon getById(@Param("id") Integer id);
 
     @Select("SELECT COUNT(*) AS cnt " +
             "FROM icons ic " +
-            "INNER JOIN uploadedFiles uf ON uf.id = ic.fileId " +
-            "WHERE uf.filePath = #{fileName}")
-    long countFileUsedAsIcon(@Param("fileName") String fileName);
+            "WHERE ic.fileId = #{fileId}")
+    long countFileUsedAsIcon(@Param("fileId") Integer fileId);
 
     @Select("SELECT ic.name " +
             "FROM icons ic " +
-            "INNER JOIN uploadedFiles uf ON uf.id = ic.fileId " +
-            "WHERE ic.customerId = #{customerId} " +
-            "AND uf.filePath = #{fileName}")
-    List<String> getUsingIcons(@Param("customerId") int customerId, @Param("fileName") String fileName);
+            "WHERE ic.fileId = #{fileId}")
+    List<String> getUsingIcons(@Param("customerId") int customerId, @Param("fileId") Integer fileId);
 }

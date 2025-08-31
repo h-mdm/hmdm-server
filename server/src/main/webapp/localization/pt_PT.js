@@ -140,6 +140,7 @@ document.localization ['pt_PT'] = {
     'question.delete.configuration': 'Excluir configuração "${configurationName}"?',
     'question.delete.group': 'Excluir grupo "${groupName}"?',
     'question.delete.role': 'Excluir função "${roleName}"?',
+    'question.delete.icon': 'Apagar o ícone "${iconName}"?',
     'question.delete.device.bulk': 'Excluir dispositivos selecionados?',
     'question.delete.device': 'Excluir dispositivo com o número "${deviceNumber}"?',
     'question.exit.without.saving': 'Alterações não foram salvas. De qualquer forma deseja sair dessa página?',
@@ -191,8 +192,9 @@ document.localization ['pt_PT'] = {
     'error.configuration.file.empty.name': 'Insira um nome de arquivo',
     'error.configuration.file.empty.desc': 'Especifique uma descrição de arquivo',
     'error.configuration.file.empty.path': 'Especifique o caminho no dispositivo',
-    'error.configuration.file.empty.file': 'Insira uma URL ou faça upload de um arquivo',
-    
+    'error.configuration.file.empty.file': 'Favor enviar um ficheiro',
+    'error.configuration.file.empty.url': 'Favor especificar o URL do ficheiro',
+
     'error.notfound.device': 'Dispositivo não encontrado',
     'error.duplicate.device': 'Um dispositivo com o mesmo número já existe',
     'error.duplicate.login': 'Esse login já está em uso',
@@ -209,6 +211,7 @@ document.localization ['pt_PT'] = {
     'error.duplicate.configuration': 'Uma configuração com este nome já existe',
     'error.duplicate.role.name': 'Já existe uma função com o mesmo nome',
     'error.empty.role.name': 'Especifique o nome da função',
+    'error.duplicate.icon.name': 'Já existe um ícone com o mesmo nome',
     'error.notfound.customer.admin': 'Conta de administrador não encontrada',
     'error.apk.file.required': 'Selecione o arquivo com a extensão .apk ou .xapk',
     'error.apk.parse': 'Um erro ocorreu ao analisar o arquivo',
@@ -436,6 +439,8 @@ document.localization ['pt_PT'] = {
     'form.configuration.files.variables.hint': 'Strings DEVICE_NUMBER, IMEI, CUSTOM* serão substituídos pelos seus valores',
 
     'form.configuration.file.name': 'Nome do arquivo',
+    'form.configuration.file.select': 'Selecionar um ficheiro',
+    'form.configuration.file.create': '(criar um novo ficheiro)',
     'form.configuration.file.description': 'Descrição do arquivo',
     'form.configuration.file.description.placeholder': 'Opcional, para sua conveniência',
     'form.configuration.file.path': 'Caminho no dispositivo',
@@ -566,7 +571,20 @@ document.localization ['pt_PT'] = {
     'form.device.clear.group': 'Remover dos grupos',
 
     'form.file.file': 'Arquivo',
-    'form.file.path': 'Caminho',
+    'form.file.name': 'Nome do ficheiro',
+    'form.file.description': 'Descrição (opcional)',
+    'form.file.external': 'Externo',
+    'form.file.external.title': 'Em vez de carregar o ficheiro, pode especificar o URL num recurso externo',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': 'URL do ficheiro num recurso externo',
+    'form.file.path': 'Caminho no servidor',
+    'form.file.device.path': 'Caminho no dispositivo',
+    'form.file.device.path.placeholder': 'Caminho relativo a /storage/emulated/0',
+    'form.file.deleted': 'EXCLUÍDO',
+    'form.file.copy.link': 'Copiar link: ${link}',
+    'form.file.configurations.file': 'Ficheiro',
+    'form.file.configurations.configs': 'Definições',
+    'form.file.configurations.upload': 'Carregar',
     'form.file.path.placeholder': 'Insira um caminho relativo, por exemplo "/files/"',
     'form.file.available': 'Espaço disponível: ${space} Mb',
 
@@ -696,6 +714,9 @@ document.localization ['pt_PT'] = {
 
     'form.settings.roles.title': 'Funções de utilizador',
 
+    'form.settings.icons.title': 'Ícones',
+    'form.settings.icons.search.placeholder': 'Pesquisar ícones',
+
     'form.qr.device.number': 'Número do dispositivo',
     'form.qr.auto.create': 'Adicionar a lista de dispositivos se não existir',
     'form.qr.number.use': 'Atribuição de número de dispositivo',
@@ -744,6 +765,7 @@ document.localization ['pt_PT'] = {
     'tab.users': 'Usuários',
     'tab.roles': 'Funções',
     'tab.groups': 'Grupos',
+    'tab.icons': 'Ícones',
     'tab.language': 'Opções gerais e de idioma',
     'tab.license': 'Licença',
     'tab.hints': 'Dicas',
@@ -849,6 +871,13 @@ document.localization ['pt_PT'] = {
     'table.heading.role.actions': 'Ações',
 
     'table.heading.file.name': 'Nome do arquivo',
+    'table.heading.file.comment': 'Descrição',
+    'table.heading.file.device.path': 'Caminho no dispositivo',
+    'table.heading.file.update.time': 'Atualizado em',
+    'table.heading.file.external': 'Externo',
+    'table.heading.file.variable': 'Variável',
+    'table.heading.file.remove': 'Remover',
+    'table.heading.file.remove.hint': 'Obrigar a remoção do ficheiro do armazenamento do dispositivo',
     'table.heading.file.path': 'Caminho',
     'table.heading.file.address': 'Endereço',
     'table.heading.file.size': 'Tamanho',
@@ -878,6 +907,7 @@ document.localization ['pt_PT'] = {
     'notfound.apps.for.display': 'Não há aplicações para mostrar.',
     'notfound.app.versions.for.display': 'Não há versões para mostrar.',
     'notfound.roles':'A lista de funções está vazia.',
+    'notfound.icons':'A lista de ícones está vazia.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 

@@ -141,6 +141,7 @@ document.localization ['ja_JP'] = {
     'question.delete.configuration': '構成 "${configurationName}" を削除しますか?',
     'question.delete.group': 'グループ "${groupName}" を削除しますか?',
     'question.delete.role': 'ロール "${roleName}" を削除しますか?',
+    'question.delete.icon': 'アイコン「${iconName}」を削除しますか?',
     'question.delete.device.bulk': '選択したデバイスを削除しますか?',
     'question.delete.device': '"${deviceNumber}" のデバイスを削除しますか?',
     'question.exit.without.saving': '変更は保存されません。 とにかくこのページを離れますか?',
@@ -192,7 +193,8 @@ document.localization ['ja_JP'] = {
     'error.configuration.file.empty.name': 'ファイル名を入力してください',
     'error.configuration.file.empty.desc': 'ファイルの説明を指定してください',
     'error.configuration.file.empty.path': 'デバイス上のパスを指定してください',
-    'error.configuration.file.empty.file': 'URL を入力するか、ファイルをアップロードしてください',
+    'error.configuration.file.empty.file': 'ファイルをアップロードしてください',
+    'error.configuration.file.empty.url': 'ファイルのURLを指定してください',
 
     'error.notfound.device': 'デバイスが見つかりません',
     'error.duplicate.device': '同じ番号のデバイスが既に存在します',
@@ -210,6 +212,7 @@ document.localization ['ja_JP'] = {
     'error.duplicate.configuration': 'この名前の構成は既に存在します',
     'error.duplicate.role.name': '同じ名前のロールがすでに存在します',
     'error.empty.role.name': 'ロール名を指定してください',
+    'error.duplicate.icon.name': '同じ名前のアイコンがすでに存在します',
     'error.notfound.customer.admin': '管理者アカウントが見つかりません',
     'error.apk.file.required': '拡張子が .apk または .xapk のファイルを選択してください',
     'error.apk.parse': 'ファイルの解析中にエラーが発生しました',
@@ -437,6 +440,8 @@ document.localization ['ja_JP'] = {
     'form.configuration.files.variables.hint': '文字列DEVICE_NUMBER、IMEI、CUSTOM*はそれらの値に置き換えられます',
 
     'form.configuration.file.name': 'ファイル名',
+    'form.configuration.file.select': 'ファイルを選択',
+    'form.configuration.file.create': '(新しいファイルを作成)',
     'form.configuration.file.description': 'ファイルの説明',
     'form.configuration.file.description.placeholder': '便利なオプションです',
     'form.configuration.file.path': 'デバイス上のパス',
@@ -567,7 +572,20 @@ document.localization ['ja_JP'] = {
     'form.device.clear.group': 'グループから削除',
 
     'form.file.file': 'ファイル',
-    'form.file.path': 'パス',
+    'form.file.name': 'ファイル名',
+    'form.file.description': '説明（オプション）',
+    'form.file.external': '外部',
+    'form.file.external.title': 'ファイルをアップロードする代わりに、外部リソースのURLを指定することもできます。',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': '外部リソース上のファイルURL',
+    'form.file.path': 'サーバー上のパス',
+    'form.file.device.path': 'デバイス上のパス',
+    'form.file.device.path.placeholder': '/storage/emulated/0からの相対パス',
+    'form.file.deleted': '削除済み',
+    'form.file.copy.link': 'コピーリンク: ${link}',
+    'form.file.configurations.file': 'ファイル',
+    'form.file.configurations.configs': '構成',
+    'form.file.configurations.upload': 'アップロード',
     'form.file.path.placeholder': '"/files/" などの相対パスを入力してください',
     'form.file.available': '利用可能なスペース: ${space} Mb',
 
@@ -697,6 +715,9 @@ document.localization ['ja_JP'] = {
 
     'form.settings.roles.title': 'ユーザーロール',
 
+    'form.settings.icons.title': 'アイコン',
+    'form.settings.icons.search.placeholder': 'アイコンを検索',
+
     'form.qr.device.number': 'デバイス番号',
     'form.qr.auto.create': '存在しない場合はデバイスリストに追加',
     'form.qr.number.use': 'デバイス番号の割り当て',
@@ -745,6 +766,7 @@ document.localization ['ja_JP'] = {
     'tab.users': 'ユーザー',
     'tab.roles': '役割',
     'tab.groups': 'グループ',
+    'tab.icons': 'アイコン',
     'tab.language': '一般および言語設定',
     'tab.license': 'ライセンス',
     'tab.hints': 'ヒント',
@@ -850,6 +872,13 @@ document.localization ['ja_JP'] = {
     'table.heading.role.actions': 'アクション',
 
     'table.heading.file.name': 'ファイル名',
+    'table.heading.file.description': '説明',
+    'table.heading.file.device.path': 'デバイス上のパス',
+    'table.heading.file.update.time': '更新時刻',
+    'table.heading.file.external': '外部',
+    'table.heading.file.variable': '変数',
+    'table.heading.file.remove': '削除',
+    'table.heading.file.remove.hint': 'デバイスストレージからファイルを強制的に削除します',
     'table.heading.file.path': 'パス',
     'table.heading.file.address': 'アドレス',
     'table.heading.file.size': 'サイズ',
@@ -879,6 +908,7 @@ document.localization ['ja_JP'] = {
     'notfound.apps.for.display': '表示するアプリケーションがありません。',
     'notfound.app.versions.for.display': '表示するバージョンがありません。',
     'notfound.roles':'役割リストが空です。',
+    'notfound.icons':'アイコンリストが空です。',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 

@@ -140,7 +140,8 @@ document.localization ['zh_TW'] = {
     'question.delete.application.version':"刪除版本\"${applicationVersion}\"？",
     'question.delete.configuration' : "刪除配置\"${configurationName}\"？",
     'question.delete.group':"刪除組合\"${groupName}\"？",
-    'question.delete.role': 'Delete the role "${roleName}"?',
+    'question.delete.role': '刪除角色“${roleName}”？',
+    'question.delete.icon': '刪除圖示「${iconName}」？',
     'question.delete.device.bulk': '刪除所選設備？',
     'question.delete.device' : "刪除數字為\"${deviceNumber}\"的設備嗎？",
     'question.exit.without.saving' : "更改未儲存。無論如何要離開此頁面？",
@@ -192,7 +193,8 @@ document.localization ['zh_TW'] = {
     'error.configuration.file.empty.name':"輸入文檔名",
     'error.configuration.file.empty.desc':"指定文檔資訊",
     'error.configuration.file.empty.path':"指定設備上的路徑",
-    'error.configuration.file.empty.file':"輸入URL或上傳文檔",
+    'error.configuration.file.empty.file': '請上傳檔案',
+    'error.configuration.file.empty.url': '請指定檔案 URL',
 
     'error.notfound.device' : "找不到設備",
     'error.duplicate.device':"已經存在具有相同編號的設備",
@@ -210,6 +212,7 @@ document.localization ['zh_TW'] = {
     'error.duplicate.configuration':"具有該名稱的配置已存在",
     'error.duplicate.role.name': '已存在同名角色',
     'error.empty.role.name': '請註明角色名稱',
+    'error.duplicate.icon.name': '同名圖示已存在',
     'error.notfound.customer.admin':"找不到管理員帳戶",
     'error.apk.file.required':"選擇擴展名為.apk或.xapk的文檔",
     'error.apk.parse':"解析文檔時發生錯誤",
@@ -437,6 +440,8 @@ document.localization ['zh_TW'] = {
     'form.configuration.files.variables.hint': '字符串DEVICE_NUMBER，IMEI，CUSTOM*將替換為其值',
 
     'form.configuration.file.name' : "文檔名",
+    'form.configuration.file.select': '選擇檔案',
+    'form.configuration.file.create': '(建立新檔案)',
     'form.configuration.file.description' : "文檔資訊",
     'form.configuration.file.description.placeholder':"可選，為了您的方便",
     'form.configuration.file.path':"設備上的路徑",
@@ -567,7 +572,20 @@ document.localization ['zh_TW'] = {
     'form.device.clear.group': '從組中刪除',
 
     'form.file.file' : "文檔",
-    'form.file.path' : "路徑",
+    'form.file.name': '檔名',
+    'form.file.description': '描述（可選）',
+    'form.file.external': '外部',
+    'form.file.external.title': '您可以指定外部資源的 URL，而不是上傳文件',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': '外部資源上的檔案 URL',
+    'form.file.path': '伺服器路徑',
+    'form.file.device.path': '裝置路徑',
+    'form.file.device.path.placeholder': '相對於 /storage/emulated/0 的路徑',
+    'form.file.deleted': '已刪除',
+    'form.file.copy.link': '複製連結：${link}',
+    'form.file.configurations.file': '檔案',
+    'form.file.configurations.configs': '配置',
+    'form.file.configurations.upload': '上傳',
     'form.file.path.placeholder' : '輸入相對路徑，例如"/files/"',
     'form.file.available': '可用空間：${space} Mb',
 
@@ -697,6 +715,9 @@ document.localization ['zh_TW'] = {
 
     'form.settings.roles.title': '使用者角色',
 
+    'form.settings.icons.title': '圖標',
+    'form.settings.icons.search.placeholder': '搜尋圖示',
+
     'form.qr.device.number': '設備編號',
     'form.qr.auto.create': '添加到設備列表（如果不存在）',
     'form.qr.number.use': '設備編號分配',
@@ -745,6 +766,7 @@ document.localization ['zh_TW'] = {
     'tab.users':"用戶",
     'tab.roles': '角色',
     'tab.groups':"組合",
+    'tab.icons': '圖示',
     'tab.language':"常規和語言選項",
     'tab.license' : "軟件許可證",
     'tab.hints':"提示",
@@ -850,6 +872,13 @@ document.localization ['zh_TW'] = {
     'table.heading.role.actions':"功能",
 
     'table.heading.file.name' : "文檔名",
+    'table.heading.file.comment': '描述',
+    'table.heading.file.device.path': '裝置路徑',
+    'table.heading.file.update.time': '更新時間',
+    'table.heading.file.external': '外部',
+    'table.heading.file.variable': '變數',
+    'table.heading.file.remove': '刪除',
+    'table.heading.file.remove.hint': '強制從裝置儲存中刪除檔案',
     'table.heading.file.path' : "路徑",
     'table.heading.file.address' : "網址",
     'table.heading.file.size': '尺寸',
@@ -879,6 +908,7 @@ document.localization ['zh_TW'] = {
     'notfound.apps.for.display':"沒有要顯示的應用程式。",
     'notfound.app.versions.for.display':"沒有要顯示的版本。",
     'notfound.roles':'角色列表為空。',
+    'notfound.icons':'圖示清單為空。',
 
     'format.date.header' : "HH:mm dd / MM / yyyy",
 		

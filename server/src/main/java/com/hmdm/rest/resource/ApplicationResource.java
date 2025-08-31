@@ -38,9 +38,7 @@ import javax.inject.Named;
 
 import com.hmdm.notification.PushService;
 import com.hmdm.persistence.*;
-import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.User;
+import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
@@ -52,7 +50,6 @@ import io.swagger.annotations.Authorization;
 import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.domain.Application;
 import com.hmdm.util.FileExistsException;
 
 import java.io.File;
@@ -70,6 +67,7 @@ public class ApplicationResource {
     private static final Logger logger  = LoggerFactory.getLogger(ApplicationResource.class);
     private File baseDirectory;
     private ApplicationDAO applicationDAO;
+    private ConfigurationDAO configurationDAO;
     private PushService pushService;
 
     /**
@@ -80,9 +78,11 @@ public class ApplicationResource {
 
     @Inject
     public ApplicationResource(ApplicationDAO applicationDAO,
+                               ConfigurationDAO configurationDAO,
                                PushService pushService,
                                @Named("files.directory") String filesDirectory) {
         this.applicationDAO = applicationDAO;
+        this.configurationDAO = configurationDAO;
         this.pushService = pushService;
         this.baseDirectory = new File(filesDirectory);
 
@@ -479,6 +479,15 @@ public class ApplicationResource {
                 request.getConfigurations().removeIf(c ->
                         user.getConfigurations().stream().filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
             }
+            // Avoid access to objects of another customer
+            request.getConfigurations().removeIf(c -> {
+                // findById will raise a SecurityException if attempting to access an object of another customer
+                // So actually this code is a bit redundant, but it guards access to own objects anyway
+                Application application = applicationDAO.findById(c.getApplicationId());
+                Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
+                return application.getCustomerId() != user.getCustomerId() ||
+                       configuration.getCustomerId() != user.getCustomerId();
+            });
             logger.info("Application configurations updated by user " + SecurityContext.get().getCurrentUserName());
             this.applicationDAO.updateApplicationConfigurations(request);
 

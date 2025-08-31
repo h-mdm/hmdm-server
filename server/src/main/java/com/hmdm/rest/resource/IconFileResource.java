@@ -120,7 +120,7 @@ public class IconFileResource {
                     uploadedFile.setFilePath(iconFile.getName());
                     uploadedFile.setUploadTime(System.currentTimeMillis());
 
-                    uploadedFile = this.uploadedFileDAO.insertFile(uploadedFile);
+                    uploadedFile = this.uploadedFileDAO.insert(uploadedFile);
 
                     return Response.OK(uploadedFile);
                 } catch (Exception e) {

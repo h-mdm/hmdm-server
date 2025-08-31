@@ -60,6 +60,11 @@ public class FileUploadResult implements Serializable {
     private Boolean exists;
 
     /**
+     * <p>Returns the name of the uploaded file</p>
+     */
+    private String name;
+
+    /**
      * <p>Constructs new <code>FileUploadResult</code> instance. This implementation does nothing.</p>
      */
     public FileUploadResult() {
@@ -105,6 +110,14 @@ public class FileUploadResult implements Serializable {
         this.exists = exists;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "FileUploadResult{" +
@@ -113,6 +126,7 @@ public class FileUploadResult implements Serializable {
                 ", application=" + application +
                 ", complete=" + complete +
                 ", exists=" + exists +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

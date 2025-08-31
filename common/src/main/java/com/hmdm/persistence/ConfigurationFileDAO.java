@@ -63,6 +63,7 @@ public class ConfigurationFileDAO {
         return this.configurationFileMapper.getConfigurationFiles(configurationId);
     }
 
+    @Deprecated
     public ConfigurationFile getConfigurationFileByPath(Integer configurationId, String path) {
         return this.configurationFileMapper.getConfigurationFileByPath(configurationId, path);
     }
@@ -84,32 +85,16 @@ public class ConfigurationFileDAO {
                 });
     }
 
-    public void updateConfigurationFile(ConfigurationFile configurationFile) {
-        // Check access to configuration prior to making changes
-        SecurityContext.get()
-                .getCurrentUser()
-                .ifPresent(u -> {
-                    Configuration configuration = configurationMapper.getConfigurationById(configurationFile.getConfigurationId());
-                    if (configuration == null) {
-                        throw new IllegalArgumentException("Configuration id " + configurationFile.getConfigurationId() + " does not exist");
-                    }
-                    if (u.isSuperAdmin() || u.getCustomerId() == configuration.getCustomerId()) {
-                        this.configurationFileMapper.updateConfigurationFile(configurationFile);
-                    } else {
-                        throw SecurityException.onConfigurationAccessViolation(configurationFile.getConfigurationId());
-                    }
-                });
+    public boolean isFileUsed(Integer fileId) {
+        return this.configurationFileMapper.countFileUsedAsConfigFile(fileId) > 0;
     }
 
-    public boolean isFileUsed(String fileName) {
-        return this.configurationFileMapper.countFileUsedAsConfigFile(fileName) > 0;
+    public List<String> getUsingConfigurations(Integer customerId, Integer fileId) {
+        return this.configurationFileMapper.getUsingConfigurations(customerId, fileId);
     }
 
-    public List<String> getUsingConfigurations(Integer customerId, String fileName) {
-        return this.configurationFileMapper.getUsingConfigurations(customerId, fileName);
-    }
-
-    public void removeFileFromDisk(Integer fileId) {
-        this.uploadedFileDAO.removeFile(fileId);
-    }
+    // Deprecated and not used any more
+/*    public void removeFileFromDisk(Integer fileId) {
+        this.uploadedFileDAO.remove(fileId);
+    } */
 }

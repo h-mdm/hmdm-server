@@ -45,6 +45,8 @@ public class Icon implements Serializable, CustomerData {
     private String name;
     @ApiModelProperty("An ID of an uploaded file storing the content of the icon")
     private Integer fileId;
+    @ApiModelProperty("The name of an uploaded file storing the content of the icon")
+    private String fileName;
 
     /**
      * <p>Constructs new <code>Icon</code> instance. This implementation does nothing.</p>
@@ -87,6 +89,14 @@ public class Icon implements Serializable, CustomerData {
         this.fileId = fileId;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Override
     public String toString() {
         return "Icon{" +
@@ -94,6 +104,7 @@ public class Icon implements Serializable, CustomerData {
                 ", customerId=" + customerId +
                 ", name='" + name + '\'' +
                 ", fileId='" + fileId + '\'' +
+                ", fileName='" + fileName + '\'' +
                 '}';
     }
 }

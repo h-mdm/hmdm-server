@@ -38,8 +38,9 @@ angular.module('headwind-kiosk')
     })
     .factory('iconService', function ($resource) {
         return $resource('', {}, {
-            getAllIcons: {url: 'rest/private/icons', method: 'GET'},
+            getAllIcons: {url: 'rest/private/icons/search/:value', method: 'GET'},
             createIcon: {url: 'rest/private/icons', method: 'PUT'},
+            removeIcon: {url: 'rest/private/icons/:id', method: 'DELETE'},
         });
     })
     .factory('settingsService', function ($resource) {
@@ -129,8 +130,10 @@ angular.module('headwind-kiosk')
             getAllFiles: {url: 'rest/private/web-ui-files/search/:value', method: 'GET'},
             getApps: {url: 'rest/private/web-ui-files/apps/:value', method: 'GET'},
             removeFile: {url: 'rest/private/web-ui-files/remove', method: 'POST'},
-            moveFile: {url: 'rest/private/web-ui-files/move', method: 'POST'},
-            getLimit: {url: 'rest/private/web-ui-files/limit', method: 'GET'}
+            updateFile: {url: 'rest/private/web-ui-files/update', method: 'POST'},
+            getLimit: {url: 'rest/private/web-ui-files/limit', method: 'GET'},
+            getConfigurations: {url: 'rest/private/web-ui-files/configurations/:id', method: 'GET'},
+            updateConfigurations: {url: 'rest/private/web-ui-files/configurations', method: 'POST'}
         })
     })
     .factory('storageService', function () {

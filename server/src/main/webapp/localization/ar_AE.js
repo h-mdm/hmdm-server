@@ -141,6 +141,7 @@ document.localization ['ar_AE'] = {
     'question.delete.configuration': '؟ "${configurationName}" حذف الاعداد',
     'question.delete.group': '؟ "${groupName}" هل تريد حذف المجموعة',
     'question.delete.role': '؟ "${roleName}" حذف الدور',
+    'question.delete.icon': 'حذف الرمز "${iconName}"؟',
     'question.delete.device.bulk': 'هل تريد حذف الأجهزة المحددة؟',
     'question.delete.device': '؟ "${deviceNumber}" هل تريد حذف الجهاز الذي يحمل الرقم',
     'question.exit.without.saving': 'لا يتم حفظ التغييرات. على أي حال مغادرة هذه الصفحة؟ ',
@@ -192,8 +193,9 @@ document.localization ['ar_AE'] = {
     'error.configuration.file.empty.name': 'أدخل اسم ملف' ,
     'error.configuration.file.empty.desc': 'حدد وصف الملف' ,
     'error.configuration.file.empty.path': 'حدد المسار على الجهاز',
-    'error.configuration.file.empty.file': 'أو قم بتحميل ملف URL أدخل عنوان',
-    
+    'error.configuration.file.empty.file': 'يرجى تحميل ملف',
+    'error.configuration.file.empty.url': 'يرجى تحديد عنوان URL للملف',
+
     'error.notfound.device': 'الجهاز غير موجود',
     'error.duplicate.device': 'جهاز بنفس الرقم موجود بالفعل',
     'error.duplicate.login': 'مثل هذا تسجيل الدخول قيد الاستخدام بالفعل' ,
@@ -210,6 +212,7 @@ document.localization ['ar_AE'] = {
     'error.duplicate.configuration': 'يوجد اعداد بهذا الاسم بالفعل' ,
     'error.duplicate.role.name': 'يوجد بالفعل دور بنفس الاسم',
     'error.empty.role.name': 'يرجى تحديد اسم الدور',
+    'error.duplicate.icon.name': 'يوجد بالفعل رمز بنفس الاسم',
     'error.notfound.customer.admin': 'حساب المسؤول غير موجود' ,
     'error.apk.file.required': '.apk أو .xapk حدد الملف بملحق' ,
     'error.apk.parse': 'حدث خطأ أثناء تحليل الملف',
@@ -437,6 +440,8 @@ document.localization ['ar_AE'] = {
     'form.configuration.files.variables.hint': 'سيتم استبدال السلاسل DEVICE_NUMBER و IMEI و CUSTOM* بقيمها',
 
 	'form.configuration.file.name': 'اسم الملف' ,
+    'form.configuration.file.select': 'تحديد ملف',
+    'form.configuration.file.create': '(إنشاء ملف جديد)',
     'form.configuration.file.description': 'وصف الملف',
     'form.configuration.file.description.placeholder': 'اختياري, لراحتك',
     'form.configuration.file.path': 'مسار على الجهاز',
@@ -567,7 +572,20 @@ document.localization ['ar_AE'] = {
     'form.device.clear.group': 'إزالة من المجموعات',
 
     'form.file.file': 'ملف',
-    'form.file.path': 'مسار',
+    'form.file.name': 'اسم الملف',
+    'form.file.description': 'الوصف (اختياري)',
+    'form.file.external': 'خارجي',
+    'form.file.external.title': 'بدلاً من تحميل الملف، يمكنك تحديد عنوان URL على مورد خارجي',
+    'form.file.external.url': 'رابط',
+    'form.file.external.url.placeholder': 'رابط ملف على مورد خارجي',
+    'form.file.path': 'مسار على الخادم',
+    'form.file.device.path': 'مسار على الجهاز',
+    'form.file.device.path.placeholder': 'مسار متعلق بـ /storage/emulated/0',
+    'form.file.deleted': 'محذوف',
+    'form.file.copy.link': 'نسخ الرابط: ${link}',
+    'form.file.configurations.file': 'ملف',
+    'form.file.configurations.configs': 'التكوينات',
+    'form.file.configurations.upload': 'تحميل',
     'form.file.path.placeholder': 'أدخل مسارًا نسبيًا، على سبيل المثال "/files/"',
     'form.file.available': 'المساحة المتوفرة: ${space} ميجا بايت',
 
@@ -697,6 +715,9 @@ document.localization ['ar_AE'] = {
 
     'form.settings.roles.title': 'أدوار المستخدم',
 
+    'form.settings.icons.title': 'أيقونات',
+    'form.settings.icons.search.placeholder': 'أيقونات البحث',
+
     'form.qr.device.number': 'رقم الجهاز',
     'form.qr.auto.create': 'أضف إلى قائمة الأجهزة إذا لم يكن موجودًا',
     'form.qr.number.use': 'تخصيص رقم الجهاز',
@@ -745,6 +766,7 @@ document.localization ['ar_AE'] = {
     "tab.users": 'المستخدمون',
     'tab.roles': 'الأدوار',
     "tab.groups": 'المجموعات',
+    'tab.icons': 'الأيقونات',
     "tab.language": 'الإعدادات العامة وإعدادات اللغة',
     'tab.license': 'رخصة',
     "tab.hints": 'تلميحات',
@@ -850,6 +872,13 @@ document.localization ['ar_AE'] = {
     "table.heading.role.actions": 'الإجراءات',
 
 	'table.heading.file.name': 'اسم الملف',
+    'table.heading.file.comment': 'الوصف',
+    'table.heading.file.device.path': 'المسار على الجهاز',
+    'table.heading.file.update.time': 'تاريخ التحديث',
+    'table.heading.file.external': 'خارجي',
+    'table.heading.file.variable': 'متغير',
+    'table.heading.file.remove': 'إزالة',
+    'table.heading.file.remove.hint': 'يُجبر على إزالة الملف من وحدة تخزين الجهاز',
     'table.heading.file.path': 'مسار',
     "table.heading.file.address": 'العنوان',
     'table.heading.file.size': 'مقاس',
@@ -879,6 +908,7 @@ document.localization ['ar_AE'] = {
     'notfound.apps.for.display': 'لا توجد تطبيقات لعرضها.',
     'notfound.app.versions.for.display': 'لا توجد إصدارات لعرضها.',
     'notfound.roles':'قائمة الأدوار فارغة.',
+    'notfound.icons':'قائمة الأيقونات فارغة.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 

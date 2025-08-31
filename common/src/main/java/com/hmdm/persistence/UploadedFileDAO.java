@@ -23,10 +23,15 @@ package com.hmdm.persistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
+import com.hmdm.persistence.mapper.ConfigurationFileMapper;
 import com.hmdm.persistence.mapper.UploadedFileMapper;
+import com.hmdm.rest.json.FileConfigurationLink;
+import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
+import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +39,9 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>A DAO used for managing the icon data.</p>
@@ -49,6 +57,7 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      * <p>An interface to file data persistence layer.</p>
      */
     private final UploadedFileMapper fileMapper;
+    private final ConfigurationFileMapper configurationFileMapper;
     private final CustomerDAO customerDAO;
     private String filesDirectory;
 
@@ -57,9 +66,11 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      */
     @Inject
     public UploadedFileDAO(UploadedFileMapper fileMapper,
+                           ConfigurationFileMapper configurationFileMapper,
                            CustomerDAO customerDAO,
                            @Named("files.directory") String filesDirectory) {
         this.fileMapper = fileMapper;
+        this.configurationFileMapper = configurationFileMapper;
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
     }
@@ -70,9 +81,30 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      * @param file an uploaded filed to be inserted into DB.
      * @return a created file.
      */
-    public UploadedFile insertFile(UploadedFile file) {
-        insertRecord(file, this.fileMapper::insertFile);
-        return getSingleRecord(() -> this.fileMapper.getFileById(file.getId()), SecurityException::onUploadedFileAccessViolation);
+    public UploadedFile insert(UploadedFile file) {
+        insertRecord(file, this.fileMapper::insert);
+        return getSingleRecord(() -> this.fileMapper.findById(file.getId()), SecurityException::onUploadedFileAccessViolation);
+    }
+
+
+    public List<UploadedFile> getAll() {
+        return getListWithCurrentUser(currentUser -> this.fileMapper.getAll(currentUser.getCustomerId()));
+    }
+
+    public List<UploadedFile> getAllByValue(String value) {
+        return getListWithCurrentUser(currentUser -> this.fileMapper.getAllByValue(currentUser.getCustomerId(), "%" + value + "%"));
+    }
+
+    public void update(UploadedFile file) {
+        updateRecord(file, this.fileMapper::update, SecurityException::onUploadedFileAccessViolation);
+    }
+
+    public UploadedFile getById(Integer id) {
+        return getSingleRecord(() -> this.fileMapper.findById(id), SecurityException::onUploadedFileAccessViolation);
+    }
+
+    public UploadedFile getByPath(Integer customerId, String filePath) {
+        return getSingleRecord(() -> this.fileMapper.findByPath(customerId, filePath), SecurityException::onUploadedFileAccessViolation);
     }
 
     /**
@@ -80,25 +112,48 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      *
      * @param fileId an uploaded filed to be removed from DB and disk.
      */
-    public void removeFile(int fileId) {
-        final UploadedFile file = getSingleRecord(() -> this.fileMapper.getFileById(fileId), SecurityException::onUploadedFileAccessViolation);
-        final Customer customer = this.customerDAO.findById(file.getCustomerId());
-
-        java.nio.file.Path filePath;
-        if (customer.getFilesDir() == null || customer.getFilesDir().isEmpty()) {
-            filePath = Paths.get( this.filesDirectory, file.getFilePath());
-        } else {
-            filePath = Paths.get(this.filesDirectory, customer.getFilesDir(), file.getFilePath());
-        }
-        try {
-            logger.debug("Deleting file: {}", filePath);
-            Files.delete(filePath);
-        } catch (IOException e) {
-            logger.error("Failed to delete file: {}", filePath, e);
-        }
-
-        this.fileMapper.deleteFile(fileId);
+    public void remove(int fileId) {
+        updateById(
+                fileId,
+                this.fileMapper::findById,
+                file -> this.fileMapper.delete(file.getId()),
+                SecurityException::onUploadedFileAccessViolation);
     }
 
+    public List<FileConfigurationLink> getFileConfigurations(Integer id) {
+        final UploadedFile file = getById(id);
+        if (file == null) {
+            return new LinkedList<>();
+        }
+        return SecurityContext.get()
+                .getCurrentUser()
+                .filter(u -> u.getCustomerId() == file.getCustomerId())
+                .map(u -> configurationFileMapper.getConfigurationFileLinks(u.getCustomerId(), u.getId(), id))
+                .orElseThrow(SecurityException::onAnonymousAccess);
+    }
+
+    @Transactional
+    public void updateFileConfigurations(List<FileConfigurationLink> linkList) {
+
+        final List<FileConfigurationLink> noUploadLinks = linkList
+                .stream()
+                .filter(c -> c.getId() != null && !c.isUpload())
+                .collect(Collectors.toList());
+        noUploadLinks.forEach(link -> {
+            configurationFileMapper.deleteConfigurationFile(link.getId());
+        });
+
+        final List<FileConfigurationLink> newUploadLinks = linkList
+                .stream()
+                .filter(c -> c.getId() == null && c.isUpload())
+                .collect(Collectors.toList());
+        if (newUploadLinks.size() > 0) {
+            UploadedFile file = getById(newUploadLinks.get(0).getFileId());
+            newUploadLinks.forEach(link -> {
+                ConfigurationFile cf = new ConfigurationFile(link);
+                configurationFileMapper.insertConfigurationFile(cf);
+            });
+        }
+    }
 
 }

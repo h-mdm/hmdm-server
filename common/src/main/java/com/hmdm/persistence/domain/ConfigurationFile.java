@@ -24,6 +24,7 @@ package com.hmdm.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hmdm.rest.json.FileConfigurationLink;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,48 +54,52 @@ public class ConfigurationFile implements Serializable {
     private int configurationId;
 
     /**
-     * <p>A description of the file.</p>
+     * <p>A description of the file. Since v5.36.1, determined in UploadedFile linked via fileId</p>
      */
     @ApiModelProperty("A description of the file")
     private String description;
 
     /**
-     * <p>A path to a file on device (including the name of the file).</p>
+     * <p>A path to a file on device (including the name of the file). Since v5.36.1, determined in UploadedFile</p>
      */
-    @ApiModelProperty("A path to a file on device")
+    @ApiModelProperty("A path to a file on device (including the file name)")
     @JsonProperty("path")
     private String devicePath;
 
     /**
      * <p>An URL referencing the content of the file available on external resource. This property is mutually exclusive with {
-     * @link #filePath} property.</p>
+     * @link #filePath} property. Since v5.36.1, determined in UploadedFile</p>
      */
     @ApiModelProperty(hidden = true)
-//    @JsonIgnore
     private String externalUrl;
 
     /**
      * <p>A path to a file relative to base directory for stored files. This property is mutually exclusive with {
-     * @link #externalUrl} property.</p>
+     * @link #externalUrl} property. Since v5.36.1, determined in UploadedFile</p>
      */
     @ApiModelProperty(hidden = true)
-//    @JsonIgnore
     private String filePath;
 
     /**
-     * <p>A checksum for the file content.</p>
+     * <p>A checksum for the file content.
+     * DEPRECATED since v5.36.1 - checksum isn't used due to possible variable content, use lastUpdate instead
+     * </p>
      */
     @ApiModelProperty("A checksum for the file content")
+    @Deprecated
     private String checksum;
 
     /**
-     * <p>A flag indicating if file is to be removed from the device or not.</p>
+     * <p>A flag indicating if file is to be removed from the device or not.
+     * </p>
      */
     @ApiModelProperty("A flag indicating if file is to be removed from the device or not")
     private boolean remove;
 
     /**
-     * <p>A timestamp of file uploading to server (in milliseconds since epoch time).</p>
+     * <p>A timestamp of file uploading to server (in milliseconds since epoch time).
+     * Since v5.36.1, determined in UploadedFile
+     * </p>
      */
     @ApiModelProperty("A timestamp of file uploading to server (in milliseconds since epoch time)")
     private Long lastUpdate;
@@ -106,14 +111,29 @@ public class ConfigurationFile implements Serializable {
     private Integer fileId;
 
     /**
-     * <p>An URL referencing the content of the file.</p>
+     * <p>An URL referencing the content of the file. Since v5.36.1, determined in UploadedFile</p>
      */
     @ApiModelProperty("An URL referencing the content of the file")
     private String url;
 
     /**
-     * <p>A flag indicating whether the file content must be updated by device-specific values.</p>
+     * <p>A flag indicating whether the file content must be updated by device-specific values.
+     * Since v5.36.1, determined in UploadedFile</p>
      */
     @ApiModelProperty("A flag indicating whether the file content must be updated by device-specific values")
     private boolean replaceVariables;
+
+    /**
+     * Default constructor
+     */
+    public ConfigurationFile() {}
+
+    /**
+     * Constructor from Link (could be from File and Link in the future)
+     */
+    public ConfigurationFile(FileConfigurationLink link) {
+        configurationId = link.getConfigurationId();
+        fileId = link.getFileId();
+        remove = link.isRemove();
+    }
 }

@@ -16,6 +16,7 @@ angular.module('headwind-kiosk')
             USERS: 'users',
             ROLES: 'roles',
             GROUPS: 'groups',
+            ICONS: 'icons',
             LANG: 'langSettings',
             HINTS: 'hints',
             PLUGINS: 'pluginSettings'

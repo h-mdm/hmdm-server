@@ -141,6 +141,7 @@ document.localization ['de_DE'] = {
     'question.delete.configuration': 'Konfiguration "${configurationName}" löschen?',
     'question.delete.group': 'Gruppe "${groupName}" löschen?',
     'question.delete.role': 'Rolle "${roleName}" löschen?',
+    'question.delete.icon': 'Das Symbol "${iconName}" löschen?',
     'question.delete.device.bulk': 'Ausgewählte Geräte löschen?',
     'question.delete.device': 'Geät mit der Nummer "${deviceNumber}" löschen?',
     'question.exit.without.saving': 'Änderungen werden nicht gespeichert. Wie auch immer, diese Seite verlassen?',
@@ -192,7 +193,8 @@ document.localization ['de_DE'] = {
     'error.configuration.file.empty.name': 'Geben Sie einen Dateinamen ein',
     'error.configuration.file.empty.desc': 'Geben Sie eine Dateibeschreibung an',
     'error.configuration.file.empty.path': 'Geben Sie den Pfad auf dem Gerät an',
-    'error.configuration.file.empty.file': 'Geben Sie eine URL ein oder laden Sie eine Datei hoch',
+    'error.configuration.file.empty.file': 'Bitte laden Sie eine Datei hoch.',
+    'error.configuration.file.empty.url': 'Bitte geben Sie die Datei-URL an.',
 
     'error.notfound.device': 'Gerät nicht gefunden',
     'error.duplicate.device': 'Ein Gerät mit derselben Nummer existiert bereits',
@@ -210,6 +212,7 @@ document.localization ['de_DE'] = {
     'error.duplicate.configuration': 'Eine Konfiguration mit diesem Namen existiert bereits',
     'error.duplicate.role.name': 'Eine Rolle mit demselben Namen existiert bereits',
     'error.empty.role.name': 'Bitte geben Sie den Rollennamen an',
+    'error.duplicate.icon.name': 'Ein Symbol mit demselben Namen existiert bereits',
     'error.notfound.customer.admin': 'Administratorkonto nicht gefunden',
     'error.apk.file.required': 'Wählen Sie die Datei mit der Erweiterung .apk oder .xapk aus',
     'error.apk.parse': 'Beim Parsen der Datei ist ein Fehler aufgetreten',
@@ -437,6 +440,8 @@ document.localization ['de_DE'] = {
     'form.configuration.files.variables.hint': 'Die Zeichenfolgen DEVICE_NUMBER, IMEI, CUSTOM* werden durch ihre Werte ersetzt',
 
     'form.configuration.file.name': 'Dateiname',
+    'form.configuration.file.select': 'Datei auswählen',
+    'form.configuration.file.create': '(Neue Datei erstellen)',
     'form.configuration.file.description': 'Dateibeschreibung',
     'form.configuration.file.description.placeholder': 'Optional',
     'form.configuration.file.path': 'Pfad auf Gerät',
@@ -567,8 +572,21 @@ document.localization ['de_DE'] = {
     'form.device.clear.group': 'Aus Gruppen entfernen',
 
     'form.file.file': 'Datei',
-    'form.file.path': 'Path',
-    'form.file.path.placeholder': 'Geben Sie einen relativen Pfad ein, zum Beispiel "/files/"',
+    'form.file.name': 'Dateiname',
+    'form.file.description': 'Beschreibung (optional)',
+    'form.file.external': 'Extern',
+    'form.file.external.title': 'Anstatt die Datei hochzuladen, können Sie die URL auf einer externen Ressource angeben',
+    'form.file.external.url': 'URL',
+    'form.file.external.url.placeholder': 'Datei-URL einer externen Ressource',
+    'form.file.path': 'Pfad auf dem Server',
+    'form.file.device.path': 'Pfad auf dem Gerät',
+    'form.file.device.path.placeholder': 'Pfad relativ zu /storage/emulated/0',
+    'form.file.deleted': 'GELÖSCHT',
+    'form.file.copy.link': 'Link kopieren: ${link}',
+    'form.file.configurations.file': 'Datei',
+    'form.file.configurations.configs': 'Konfigurationen',
+    'form.file.configurations.upload': 'Hochladen',
+    'form.file.path.placeholder': 'Ein relativ Pfad, z.B. "/files/"',
     'form.file.available': 'Verfügbarer Speicherplatz: ${space} MB',
 
     'form.file.apps.name': 'Anwendungsname',
@@ -697,6 +715,9 @@ document.localization ['de_DE'] = {
 
     'form.settings.roles.title': 'Benutzerrollen',
 
+    'form.settings.icons.title': 'Symbole',
+    'form.settings.icons.search.placeholder': 'Symbole suchen',
+
     'form.qr.device.number': 'Geräte-ID',
     'form.qr.auto.create': 'Zur Geräteliste hinzufügen, falls nicht vorhanden',
     'form.qr.number.use': 'Geräte-ID-Zuweisung',
@@ -745,6 +766,7 @@ document.localization ['de_DE'] = {
     'tab.users': 'Benutzer',
     'tab.roles': 'Rollen',
     'tab.groups': 'Gruppen',
+    'tab.icons': 'Symbole',
     'tab.language': 'Allgemeine- und Spracheinstellungen',
     'tab.license': 'Lizenz',
     'tab.hints': 'Hinweise',
@@ -850,6 +872,13 @@ document.localization ['de_DE'] = {
     'table.heading.role.actions': 'Aktionen',
 
     'table.heading.file.name': 'Dateiname',
+    'table.heading.file.comment': 'Beschreibung',
+    'table.heading.file.device.path': 'Pfad auf Gerät',
+    'table.heading.file.update.time': 'Aktualisiert',
+    'table.heading.file.external': 'Extern',
+    'table.heading.file.variable': 'Variable',
+    'table.heading.file.remove': 'Entfernen',
+    'table.heading.file.remove.hint': 'Erzwingt das Entfernen der Datei aus dem Gerätespeicher',
     'table.heading.file.path': 'Pfad',
     'table.heading.file.address': 'Adresse',
     'table.heading.file.size': 'Größe',
@@ -879,6 +908,7 @@ document.localization ['de_DE'] = {
     'notfound.apps.for.display': 'Es sind keine Anwendungen zum Anzeigen vorhanden.',
     'notfound.app.versions.for.display': 'Es sind keine Versionen zum Anzeigen vorhanden.',
     'notfound.roles':'Die Rollenliste ist leer.',
+    'notfound.icons':'Die Symbolliste ist leer.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 
