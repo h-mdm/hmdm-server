@@ -65,16 +65,10 @@ mqtt.auth=true
 # SSL keystore password for mqtt certificates (defaults to 123456 if not specified)
 # mqtt.ssl.keystore.password=secure-keystore-password
 
-# TLS protocol versions for mqtt SSL connections (defaults to TLS - JVM decides best version)
-# mqtt.ssl.protocols=TLS                    # Use JVM default (recommended for security)
-# mqtt.ssl.protocols=TLSv1.2                # Force TLS 1.2 only
-# mqtt.ssl.protocols=TLSv1.3                # Force TLS 1.3 only (requires Java 11+)
-# mqtt.ssl.protocols=TLSv1.2,TLSv1.3        # Allow TLS 1.2 or 1.3 (comma-separated)
-
 # For custom SSL domains: Set these environment variables before running the installer.
 # The installer will read these environment variables and convert PEM certificates to JKS format:
 # mqtt.cert.file=/path/to/certificate.pem      (required for custom domain SSL)
-# mqtt.key.file=/path/to/private-key.pem       (required for custom domain SSL) 
+# mqtt.key.file=/path/to/private-key.pem       (required for custom domain SSL)
 # mqtt.ca.file=/path/to/ca-certificate.pem     (optional, for certificate chain)
 
 # Delaying mqtt messages in milliseconds to avoid congestion

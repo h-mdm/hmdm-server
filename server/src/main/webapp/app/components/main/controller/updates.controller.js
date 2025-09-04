@@ -17,7 +17,12 @@ angular.module('headwind-kiosk')
                 $scope.completeMessage = '';
 
                 if (response.status === 'OK') {
-                    response.data.forEach(function(app) {
+                    // Set the default sendStats value from server configuration
+                    if (response.data.sendStatsDefault !== undefined) {
+                        $scope.updateForm.sendStats = response.data.sendStatsDefault;
+                    }
+                    
+                    response.data.updates.forEach(function(app) {
                         if (app.pkg === 'web') {
                             app.currentVersion = APP_VERSION;
                         }
@@ -27,7 +32,7 @@ angular.module('headwind-kiosk')
                         }
                     });
 
-                    $scope.updates = response.data;
+                    $scope.updates = response.data.updates;
                 } else if (response.status === 'ERROR') {
                         $scope.isError = true;
                     $scope.errorMessage = localization.localizeServerResponse(response);

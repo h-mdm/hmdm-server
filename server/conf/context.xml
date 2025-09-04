@@ -18,7 +18,7 @@
 
     <Parameter name="usage.scenario" value="${usage.scenario}"/>
 
-    <!-- If set to 1, the device configuration request must be signed by a shared secret (setup in hash.secret and in the Android app) 
+    <!-- If set to 1, the device configuration request must be signed by a shared secret (setup in hash.secret and in the Android app)
          0 or empty value does not require request signature which is less secure -->
     <Parameter name="secure.enrollment" value="${secure.enrollment}"/>
     <Parameter name="hash.secret" value="${hash.secret}"/>
@@ -49,9 +49,6 @@
     <!-- SSL keystore password for MQTT certificates -->
     <Parameter name="mqtt.ssl.keystore.password" value="${mqtt.ssl.keystore.password}"/>
 
-    <!-- TLS protocol versions for MQTT SSL connections -->
-    <Parameter name="mqtt.ssl.protocols" value="${mqtt.ssl.protocols}"/>
-
     <!-- Fast device search by last characters, here's the length -->
     <Parameter name="device.fast.search.chars" value="${device.fast.search.chars}"/>
 
@@ -61,7 +58,7 @@
     <!-- Optional tag for the MQTT client (required if multiple Tomcat nodes are running) -->
     <Parameter name="mqtt.client.tag" value="${mqtt.client.tag}"/>
 
-    <!-- Optional tag for MQTT authentication for more security 
+    <!-- Optional tag for MQTT authentication for more security
          (supported by Headwind MDM launcher v5.05 and above) -->
     <Parameter name="mqtt.auth" value="${mqtt.auth}"/>
 
@@ -71,6 +68,9 @@
 
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>
+
+    <!-- Default value for updates statistics reporting (true/false) -->
+    <Parameter name="updates.send.stats.default" value="${updates.send.stats.default}"/>
 
     <!-- Email parameters are necessary for password recovery -->
     <Parameter name="smtp.host" value="${smtp.host}"/>

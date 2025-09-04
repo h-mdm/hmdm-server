@@ -8,27 +8,27 @@ import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.util.BackgroundTaskRunnerService;
-import com.hmdm.util.CryptoUtil;
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.fusesource.mqtt.client.MQTTException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
+import java.lang.IllegalStateException;
 import java.net.URI;
 import java.security.KeyStore;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 public class PushSenderMqtt implements PushSender {
+    private static final Logger log = LoggerFactory.getLogger(PushSenderMqtt.class);
+    private static final int MQTT_QOS_LEVEL = 2;
     private String serverUri;
     private String clientTag;
     private boolean mqttAuth;
@@ -44,22 +44,20 @@ public class PushSenderMqtt implements PushSender {
 
     @Inject
     public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri,
-                          @Named("mqtt.client.tag") String clientTag,
-                          @Named("mqtt.auth") boolean mqttAuth,
-                          @Named("mqtt.admin.password") String mqttAdminPassword,
-                          @Named("mqtt.message.delay") long mqttDelay,
-                          @Named("mqtt.ssl.keystore.password") String sslKeystorePassword,
-                          @Named("mqtt.ssl.protocols") String sslProtocols,
-                          MqttThrottledSender throttledSender,
-                          BackgroundTaskRunnerService taskRunner,
-                          UnsecureDAO unsecureDAO) {
+            @Named("mqtt.client.tag") String clientTag,
+            @Named("mqtt.auth") boolean mqttAuth,
+            @Named("mqtt.admin.password") String mqttAdminPassword,
+            @Named("mqtt.message.delay") long mqttDelay,
+            @Named("mqtt.ssl.keystore.password") String sslKeystorePassword,
+            MqttThrottledSender throttledSender,
+            BackgroundTaskRunnerService taskRunner,
+            UnsecureDAO unsecureDAO) {
         this.serverUri = serverUri;
         this.clientTag = clientTag;
         this.mqttAuth = mqttAuth;
         this.mqttAdminPassword = mqttAdminPassword;
         this.mqttDelay = mqttDelay;
         this.sslKeystorePassword = sslKeystorePassword;
-        this.sslProtocols = sslProtocols;
         this.throttledSender = throttledSender;
         this.taskRunner = taskRunner;
         this.unsecureDAO = unsecureDAO;
@@ -72,40 +70,31 @@ public class PushSenderMqtt implements PushSender {
         if (serverUri == null || serverUri.trim().isEmpty()) {
             throw new IllegalArgumentException("MQTT server URI cannot be null or empty");
         }
-
         try {
             URI uri = new URI(serverUri);
             String scheme = uri.getScheme();
             String host = uri.getHost();
             int port = uri.getPort();
-
-            // Apply defaults and build the final URI
             if (scheme == null) {
                 scheme = "tcp";
             } else if (!scheme.equals("tcp") && !scheme.equals("ssl") &&
-                !scheme.equals("mqtt") && !scheme.equals("mqtts")) {
+                    !scheme.equals("mqtt") && !scheme.equals("mqtts")) {
                 throw new IllegalArgumentException("Invalid MQTT protocol scheme: " + scheme +
-                    ". Supported protocols: tcp://, ssl://, mqtt://, mqtts://");
+                        ". Supported protocols: tcp://, ssl://, mqtt://, mqtts://");
             }
-
             if (host == null || host.trim().isEmpty()) {
                 host = "localhost";
             }
-
             if (port == -1) {
                 port = 31000;
             } else if (port < 1 || port > 65535) {
                 throw new IllegalArgumentException("MQTT server port must be between 1 and 65535, got: " + port);
             }
-            // Reconstruct the URI with defaults applied
             this.serverUri = scheme + "://" + host + ":" + port;
-
         } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                throw e; // Re-throw our validation exceptions
-            }
             throw new IllegalArgumentException("Invalid MQTT server URI format: " + serverUri +
-                ". Expected format: protocol://host:port (e.g., tcp://localhost:1883, ssl://mqtt.example.com:8883)", e);
+                    ". Expected format: protocol://host:port (e.g., tcp://localhost:1883, ssl://mqtt.example.com:8883)",
+                    e);
         }
     }
 
@@ -126,144 +115,40 @@ public class PushSenderMqtt implements PushSender {
             java.io.File keystoreFile = new java.io.File(keystorePath);
             if (!keystoreFile.exists()) {
                 throw new IllegalStateException("SSL keystore not found at: " + keystorePath +
-                    ". Ensure SSL certificates are properly configured for domain: " + domain);
+                        ". Ensure SSL certificates are properly configured for domain: " + domain);
             }
-
             if (!keystoreFile.canRead()) {
                 throw new IllegalStateException("Cannot read SSL keystore at: " + keystorePath +
-                    ". Check file permissions.");
+                        ". Check file permissions.");
             }
-
             KeyStore keyStore = KeyStore.getInstance("JKS");
             try (FileInputStream fis = new FileInputStream(keystorePath)) {
                 keyStore.load(fis, sslKeystorePassword.toCharArray());
             } catch (Exception e) {
                 throw new IllegalStateException("Failed to load SSL keystore from: " + keystorePath +
-                    ". Check keystore password and file integrity.", e);
+                        ". Check keystore password and file integrity.", e);
             }
-
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(keyStore);
 
-            // Parse and validate TLS protocols
             String[] requestedProtocols = sslProtocols.split(",");
             for (int i = 0; i < requestedProtocols.length; i++) {
                 requestedProtocols[i] = requestedProtocols[i].trim();
             }
-
-            // Determine SSL context protocol (use first specified or "TLS")
             String contextProtocol = requestedProtocols[0];
             if ("TLS".equals(contextProtocol)) {
-                // Use default TLS (let JVM decide the best version)
                 contextProtocol = "TLS";
             }
-
             SSLContext sslContext = SSLContext.getInstance(contextProtocol);
             sslContext.init(null, tmf.getTrustManagers(), null);
 
-            SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-
-            // Apply best practices: Create wrapper to configure enabled protocols
-            return new ConfiguredSSLSocketFactory(socketFactory, requestedProtocols);
-
+            return sslContext.getSocketFactory();
         } catch (Exception e) {
-            // Provide clear error message for SSL configuration issues
             if (e instanceof IllegalStateException) {
-                throw e; // Re-throw our SSL validation exceptions
+                throw e;
             }
             throw new IllegalStateException("Failed to create SSL socket factory for MQTT connection: " +
-                serverUri + ". " + e.getMessage(), e);
-        }
-    }
-
-    // Inner class to configure SSL socket protocols
-    private static class ConfiguredSSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
-        private final SSLSocketFactory delegate;
-        private final String[] enabledProtocols;
-
-        public ConfiguredSSLSocketFactory(SSLSocketFactory delegate, String[] enabledProtocols) {
-            this.delegate = delegate;
-            this.enabledProtocols = enabledProtocols.clone();
-        }
-
-        @Override
-        public java.net.Socket createSocket() throws java.io.IOException {
-            javax.net.ssl.SSLSocket socket = (javax.net.ssl.SSLSocket) delegate.createSocket();
-            configureSocket(socket);
-            return socket;
-        }
-
-        @Override
-        public java.net.Socket createSocket(String host, int port) throws java.io.IOException {
-            javax.net.ssl.SSLSocket socket = (javax.net.ssl.SSLSocket) delegate.createSocket(host, port);
-            configureSocket(socket);
-            return socket;
-        }
-
-        @Override
-        public java.net.Socket createSocket(String host, int port, java.net.InetAddress localHost, int localPort) throws java.io.IOException {
-            javax.net.ssl.SSLSocket socket = (javax.net.ssl.SSLSocket) delegate.createSocket(host, port, localHost, localPort);
-            configureSocket(socket);
-            return socket;
-        }
-
-        @Override
-        public java.net.Socket createSocket(java.net.InetAddress host, int port) throws java.io.IOException {
-            javax.net.ssl.SSLSocket socket = (javax.net.ssl.SSLSocket) delegate.createSocket(host, port);
-            configureSocket(socket);
-            return socket;
-        }
-
-        @Override
-        public java.net.Socket createSocket(java.net.InetAddress address, int port, java.net.InetAddress localAddress, int localPort) throws java.io.IOException {
-            javax.net.ssl.SSLSocket socket = (javax.net.ssl.SSLSocket) delegate.createSocket(address, port, localAddress, localPort);
-            configureSocket(socket);
-            return socket;
-        }
-
-        @Override
-        public java.net.Socket createSocket(java.net.Socket s, String host, int port, boolean autoClose) throws java.io.IOException {
-            javax.net.ssl.SSLSocket socket = (javax.net.ssl.SSLSocket) delegate.createSocket(s, host, port, autoClose);
-            configureSocket(socket);
-            return socket;
-        }
-
-        @Override
-        public String[] getDefaultCipherSuites() {
-            return delegate.getDefaultCipherSuites();
-        }
-
-        @Override
-        public String[] getSupportedCipherSuites() {
-            return delegate.getSupportedCipherSuites();
-        }
-
-        private void configureSocket(javax.net.ssl.SSLSocket socket) {
-            // Apply TLS protocol configuration - only enable requested protocols if not "TLS"
-            if (!enabledProtocols[0].equals("TLS")) {
-                // Validate requested protocols against supported ones
-                String[] supportedProtocols = socket.getSupportedProtocols();
-                java.util.List<String> validProtocols = new java.util.ArrayList<>();
-                
-                for (String requested : enabledProtocols) {
-                    boolean supported = false;
-                    for (String supported_protocol : supportedProtocols) {
-                        if (supported_protocol.equals(requested)) {
-                            validProtocols.add(requested);
-                            supported = true;
-                            break;
-                        }
-                    }
-                    if (!supported) {
-                        System.err.println("Warning: TLS protocol " + requested + " is not supported by JVM. Supported: " + java.util.Arrays.toString(supportedProtocols));
-                    }
-                }
-                
-                if (!validProtocols.isEmpty()) {
-                    socket.setEnabledProtocols(validProtocols.toArray(new String[0]));
-                }
-            }
-            // If "TLS", let JVM use default protocols (best practice)
+                    serverUri + ". " + e.getMessage(), e);
         }
     }
 
@@ -278,7 +163,8 @@ public class PushSenderMqtt implements PushSender {
             if (serverUri.startsWith("ssl://") || serverUri.startsWith("mqtts://")) {
                 SSLSocketFactory sslSocketFactory = createSSLSocketFactory();
                 if (sslSocketFactory == null) {
-                    throw new IllegalStateException("Failed to create SSL socket factory for secure MQTT connection: " + serverUri);
+                    throw new IllegalStateException(
+                            "Failed to create SSL socket factory for secure MQTT connection: " + serverUri);
                 }
                 options.setSocketFactory(sslSocketFactory);
             }
@@ -297,13 +183,9 @@ public class PushSenderMqtt implements PushSender {
                 throttledSender.setClient(client);
                 taskRunner.submitTask(throttledSender);
             }
-
-            // Log successful connection
-            System.out.println("MQTT client successfully connected to: " + serverUri);
-
+            log.info("MQTT client successfully connected to: {}", serverUri);
         } catch (Exception e) {
-            System.err.println("Failed to initialize MQTT client for URI: " + serverUri + ". Error: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Failed to initialize MQTT client for URI: {}. Error: {}", serverUri, e.getMessage(), e);
             throw new RuntimeException("MQTT initialization failed", e);
         }
     }
@@ -329,7 +211,7 @@ public class PushSenderMqtt implements PushSender {
             strMessage += "}";
 
             MqttMessage mqttMessage = new MqttMessage(strMessage.getBytes());
-            mqttMessage.setQos(2);
+            mqttMessage.setQos(MQTT_QOS_LEVEL);
             String number = device.getOldNumber() == null ? device.getNumber() : device.getOldNumber();
             if (mqttDelay == 0) {
                 client.publish(number, mqttMessage);
@@ -338,7 +220,7 @@ public class PushSenderMqtt implements PushSender {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to send MQTT message to device {}: {}", message.getDeviceId(), e.getMessage(), e);
         }
         return 0;
     }
