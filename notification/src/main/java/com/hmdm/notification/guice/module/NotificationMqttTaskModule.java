@@ -36,7 +36,7 @@ public class NotificationMqttTaskModule {
             @Named("mqtt.external") String mqttExternal,
             @Named("mqtt.auth") boolean mqttAuth,
             @Named("mqtt.admin.password") String mqttAdminPassword,
-            @Named("mqtt.ssl.keystore.password") String sslKeystorePassword,
+            @Named("ssl.keystore.password") String sslKeystorePassword,
             @Named("hash.secret") String hashSecret,
             @Named("MQTT") PushSender pushSender) {
         this.serverUri = serverUri;

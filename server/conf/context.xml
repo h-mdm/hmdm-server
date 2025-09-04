@@ -47,7 +47,7 @@
     <Parameter name="mqtt.admin.password" value="${mqtt.admin.password}"/>
 
     <!-- SSL keystore password for MQTT certificates -->
-    <Parameter name="mqtt.ssl.keystore.password" value="${mqtt.ssl.keystore.password}"/>
+    <Parameter name="ssl.keystore.password" value="${ssl.keystore.password}"/>
 
     <!-- Fast device search by last characters, here's the length -->
     <Parameter name="device.fast.search.chars" value="${device.fast.search.chars}"/>

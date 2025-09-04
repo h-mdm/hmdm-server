@@ -48,7 +48,7 @@ public class PushSenderMqtt implements PushSender {
             @Named("mqtt.auth") boolean mqttAuth,
             @Named("mqtt.admin.password") String mqttAdminPassword,
             @Named("mqtt.message.delay") long mqttDelay,
-            @Named("mqtt.ssl.keystore.password") String sslKeystorePassword,
+            @Named("ssl.keystore.password") String sslKeystorePassword,
             MqttThrottledSender throttledSender,
             BackgroundTaskRunnerService taskRunner,
             UnsecureDAO unsecureDAO) {

@@ -62,8 +62,8 @@ mqtt.auth=true
 # mqtt admin password (auto-generated if not specified during installation)
 # mqtt.admin.password=secure-password-here
 
-# SSL keystore password for mqtt certificates (defaults to 123456 if not specified)
-# mqtt.ssl.keystore.password=secure-keystore-password
+# SSL keystore password for mqtt certificates
+# ssl.keystore.password=secure-keystore-password
 
 # For custom SSL domains: Set these environment variables before running the installer.
 # The installer will read these environment variables and convert PEM certificates to JKS format:
