@@ -2,6 +2,7 @@ package com.hmdm.notification.guice.module;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.hmdm.notification.MqttUriUtil;
 import com.hmdm.notification.PushSender;
 import com.hmdm.util.CryptoUtil;
 import org.apache.activemq.broker.BrokerPlugin;
@@ -11,22 +12,19 @@ import org.apache.activemq.security.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class NotificationMqttTaskModule {
 
-    private String serverUri;
-    private String mqttExternal;
-    private boolean mqttAuth;
-    private String mqttAdminPassword;
-    private String sslKeystorePassword;
-    private String sslProtocols;
-    private String hashSecret;
+    private final MqttUriUtil.MqttUri mqttUri;
+    private final String mqttExternal;
+    private final boolean mqttAuth;
+    private final String mqttAdminPassword;
+    private final String sslKeystorePassword;
+    private final String hashSecret;
+    private final PushSender pushSender;
     private BrokerService brokerService;
-    private PushSender pushSender;
     private static final Logger log = LoggerFactory.getLogger(NotificationMqttTaskModule.class);
     public static final String MQTT_USERNAME = "hmdm";
     public static final String MQTT_ADMIN_USERNAME = "admin";
@@ -39,7 +37,7 @@ public class NotificationMqttTaskModule {
             @Named("ssl.keystore.password") String sslKeystorePassword,
             @Named("hash.secret") String hashSecret,
             @Named("MQTT") PushSender pushSender) {
-        this.serverUri = serverUri;
+        this.mqttUri = MqttUriUtil.parse(serverUri);
         this.mqttExternal = mqttExternal;
         this.pushSender = pushSender;
         this.mqttAuth = mqttAuth;
@@ -61,12 +59,12 @@ public class NotificationMqttTaskModule {
     }
 
     private boolean initBrokerService() {
-        if (serverUri == null || serverUri.isEmpty()) {
+        if (mqttUri == null) {
             log.info("MQTT service not initialized (parameter mqtt.server.uri not set)");
             return false;
         }
-        if (mqttExternal != null && (mqttExternal.equals("1") || mqttExternal.toLowerCase().equals("true"))) {
-            log.info("MQTT service not started, use external MQTT server {}", serverUri);
+        if (MqttUriUtil.isExternalEnabled(mqttExternal)) {
+            log.info("MQTT service not started, use external MQTT server {}", mqttUri);
             return true;
         }
 
@@ -112,22 +110,24 @@ public class NotificationMqttTaskModule {
         }
 
         try {
-            URI uri = new URI(serverUri);
-            String scheme = uri.getScheme();
-            String host = uri.getHost();
-            if (!scheme.equals("tcp") && !scheme.equals("ssl") &&
-                    !scheme.equals("mqtt") && !scheme.equals("mqtts")) {
-                throw new IllegalArgumentException("Invalid MQTT protocol scheme: " + scheme +
-                        ". Supported protocols: tcp://, ssl://, mqtt://, mqtts://");
-            } else if (scheme.equals("ssl") || scheme.equals("mqtts")) {
-                configureSSLContext(host);
+            if (mqttUri.isSecure()) {
+                MqttUriUtil.configureSSL(mqttUri, sslKeystorePassword);
             }
-            brokerService.addConnector(serverUri);
+            String brokerBindUri = mqttUri.toBrokerBindUri();
+            // ActiveMQ requires explicit MQTT transport protocol for MQTT clients
+            String mqttTransportUri;
+            if (mqttUri.isSecure()) {
+                // ssl:// or mqtts:// -> mqtt+nio+ssl://
+                mqttTransportUri = brokerBindUri.replace("ssl://", "mqtt+nio+ssl://")
+                                               .replace("mqtts://", "mqtt+nio+ssl://");
+            } else {
+                // tcp:// or mqtt:// -> mqtt+nio://
+                mqttTransportUri = brokerBindUri.replace("tcp://", "mqtt+nio://")
+                                               .replace("mqtt://", "mqtt+nio://");
+            }
+            log.info("Starting ActiveMQ MQTT transport on: {}", mqttTransportUri);
+            brokerService.addConnector(mqttTransportUri);
             brokerService.start();
-            log.info("MQTT notification service started at {}", serverUri);
-        } catch (URISyntaxException e) {
-            log.error("Invalid MQTT server URI format: {}", serverUri, e);
-            return false;
         } catch (Exception e) {
             log.error("Failed to create MQTT broker service", e);
             return false;
@@ -148,33 +148,4 @@ public class NotificationMqttTaskModule {
         }
     }
 
-    private void configureSSLContext(String domain) throws Exception {
-        try {
-            String tomcatHome = System.getProperty("catalina.home");
-            if (tomcatHome == null) {
-                tomcatHome = "/var/lib/tomcat9"; // Default fallback
-            }
-
-            String keystorePath = tomcatHome + "/ssl/" + domain + ".jks";
-            java.io.File keystoreFile = new java.io.File(keystorePath);
-            if (!keystoreFile.exists()) {
-                throw new IllegalStateException("SSL keystore not found at: " + keystorePath +
-                        ". Ensure SSL certificates are properly configured for domain: " + domain);
-            }
-            if (!keystoreFile.canRead()) {
-                throw new IllegalStateException("Cannot read SSL keystore at: " + keystorePath +
-                        ". Check file permissions.");
-            }
-            System.setProperty("javax.net.ssl.keyStore", keystorePath);
-            System.setProperty("javax.net.ssl.keyStorePassword", sslKeystorePassword);
-            System.setProperty("javax.net.ssl.trustStore", keystorePath);
-            System.setProperty("javax.net.ssl.trustStorePassword", sslKeystorePassword);
-            if (sslProtocols != null && !sslProtocols.trim().isEmpty() && !sslProtocols.equals("TLS")) {
-                System.setProperty("https.protocols", sslProtocols);
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to configure SSL context for embedded broker: " +
-                    serverUri + ". " + e.getMessage(), e);
-        }
-    }
 }

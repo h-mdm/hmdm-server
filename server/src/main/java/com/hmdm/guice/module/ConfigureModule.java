@@ -95,6 +95,7 @@ public class ConfigureModule extends AbstractModule {
     private final String deviceAllowedAddress = "device.allowed.address";
     private final String uiAllowedAddress = "ui.allowed.address";
     private final String apkTrustedUrlParameter = "apk.trusted.url";
+    private final String updatesSendStatsDefaultParameter = "updates.send.stats.default";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -263,5 +264,7 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(uiAllowedAddress)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(apkTrustedUrlParameter);
         this.bindConstant().annotatedWith(Names.named(apkTrustedUrlParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(updatesSendStatsDefaultParameter);
+        this.bindConstant().annotatedWith(Names.named(updatesSendStatsDefaultParameter)).to(opt != null ? opt : "true");
     }
 }

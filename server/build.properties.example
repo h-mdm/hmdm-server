@@ -84,3 +84,6 @@ smtp.starttls=0
 smtp.username=myacct@example.com
 smtp.password=skcbh252235as
 smtp.from=noreply@example.com
+
+# Default value for updates statistics reporting
+updates.send.stats.default=true

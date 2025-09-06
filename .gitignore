@@ -1,7 +1,7 @@
 # maven target dir
 target
 
-# idea 
+# idea
 *.iml
 .idea
 
@@ -30,3 +30,4 @@ server/build.properties
 # Backup copies
 server/pom.xml.bak
 plugins/pom.xml.bak
+.DS_Store

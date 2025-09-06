@@ -67,7 +67,6 @@ public class NotificationMqttConfigModule extends AbstractModule {
             sslKeystorePassword = "123456"; // Default fallback matching letsencrypt-ssl.sh
         }
         this.bindConstant().annotatedWith(Names.named("ssl.keystore.password")).to(sslKeystorePassword);
-
         String pollTimeoutTag = this.context.getInitParameter("polling.timeout");
         long pollTimeout = 60;
         try {
