@@ -354,12 +354,12 @@ if [[ "$MQTT_PROTOCOL" == "ssl" || "$MQTT_PROTOCOL" == "mqtts" ]]; then
         chown $TOMCAT_USER:$TOMCAT_USER $SSL_DIR
     fi
 
-    MQTT_JKS_PATH="$SSL_DIR/$MQTT_DOMAIN.jks"
-    MQTT_P12_PATH="$SSL_DIR/$MQTT_DOMAIN.p12"
+    MQTT_JKS_PATH="$SSL_DIR/$BASE_DOMAIN.jks"
+    MQTT_P12_PATH="$SSL_DIR/$BASE_DOMAIN.p12"
 
     # Check if JKS already exists (e.g., same domain as web server)
     if [[ ! -f "$MQTT_JKS_PATH" ]]; then
-        echo "Creating MQTT SSL keystore for $MQTT_DOMAIN..."
+        echo "Creating MQTT SSL keystore for $BASE_DOMAIN..."
 
         # Check for custom PEM files via environment variables
         if [[ -n "$MQTT_CERT_FILE" && -n "$MQTT_KEY_FILE" ]]; then
