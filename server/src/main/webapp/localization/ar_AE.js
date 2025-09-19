@@ -675,6 +675,7 @@ document.localization ['ar_AE'] = {
     'form.settings.lang.tw': '繁體中文',
     'form.settings.lang.ja': '日本',
     'form.settings.lang.tr': 'Türkçe',
+    'form.settings.lang.vi': 'Tiếng Việt',
     'form.settings.lang.it': 'Italiano',
 
 	"form.settings.misc.title": 'إعدادات متنوعة',
