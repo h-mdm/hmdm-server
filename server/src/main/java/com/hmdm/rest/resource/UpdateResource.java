@@ -61,6 +61,7 @@ public class UpdateResource {
     private UnsecureDAO unsecureDAO;
     private StatsSender statsSender;
     private APKFileAnalyzer apkFileAnalyzer;
+    private boolean sendStatsDefault;
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateResource.class);
     private static final String WEB_MANIFEST_FILE_NAME = "hmdm_web_update_manifest.txt";
@@ -71,12 +72,18 @@ public class UpdateResource {
     @Inject
     public UpdateResource(@Named("files.directory") String filesDirectory,
                           @Named("base.url") String baseUrl,
+                          @Named("updates.send.stats.default") String sendStatsDefaultStr,
                           ApplicationDAO applicationDAO,
                           UnsecureDAO unsecureDAO,
                           StatsSender statsSender,
                           APKFileAnalyzer apkFileAnalyzer) {
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
+        // Handle null or empty sendStatsDefaultStr gracefully
+        this.sendStatsDefault = sendStatsDefaultStr != null &&
+            !sendStatsDefaultStr.trim().isEmpty() &&
+            !sendStatsDefaultStr.startsWith("${") ?
+            Boolean.parseBoolean(sendStatsDefaultStr) : true;
         this.applicationDAO = applicationDAO;
         this.unsecureDAO = unsecureDAO;
         this.statsSender = statsSender;
@@ -126,7 +133,10 @@ public class UpdateResource {
                 }
             }
 
-            return Response.OK(allUpdates);
+            CheckUpdatesResponse checkResponse = new CheckUpdatesResponse();
+            checkResponse.setUpdates(allUpdates);
+            checkResponse.setSendStatsDefault(this.sendStatsDefault);
+            return Response.OK(checkResponse);
 
         } catch (Exception e) {
             e.printStackTrace();

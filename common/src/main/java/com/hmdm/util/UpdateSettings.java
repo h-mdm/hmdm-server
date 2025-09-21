@@ -17,4 +17,5 @@ public class UpdateSettings {
 
     public static String WEB_UPDATE_USERNAME = null;
     public static String WEB_UPDATE_PASSWORD = null;
+    public static boolean SEND_STATS_DEFAULT = true;
 }
