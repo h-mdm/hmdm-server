@@ -95,6 +95,9 @@ public class ConfigureModule extends AbstractModule {
     private final String deviceAllowedAddress = "device.allowed.address";
     private final String uiAllowedAddress = "ui.allowed.address";
     private final String apkTrustedUrlParameter = "apk.trusted.url";
+    private final String jwtSecretKey = "jwt.secretkey";
+    private final String jwtValidity = "jwt.validity";
+    private final String jwtValidityForRememberMe = "jwt.validityrememberme";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -263,5 +266,11 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(uiAllowedAddress)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(apkTrustedUrlParameter);
         this.bindConstant().annotatedWith(Names.named(apkTrustedUrlParameter)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(jwtSecretKey);
+        this.bindConstant().annotatedWith(Names.named(jwtSecretKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(jwtValidity);
+        this.bindConstant().annotatedWith(Names.named(jwtValidity)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(jwtValidityForRememberMe);
+        this.bindConstant().annotatedWith(Names.named(jwtValidityForRememberMe)).to(opt != null ? opt : "");
     }
 }

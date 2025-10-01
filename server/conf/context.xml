@@ -82,4 +82,8 @@
     Defaults to X-Real-IP -->
     <!-- <Parameter name="proxy.ip.header" value="${proxy.ip.header}"/> -->
 
+    <!-- JWT parameters are allow you to customise secret and validity token -->
+    <!-- <Parameter name="jwt.secretkey" value="${jwt.secretkey}"/> -->
+    <!-- <Parameter name="jwt.validity" value="${jwt.validity}"/> -->
+    <!-- <Parameter name="jwt.validityrememberme" value="${jwt.validityrememberme}"/> -->
 </Context>

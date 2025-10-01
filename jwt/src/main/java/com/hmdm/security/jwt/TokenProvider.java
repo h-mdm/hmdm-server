@@ -24,8 +24,10 @@ package com.hmdm.security.jwt;
 import java.io.IOException;
 import java.util.Date;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hmdm.util.CryptoUtil;
+import com.hmdm.util.StringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -37,6 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.domain.User;
+
+import javax.inject.Named;
 
 /**
  * <p>A provider for JWT tokens.</p>
@@ -71,12 +75,27 @@ public class TokenProvider {
     /**
      * <p>Constructs new <code>TokenProvider</code> instance with specified configuration.</p>
      */
-    public TokenProvider() {
-        // Use hardcoded secret key for debugging purposes only
-        //this.secretKey = "20c68f0d9185b1d18cf6add1e8b491fd89529a44";
-        this.secretKey = CryptoUtil.randomHexString(40);
-        this.tokenValidityInMilliseconds = 1000 * 86400; // 24 hours
-        this.tokenValidityInMillisecondsForRememberMe = 1000 * 2592000L; // 30 days
+    @Inject
+    public TokenProvider(@Named("jwt.secretkey") String jwtSecretKey,
+                         @Named("jwt.validity") String jwtValidity,
+                         @Named("jwt.validityrememberme") String jwtValidityForRememberMe) {
+        long defaultValidity = 86400; // 24 hours
+        long defaultValidityForRememberMe = 2592000; // 30 days
+        String defaultSecretKey = CryptoUtil.randomHexString(40);
+
+        if (!StringUtil.isEmpty(jwtSecretKey)) {
+            defaultSecretKey = jwtSecretKey;
+        }
+        if (!StringUtil.isEmpty(jwtValidity)) {
+            defaultValidity = Long.parseLong(jwtValidity);
+        }
+        if (!StringUtil.isEmpty(jwtValidityForRememberMe)) {
+            defaultValidityForRememberMe = Long.parseLong(jwtValidityForRememberMe);
+        }
+
+        this.secretKey = defaultSecretKey;
+        this.tokenValidityInMilliseconds = 1000L * defaultValidity;
+        this.tokenValidityInMillisecondsForRememberMe = 1000L * defaultValidityForRememberMe;
     }
 
     /**
