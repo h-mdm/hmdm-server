@@ -66,3 +66,8 @@ smtp.starttls=0
 smtp.username=myacct@example.com
 smtp.password=skcbh252235as
 smtp.from=noreply@example.com
+
+# JWT Config secret and token validity
+jwt.secretkey=20c68f0d9185b1d18cf6add1e8b491fd89529a44
+jwt.validity=86400
+jwt.validityrememberme=2592000
