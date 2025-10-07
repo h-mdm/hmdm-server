@@ -202,6 +202,24 @@ public class UploadedFile implements Serializable, CustomerData {
         this.tmpPath = tmpPath;
     }
 
+    public String getSubdir() {
+        int sepPos = getFilePath().lastIndexOf('/');
+        if (sepPos != -1) {
+            return getFilePath().substring(0, sepPos);
+        } else {
+            return "";
+        }
+    }
+
+    public String getFileName() {
+        int sepPos = getFilePath().lastIndexOf('/');
+        if (sepPos != -1) {
+            return getFilePath().substring(sepPos);
+        } else {
+            return getFilePath();
+        }
+    }
+
     public File getFileByPath(String filesDirectory, Customer customer) {
         final String customerFilesBaseDir = customer.getFilesDir();
         if (customerFilesBaseDir != null && !customerFilesBaseDir.isEmpty()) {

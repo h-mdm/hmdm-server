@@ -418,6 +418,7 @@ public class SyncResource {
         data.setKioskSystemInfo(configuration.getKioskSystemInfo() != null && configuration.getKioskSystemInfo() ? true : null);
         data.setKioskKeyguard(configuration.getKioskKeyguard() != null && configuration.getKioskKeyguard() ? true : null);
         data.setKioskLockButtons(configuration.getKioskLockButtons() != null && configuration.getKioskLockButtons() ? true : null);
+        data.setKioskScreenOn(configuration.getKioskScreenOn() != null && configuration.getKioskScreenOn() ? true : null);
         data.setRestrictions(configuration.getRestrictions());
 
         if (settings != null) {

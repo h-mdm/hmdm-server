@@ -2572,4 +2572,19 @@
         </rollback>
     </changeSet>
 
+
+    <changeSet id="06.10.25-12:50" author="seva" context="common">
+        <comment>Adding screen on and launcher URL columns to configurations table</comment>
+        <sql>
+            ALTER TABLE configurations
+            ADD COLUMN kioskScreenOn BOOLEAN,
+            ADD COLUMN launcherUrl TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations
+            DROP COLUMN kioskScreenOn,
+            DROP COLUMN launcherUrl;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

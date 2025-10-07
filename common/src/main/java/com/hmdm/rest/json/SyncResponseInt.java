@@ -73,6 +73,8 @@ public interface SyncResponseInt {
 
     Boolean getKioskLockButtons();
 
+    Boolean getKioskScreenOn();
+
     String getMainApp();
 
     boolean isLockStatusBar();

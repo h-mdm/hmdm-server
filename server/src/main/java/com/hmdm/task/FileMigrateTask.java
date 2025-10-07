@@ -97,8 +97,8 @@ public class FileMigrateTask implements Runnable {
                     if (Files.isRegularFile(filePath)) {
                         try {
                             BasicFileAttributes attrs = Files.readAttributes(filePath, BasicFileAttributes.class);
-                            FileTime creationTime = attrs.creationTime();
-                            long millis = creationTime.toMillis();
+                            FileTime modificationTime = attrs.lastModifiedTime();
+                            long millis = modificationTime.toMillis();
                             file.setUploadTime(millis);
                         } catch (IOException e) {
                             e.printStackTrace();

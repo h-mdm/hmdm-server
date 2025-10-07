@@ -166,6 +166,10 @@ public class Configuration implements CustomerData, Serializable {
     private Boolean kioskKeyguard;
     @ApiModelProperty("Flag locking power button in kiosk mode")
     private Boolean kioskLockButtons;
+    @ApiModelProperty("Flag forcing screen to be on in kiosk mode")
+    private Boolean kioskScreenOn;
+    @ApiModelProperty("Overridden launcher URL")
+    private String launcherUrl;
     @ApiModelProperty("Additional comma separated restrictions in MDM mode")
     private String restrictions;
 
@@ -508,6 +512,22 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setKioskLockButtons(Boolean kioskLockButtons) {
         this.kioskLockButtons = kioskLockButtons;
+    }
+
+    public Boolean getKioskScreenOn() {
+        return kioskScreenOn;
+    }
+
+    public void setKioskScreenOn(Boolean kioskScreenOn) {
+        this.kioskScreenOn = kioskScreenOn;
+    }
+
+    public String getLauncherUrl() {
+        return launcherUrl;
+    }
+
+    public void setLauncherUrl(String launcherUrl) {
+        this.launcherUrl = launcherUrl;
     }
 
     public String getRestrictions() {
@@ -871,6 +891,8 @@ public class Configuration implements CustomerData, Serializable {
         copy.setQrParameters(getQrParameters());
         copy.setKioskHome(getKioskHome());
         copy.setKioskRecents(getKioskRecents());
+        copy.setKioskScreenOn(getKioskScreenOn());
+        copy.setLauncherUrl(getLauncherUrl());
         copy.setKioskNotifications(getKioskNotifications());
         copy.setKioskSystemInfo(getKioskSystemInfo());
         copy.setKioskKeyguard(getKioskKeyguard());

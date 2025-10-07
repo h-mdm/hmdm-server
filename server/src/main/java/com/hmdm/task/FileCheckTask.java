@@ -98,11 +98,11 @@ public class FileCheckTask implements Runnable {
             unsecureDAO.insertUploadedFile(uploadedFile);
         }
 
-        // Check the creation date and update the DB if a file was changed externally
+        // Check the modification date and update the DB if a file was changed externally
         try {
             BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
-            FileTime creationTime = attrs.creationTime();
-            long millis = creationTime.toMillis();
+            FileTime modificationTime = attrs.lastModifiedTime();
+            long millis = modificationTime.toMillis();
             if (uploadedFile.getUploadTime() != millis) {
                 uploadedFile.setUploadTime(millis);
                 unsecureDAO.updateUploadedFile(uploadedFile);

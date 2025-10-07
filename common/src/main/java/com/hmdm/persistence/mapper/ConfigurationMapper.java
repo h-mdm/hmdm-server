@@ -112,6 +112,8 @@ public interface ConfigurationMapper {
             "kioskSystemInfo=#{kioskSystemInfo}, " +
             "kioskKeyguard=#{kioskKeyguard}, " +
             "kioskLockButtons=#{kioskLockButtons}, " +
+            "kioskScreenOn=#{kioskScreenOn}, " +
+            "launcherUrl=#{launcherUrl}, " +
             "restrictions=#{restrictions}, " +
             "autoUpdate=#{autoUpdate}, " +
             "blockStatusBar=#{blockStatusBar}, " +

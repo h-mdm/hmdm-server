@@ -198,6 +198,10 @@ public class SyncResponse implements Serializable, SyncResponseInt {
     @ApiModelProperty("A flag indicating if status bar is locked")
     private boolean lockStatusBar;
 
+    @ApiModelProperty("Flag forcing screen to be on in kiosk mode")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean kioskScreenOn;
+
     @ApiModelProperty("A package ID for the main application")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String mainApp;
@@ -495,6 +499,15 @@ public class SyncResponse implements Serializable, SyncResponseInt {
 
     public void setKioskLockButtons(Boolean kioskLockButtons) {
         this.kioskLockButtons = kioskLockButtons;
+    }
+
+    @Override
+    public Boolean getKioskScreenOn() {
+        return kioskScreenOn;
+    }
+
+    public void setKioskScreenOn(Boolean kioskScreenOn) {
+        this.kioskScreenOn = kioskScreenOn;
     }
 
     @Override

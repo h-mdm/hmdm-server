@@ -234,16 +234,8 @@ public class FilesResource {
                     " tmp path: " + uploadedFile.getTmpPath());
             return Response.PERMISSION_DENIED();
         }
-        String subdir = "";
-        String fname = null;
-        int sepPos = uploadedFile.getFilePath().lastIndexOf('/');
-        if (sepPos != -1) {
-            subdir = uploadedFile.getFilePath().substring(0, sepPos);
-            fname = uploadedFile.getFilePath().substring(sepPos);
-        } else {
-            subdir = "";
-            fname = uploadedFile.getFilePath();
-        }
+
+        String fname = uploadedFile.getFileName();
         // Empty fname means using the default name from tmp path (processed by moveFile)
         if (fname.equals("")) {
             fname = FileUtil.getNameFromTmpPath(uploadedFile.getTmpPath());
@@ -252,13 +244,12 @@ public class FilesResource {
             }
             uploadedFile.setFilePath(fname);
         }
-        final String subDirectory = subdir;
         final String fileName = fname;
 
         return SecurityContext.get().getCurrentUser().map(u -> {
             Customer customer = customerDAO.findById(u.getCustomerId());
             try {
-                File movedFile = FileUtil.moveFile(customer, filesDirectory, subDirectory, uploadedFile.getTmpPath(), fileName);
+                File movedFile = FileUtil.moveFile(customer, filesDirectory, uploadedFile.getSubdir(), uploadedFile.getTmpPath(), fileName);
                 if (movedFile != null) {
                     List<FileView> result = new LinkedList<>();
                     handleFile(movedFile, result, null, customer);
@@ -308,6 +299,22 @@ public class FilesResource {
             Customer customer = customerDAO.findById(u.getCustomerId());
             if (!uploadedFile.isExternal()) {
                 UploadedFile dbFile = uploadedFileDAO.getById(uploadedFile.getId());
+                if (!StringUtil.isEmpty(uploadedFile.getTmpPath())) {
+                    // Renew the file content - remove the old file and overwrite with the new content
+                    FileUtil.deleteFile(customer, filesDirectory, dbFile.getFilePath());
+                    File movedFile = FileUtil.moveFile(customer, filesDirectory, dbFile.getSubdir(),
+                            uploadedFile.getTmpPath(), dbFile.getFileName());
+                    if (movedFile == null) {
+                        return Response.ERROR("error.file.save");
+                    }
+                    try {
+                        BasicFileAttributes attrs = Files.readAttributes(movedFile.toPath(), BasicFileAttributes.class);
+                        uploadedFile.setUploadTime(attrs.lastModifiedTime().toMillis());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return Response.INTERNAL_ERROR();
+                    }
+                }
                 if (!dbFile.getFilePath().equals(uploadedFile.getFilePath())) {
                     if (!FileUtil.isSafePath(uploadedFile.getFilePath())) {
                         logger.error("Attempt to move a file to unsafe path: " + uploadedFile.getFilePath());
