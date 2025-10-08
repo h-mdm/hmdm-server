@@ -66,6 +66,12 @@
      to avoid congestion when all devices are updating configuration at the same time -->
     <Parameter name="mqtt.message.delay" value="${mqtt.message.delay}"/>
 
+    <!-- Adaptive MQTT throttling parameters (new feature - backward compatible) -->
+    <Parameter name="mqtt.adaptive.enabled" value="${mqtt.adaptive.enabled}"/>
+    <Parameter name="mqtt.adaptive.light.threshold" value="${mqtt.adaptive.light.threshold}"/>
+    <Parameter name="mqtt.adaptive.medium.threshold" value="${mqtt.adaptive.medium.threshold}"/>
+    <Parameter name="mqtt.adaptive.heavy.threshold" value="${mqtt.adaptive.heavy.threshold}"/>
+
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>
 

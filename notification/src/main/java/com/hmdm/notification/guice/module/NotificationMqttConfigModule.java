@@ -78,5 +78,44 @@ public class NotificationMqttConfigModule extends AbstractModule {
         }
         this.bindConstant().annotatedWith(Names.named("polling.timeout")).to(pollTimeout);
 
+        // Adaptive throttling configuration (backward compatible)
+        String adaptiveEnabledTag = this.context.getInitParameter("mqtt.adaptive.enabled");
+        boolean adaptiveEnabled = adaptiveEnabledTag != null &&
+                (adaptiveEnabledTag.equals("1") || adaptiveEnabledTag.equalsIgnoreCase("true"));
+        this.bindConstant().annotatedWith(Names.named("mqtt.adaptive.enabled")).to(adaptiveEnabled);
+
+        String adaptiveLightThresholdTag = this.context.getInitParameter("mqtt.adaptive.light.threshold");
+        int adaptiveLightThreshold = 3; // Default: instant for ≤3 messages
+        try {
+            if (adaptiveLightThresholdTag != null) {
+                adaptiveLightThreshold = Integer.parseInt(adaptiveLightThresholdTag);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.adaptive.light.threshold")).to(adaptiveLightThreshold);
+
+        String adaptiveMediumThresholdTag = this.context.getInitParameter("mqtt.adaptive.medium.threshold");
+        int adaptiveMediumThreshold = 15; // Default: fast for ≤15 messages
+        try {
+            if (adaptiveMediumThresholdTag != null) {
+                adaptiveMediumThreshold = Integer.parseInt(adaptiveMediumThresholdTag);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.adaptive.medium.threshold")).to(adaptiveMediumThreshold);
+
+        String adaptiveHeavyThresholdTag = this.context.getInitParameter("mqtt.adaptive.heavy.threshold");
+        int adaptiveHeavyThreshold = 50; // Default: normal for ≤50 messages
+        try {
+            if (adaptiveHeavyThresholdTag != null) {
+                adaptiveHeavyThreshold = Integer.parseInt(adaptiveHeavyThresholdTag);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        this.bindConstant().annotatedWith(Names.named("mqtt.adaptive.heavy.threshold")).to(adaptiveHeavyThreshold);
+
     }
 }

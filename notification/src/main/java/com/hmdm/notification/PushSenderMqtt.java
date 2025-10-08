@@ -32,6 +32,7 @@ public class PushSenderMqtt implements PushSender {
     private final MemoryPersistence persistence = new MemoryPersistence();
     private final long mqttDelay;
     private final String sslKeystorePassword;
+    private final MessageClassifier messageClassifier = new MessageClassifier();
     private MqttClient client;
 
     @Inject
@@ -127,7 +128,10 @@ public class PushSenderMqtt implements PushSender {
             if (mqttDelay == 0) {
                 client.publish(number, mqttMessage);
             } else {
-                throttledSender.send(new MqttEnvelope(number, mqttMessage));
+                // Create prioritized envelope for adaptive throttling
+                MessagePriority priority = messageClassifier.classify(message);
+                PrioritizedMqttEnvelope envelope = new PrioritizedMqttEnvelope(number, mqttMessage, priority);
+                throttledSender.send(envelope);
             }
 
         } catch (Exception e) {
