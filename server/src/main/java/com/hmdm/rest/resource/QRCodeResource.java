@@ -175,11 +175,14 @@ public class QRCodeResource {
                 Integer mainAppId = configuration.getMainAppId();
                 if (mainAppId != null) {
                     ApplicationVersion appVersion = this.unsecureDAO.findApplicationVersionById(mainAppId);
-                    if (appVersion != null && appVersion.getUrl() != null && !appVersion.getUrl().trim().isEmpty()) {
-                        final String apkUrl = appVersion.getUrl().replace(" ", "%20");
+                    if (appVersion != null && !StringUtil.isEmpty(appVersion.getUrl())) {
+                        // URL can be overridden to simplify enrollment in closed networks
+                        String url = !StringUtil.isEmpty(configuration.getLauncherUrl()) ? configuration.getLauncherUrl() : appVersion.getUrl();
+                        final String apkUrl = url.replace(" ", "%20");
                         final String sha256;
                         if (appVersion.getApkHash() == null) {
-                            sha256 = calculateApkHash(apkUrl);
+                            // Here we keep the original URL to be able to access the file locally
+                            sha256 = calculateApkHash(appVersion.getUrl());
                             this.unsecureDAO.saveApkFileHash(appVersion.getId(), sha256);
                         } else {
                             sha256 = appVersion.getApkHash();

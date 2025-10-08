@@ -87,3 +87,8 @@ smtp.from=noreply@example.com
 
 # Default value for updates statistics reporting
 updates.send.stats.default=true
+
+# JWT Config secret and token validity
+jwt.secretkey=20c68f0d9185b1d18cf6add1e8b491fd89529a44
+jwt.validity=86400
+jwt.validityrememberme=2592000

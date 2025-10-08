@@ -34,6 +34,11 @@
         <appender-ref ref="stdout"/>
     </logger>
 
+    <!-- Suppress 'Stealing link for clientId ...' warnings -->
+    <logger name="org.apache.activemq.broker.region.RegionBroker">
+        <level value="ERROR"/>
+    </logger>
+
     <root>
         <level value="DEBUG"/>
         <appender-ref ref="stdout"/>

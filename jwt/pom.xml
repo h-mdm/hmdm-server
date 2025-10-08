@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jwt</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>JWT Auth for MDM API</name>
 
     <parent>
@@ -37,6 +37,13 @@
     </parent>
 
     <dependencies>
+        <!-- Guice DI framework -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

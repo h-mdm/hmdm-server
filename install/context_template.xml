@@ -85,4 +85,8 @@
     <Parameter name="email.recovery.subj" value="_BASE_DIRECTORY_/emails/_LANGUAGE_/recovery_subj.txt"/>
     <Parameter name="email.recovery.body" value="_BASE_DIRECTORY_/emails/_LANGUAGE_/recovery_body.txt"/>
 
+    <!-- JWT parameters are allow you to customise secret and validity token -->
+    <!-- <Parameter name="jwt.secretkey" value="20c68f0d9185b1d18cf6add1e8b491fd89529a44"/> -->
+    <!-- <Parameter name="jwt.validity" value="86400"/> -->
+    <!-- <Parameter name="jwt.validityrememberme" value="2592000"/> -->
 </Context>
