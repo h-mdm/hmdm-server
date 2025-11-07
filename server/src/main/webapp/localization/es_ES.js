@@ -1059,7 +1059,7 @@ document.localization ['es_ES'] = {
     'updates.disabled.download': 'Error al descargar una actualización',
     'updates.application': 'Aplicación',
     'updates.current.version': 'Versión actual',
-    'updates.disponible.version': 'Versión disponible',
+    'updates.available.version': 'Versión disponible',
     'updates.downloaded': 'Descargado',
     'updates.auto.update': 'Actualiza automáticamente las aplicaciones móviles (¡utilízalo con cuidado en producción!)',
     'updates.enable.stats': 'Enviar estadísticas de uso al proveedor de servicios para mejorar el rendimiento del sistema',

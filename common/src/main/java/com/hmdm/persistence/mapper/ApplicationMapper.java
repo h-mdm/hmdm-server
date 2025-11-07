@@ -549,7 +549,7 @@ public interface ApplicationMapper {
 
     @Select({"SELECT applicationVersions.id FROM applicationVersions " +
             "INNER JOIN configurations ON configurations.mainAppId=applicationVersions.id " +
-            "WHERE applicationVersions.url=#{url} " +
+            "WHERE applicationVersions.url ILIKE #{url} " +
             "LIMIT 1 "})
     List<Long> getMainAppWithUrl(@Param("url") String url);
 }

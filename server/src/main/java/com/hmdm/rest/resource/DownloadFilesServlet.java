@@ -88,10 +88,10 @@ public class DownloadFilesServlet extends HttpServlet {
             return;
         }
 
-        if (secureEnrollment && !applicationDAO.isMainApp(req.getRequestURL().toString())) {
+        if (secureEnrollment && !applicationDAO.isMainApp("%" + path)) {
             String signature = req.getHeader(HEADER_ENROLLMENT_SIGNATURE);
             if (signature == null) {
-                log.warn("No signature for file request " + path);
+                log.warn("No signature for file request " + req.getRequestURL().toString());
                 resp.sendError(403);
                 return;
             }

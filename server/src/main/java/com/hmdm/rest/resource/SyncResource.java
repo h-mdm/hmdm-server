@@ -469,6 +469,18 @@ public class SyncResource {
                     }
                 }
         );
+        // Guard occasional empty entries to avoid failures on earlier versions of the launcher
+        configurationFiles.removeIf(file -> {
+            if (file.getDevicePath() == null) {
+                logger.warn("ConfigurationFile id " + file.getId() + ": devicePath=null, skipping for safety purposes");
+                return true;
+            }
+            if (!file.isRemove() && file.getUrl() == null) {
+                logger.warn("ConfigurationFile id " + file.getId() + ": url=null and not marked to remove, skipping for safety purposes");
+                return true;
+            }
+            return false;
+        });
 
         data.setFiles(configurationFiles.stream().map(SyncConfigurationFile::new).collect(Collectors.toList()));
 
