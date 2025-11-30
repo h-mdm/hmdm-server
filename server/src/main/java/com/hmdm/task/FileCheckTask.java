@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class FileCheckTask implements Runnable {
     private final UnsecureDAO unsecureDAO;
@@ -63,8 +64,8 @@ public class FileCheckTask implements Runnable {
     }
 
     private void checkFiles(Path directory) {
-        try {
-            Files.list(directory).forEach(path -> {
+        try (Stream<Path> stream = Files.list(directory)) {
+            stream.forEach(path -> {
                 if (Files.isDirectory(path)) {
                     checkFiles(path);
                 } else if (Files.isRegularFile(path)) {
