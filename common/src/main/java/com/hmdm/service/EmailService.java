@@ -220,6 +220,9 @@ public class EmailService {
     }
 
     public String getSignupNotifyEmailBody(Customer customer) {
+        int schemePos = baseUrl.indexOf("://");
+        String server = schemePos != -1 ? baseUrl.substring(schemePos + 3) : baseUrl;
+
         StringBuilder builder = new StringBuilder();
         builder.append("Username: ");
         builder.append(customer.getName());
@@ -237,6 +240,9 @@ public class EmailService {
         builder.append("\n<br>");
         builder.append("Language: ");
         builder.append(customer.getLanguage());
+        builder.append("\n<br>");
+        builder.append("Server: ");
+        builder.append(server);
         return builder.toString();
     }
 
