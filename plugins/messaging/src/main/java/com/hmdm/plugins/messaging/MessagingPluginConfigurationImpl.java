@@ -27,7 +27,7 @@ import com.hmdm.plugins.messaging.guice.module.MessagingLiquibaseModule;
 import com.hmdm.plugins.messaging.guice.module.MessagingPersistenceModule;
 import com.hmdm.plugins.messaging.guice.module.MessagingRestModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 

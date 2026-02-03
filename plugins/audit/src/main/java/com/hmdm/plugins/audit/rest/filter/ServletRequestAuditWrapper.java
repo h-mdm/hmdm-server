@@ -1,15 +1,26 @@
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 
+/**
+ * <p>
+ * A wrapper around the {@link HttpServletRequest} object for capturing request
+ * body.
+ * </p>
+ *
+ * <p>
+ * Updated for Jakarta Servlet 6.0 compatibility.
+ * </p>
+ */
 public class ServletRequestAuditWrapper extends HttpServletRequestWrapper {
     private final String body;
 
     public ServletRequestAuditWrapper(HttpServletRequest request) throws IOException {
-        //So that other request method behave just like before
+        // So that other request method behave just like before
         super(request);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -37,7 +48,7 @@ public class ServletRequestAuditWrapper extends HttpServletRequestWrapper {
                 }
             }
         }
-        //Store request pody content in 'body' variable
+        // Store request pody content in 'body' variable
         body = stringBuilder.toString();
     }
 
@@ -45,8 +56,24 @@ public class ServletRequestAuditWrapper extends HttpServletRequestWrapper {
     public ServletInputStream getInputStream() throws IOException {
         final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body.getBytes());
         ServletInputStream servletInputStream = new ServletInputStream() {
+            @Override
             public int read() throws IOException {
                 return byteArrayInputStream.read();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return byteArrayInputStream.available() == 0;
+            }
+
+            @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+                // Not used in this synchronous implementation
             }
         };
         return servletInputStream;
@@ -57,7 +84,7 @@ public class ServletRequestAuditWrapper extends HttpServletRequestWrapper {
         return new BufferedReader(new InputStreamReader(this.getInputStream()));
     }
 
-    //Use this method to read the request body N times
+    // Use this method to read the request body N times
     public String getBody() {
         return this.body;
     }

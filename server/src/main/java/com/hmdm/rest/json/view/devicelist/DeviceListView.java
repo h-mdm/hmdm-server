@@ -27,7 +27,7 @@ import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.rest.json.PaginatedData;
 import io.swagger.annotations.ApiModel;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

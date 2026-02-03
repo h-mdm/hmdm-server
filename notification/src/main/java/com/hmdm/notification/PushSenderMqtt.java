@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.fusesource.mqtt.client.MQTTException;
 
-import javax.jms.*;
+import jakarta.jms.*;
 import java.util.HashMap;
 import java.util.Map;
 

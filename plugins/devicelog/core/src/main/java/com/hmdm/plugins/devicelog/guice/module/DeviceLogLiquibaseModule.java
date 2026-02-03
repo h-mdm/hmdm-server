@@ -25,7 +25,7 @@ import com.hmdm.guice.module.AbstractLiquibaseModule;
 import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>A module used for registering the <code>Device Log</code> plugin to plugin platform.</p>

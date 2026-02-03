@@ -23,27 +23,45 @@ package com.hmdm.plugin.guice.module;
 
 import com.hmdm.guice.LiquibaseJARResourceAccessor;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.InputStreamList;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Set;
 
 /**
- * <p>$END$</p>
+ * <p>
+ * Plugin-specific resource accessor for Liquibase changelog files.
+ * </p>
+ *
+ * <p>
+ * Updated for Liquibase 4.x API compatibility.
+ * </p>
  *
  * @author isv
  */
 public class PluginLiquibaseResourceAccessor extends ClassLoaderResourceAccessor {
 
     /**
-     * <p>Constructs new <code>PluginLiquibaseResourceAccessor</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>PluginLiquibaseResourceAccessor</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     public PluginLiquibaseResourceAccessor() {
     }
 
+    /**
+     * <p>
+     * Opens streams for the specified path. Updated for Liquibase 4.x API.
+     * </p>
+     *
+     * @param relativeTo base path (can be null)
+     * @param streamPath the path to open
+     * @return InputStreamList containing the opened streams
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    public Set<InputStream> getResourcesAsStream(String path) throws IOException {
+    public InputStreamList openStreams(String relativeTo, String streamPath) throws IOException {
         LiquibaseJARResourceAccessor accessor = new LiquibaseJARResourceAccessor();
-        return accessor.getResourcesAsStream(path);
+        return accessor.openStreams(relativeTo, streamPath);
     }
 }

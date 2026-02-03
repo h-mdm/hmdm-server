@@ -23,7 +23,7 @@ package com.hmdm.plugin;
 
 import com.google.inject.Module;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.List;
 import java.util.Optional;
 

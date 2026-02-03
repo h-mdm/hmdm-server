@@ -3,7 +3,7 @@ package com.hmdm.plugins.audit.guice.module;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 public class AuditConfigureModule extends AbstractModule {
     private final ServletContext context;

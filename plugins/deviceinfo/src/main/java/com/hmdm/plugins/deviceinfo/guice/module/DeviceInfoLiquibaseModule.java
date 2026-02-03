@@ -26,7 +26,7 @@ import com.hmdm.guice.module.AbstractLiquibaseModule;
 import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>A module used for initializing and managing the state of the database tables related to <code>Device Info</code>

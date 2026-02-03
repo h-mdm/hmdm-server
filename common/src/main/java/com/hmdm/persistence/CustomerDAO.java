@@ -22,7 +22,7 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import com.google.inject.Singleton;
 import com.hmdm.event.CustomerCreatedEvent;

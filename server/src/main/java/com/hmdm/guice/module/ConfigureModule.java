@@ -27,7 +27,7 @@ import com.hmdm.auth.HmdmAuthInterface;
 import com.hmdm.auth.LocalAuth;
 import com.hmdm.persistence.domain.Application;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 public class ConfigureModule extends AbstractModule {
     private final String baseDirectoryParameter = "base.directory";

@@ -21,9 +21,9 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.awt.image.ImagingOpException;
 import java.io.IOException;
 import java.util.Optional;

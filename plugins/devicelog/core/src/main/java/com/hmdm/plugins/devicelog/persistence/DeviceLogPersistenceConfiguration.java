@@ -24,7 +24,7 @@ package com.hmdm.plugins.devicelog.persistence;
 import com.google.inject.Module;
 import com.hmdm.plugin.PluginTaskModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.List;
 import java.util.Optional;
 

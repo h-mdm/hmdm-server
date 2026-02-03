@@ -25,7 +25,7 @@ import com.google.inject.Module;
 import com.hmdm.plugin.PluginConfiguration;
 import com.hmdm.plugins.xtra.guice.module.XtraLiquibaseModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 

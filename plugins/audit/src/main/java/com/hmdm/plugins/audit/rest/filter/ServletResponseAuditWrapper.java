@@ -21,43 +21,63 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 /**
- * <p>A wrapper around the {@link HttpServletResponse} object whose main purpose is to capture the status and content of
- * the response for audit logging purposes.</p>
+ * <p>
+ * A wrapper around the {@link HttpServletResponse} object whose main purpose is
+ * to capture the status and content of
+ * the response for audit logging purposes.
+ * </p>
+ *
+ * <p>
+ * Updated for Jakarta Servlet 6.0 compatibility - removed setStatus(int,
+ * String) which was deprecated.
+ * </p>
  *
  * @author isv
  */
 public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
 
     /**
-     * <p>A status set for the response.</p>
+     * <p>
+     * A status set for the response.
+     * </p>
      */
     private int status;
 
     /**
-     * <p>An original response output stream.</p>
+     * <p>
+     * An original response output stream.
+     * </p>
      */
     private ServletOutputStream outputStream;
 
     /**
-     * <p>An original response writer.</p>
+     * <p>
+     * An original response writer.
+     * </p>
      */
     private PrintWriter writer;
 
     /**
-     * <p>A wrapper around the response stream/writer used for captruing the content of the response.</p>
+     * <p>
+     * A wrapper around the response stream/writer used for captruing the content of
+     * the response.
+     * </p>
      */
     private ServletOutputStreamWrapper copier;
 
     /**
-     * <p>Constructs new <code>ServletResponseAuditWrapper</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>ServletResponseAuditWrapper</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     public ServletResponseAuditWrapper(HttpServletResponse original) {
         super(original);
@@ -84,12 +104,9 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
         super.setStatus(sc);
     }
 
-    // Intercepted method.
-    @Override
-    public void setStatus(int sc, String sm) {
-        this.status = sc;
-        super.setStatus(sc, sm);
-    }
+    // Note: setStatus(int, String) method was removed in Jakarta Servlet 6.0
+    // It was deprecated since Servlet 2.1 and has been removed.
+    // Use sendError(int, String) instead for error responses.
 
     // Intercepted method.
     @Override
@@ -132,7 +149,9 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * <p>Gets the content of the response.</p>
+     * <p>
+     * Gets the content of the response.
+     * </p>
      *
      * @return a response content.
      */
@@ -144,9 +163,10 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
         }
     }
 
-
     /**
-     * <p>Gets the status set for the response.</p>
+     * <p>
+     * Gets the status set for the response.
+     * </p>
      *
      * @return a status set for the response.
      */

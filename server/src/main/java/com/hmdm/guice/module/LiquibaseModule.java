@@ -21,7 +21,7 @@
 
 package com.hmdm.guice.module;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;

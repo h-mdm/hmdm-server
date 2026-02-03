@@ -3,38 +3,55 @@ Headwind MDM: a corporate launcher for Android
 =    BUILD INSTRUCTIONS FOR THE WEB PANEL    =
 ==============================================
 
-This instruction has been tested on Ubuntu Linux 20.04 LTS/22.04 LTS.
+This instruction has been tested on Ubuntu Linux 20.04 LTS/22.04 LTS/24.04 LTS.
+
+IMPORTANT: This project requires Java 21+ and Tomcat 10.1+ (Jakarta EE 9+).
 
 1. Install required software
 
-For Ubuntu Linux 20.04 LTS
-# sudo apt install git aapt tomcat8 maven postgresql
+For Ubuntu Linux 24.04 LTS (recommended):
+# sudo apt install git aapt tomcat10 maven postgresql openjdk-21-jdk
 
-For Ubuntu Linux 22.04 LTS:
-# sudo apt install git aapt tomcat9 maven postgresql
+Set Java 21 as default:
+# sudo update-alternatives --config java
+(select the Java 21 option)
 
-2. Make sure Tomcat is running
+For older Ubuntu versions, install OpenJDK 21 manually:
+# sudo apt install software-properties-common
+# sudo add-apt-repository ppa:openjdk-r/ppa
+# sudo apt update
+# sudo apt install openjdk-21-jdk
+
+2. Verify Java version
+
+# java -version
+(should show version 21 or higher)
+
+# mvn -version
+(should show Java 21 under "Java version")
+
+3. Make sure Tomcat 10.1+ is running
 
 curl localhost:8080
 (if you get "Failed to connect" error, fix the installation issue)
 
-3. Clone the repository
+4. Clone the repository
 
 # git clone https://github.com/h-mdm/hmdm-server
 # cd hmdm-server
 
-4. If you are planning to run or debug Headwind MDM in IDE, create the properties
+5. If you are planning to run or debug Headwind MDM in IDE, create the properties
 file from the sample
 
 # cp server/build.properties.example server/build.properties
 
 and update the contents of the server/build.properties file.
 
-5. Build the source code
+6. Build the source code
 
 # mvn install
 
-6. Create the PostgreSQL database and user
+7. Create the PostgreSQL database and user
 
 # sudo su postgres
 # psql
@@ -42,9 +59,17 @@ postgres=# CREATE USER hmdm WITH PASSWORD 'topsecret';
 postgres=# CREATE DATABASE hmdm WITH OWNER=hmdm;
 postgres=# \q
 
-7. Run the installer script (as root)
+8. Run the installer script (as root)
 
 sudo ./hmdm_install.sh
 
-8. On success, the installer script provides you with the URL. Open Headwind MDM in browser.
+9. On success, the installer script provides you with the URL. Open Headwind MDM in browser.
 
+10. (First deployment after upgrade) Clear Liquibase checksums if upgrading from Java 8/11:
+
+# sudo su postgres
+# psql hmdm
+hmdm=# UPDATE DATABASECHANGELOG SET MD5SUM = NULL;
+hmdm=# \q
+
+This is required because Liquibase 4.x uses a different checksum algorithm.

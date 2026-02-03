@@ -28,7 +28,7 @@ import com.hmdm.plugins.audit.guice.module.AuditLiquibaseModule;
 import com.hmdm.plugins.audit.guice.module.AuditPersistenceModule;
 import com.hmdm.plugins.audit.guice.module.AuditRestModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 

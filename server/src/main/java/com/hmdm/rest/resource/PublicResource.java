@@ -21,9 +21,9 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.inject.Named;
 
 import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.rest.json.NameResponse;
@@ -50,10 +50,10 @@ import com.hmdm.rest.json.UploadAppRequest;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.StringUtil;
 
-import javax.servlet.ServletOutputStream;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -288,28 +288,28 @@ public class PublicResource {
     @GET
     @Path("/logo")
     @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response getRebrandedLogo() {
+    public jakarta.ws.rs.core.Response getRebrandedLogo() {
         try {
             if (!appLogo.equals("")) {
                 File file = new File(appLogo);
                 if (file.exists()) {
                     InputStream input = new FileInputStream(file);
 
-                    return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
+                    return jakarta.ws.rs.core.Response.ok( (StreamingOutput) output -> {
                         IOUtils.copy(input, output);
                     } )
                             .header("Cache-Control", "no-cache")
                             .header( "Content-Type", "image/png" ).build();
                 } else {
                     System.out.println("Not found: " + file.getAbsolutePath());
-                    return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
+                    return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.NOT_FOUND).build();
                 }
             } else {
-                return javax.ws.rs.core.Response.temporaryRedirect(new URI("../images/logo.png")).build();
+                return jakarta.ws.rs.core.Response.temporaryRedirect(new URI("../images/logo.png")).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return javax.ws.rs.core.Response.serverError().build();
+            return jakarta.ws.rs.core.Response.serverError().build();
         }
     }
 }

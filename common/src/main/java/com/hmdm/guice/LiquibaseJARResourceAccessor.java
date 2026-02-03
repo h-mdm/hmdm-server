@@ -22,39 +22,78 @@
 package com.hmdm.guice;
 
 import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.InputStreamList;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * <p>A loader for Liquibase resources which are contained within the JAR-files.</p>
+ * <p>
+ * A loader for Liquibase resources which are contained within the JAR-files.
+ * </p>
+ *
+ * <p>
+ * Updated for Liquibase 4.x API compatibility.
+ * </p>
  *
  * @author isv
  */
 public class LiquibaseJARResourceAccessor extends ClassLoaderResourceAccessor {
 
     /**
-     * <p>Constructs new <code>LiquibaseJARResourceAccessor</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>LiquibaseJARResourceAccessor</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     public LiquibaseJARResourceAccessor() {
     }
 
+    /**
+     * <p>
+     * Opens streams for the specified path. Updated for Liquibase 4.x API.
+     * </p>
+     *
+     * @param relativeTo base path (can be null)
+     * @param streamPath the path to open
+     * @return InputStreamList containing the opened streams
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    public Set<InputStream> getResourcesAsStream(String path) throws IOException {
-        URLConnection connection = new URL(path).openConnection();
-        connection.setUseCaches(false);
-
-        InputStream resourceAsStream = connection.getInputStream();
-        Set<InputStream> returnSet = new HashSet<>();
-        if (resourceAsStream != null) {
-            returnSet.add(resourceAsStream);
+    public InputStreamList openStreams(String relativeTo, String streamPath) throws IOException {
+        // For JAR resources, we handle the path directly
+        String fullPath = streamPath;
+        if (relativeTo != null && !relativeTo.isEmpty()) {
+            // Resolve relative paths
+            if (!streamPath.startsWith("/") && !streamPath.contains(":")) {
+                int lastSlash = relativeTo.lastIndexOf('/');
+                if (lastSlash >= 0) {
+                    fullPath = relativeTo.substring(0, lastSlash + 1) + streamPath;
+                }
+            }
         }
 
-        return returnSet;
+        // If it's a URL (jar:file:... or file:...), open it directly
+        if (fullPath.contains(":")) {
+            try {
+                URLConnection connection = new URL(fullPath).openConnection();
+                connection.setUseCaches(false);
+                InputStream resourceAsStream = connection.getInputStream();
+                if (resourceAsStream != null) {
+                    InputStreamList list = new InputStreamList();
+                    list.add(URI.create(fullPath), resourceAsStream);
+                    return list;
+                }
+            } catch (Exception e) {
+                // Fall through to parent implementation
+            }
+        }
+
+        // Delegate to parent for classpath resources
+        return super.openStreams(relativeTo, streamPath);
     }
 
 }

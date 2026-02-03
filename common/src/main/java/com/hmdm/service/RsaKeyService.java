@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;

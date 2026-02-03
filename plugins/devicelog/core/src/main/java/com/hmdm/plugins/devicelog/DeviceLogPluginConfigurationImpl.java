@@ -29,7 +29,7 @@ import com.hmdm.plugins.devicelog.guice.module.DeviceLogRestModule;
 import com.hmdm.plugins.devicelog.guice.module.DeviceLogTaskModule;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPersistenceConfiguration;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -24,10 +24,10 @@ package com.hmdm.rest.filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import javax.inject.Named;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.inject.Named;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Singleton

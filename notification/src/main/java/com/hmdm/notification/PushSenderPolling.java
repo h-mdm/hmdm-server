@@ -6,7 +6,7 @@ import com.google.inject.name.Named;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.notification.persistence.domain.PushMessage;
 
-import javax.servlet.AsyncContext;
+import jakarta.servlet.AsyncContext;
 import java.util.*;
 
 @Singleton

@@ -23,7 +23,7 @@ package com.hmdm.notification.guice.module;
 
 import com.hmdm.guice.module.AbstractPersistenceModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

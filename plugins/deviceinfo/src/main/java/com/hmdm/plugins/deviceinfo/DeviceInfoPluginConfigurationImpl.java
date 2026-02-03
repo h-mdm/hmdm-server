@@ -29,7 +29,7 @@ import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoPersistenceModule;
 import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoRestModule;
 import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoTaskModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

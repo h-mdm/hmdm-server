@@ -46,18 +46,18 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.StreamingOutput;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -283,7 +283,7 @@ public class DeviceInfoResource {
     @POST
     @Path("/private/export")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public javax.ws.rs.core.Response exportDevices(DynamicInfoExportFilter request) {
+    public jakarta.ws.rs.core.Response exportDevices(DynamicInfoExportFilter request) {
         logger.debug("Export device dynamic info request: {}", request);
         try {
             if (!SecurityContext.get().hasPermission("plugin_deviceinfo_access")) {
@@ -293,13 +293,13 @@ public class DeviceInfoResource {
                 } else {
                     logger.error("Forbidding access to Device Info for anonymous user");
                 }
-                return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.FORBIDDEN).build();
+                return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.FORBIDDEN).build();
             }
 
             Device dbDevice = this.deviceDAO.getDeviceByNumber(request.getDeviceNumber());
             if (dbDevice == null) {
                 logger.error("Device {} was not found", request.getDeviceNumber());
-                return javax.ws.rs.core.Response.serverError().build();
+                return jakarta.ws.rs.core.Response.serverError().build();
             }
 
             request.setDeviceId(dbDevice.getId());
@@ -309,7 +309,7 @@ public class DeviceInfoResource {
                     .fileName(fileName + ".csv")
                     .creationDate(new Date())
                     .build();
-            return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
+            return jakarta.ws.rs.core.Response.ok( (StreamingOutput) output -> {
                 try {
                     this.deviceInfoExportService.exportDeviceDynamicInfo(request, output);
                     output.flush();
@@ -319,7 +319,7 @@ public class DeviceInfoResource {
             } ).header( "Content-Disposition", contentDisposition ).build();
         } catch (Exception e) {
             logger.error("Unexpected error while exporting the device dynamic info records to CSV file", e);
-            return javax.ws.rs.core.Response.serverError().build();
+            return jakarta.ws.rs.core.Response.serverError().build();
         }
     }
 

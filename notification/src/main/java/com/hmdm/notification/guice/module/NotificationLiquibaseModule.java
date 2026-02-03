@@ -25,7 +25,7 @@ import com.hmdm.guice.LiquibaseJARResourceAccessor;
 import com.hmdm.guice.module.AbstractLiquibaseModule;
 import liquibase.resource.ResourceAccessor;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>A module used for initializing and managing the state of the database tables related to <code>Notification</code>

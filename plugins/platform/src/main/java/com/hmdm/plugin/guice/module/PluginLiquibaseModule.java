@@ -24,7 +24,7 @@ package com.hmdm.plugin.guice.module;
 import liquibase.resource.ResourceAccessor;
 import com.hmdm.guice.module.AbstractLiquibaseModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>A module used for initializing and managing the state of the database tables related to <code>Plugin Platform

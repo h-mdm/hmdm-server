@@ -6,8 +6,8 @@ import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.util.PasswordUtil;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class LocalAuth implements HmdmAuthInterface {

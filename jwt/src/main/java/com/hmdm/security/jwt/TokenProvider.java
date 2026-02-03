@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.domain.User;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * <p>A provider for JWT tokens.</p>

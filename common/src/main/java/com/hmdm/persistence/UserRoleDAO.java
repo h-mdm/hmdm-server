@@ -28,7 +28,7 @@ import com.hmdm.persistence.domain.UserRolePermission;
 import com.hmdm.persistence.mapper.UserRoleMapper;
 import com.hmdm.security.SecurityContext;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.util.List;
 import java.util.stream.Collectors;
 

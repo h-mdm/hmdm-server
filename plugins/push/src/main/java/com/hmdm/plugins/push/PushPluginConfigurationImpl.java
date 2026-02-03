@@ -29,7 +29,7 @@ import com.hmdm.plugins.push.guice.module.PushPersistenceModule;
 import com.hmdm.plugins.push.guice.module.PushRestModule;
 import com.hmdm.plugins.push.guice.module.PushScheduleTaskModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

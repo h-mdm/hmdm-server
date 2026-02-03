@@ -23,7 +23,7 @@ package com.hmdm.plugins.audit.guice.module;
 
 import com.hmdm.guice.module.AbstractPersistenceModule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the

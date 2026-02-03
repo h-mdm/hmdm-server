@@ -35,7 +35,7 @@ import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityException;
 import org.mybatis.guice.transactional.Transactional;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
