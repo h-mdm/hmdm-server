@@ -379,18 +379,18 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
 
         var samplePayloads = {
             configUpdated: "",
-            runApp: "{pkg: \"app.package.id\"}",
-            uninstallApp: "{pkg: \"app.package.id\"}",
-            deleteFile: "{path: \"/path/to/file\"}",
-            deleteDir: "{path: \"/path/to/dir\"}",
-            purgeDir: "{path: \"/path/to/dir\", recursive: \"1\"}",
+            runApp: "{\"pkg\": \"app.package.id\"}",
+            uninstallApp: "{\"pkg\": \"app.package.id\"}",
+            deleteFile: "{\"path\": \"/path/to/file\"}",
+            deleteDir: "{\"path\": \"/path/to/dir\"}",
+            purgeDir: "{\"path\": \"/path/to/dir\", \"recursive\": \"1\"}",
             permissiveMode: "",
-            intent: "{action: \"android.intent.action.VIEW\", data: \"https://h-mdm.com\"}",
-            runCommand: "{command: \"shell command\"}",
+            intent: "{\"action\": \"android.intent.action.VIEW\", \"data\": \"https://h-mdm.com\"}",
+            runCommand: "{\"command\": \"shell command\"}",
             reboot: "",
             exitKiosk: "",
             clearDownloadHistory: "",
-            grantPermissions: "{pkg: \"app.package.id\"}",
+            grantPermissions: "{\"pkg\": \"app.package.id\"}",
             "(custom)": ""
         };
 
@@ -493,19 +493,30 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             $scope.task.messageType !== "deleteDir" &&
             $scope.task.messageType !== "purgeDir" &&
             $scope.task.messageType !== "permissiveMode" &&
-            $scope.task.messageType !== "reboot") {
+            $scope.task.messageType !== "intent" &&
+            $scope.task.messageType !== "runCommand" &&
+            $scope.task.messageType !== "reboot" &&
+            $scope.task.messageType !== "exitKiosk" &&
+            $scope.task.messageType !== "clearDownloadHistory" &&
+            $scope.task.messageType !== "grantPermissions") {
             $scope.task.customMessageType = $scope.task.messageType;
-            $scope.task.messageType = "(custom)"
+            $scope.task.messageType = "(custom)";
         }
 
         var samplePayloads = {
             configUpdated: "",
-            runApp: "{pkg: \"app.package.id\"}",
-            uninstallApp: "{pkg: \"app.package.id\"}",
-            deleteFile: "{path: \"/path/to/file\"}",
-            deleteDir: "{path: \"/path/to/dir\"}",
-            purgeDir: "{path: \"/path/to/dir\", recursive: \"1\"}",
+            runApp: "{\"pkg\": \"app.package.id\"}",
+            uninstallApp: "{\"pkg\": \"app.package.id\"}",
+            deleteFile: "{\"path\": \"/path/to/file\"}",
+            deleteDir: "{\"path\": \"/path/to/dir\"}",
+            purgeDir: "{\"path\": \"/path/to/dir\", \"recursive\": \"1\"}",
             permissiveMode: "",
+            intent: "{\"action\": \"android.intent.action.VIEW\", \"data\": \"https://h-mdm.com\"}",
+            runCommand: "{\"command\": \"shell command\"}",
+            reboot: "",
+            exitKiosk: "",
+            clearDownloadHistory: "",
+            grantPermissions: "{\"pkg\": \"app.package.id\"}",
             "(custom)": ""
         };
 

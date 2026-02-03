@@ -32,7 +32,7 @@
     <parent>
         <groupId>com.hmdm</groupId>
         <artifactId>root</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -43,7 +43,7 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
         </dependency>
-
+        
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>com.hmdm</groupId>
             <artifactId>common</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
     </dependencies>
 

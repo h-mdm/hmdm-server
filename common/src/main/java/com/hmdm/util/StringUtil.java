@@ -58,6 +58,7 @@ public final class StringUtil {
     public static String jsonEscape(String text) {
         return text.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
+                .replace("\t", "\\t")
                 .replace("\r", "\\r")
                 .replace("\n", "\\n");
     }

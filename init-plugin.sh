@@ -16,7 +16,7 @@ RESULT=$(grep -F "<artifactId>$1</artifactId>" server/pom.xml)
 if [ -z "$RESULT" ]; then
     # Plugin not exist, let's add it
     cp server/pom.xml server/pom.xml.bak
-    sed "s|    </dependencies>|        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>$1</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>\n    </dependencies>|g" server/pom.xml > server/pom.xml.new
+    sed "s|    </dependencies>|        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>$1</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>\n    </dependencies>|g" server/pom.xml > server/pom.xml.new
     mv server/pom.xml.new server/pom.xml
     echo "server/pom.xml updated"
 

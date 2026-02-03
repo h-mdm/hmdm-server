@@ -28,13 +28,13 @@
     <artifactId>xtra</artifactId>
 
     <packaging>jar</packaging>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>A Promo plugin</name>
 
     <parent>
         <groupId>com.hmdm.plugin</groupId>
         <artifactId>base</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.hmdm.plugin</groupId>
             <artifactId>platform</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
     </dependencies>
 

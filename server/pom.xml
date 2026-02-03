@@ -53,13 +53,13 @@
         <dependency>
             <groupId>com.hmdm</groupId>
             <artifactId>common</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.hmdm</groupId>
             <artifactId>notification</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
         <dependency>
@@ -76,29 +76,29 @@
 
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceinfo</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>messaging</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceinfo</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>xtra</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>messaging</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>xtra</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
 
         <dependency>
             <groupId>com.hmdm.plugin</groupId>
             <artifactId>platform</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>push</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>push</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
     </dependencies>
 
     <build>
