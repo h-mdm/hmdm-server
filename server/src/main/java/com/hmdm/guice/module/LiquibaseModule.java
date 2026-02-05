@@ -23,42 +23,57 @@ package com.hmdm.guice.module;
 
 import jakarta.servlet.ServletContext;
 
-import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 /**
- * <p>A module used for initializing or modifying the database based on the provided Liquibase change log.</p>
+ * <p>
+ * A module used for initializing or modifying the database based on the
+ * provided Liquibase change log.
+ * </p>
  *
  * @author isv
  */
 public class LiquibaseModule extends AbstractLiquibaseModule {
 
     /**
-     * <p>Constructs new <code>LiquibaseModule</code> instance for use in specified context.</p>
+     * <p>
+     * Constructs new <code>LiquibaseModule</code> instance for use in specified
+     * context.
+     * </p>
      *
      * @param context a context for module usage.
      */
     public LiquibaseModule(ServletContext context) {
         super(context);
     }
+
     /**
-     * <p>Gets the path to the DB change log to be used by this module.</p>
+     * <p>
+     * Gets the path to the DB change log to be used by this module.
+     * </p>
      *
-     * <p>Plugins MUST override this method to provide the path to specific Db change log.</p>
+     * <p>
+     * Plugins MUST override this method to provide the path to specific Db change
+     * log.
+     * </p>
      *
      * @return a path to resource with Db change log.
      */
     protected String getChangeLogResourcePath() {
-        return this.getClass().getResource("/liquibase/db.changelog.xml").getPath();
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/db.changelog.xml";
     }
 
     /**
-     * <p>Gets the resource accessor to be uused for loading the change log file.</p>
+     * <p>
+     * Gets the resource accessor to be uused for loading the change log file.
+     * </p>
      *
      * @return a resource accessor for change log file.
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new FileSystemResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
 }

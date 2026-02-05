@@ -14,7 +14,7 @@
         <filter-name>HMDMApplication</filter-name>
         <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
         <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
+            <param-name>jakarta.ws.rs.Application</param-name>
             <param-value>com.hmdm.HMDMApplication</param-value>
         </init-param>
     </filter>

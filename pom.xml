@@ -61,7 +61,7 @@
 
         <!-- Database dependencies -->
         <mybatis.version>3.5.16</mybatis.version>
-        <mybatis.guice.version>3.18</mybatis.guice.version>
+        <mybatis.guice.version>4.1.0</mybatis.guice.version>
         <postgresql.version>42.7.4</postgresql.version>
         <liquibase.version>4.29.2</liquibase.version>
 
@@ -163,12 +163,12 @@
             <version>3.1.0</version>
         </dependency>
         
-        <!-- javax.inject - needed for MyBatis-Guice 3.18 compatibility -->
-        <!-- MyBatis-Guice still uses javax.inject.Provider internally -->
+        <!-- Jakarta Inject API (replaces javax.inject) -->
+        <!-- Guice 7.0 supports jakarta.inject natively -->
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.1</version>
         </dependency>
         
         <!-- Jakarta REST API (replaces javax.ws.rs) -->

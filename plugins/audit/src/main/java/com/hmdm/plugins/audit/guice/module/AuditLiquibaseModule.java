@@ -22,49 +22,59 @@
 package com.hmdm.plugins.audit.guice.module;
 
 import com.hmdm.guice.module.AbstractLiquibaseModule;
-import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 import jakarta.servlet.ServletContext;
 
 /**
- * <p>A module used for initializing and managing the state of the database tables related to <code>Audit</code>
- * plugin.</p>
+ * <p>
+ * A module used for initializing and managing the state of the database tables
+ * related to <code>Audit</code>
+ * plugin.
+ * </p>
  *
  * @author isv
  */
 public class AuditLiquibaseModule extends AbstractLiquibaseModule {
 
     /**
-     * <p>Constructs new <code>AuditLiquibaseModule</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>AuditLiquibaseModule</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     public AuditLiquibaseModule(ServletContext context) {
         super(context);
     }
-    
+
     /**
-     * <p>Gets the path to the DB change log to be used by this module.</p>
+     * <p>
+     * Gets the path to the DB change log to be used by this module.
+     * </p>
      *
-     * <p>Plugins MUST override this method to provide the path to specific Db change log.</p>
+     * <p>
+     * Plugins MUST override this method to provide the path to specific Db change
+     * log.
+     * </p>
      *
      * @return a path to resource with Db change log.
      */
     @Override
     protected String getChangeLogResourcePath() {
-        String path = this.getClass().getResource("/liquibase/audit.changelog.xml").getPath();
-        if (!path.startsWith("jar:")) {
-            path = "jar:" + path;
-        }
-        return path;
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/audit.changelog.xml";
     }
 
     /**
-     * <p>Gets the resource accessor to be used for loading the change log file.</p>
+     * <p>
+     * Gets the resource accessor to be used for loading the change log file.
+     * </p>
      *
      * @return a resource accessor for change log file.
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new PluginLiquibaseResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
 }

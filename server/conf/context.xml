@@ -60,6 +60,12 @@
      to avoid congestion when all devices are updating configuration at the same time -->
     <Parameter name="mqtt.message.delay" value="${mqtt.message.delay}"/>
 
+    <!-- MQTT admin password for broker authentication -->
+    <Parameter name="mqtt.admin.password" value="${mqtt.admin.password}"/>
+
+    <!-- SSL keystore configuration for MQTT broker -->
+    <Parameter name="ssl.keystore.password" value="${ssl.keystore.password}"/>
+
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>
 
