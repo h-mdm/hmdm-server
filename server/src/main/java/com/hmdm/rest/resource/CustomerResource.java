@@ -133,6 +133,7 @@ public class CustomerResource {
     public Response updateCustomer(Customer customer) {
         try {
             Customer dbCustomer = customerDAO.getCustomerByName(customer.getName());
+            User dbUser = null;
             if (dbCustomer != null && !dbCustomer.getId().equals(customer.getId())) {
                 log.warn("Customer with name {} already exists, id {}", customer.getName(), dbCustomer.getId());
                 return Response.DUPLICATE_ENTITY("error.duplicate.customer.name");
@@ -144,7 +145,7 @@ public class CustomerResource {
                     return Response.DUPLICATE_ENTITY("error.duplicate.email");
                 }
 
-                User dbUser = unsecureDAO.findByEmail(customer.getEmail());
+                dbUser = unsecureDAO.findByEmail(customer.getEmail());
                 if (dbUser != null && (customer.getId() == null || dbUser.getCustomerId() != customer.getId())) {
                     log.warn("User with email {} already exists, customer {}", customer.getEmail(), dbUser.getCustomerId());
                     return Response.DUPLICATE_ENTITY("error.duplicate.email");
@@ -152,6 +153,17 @@ public class CustomerResource {
             }
 
             if (customer.getId() == null) {
+                // Check users with the same name or email
+                dbUser = unsecureDAO.findByLogin(customer.getName());
+                if (dbUser != null) {
+                    log.warn("User with login {} already exists, customer {}", customer.getName(), dbUser.getCustomerId());
+                    return Response.DUPLICATE_ENTITY("error.duplicate.customer.name");
+                }
+                dbUser = unsecureDAO.findByEmail(customer.getEmail());
+                if (dbUser != null) {
+                    log.warn("User with email {} already exists, customer {}", customer.getEmail(), dbUser.getCustomerId());
+                    return Response.DUPLICATE_ENTITY("error.duplicate.email");
+                }
                 String adminCredentials = this.customerDAO.insertCustomer(customer);
                 if (customer.getEmail() != null && !customer.getEmail().trim().equals("")) {
                     if (mailchimpService.initialize()) {
@@ -163,6 +175,14 @@ public class CustomerResource {
                 result.put("adminCredentials", adminCredentials);
                 return Response.OK(result);
             } else {
+                dbCustomer = customerDAO.findById(customer.getId());
+                dbUser = dbCustomer != null ? unsecureDAO.findByEmail(dbCustomer.getEmail()) : null;
+                if (dbUser != null) {
+                    dbUser.setLogin(CustomerDAO.transliterate(customer.getName()));
+                    dbUser.setName(customer.getMainUserName());
+                    dbUser.setEmail(customer.getEmail());
+                    this.userDAO.updateUserMainDetails(dbUser, false);
+                }
                 this.customerDAO.updateCustomer(customer);
                 return Response.OK();
             }

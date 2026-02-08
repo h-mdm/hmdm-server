@@ -185,7 +185,8 @@ public class ConfigurationResource {
             } else {
                 if (id == null) {
                     if (!SecurityContext.get().hasPermission("add_config")) {
-                        log.error("Unauthorized attempt to create the configuration " + configuration.getId());
+                        log.error("Unauthorized attempt to create the configuration " + configuration.getId() +
+                                "by user " + SecurityContext.get().getCurrentUserName());
                         return Response.PERMISSION_DENIED();
                     }
                     configuration.setDisableLocation(false);        // Not used but shouldn't be NULL
@@ -197,6 +198,11 @@ public class ConfigurationResource {
                         userDAO.updateUserMainDetails(user);
                     }
                 } else {
+                    if (!configurationDAO.hasConfigurationAccess(id)) {
+                        log.error("Unauthorized attempt to update the configuration " + configuration.getId() +
+                                "by user " + SecurityContext.get().getCurrentUserName());
+                        return Response.PERMISSION_DENIED();
+                    }
                     log.info("Configuration " + configuration.getName() + " updated by user "  + SecurityContext.get().getCurrentUserName());
                     this.configurationDAO.updateConfiguration(configuration);
                     this.pushService.notifyDevicesOnUpdate(configuration.getId());
@@ -223,7 +229,8 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/application/upgrade")
     public Response upgradeConfiguration(UpgradeConfigurationApplicationRequest request) {
-        if (!SecurityContext.get().hasPermission("configurations")) {
+        if (!SecurityContext.get().hasPermission("configurations") ||
+                !configurationDAO.hasConfigurationAccess(request.getConfigurationId())) {
             log.error("Unauthorized attempt to upgrade the configuration " + request.getConfigurationId());
             return Response.PERMISSION_DENIED();
         }
@@ -248,7 +255,8 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/copy")
     public Response copyConfiguration(Configuration configuration) {
-        if (!SecurityContext.get().hasPermission("copy_config")) {
+        if (!SecurityContext.get().hasPermission("copy_config") ||
+                !configurationDAO.hasConfigurationAccess(configuration.getId())) {
             log.error("Unauthorized attempt to copy the configuration " + configuration.getId());
             return Response.PERMISSION_DENIED();
         }
@@ -283,7 +291,8 @@ public class ConfigurationResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeConfiguration(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("copy_config")) {
+        if (!SecurityContext.get().hasPermission("copy_config") ||
+                !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to delete the configuration " + id);
             return Response.PERMISSION_DENIED();
         }
@@ -318,7 +327,8 @@ public class ConfigurationResource {
     @Path("/applications/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationApplications(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("configurations")) {
+        if (!SecurityContext.get().hasPermission("configurations") ||
+                !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to access configuration applications");
             return Response.PERMISSION_DENIED();
         }
@@ -335,7 +345,8 @@ public class ConfigurationResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationById(@PathParam("id") Integer id) {
-        if (!SecurityContext.get().hasPermission("configurations")) {
+        if (!SecurityContext.get().hasPermission("configurations") ||
+                !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to access the configuration " + id);
             return Response.PERMISSION_DENIED();
         }

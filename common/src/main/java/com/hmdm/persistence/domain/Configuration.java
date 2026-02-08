@@ -152,6 +152,8 @@ public class Configuration implements CustomerData, Serializable {
     private boolean encryptDevice;
     @ApiModelProperty("Additional QR code parameters")
     private String qrParameters;
+    @ApiModelProperty("Admin extras in QR code")
+    private String adminExtras;
     @ApiModelProperty("Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
     @ApiModelProperty("Flag enabling Home button in kiosk mode")
@@ -456,6 +458,14 @@ public class Configuration implements CustomerData, Serializable {
 
     public void setQrParameters(String qrParameters) {
         this.qrParameters = qrParameters;
+    }
+
+    public String getAdminExtras() {
+        return adminExtras;
+    }
+
+    public void setAdminExtras(String adminExtras) {
+        this.adminExtras = adminExtras;
     }
 
     public boolean isMobileEnrollment() {
@@ -889,6 +899,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setWifiSecurityType(getWifiSecurityType());
         copy.setEncryptDevice(isEncryptDevice());
         copy.setQrParameters(getQrParameters());
+        copy.setAdminExtras(getAdminExtras());
         copy.setKioskHome(getKioskHome());
         copy.setKioskRecents(getKioskRecents());
         copy.setKioskScreenOn(getKioskScreenOn());

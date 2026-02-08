@@ -201,7 +201,7 @@ public class CustomerDAO {
                 user.setPasswordResetToken(PasswordUtil.generateToken());
             }
             user.setLogin(transliterate(customer.getName()));
-            user.setName(customer.getName());
+            user.setName(customer.getMainUserName());
             user.setEmail(customer.getEmail());
             user.setUserRole(orgAdminRole);
 
@@ -306,7 +306,7 @@ public class CustomerDAO {
         log.info("Updated customer account: {}", customer);
     }
 
-    private static String transliterate(String s) {
+    public static String transliterate(String s) {
         s = s.toLowerCase();
         int n = s.length();
 

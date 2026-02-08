@@ -129,7 +129,21 @@ public class QRCodeResource {
         try {
             Configuration configuration = this.unsecureDAO.getConfigurationByQRCodeKey(id);
             if (configuration != null) {
-                String res = generateExtrasBundle(deviceID, createOnDemand, configuration, groups, useId, req.getContextPath());
+                String miscExtrasEntry = "";
+                if (configuration.getAdminExtras() != null) {
+                    miscExtrasEntry = configuration.getAdminExtras().trim();
+                    if (!miscExtrasEntry.equals("")) {
+                        miscExtrasEntry = ",\n" + miscExtrasEntry;
+                    }
+                }
+                String res = generateExtrasBundle(
+                        deviceID,
+                        createOnDemand,
+                        configuration,
+                        groups,
+                        useId,
+                        req.getContextPath(),
+                        miscExtrasEntry);
                 return javax.ws.rs.core.Response.ok(res).build();
             } else {
                 logger.error("Configuration not found for key: {}", id);
@@ -221,6 +235,14 @@ public class QRCodeResource {
                             }
                         }
 
+                        String miscExtrasEntry = "";
+                        if (configuration.getAdminExtras() != null) {
+                            miscExtrasEntry = configuration.getAdminExtras().trim();
+                            if (!miscExtrasEntry.equals("")) {
+                                miscExtrasEntry = ",\n" + miscExtrasEntry;
+                            }
+                        }
+
                         StringBuffer sb = new StringBuffer("{\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\"" + appMain.getPkg() +"/" + configuration.getEventReceivingComponent() + "\",\n" +
                                 "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":" + JSONObject.quote(apkUrl) + ",\n" +
@@ -232,7 +254,14 @@ public class QRCodeResource {
                         }
                         sb.append(miscQrParametersEntry +
                                 "\"android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE\": " +
-                                generateExtrasBundle(deviceID, createOnDemand, configuration, groups, useId, req.getContextPath()) +
+                                generateExtrasBundle(
+                                        deviceID,
+                                        createOnDemand,
+                                        configuration,
+                                        groups,
+                                        useId,
+                                        req.getContextPath(),
+                                        miscExtrasEntry) +
                                 "}\n");
                         final String s = sb.toString();
 
@@ -309,7 +338,7 @@ public class QRCodeResource {
     }
 
     private String generateExtrasBundle(String deviceID, String createOnDemand, Configuration configuration,
-                                        List<String> groups, String useId, String contextPath) {
+                                        List<String> groups, String useId, String contextPath, String miscExtras) {
 
         if (contextPath.startsWith("/")) {
             contextPath = contextPath.substring(1);
@@ -362,6 +391,7 @@ public class QRCodeResource {
                 groupEntry +
                 "\"com.hmdm.BASE_URL\":\"" + this.baseUrlForQrCode + "\",\n" +
                 "\"com.hmdm.SERVER_PROJECT\":\"" + contextPath + "\"" +
+                miscExtras +
                 "}\n";
         return bundle;
     }

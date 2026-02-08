@@ -23,14 +23,16 @@ package com.hmdm.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javax.inject.Named;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.APKFileDetails;
+import net.dongliu.apk.parser.ApkFile;
+import net.dongliu.apk.parser.bean.ApkMeta;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -88,13 +90,80 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * <p>Analyzes the specified APK file.</p>
+     * <p>Analyzes the specified APK file using the aapt utility.</p>
      *
      * @param filePath an absolute path to an APK-file to be analyzed.
      * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
      *         error.
      */
     private APKFileDetails analyzeApkFile(String filePath) {
+        try (ApkFile apkFile = new ApkFile(new File(filePath))) {
+            ApkMeta apkMeta = apkFile.getApkMeta();
+            APKFileDetails result = new APKFileDetails();
+            result.setPkg(apkMeta.getPackageName());
+            String label = apkMeta.getLabel();
+            result.setName(label != null ? label : "");
+            result.setVersion(apkMeta.getVersionName());
+            Long versionCode = apkMeta.getVersionCode();
+            result.setVersionCode(versionCode != null ? versionCode.intValue() : 0);
+            result.setArch(getArchByApkLibs(filePath));
+            return result;
+        } catch (IOException e) {
+            log.error("Failed to analyze APK-file: {}", filePath, e);
+            throw new APKFileAnalyzerException("Failed to analyze APK-file", e);
+        }
+    }
+
+    /**
+     * Detect native-code ABIs by scanning lib/<abi>/
+     * Returns null for universal APK, or arch label for a single-arch APK
+     */
+    private String getArchByApkLibs(String filePath) {
+        Set<String> abis = new TreeSet<>();
+        try (ZipFile zip = new ZipFile(new File(filePath))) {
+            zip.stream().forEach(e -> {
+                String name = e.getName();
+                if (name.startsWith("lib/")) {
+                    String[] parts = name.split("/");
+                    if (parts.length > 1) {
+                        abis.add(parts[1]);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            log.error("Failed to fetch libraries from APK-file: {}", filePath, e);
+            return null;
+        }
+
+        String result = null;
+        for (String abi : abis) {
+            if ("arm64-v8a".equals(abi)) {
+                if (Application.ARCH_ARMEABI.equals(result)) {
+                    // ARMEABI has already been set elsewhere, so it is a universal file
+                    return null;
+                }
+                result = Application.ARCH_ARM64;
+            } else if ("armeabi-v7a".equals(abi)) {
+                if (Application.ARCH_ARM64.equals(result)) {
+                    // ARM64 has already been set elsewhere, so it is a universal file
+                    return null;
+                }
+                result = Application.ARCH_ARMEABI;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * <p>Analyzes the specified APK file using the aapt utility.
+     * DEPRECATED AND NOT USED ANY MORE</p>
+     *
+     * @param filePath an absolute path to an APK-file to be analyzed.
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
+     *         error.
+     */
+    private APKFileDetails analyzeApkFileByAapt(String filePath) {
         try {
             final String[] commands = {this.aaptCommand, "dump", "badging", filePath};
             log.debug("Executing shell-commands: {}", Arrays.toString(commands));

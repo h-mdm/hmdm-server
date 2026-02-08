@@ -31,7 +31,7 @@
                                     lockVolume, manageVolume, volume, passwordMode, orientation,
                                     runDefaultLauncher, disableScreenshots, autostartForeground, timeZone, allowedClasses, newServerUrl,
                                     lockSafeSettings, permissive, kioskExit, showWifi, mainAppId, eventReceivingComponent, kioskMode,
-                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, encryptDevice, qrParameters, mobileEnrollment, kioskHome, kioskRecents,
+                                    contentAppId, wifiSSID, wifiPassword, wifiSecurityType, encryptDevice, qrParameters, adminExtras, mobileEnrollment, kioskHome, kioskRecents,
                                     kioskNotifications, kioskSystemInfo, kioskKeyguard, kioskLockButtons, kioskScreenOn, launcherUrl, restrictions, autoUpdate,
                                     blockStatusBar, systemUpdateType, systemUpdateFrom, systemUpdateTo,
                                     scheduleAppUpdate, appUpdateFrom, appUpdateTo, downloadUpdates, defaultFilePath)
@@ -42,7 +42,7 @@
                 #{lockVolume}, #{manageVolume}, #{volume}, #{passwordMode}, #{orientation},
                 #{runDefaultLauncher}, #{disableScreenshots}, #{autostartForeground}, #{timeZone}, #{allowedClasses}, #{newServerUrl},
                 #{lockSafeSettings}, #{permissive}, #{kioskExit}, #{showWifi}, #{mainAppId}, #{eventReceivingComponent}, #{kioskMode},
-                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{encryptDevice}, #{qrParameters}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
+                #{contentAppId}, #{wifiSSID}, #{wifiPassword}, #{wifiSecurityType}, #{encryptDevice}, #{qrParameters}, #{adminExtras}, #{mobileEnrollment}, #{kioskHome}, #{kioskRecents},
                 #{kioskNotifications}, #{kioskSystemInfo}, #{kioskKeyguard}, #{kioskLockButtons}, #{kioskScreenOn}, #{launcherUrl}, #{restrictions}, #{autoUpdate},
                 #{blockStatusBar}, #{systemUpdateType}, #{systemUpdateFrom}, #{systemUpdateTo},
                 #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{downloadUpdates}, #{defaultFilePath})

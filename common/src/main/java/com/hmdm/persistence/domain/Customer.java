@@ -353,6 +353,20 @@ public class Customer implements Serializable {
         this.signupToken = signupToken;
     }
 
+    public String getMainUserName() {
+        String result = "";
+        if (firstName != null) {
+            result += firstName;
+        }
+        if (lastName != null && !lastName.isEmpty()) {
+            result += " " + lastName;
+        }
+        if (result.isEmpty()) {
+            result = name;
+        }
+        return result;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

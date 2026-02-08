@@ -315,6 +315,9 @@ document.localization ['vi_VN'] = {
     'form.configuration.settings.mdm.launcher.placeholder': 'URL trình khởi chạy thay thế để đăng ký trong các mạng kín',
     'form.configuration.settings.mdm.misc': 'Các mục QR code khác',
     'form.configuration.settings.mdm.misc.placeholder': 'Các mục cách nhau bằng dấu phẩy, ví dụ:\n\'android.app.extra.PROVISIONING_LOCALE\': \'de_DE\'',
+    'form.configuration.settings.mdm.extras': 'Các thiết lập bổ sung dành cho quản trị viên',
+    'form.configuration.settings.mdm.extras.placeholder': 'Các thiết lập MDM bổ sung được phân tách bằng dấu phẩy, ví dụ::\n"com.hmdm.OPEN_WIFI": true',
+    'form.configuration.settings.mdm.permissive.locked': 'Tắt chế độ kiosk để kích hoạt tùy chọn chế độ cho phép',
     'form.configuration.settings.mdm.qrcode.url': 'URL mã QR',
     'form.configuration.settings.mdm.hint': 'Chọn ứng dụng chính và thành phần',
 

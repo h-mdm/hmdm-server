@@ -32,7 +32,6 @@ import java.util.Map;
 
 import com.google.inject.Singleton;
 import com.hmdm.event.ConfigurationUpdatedEvent;
-import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationSetting;
@@ -90,6 +89,12 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
 
     public Configuration getConfigurationByName(String name) {
         return getSingleRecord(customerId -> this.mapper.getConfigurationByName(customerId, name));
+    }
+
+    public boolean hasConfigurationAccess(int configurationId) {
+        Configuration c = getSingleRecordWithCurrentUser(currentUser ->
+                this.mapper.checkConfigurationAccess(currentUser.getCustomerId(), currentUser.getId(), configurationId));
+        return c != null;
     }
 
     public void insertConfiguration(Configuration config) {

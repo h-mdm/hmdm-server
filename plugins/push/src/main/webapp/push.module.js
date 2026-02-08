@@ -389,8 +389,10 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             runCommand: "{\"command\": \"shell command\"}",
             reboot: "",
             exitKiosk: "",
+            adminPanel: "",
             clearDownloadHistory: "",
             grantPermissions: "{\"pkg\": \"app.package.id\"}",
+            clearAppData: "{\"pkg\": \"app.package.id\"}",
             "(custom)": ""
         };
 
@@ -497,8 +499,10 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             $scope.task.messageType !== "runCommand" &&
             $scope.task.messageType !== "reboot" &&
             $scope.task.messageType !== "exitKiosk" &&
+            $scope.task.messageType !== "adminPanel" &&
             $scope.task.messageType !== "clearDownloadHistory" &&
-            $scope.task.messageType !== "grantPermissions") {
+            $scope.task.messageType !== "grantPermissions" &&
+            $scope.task.messageType !== "clearAppData") {
             $scope.task.customMessageType = $scope.task.messageType;
             $scope.task.messageType = "(custom)";
         }
@@ -515,8 +519,10 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             runCommand: "{\"command\": \"shell command\"}",
             reboot: "",
             exitKiosk: "",
+            adminPanel: "",
             clearDownloadHistory: "",
             grantPermissions: "{\"pkg\": \"app.package.id\"}",
+            clearAppData: "{\"pkg\": \"app.package.id\"}",
             "(custom)": ""
         };
 
