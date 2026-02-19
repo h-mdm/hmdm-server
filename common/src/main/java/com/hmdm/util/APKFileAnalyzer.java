@@ -27,6 +27,8 @@ import jakarta.inject.Named;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.APKFileDetails;
+import net.dongliu.apk.parser.ApkFile;
+import net.dongliu.apk.parser.bean.ApkMeta;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * <p>An analyzer for uploaded APK-files.</p>
+ * <p>
+ * An analyzer for uploaded APK-files.
+ * </p>
  *
  * @author isv
  */
@@ -50,12 +54,16 @@ import java.util.zip.ZipFile;
 public class APKFileAnalyzer {
 
     /**
-     * <p>A logger for the encountered events.</p>
+     * <p>
+     * A logger for the encountered events.
+     * </p>
      */
     private static final Logger log = LoggerFactory.getLogger(ApplicationDAO.class);
 
     /**
-     * <p>A command line string to call the <code>aapt</code> command.</p>
+     * <p>
+     * A command line string to call the <code>aapt</code> command.
+     * </p>
      */
     private final String aaptCommand;
 
@@ -65,7 +73,10 @@ public class APKFileAnalyzer {
     Pattern pattern = Pattern.compile("(\\w+)=\\'([^\\']*)\\'");
 
     /**
-     * <p>Constructs new <code>APKFileAnalyzer</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>APKFileAnalyzer</code> instance. This implementation
+     * does nothing.
+     * </p>
      */
     @Inject
     public APKFileAnalyzer(@Named("aapt.command") String aaptCommand) {
@@ -73,11 +84,14 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * <p>Analyzes the specified file (APK or XAPK).</p>
+     * <p>
+     * Analyzes the specified file (APK or XAPK).
+     * </p>
      *
      * @param filePath an absolute path to an file to be analyzed.
-     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
-     *         error.
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external
+     *                                  <code>aapt</code> command reported an
+     *                                  error.
      */
     public APKFileDetails analyzeFile(String filePath) {
         String realFileName = filePath.endsWith(".temp") ? FileUtil.getNameFromTmpPath(filePath) : filePath;
@@ -89,15 +103,88 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * <p>Analyzes the specified APK file.</p>
+     * <p>
+     * Analyzes the specified APK file using the aapt utility.
+     * </p>
      *
      * @param filePath an absolute path to an APK-file to be analyzed.
-     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
-     *         error.
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external
+     *                                  <code>aapt</code> command reported an
+     *                                  error.
      */
     private APKFileDetails analyzeApkFile(String filePath) {
+        try (ApkFile apkFile = new ApkFile(new File(filePath))) {
+            ApkMeta apkMeta = apkFile.getApkMeta();
+            APKFileDetails result = new APKFileDetails();
+            result.setPkg(apkMeta.getPackageName());
+            String label = apkMeta.getLabel();
+            result.setName(label != null ? label : "");
+            result.setVersion(apkMeta.getVersionName());
+            Long versionCode = apkMeta.getVersionCode();
+            result.setVersionCode(versionCode != null ? versionCode.intValue() : 0);
+            result.setArch(getArchByApkLibs(filePath));
+            return result;
+        } catch (IOException e) {
+            log.error("Failed to analyze APK-file: {}", filePath, e);
+            throw new APKFileAnalyzerException("Failed to analyze APK-file", e);
+        }
+    }
+
+    /**
+     * Detect native-code ABIs by scanning lib/<abi>/
+     * Returns null for universal APK, or arch label for a single-arch APK
+     */
+    private String getArchByApkLibs(String filePath) {
+        Set<String> abis = new TreeSet<>();
+        try (ZipFile zip = new ZipFile(new File(filePath))) {
+            zip.stream().forEach(e -> {
+                String name = e.getName();
+                if (name.startsWith("lib/")) {
+                    String[] parts = name.split("/");
+                    if (parts.length > 1) {
+                        abis.add(parts[1]);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            log.error("Failed to fetch libraries from APK-file: {}", filePath, e);
+            return null;
+        }
+
+        String result = null;
+        for (String abi : abis) {
+            if ("arm64-v8a".equals(abi)) {
+                if (Application.ARCH_ARMEABI.equals(result)) {
+                    // ARMEABI has already been set elsewhere, so it is a universal file
+                    return null;
+                }
+                result = Application.ARCH_ARM64;
+            } else if ("armeabi-v7a".equals(abi)) {
+                if (Application.ARCH_ARM64.equals(result)) {
+                    // ARM64 has already been set elsewhere, so it is a universal file
+                    return null;
+                }
+                result = Application.ARCH_ARMEABI;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * <p>
+     * Analyzes the specified APK file using the aapt utility.
+     * DEPRECATED AND NOT USED ANY MORE
+     * </p>
+     *
+     * @param filePath an absolute path to an APK-file to be analyzed.
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external
+     *                                  <code>aapt</code> command reported an
+     *                                  error.
+     */
+    private APKFileDetails analyzeApkFileByAapt(String filePath) {
         try {
-            final String[] commands = {this.aaptCommand, "dump", "badging", filePath};
+            final String[] commands = { this.aaptCommand, "dump", "badging", filePath };
             log.debug("Executing shell-commands: {}", Arrays.toString(commands));
             final Process exec = Runtime.getRuntime().exec(commands);
 
@@ -108,7 +195,8 @@ public class APKFileAnalyzer {
             final AtomicReference<String> appArch = new AtomicReference<>();
             final List<String> errorLines = new ArrayList<>();
 
-            // Process the error stream by collecting all the error lines for further logging
+            // Process the error stream by collecting all the error lines for further
+            // logging
             StreamGobbler errorGobbler = new StreamGobbler(exec.getErrorStream(), "ERROR", errorLines::add);
 
             // Process the output by analyzing the line starting with "package:"
@@ -162,13 +250,15 @@ public class APKFileAnalyzer {
         }
     }
 
-    // This function deals with an issue when the version name contains a space or even an apostrophe
+    // This function deals with an issue when the version name contains a space or
+    // even an apostrophe
     // It presumes the following format of the line:
-    // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx' compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
+    // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx'
+    // compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
     private void parseInfoLine(final String line,
-                               final AtomicReference<String> appPkg,
-                               final AtomicReference<String> appVersion,
-                               final AtomicReference<Integer> appVersionCode) {
+            final AtomicReference<String> appPkg,
+            final AtomicReference<String> appVersion,
+            final AtomicReference<Integer> appVersionCode) {
 
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
@@ -186,9 +276,9 @@ public class APKFileAnalyzer {
     }
 
     private void parseInfoLineLegacy(final String line,
-                                     final AtomicReference<String> appPkg,
-                                     final AtomicReference<String> appVersion,
-                                     final AtomicReference<Integer> appVersionCode) {
+            final AtomicReference<String> appPkg,
+            final AtomicReference<String> appVersion,
+            final AtomicReference<Integer> appVersionCode) {
         Scanner scanner = new Scanner(line).useDelimiter(" ");
         while (scanner.hasNext()) {
             final String token = scanner.next();
@@ -256,8 +346,11 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * <p>A consumer for the stream contents. Outputs the line read from the stream and passes it to provided line
-     * consumer.</p>
+     * <p>
+     * A consumer for the stream contents. Outputs the line read from the stream and
+     * passes it to provided line
+     * consumer.
+     * </p>
      */
     private class StreamGobbler extends Thread {
         private final InputStream is;
@@ -284,7 +377,9 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * <p>Analyzes the specified XAPK file.</p>
+     * <p>
+     * Analyzes the specified XAPK file.
+     * </p>
      *
      * @param filePath an absolute path to an XAPK-file to be analyzed.
      * @throws APKFileAnalyzerException if an unexpected error occurs
@@ -294,11 +389,12 @@ public class APKFileAnalyzer {
             ZipFile zipFile = new ZipFile(filePath);
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-            while(entries.hasMoreElements()) {
+            while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 if (entry.getName().equalsIgnoreCase("manifest.json")) {
                     InputStream stream = zipFile.getInputStream(entry);
-                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+                    BufferedReader streamReader = new BufferedReader(
+                            new InputStreamReader(stream, StandardCharsets.UTF_8));
                     StringBuilder responseStrBuilder = new StringBuilder();
                     String inputStr;
                     while ((inputStr = streamReader.readLine()) != null) {

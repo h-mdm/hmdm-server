@@ -60,18 +60,20 @@ public class ConfigurationResource {
     private String baseUrl;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public ConfigurationResource() {
     }
 
     @Inject
     public ConfigurationResource(ConfigurationDAO configurationDAO,
-                                 ApplicationDAO applicationDAO,
-                                 PushService pushService,
-                                 CustomerDAO customerDAO,
-                                 UserDAO userDAO,
-                                 @Named("base.url") String baseUrl) {
+            ApplicationDAO applicationDAO,
+            PushService pushService,
+            CustomerDAO customerDAO,
+            UserDAO userDAO,
+            @Named("base.url") String baseUrl) {
         this.configurationDAO = configurationDAO;
         this.applicationDAO = applicationDAO;
         this.pushService = pushService;
@@ -79,10 +81,9 @@ public class ConfigurationResource {
         this.userDAO = userDAO;
         this.baseUrl = baseUrl;
     }
+
     // =================================================================================================================
-    @Operation(summary = "Get configurations",
-            description = "Gets the list of available configurations"
-    )
+    @Operation(summary = "Get configurations", description = "Gets the list of available configurations")
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -97,9 +98,7 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get configuration names",
-            description = "Gets the list of available configuration names"
-    )
+    @Operation(summary = "Get configuration names", description = "Gets the list of available configuration names")
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
@@ -113,9 +112,7 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Search configurations",
-            description = "Searches configurations meeting the specified filter value"
-    )
+    @Operation(summary = "Search configurations", description = "Searches configurations meeting the specified filter value")
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -129,10 +126,12 @@ public class ConfigurationResource {
         return Response.OK(configurations);
     }
 
-
     // =================================================================================================================
     /**
-     * <p>Gets the list of configuration id/names matching the specified filter for autocompletions.</p>
+     * <p>
+     * Gets the list of configuration id/names matching the specified filter for
+     * autocompletions.
+     * </p>
      *
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of configurations matching the specified filter.
@@ -155,16 +154,14 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update configuration",
-            description = "Creates a new configuration (if id is not provided) or update existing one otherwise."
-    )
+    @Operation(summary = "Create or update configuration", description = "Creates a new configuration (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateConfiguration(Configuration configuration) {
         if (!SecurityContext.get().hasPermission("configurations")) {
             log.error("Unauthorized attempt to update the configuration " + configuration.getId() +
-            ", user " + SecurityContext.get().getCurrentUserName());
+                    ", user " + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -175,10 +172,11 @@ public class ConfigurationResource {
             } else {
                 if (id == null) {
                     if (!SecurityContext.get().hasPermission("add_config")) {
-                        log.error("Unauthorized attempt to create the configuration " + configuration.getId());
+                        log.error("Unauthorized attempt to create the configuration " + configuration.getId() +
+                                "by user " + SecurityContext.get().getCurrentUserName());
                         return Response.PERMISSION_DENIED();
                     }
-                    configuration.setDisableLocation(false);        // Not used but shouldn't be NULL
+                    configuration.setDisableLocation(false); // Not used but shouldn't be NULL
                     this.configurationDAO.insertConfiguration(configuration);
                     User user = SecurityContext.get().getCurrentUser().get();
                     if (!user.isAllConfigAvailable()) {
@@ -187,7 +185,13 @@ public class ConfigurationResource {
                         userDAO.updateUserMainDetails(user);
                     }
                 } else {
-                    log.info("Configuration " + configuration.getName() + " updated by user "  + SecurityContext.get().getCurrentUserName());
+                    if (!configurationDAO.hasConfigurationAccess(id)) {
+                        log.error("Unauthorized attempt to update the configuration " + configuration.getId() +
+                                "by user " + SecurityContext.get().getCurrentUserName());
+                        return Response.PERMISSION_DENIED();
+                    }
+                    log.info("Configuration " + configuration.getName() + " updated by user "
+                            + SecurityContext.get().getCurrentUserName());
                     this.configurationDAO.updateConfiguration(configuration);
                     this.pushService.notifyDevicesOnUpdate(configuration.getId());
                 }
@@ -203,39 +207,39 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Upgrade configuration application",
-            description = "Upgrades the application used by configuration to most recent version"
-    )
+    @Operation(summary = "Upgrade configuration application", description = "Upgrades the application used by configuration to most recent version")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/application/upgrade")
     public Response upgradeConfiguration(UpgradeConfigurationApplicationRequest request) {
-        if (!SecurityContext.get().hasPermission("configurations")) {
+        if (!SecurityContext.get().hasPermission("configurations") ||
+                !configurationDAO.hasConfigurationAccess(request.getConfigurationId())) {
             log.error("Unauthorized attempt to upgrade the configuration " + request.getConfigurationId());
             return Response.PERMISSION_DENIED();
         }
         try {
-            this.configurationDAO.upgradeConfigurationApplication(request.getConfigurationId(), request.getApplicationId());
+            this.configurationDAO.upgradeConfigurationApplication(request.getConfigurationId(),
+                    request.getApplicationId());
             final Configuration configuration = this.getConfiguration(request.getConfigurationId());
             return Response.OK(configuration);
         } catch (Exception e) {
-            log.error("Failed to upgrade application #{} for configuration #{} to latest version due to unexpected error",
+            log.error(
+                    "Failed to upgrade application #{} for configuration #{} to latest version due to unexpected error",
                     request.getConfigurationId(), request.getApplicationId(), e);
             return Response.INTERNAL_ERROR();
         }
     }
 
     // =================================================================================================================
-    @Operation(summary = "Copy configuration",
-            description = "Creates a new copy of configuration referenced by the id and names it with provided name."
-    )
+    @Operation(summary = "Copy configuration", description = "Creates a new copy of configuration referenced by the id and names it with provided name.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/copy")
     public Response copyConfiguration(Configuration configuration) {
-        if (!SecurityContext.get().hasPermission("copy_config")) {
+        if (!SecurityContext.get().hasPermission("copy_config") ||
+                !configurationDAO.hasConfigurationAccess(configuration.getId())) {
             log.error("Unauthorized attempt to copy the configuration " + configuration.getId());
             return Response.PERMISSION_DENIED();
         }
@@ -244,7 +248,8 @@ public class ConfigurationResource {
             return Response.DUPLICATE_ENTITY("error.duplicate.configuration");
         } else {
             dbConfiguration = this.getConfiguration(configuration.getId());
-            List<Application> configurationApplications = this.configurationDAO.getPlainConfigurationApplications(configuration.getId());
+            List<Application> configurationApplications = this.configurationDAO
+                    .getPlainConfigurationApplications(configuration.getId());
             Configuration copy = dbConfiguration.newCopy();
             copy.setName(configuration.getName());
             copy.setDescription(configuration.getDescription());
@@ -262,14 +267,13 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Delete configuration",
-            description = "Deletes a configuration referenced by the specified ID."
-    )
+    @Operation(summary = "Delete configuration", description = "Deletes a configuration referenced by the specified ID.")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeConfiguration(@PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("copy_config")) {
+        if (!SecurityContext.get().hasPermission("copy_config") ||
+                !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to delete the configuration " + id);
             return Response.PERMISSION_DENIED();
         }
@@ -294,14 +298,14 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get configuration applications",
-            description = "Gets the list of all applications in context of usage by the requested configuration"
-    )
+    @Operation(summary = "Get configuration applications", description = "Gets the list of all applications in context of usage by the requested configuration")
     @GET
     @Path("/applications/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConfigurationApplications(@PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("configurations")) {
+    public Response getConfigurationApplications(
+            @PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("configurations") ||
+                !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to access configuration applications");
             return Response.PERMISSION_DENIED();
         }
@@ -309,14 +313,13 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get configuration",
-            description = "Gets the details for configuration referenced by the specified ID"
-    )
+    @Operation(summary = "Get configuration", description = "Gets the details for configuration referenced by the specified ID")
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationById(@PathParam("id") Integer id) {
-        if (!SecurityContext.get().hasPermission("configurations")) {
+        if (!SecurityContext.get().hasPermission("configurations") ||
+                !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to access the configuration " + id);
             return Response.PERMISSION_DENIED();
         }
@@ -327,11 +330,14 @@ public class ConfigurationResource {
     }
 
     /**
-     * <p>Gets the configuration referenced by the specified ID from DB.</p>
+     * <p>
+     * Gets the configuration referenced by the specified ID from DB.
+     * </p>
      *
      * @param id an ID of a configuration to get data for.
      *
-     * @return a configuration referenced by the specified ID or <code>null</code> if there is no such configuration.
+     * @return a configuration referenced by the specified ID or <code>null</code>
+     *         if there is no such configuration.
      */
     private Configuration getConfiguration(Integer id) {
 
@@ -346,7 +352,8 @@ public class ConfigurationResource {
                     if (file.getExternalUrl() != null) {
                         file.setUrl(file.getExternalUrl());
                     } else if (file.getFilePath() != null) {
-                        final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), file.getFilePath());
+                        final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(),
+                                file.getFilePath());
                         file.setUrl(url);
                     }
                 });

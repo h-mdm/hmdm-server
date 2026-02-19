@@ -38,168 +38,170 @@ import static com.hmdm.persistence.domain.IconSize.SMALL;
 public class Configuration implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -7028146375054564719L;
-    
+
     // This group of settings corresponds to common settings
-    @Schema(description="A configuration ID")
+    @Schema(description = "A configuration ID")
     private Integer id;
-    @Schema(description="A unique name of configuration")
+    @Schema(description = "A unique name of configuration")
     private String name;
-    @Schema(description="A description of configuration")
+    @Schema(description = "A description of configuration")
     private String description;
-    @Schema(description="A password for administrator of configuration (MD5 hash)")
+    @Schema(description = "A password for administrator of configuration (MD5 hash)")
     private String password;
     @Schema(hidden = true)
     private int type;
-    @Schema(description="A list of applications set for configuration")
+    @Schema(description = "A list of applications set for configuration")
     private List<Application> applications = new LinkedList<>();
     @Schema(hidden = true)
     private int customerId;
-    @Schema(description="A flag indicating if application versions update is enabled", hidden = true)
+    @Schema(description = "A flag indicating if application versions update is enabled", hidden = true)
     private final boolean autoUpdate = false;
-    @Schema(description="A flag indicating if status bar is locked")
+    @Schema(description = "A flag indicating if status bar is locked")
     private boolean blockStatusBar;
-    @Schema(description="A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed", allowableValues = "0,1,2,3")
+    @Schema(description = "A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed", allowableValues = "0,1,2,3")
     private int systemUpdateType;
-    @Schema(description="A start time for system update period formatted as HH:MM. (If system update time is 2)")
+    @Schema(description = "A start time for system update period formatted as HH:MM. (If system update time is 2)")
     private String systemUpdateFrom;
-    @Schema(description="An end time for system update period formatted as HH:MM. (If system update time is 2)")
+    @Schema(description = "An end time for system update period formatted as HH:MM. (If system update time is 2)")
     private String systemUpdateTo;
-    @Schema(description="A flag indicating if the application update must be scheduled")
+    @Schema(description = "A flag indicating if the application update must be scheduled")
     private boolean scheduleAppUpdate;
-    @Schema(description="A start time for app update period formatted as HH:MM.")
+    @Schema(description = "A start time for app update period formatted as HH:MM.")
     private String appUpdateFrom;
-    @Schema(description="An end time for system update period formatted as HH:MM.")
+    @Schema(description = "An end time for system update period formatted as HH:MM.")
     private String appUpdateTo;
-    @Schema(description="Limits downloading updates")
+    @Schema(description = "Limits downloading updates")
     private DownloadUpdatesType downloadUpdates = DownloadUpdatesType.UNLIMITED;
 
-    @Schema(description="A flag indicating if GPS is enabled on device")
+    @Schema(description = "A flag indicating if GPS is enabled on device")
     private Boolean gps;
-    @Schema(description="A flag indicating if Bluetooth is enabled on device")
+    @Schema(description = "A flag indicating if Bluetooth is enabled on device")
     private Boolean bluetooth;
-    @Schema(description="A flag indicating if Wi-Fi is enabled on device")
+    @Schema(description = "A flag indicating if Wi-Fi is enabled on device")
     private Boolean wifi;
-    @Schema(description="A flag indicating if Mobile Data is enabled on device")
+    @Schema(description = "A flag indicating if Mobile Data is enabled on device")
     private Boolean mobileData;
-    @Schema(description="A flag indicating if USB storage is enabled on device")
+    @Schema(description = "A flag indicating if USB storage is enabled on device")
     private Boolean usbStorage;
-    @Schema(description="A type of location tracking")
+    @Schema(description = "A type of location tracking")
     private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
-    @Schema(description="A flag indicating if location permission shouldn't be granted")
+    @Schema(description = "A flag indicating if location permission shouldn't be granted")
     private Boolean disableLocation;
-    @Schema(description="Strategy of app permission auto-granting")
+    @Schema(description = "Strategy of app permission auto-granting")
     private AppPermissionsType appPermissions = AppPermissionsType.GRANTALL;
-    @Schema(description="Push notification options")
+    @Schema(description = "Push notification options")
     private String pushOptions;
-    @Schema(description="Keep-Alive time for MQTT connection")
+    @Schema(description = "Keep-Alive time for MQTT connection")
     private Integer keepaliveTime;
-    @Schema(description="Brightness management flag. null: not managed, false: manual, true: auto")
+    @Schema(description = "Brightness management flag. null: not managed, false: manual, true: auto")
     private Boolean autoBrightness;
-    @Schema(description="Brightness value (if manual), 0-255")
+    @Schema(description = "Brightness value (if manual), 0-255")
     private Integer brightness;
-    @Schema(description="A flag indicating if screen timeout is managed on device")
+    @Schema(description = "A flag indicating if screen timeout is managed on device")
     private Boolean manageTimeout;
-    @Schema(description="Timeout value (in seconds)")
+    @Schema(description = "Timeout value (in seconds)")
     private Integer timeout;
-    @Schema(description="A flag indicating if volume is locked on device")
+    @Schema(description = "A flag indicating if volume is locked on device")
     private Boolean lockVolume;
-    @Schema(description="A flag indicating if volume must be adjusted on device")
+    @Schema(description = "A flag indicating if volume must be adjusted on device")
     private Boolean manageVolume;
-    @Schema(description="Volume value (in percents)")
+    @Schema(description = "Volume value (in percents)")
     private Integer volume;
-    @Schema(description="Password requirements for the mobile device")
+    @Schema(description = "Password requirements for the mobile device")
     private String passwordMode;
-    @Schema(description="Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
+    @Schema(description = "Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
     private Integer orientation;
-    @Schema(description="Flag enabling usage with default launcher")
+    @Schema(description = "Flag enabling usage with default launcher")
     private Boolean runDefaultLauncher;
-    @Schema(description="Flag indicating if screenshots are disabled on the device")
+    @Schema(description = "Flag indicating if screenshots are disabled on the device")
     private Boolean disableScreenshots;
-    @Schema(description="Flag indicating if auto-started apps should be kept in the foreground")
+    @Schema(description = "Flag indicating if auto-started apps should be kept in the foreground")
     private Boolean autostartForeground;
-    @Schema(description="Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
+    @Schema(description = "Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
     private String timeZone;
-    @Schema(description="Allowed classes, separated by comma")
+    @Schema(description = "Allowed classes, separated by comma")
     private String allowedClasses;
-    @Schema(description="New server URL used to migrate to another server")
+    @Schema(description = "New server URL used to migrate to another server")
     private String newServerUrl;
-    @Schema(description="Flag disabling safe settings")
+    @Schema(description = "Flag disabling safe settings")
     private Boolean lockSafeSettings;
-    @Schema(description="Flag enabling permissive mode")
+    @Schema(description = "Flag enabling permissive mode")
     private Boolean permissive;
-    @Schema(description="Flag enabling the kiosk exit button")
+    @Schema(description = "Flag enabling the kiosk exit button")
     private Boolean kioskExit;
-    @Schema(description="Show WiFi settings if there's a connection error, also in Kiosk mode")
+    @Schema(description = "Show WiFi settings if there's a connection error, also in Kiosk mode")
     private Boolean showWifi;
 
     // This group of settings corresponds to MDM settings
-    @Schema(description="A package ID for main application")
+    @Schema(description = "A package ID for main application")
     private Integer mainAppId;
-    @Schema(description="A package ID for event receiving component")
+    @Schema(description = "A package ID for event receiving component")
     private String eventReceivingComponent;
-    @Schema(description="A flag indicating if MDM is operating in kiosk mode")
+    @Schema(description = "A flag indicating if MDM is operating in kiosk mode")
     private boolean kioskMode;
-    @Schema(description="A package ID for content application")
+    @Schema(description = "A package ID for content application")
     private Integer contentAppId;
-    @Schema(description="WiFi SSID for provisioning")
+    @Schema(description = "WiFi SSID for provisioning")
     private String wifiSSID;
-    @Schema(description="WiFi password for provisioning")
+    @Schema(description = "WiFi password for provisioning")
     private String wifiPassword;
-    @Schema(description="WiFi security type for provisioning: NONE/WPA/WEP/EAP")
+    @Schema(description = "WiFi security type for provisioning: NONE/WPA/WEP/EAP")
     private String wifiSecurityType;
-    @Schema(description="Device encryption")
+    @Schema(description = "Device encryption")
     private boolean encryptDevice;
-    @Schema(description="Additional QR code parameters")
+    @Schema(description = "Additional QR code parameters")
     private String qrParameters;
-    @Schema(description="Prefer mobile data for provisioning")
+    @Schema(description = "Admin extras in QR code")
+    private String adminExtras;
+    @Schema(description = "Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
-    @Schema(description="Flag enabling Home button in kiosk mode")
+    @Schema(description = "Flag enabling Home button in kiosk mode")
     private Boolean kioskHome;
-    @Schema(description="Flag enabling Recents button in kiosk mode")
+    @Schema(description = "Flag enabling Recents button in kiosk mode")
     private Boolean kioskRecents;
-    @Schema(description="Flag enabling notifications in kiosk mode")
+    @Schema(description = "Flag enabling notifications in kiosk mode")
     private Boolean kioskNotifications;
-    @Schema(description="Flag enabling system info in kiosk mode")
+    @Schema(description = "Flag enabling system info in kiosk mode")
     private Boolean kioskSystemInfo;
-    @Schema(description="Flag enabling lock screen in kiosk mode")
+    @Schema(description = "Flag enabling lock screen in kiosk mode")
     private Boolean kioskKeyguard;
-    @Schema(description="Flag locking power button in kiosk mode")
+    @Schema(description = "Flag locking power button in kiosk mode")
     private Boolean kioskLockButtons;
-    @Schema(description="Flag forcing screen to be on in kiosk mode")
+    @Schema(description = "Flag forcing screen to be on in kiosk mode")
     private Boolean kioskScreenOn;
-    @Schema(description="Overridden launcher URL")
+    @Schema(description = "Overridden launcher URL")
     private String launcherUrl;
-    @Schema(description="Additional comma separated restrictions in MDM mode")
+    @Schema(description = "Additional comma separated restrictions in MDM mode")
     private String restrictions;
 
     // This group of settings corresponds to Design settings
     private boolean useDefaultDesignSettings;
-    @Schema(description="A background color to use when running MDM application")
+    @Schema(description = "A background color to use when running MDM application")
     private String backgroundColor;
-    @Schema(description="A text color to use when running MDM application")
+    @Schema(description = "A text color to use when running MDM application")
     private String textColor;
-    @Schema(description="An URL for background image to use when running MDM application")
+    @Schema(description = "An URL for background image to use when running MDM application")
     private String backgroundImageUrl;
-    @Schema(description="A size of the icons to use when running MDM application")
+    @Schema(description = "A size of the icons to use when running MDM application")
     private IconSize iconSize = SMALL;
-    @Schema(description="A type of desktop header to use when running MDM application")
+    @Schema(description = "A type of desktop header to use when running MDM application")
     private DesktopHeader desktopHeader = NO_HEADER;
-    @Schema(description="Desktop header template")
+    @Schema(description = "Desktop header template")
     private String desktopHeaderTemplate;
-    @Schema(description="If checked, the data of the device status bar (time, battery, etc) are displayed by Headwind MDM")
+    @Schema(description = "If checked, the data of the device status bar (time, battery, etc) are displayed by Headwind MDM")
     private boolean displayStatus;
 
     // An unique key used for retrieving the QR code for configuration
     @Schema(hidden = true)
     private String qrCodeKey;
 
-    @Schema(description="A list of settings for applications set for configuration")
+    @Schema(description = "A list of settings for applications set for configuration")
     private List<ApplicationSetting> applicationSettings;
 
-    @Schema(description="A list of files to be used on devices")
+    @Schema(description = "A list of files to be used on devices")
     private List<ConfigurationFile> files;
 
-    @Schema(description="The parameters for using applications set for configuration")
+    @Schema(description = "The parameters for using applications set for configuration")
     private List<ConfigurationApplicationParameters> applicationUsageParameters;
 
     @Schema(hidden = true)
@@ -457,6 +459,14 @@ public class Configuration implements CustomerData, Serializable {
         this.qrParameters = qrParameters;
     }
 
+    public String getAdminExtras() {
+        return adminExtras;
+    }
+
+    public void setAdminExtras(String adminExtras) {
+        this.adminExtras = adminExtras;
+    }
+
     public boolean isMobileEnrollment() {
         return mobileEnrollment;
     }
@@ -549,9 +559,9 @@ public class Configuration implements CustomerData, Serializable {
         return autoUpdate;
     }
 
-//    public void setAutoUpdate(boolean autoUpdate) {
-//        this.autoUpdate = autoUpdate;
-//    }
+    // public void setAutoUpdate(boolean autoUpdate) {
+    // this.autoUpdate = autoUpdate;
+    // }
 
     public boolean isBlockStatusBar() {
         return blockStatusBar;
@@ -869,7 +879,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setPassword(getPassword());
         copy.setType(getType());
         copy.setCustomerId(getCustomerId());
-//        copy.setAutoUpdate(isAutoUpdate());
+        // copy.setAutoUpdate(isAutoUpdate());
         copy.setBlockStatusBar(isBlockStatusBar());
         copy.setSystemUpdateType(getSystemUpdateType());
         copy.setSystemUpdateFrom(getSystemUpdateFrom());
@@ -888,6 +898,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setWifiSecurityType(getWifiSecurityType());
         copy.setEncryptDevice(isEncryptDevice());
         copy.setQrParameters(getQrParameters());
+        copy.setAdminExtras(getAdminExtras());
         copy.setKioskHome(getKioskHome());
         copy.setKioskRecents(getKioskRecents());
         copy.setKioskScreenOn(getKioskScreenOn());

@@ -2587,4 +2587,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="07.02.25-14:38" author="seva" context="common">
+        <comment>Column,new: configurations#adminExtras</comment>
+        <sql>
+            ALTER TABLE configurations ADD COLUMN adminExtras TEXT;
+        </sql>
+        <rollback>
+            ALTER TABLE configurations DROP COLUMN adminExtras;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

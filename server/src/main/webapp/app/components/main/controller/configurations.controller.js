@@ -348,6 +348,8 @@ angular.module('headwind-kiosk')
                 return localizedText;
             };
 
+            $scope.localizePermissiveLockedTitle = localization.localize('form.configuration.settings.mdm.permissive.locked');
+
             $scope.filterApps = function (item) {
                 var filter = ($scope.paging.filterText || '').toLowerCase();
 

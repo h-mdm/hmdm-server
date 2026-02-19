@@ -52,6 +52,18 @@ public interface ConfigurationMapper {
                                                     @Param("value") String value,
                                                     @Param("userId") int userId);
 
+    @Select({"SELECT configurations.* " +
+            "FROM configurations " +
+            "INNER JOIN users ON users.id = #{userId} " +
+            "LEFT JOIN userConfigurationAccess access ON configurations.id = access.configurationId AND access.userId = users.id " +
+            "WHERE configurations.customerId=#{customerId} " +
+            "AND (users.allConfigAvailable = TRUE OR NOT access.id IS NULL) " +
+            "AND configurations.id=#{configurationId} " +
+            "LIMIT 1 "})
+    Configuration checkConfigurationAccess(@Param("customerId") int customerId,
+                                           @Param("userId") int userId,
+                                           @Param("configurationId") int configurationId);
+
     @SelectKey( statement = "SELECT currval('configurations_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
     void insertConfiguration(Configuration configuration);
 
@@ -105,6 +117,7 @@ public interface ConfigurationMapper {
             "wifiSecurityType=#{wifiSecurityType}, " +
             "encryptDevice=#{encryptDevice}, " +
             "qrParameters=#{qrParameters}, " +
+            "adminExtras=#{adminExtras}, " +
             "mobileEnrollment=#{mobileEnrollment}, " +
             "kioskHome=#{kioskHome}, " +
             "kioskRecents=#{kioskRecents}, " +
