@@ -1,7 +1,7 @@
 package com.hmdm.notification.guice.module;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import jakarta.inject.Named;
 import com.hmdm.notification.PushSender;
 import com.hmdm.util.CryptoUtil;
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
@@ -12,7 +12,8 @@ import org.apache.activemq.artemis.core.security.CheckType;
 import org.apache.activemq.artemis.core.security.Role;
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 import org.apache.activemq.artemis.core.settings.impl.AddressSettings;
-import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager;
+import org.apache.activemq.artemis.spi.core.protocol.RemotingConnection;
+import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,34 +154,46 @@ public class NotificationMqttTaskModule {
                 final String userPassword = CryptoUtil.getSHA1String(MQTT_USERNAME + hashSecret);
                 final String adminPassword = this.mqttAdminPassword;
 
-                embeddedBroker.setSecurityManager(new ActiveMQSecurityManager() {
+                embeddedBroker.setSecurityManager(new ActiveMQSecurityManager3() {
+                    @Override
+                    public String validateUser(String user, String password, RemotingConnection connection) {
+                        if (MQTT_USERNAME.equals(user) && userPassword.equals(password)) {
+                            return user;
+                        }
+                        if (MQTT_ADMIN_USERNAME.equals(user) && adminPassword.equals(password)) {
+                            return user;
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public String validateUserAndRole(String user, String password, Set<Role> roles,
+                            CheckType checkType, String address, RemotingConnection connection) {
+                        // First validate user credentials
+                        String validatedUser = validateUser(user, password, connection);
+                        if (validatedUser == null) {
+                            return null;
+                        }
+                        // Admin can do anything
+                        if (MQTT_ADMIN_USERNAME.equals(user)) {
+                            return user;
+                        }
+                        // Regular users can read and admin (subscribe), but not write (publish)
+                        if (MQTT_USERNAME.equals(user)) {
+                            return checkType != CheckType.SEND ? user : null;
+                        }
+                        return null;
+                    }
+
                     @Override
                     public boolean validateUser(String user, String password) {
-                        if (MQTT_USERNAME.equals(user)) {
-                            return userPassword.equals(password);
-                        }
-                        if (MQTT_ADMIN_USERNAME.equals(user)) {
-                            return adminPassword.equals(password);
-                        }
-                        return false;
+                        return validateUser(user, password, null) != null;
                     }
 
                     @Override
                     public boolean validateUserAndRole(String user, String password, Set<Role> roles,
                             CheckType checkType) {
-                        // First validate user credentials
-                        if (!validateUser(user, password)) {
-                            return false;
-                        }
-                        // Admin can do anything
-                        if (MQTT_ADMIN_USERNAME.equals(user)) {
-                            return true;
-                        }
-                        // Regular users can read and admin (subscribe), but not write (publish)
-                        if (MQTT_USERNAME.equals(user)) {
-                            return checkType != CheckType.SEND;
-                        }
-                        return false;
+                        return validateUserAndRole(user, password, roles, checkType, null, null) != null;
                     }
                 });
             }

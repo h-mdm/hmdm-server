@@ -24,8 +24,7 @@ package com.hmdm.rest.json.view.devicelist;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -37,7 +36,7 @@ import java.io.Serializable;
  */
 @JsonIgnoreProperties(value = {"application"}, ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "A specification of a single application installed and used on mobile device")
+@Schema(description = "A specification of a single application installed and used on mobile device")
 public class DeviceApplicationView implements Serializable {
 
     private static final long serialVersionUID = 1086525298150378152L;
@@ -54,12 +53,12 @@ public class DeviceApplicationView implements Serializable {
         this.application = application;
     }
 
-    @ApiModelProperty("A package ID of application")
+    @Schema(description="A package ID of application")
     public String getPkg() {
         return application.getPkg();
     }
 
-    @ApiModelProperty("A version of application")
+    @Schema(description="A version of application")
     public String getVersion() {
         return application.getVersion();
     }

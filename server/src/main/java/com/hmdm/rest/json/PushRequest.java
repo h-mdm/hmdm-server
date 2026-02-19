@@ -22,11 +22,11 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-@ApiModel(description = "Request to send Push messages to specified devices/groups")
+@Schema(description = "Request to send Push messages to specified devices/groups")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PushRequest {
     private String messageType;

@@ -29,8 +29,8 @@ import com.hmdm.rest.json.FileUploadResult;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.imgscalr.Scalr;
@@ -83,16 +83,14 @@ public class IconFileResource {
 
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload icon",
-            notes = "Uploads the icon to server. Returns a path to uploaded icon file",
-            response = FileUploadResult.class
+    @Operation(summary = "Upload icon",
+            description = "Uploads the icon to server. Returns a path to uploaded icon file"
     )
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadIconFile(@FormDataParam("file") InputStream uploadedInputStream,
-                                   @ApiParam("An icon file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+                                   @Parameter(description = "An icon file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         try {
             BufferedImage img = ImageIO.read(uploadedInputStream);
             if (img.getWidth() != img.getHeight()) {

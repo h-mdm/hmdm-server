@@ -30,10 +30,10 @@ import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.hmdm.persistence.GroupDAO;
 import com.hmdm.persistence.domain.Group;
 import com.hmdm.rest.json.Response;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = {"Device Group"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Device Group")
 @Singleton
 @Path("/private/groups")
 public class GroupResource {
@@ -69,11 +69,8 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get all device groups",
-            notes = "Gets the list of all available device groups",
-            response = Group.class,
-            responseContainer = "List"
+    @Operation(summary = "Get all device groups",
+            description = "Gets the list of all available device groups"
     )
     @GET
     @Path("/search")
@@ -83,16 +80,13 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Search device groups",
-            notes = "Search device groups meeting the specified filter value",
-            response = Group.class,
-            responseContainer = "List"
+    @Operation(summary = "Search device groups",
+            description = "Search device groups meeting the specified filter value"
     )
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchGroups(@PathParam("value") @ApiParam("A filter value") String value) {
+    public Response searchGroups(@PathParam("value") @Parameter(description = "A filter value") String value) {
         return Response.OK(this.groupDAO.getAllGroupsByValue(value));
     }
 
@@ -104,7 +98,7 @@ public class GroupResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of groups matching the specified filter.
      */
-    @ApiOperation(value = "Get group ids/names for autocomplete")
+    @Operation(summary = "Get group ids/names for autocomplete")
     @POST
     @Path("/autocomplete")
     @Produces(MediaType.APPLICATION_JSON)
@@ -122,9 +116,8 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update device group",
-            notes = "Create a new device group (if id is not provided) or update existing one otherwise."
+    @Operation(summary = "Create or update device group",
+            description = "Create a new device group (if id is not provided) or update existing one otherwise."
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -156,14 +149,13 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete device group",
-            notes = "Delete an existing device group"
+    @Operation(summary = "Delete device group",
+            description = "Delete an existing device group"
     )
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeGroup(@PathParam("id") @ApiParam("Device group ID") Integer id) {
+    public Response removeGroup(@PathParam("id") @Parameter(description = "Device group ID") Integer id) {
         if (!SecurityContext.get().hasPermission("settings")) {
             log.error("Unauthorized attempt to update groups by user " +
                     SecurityContext.get().getCurrentUserName());

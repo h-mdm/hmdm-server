@@ -25,8 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hmdm.persistence.domain.ConfigurationFile;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -38,7 +37,7 @@ import java.io.Serializable;
  */
 @JsonIgnoreProperties(value = {"file"}, ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "A specification of a single configuration file available for usage on mobile device")
+@Schema(description = "A specification of a single configuration file available for usage on mobile device")
 public class ConfigurationFileView implements Serializable {
 
     /**
@@ -56,7 +55,7 @@ public class ConfigurationFileView implements Serializable {
     /**
      * <p>A flag indicating if file is to be removed from the device or not.</p>
      */
-    @ApiModelProperty("A flag indicating if file is to be removed from the device or not")
+    @Schema(description="A flag indicating if file is to be removed from the device or not")
     public boolean isRemove() {
         return file.isRemove();
     }
@@ -64,7 +63,7 @@ public class ConfigurationFileView implements Serializable {
     /**
      * <p>A timestamp of file uploading to server (in milliseconds since epoch time).</p>
      */
-    @ApiModelProperty("A timestamp of file uploading to server (in milliseconds since epoch time)")
+    @Schema(description="A timestamp of file uploading to server (in milliseconds since epoch time)")
     public Long getLastUpdate() {
         return file.getLastUpdate();
     }
@@ -72,7 +71,7 @@ public class ConfigurationFileView implements Serializable {
     /**
      * <p>A path to a file on device (including the name of the file).</p>
      */
-    @ApiModelProperty("A path to a file on device")
+    @Schema(description="A path to a file on device")
     @JsonProperty("path")
     public String getDevicePath() {
         return file.getDevicePath();

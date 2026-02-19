@@ -128,6 +128,19 @@ public final class Initializer extends GuiceServletContextListener {
         initTasks();
     }
 
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        if (this.injector != null) {
+            try {
+                final NotificationMqttTaskModule mqttModule = this.injector.getInstance(NotificationMqttTaskModule.class);
+                mqttModule.shutdown();
+            } catch (Exception e) {
+                System.err.println("[HMDM-INITIALIZER]: Error shutting down MQTT broker: " + e);
+            }
+        }
+        super.contextDestroyed(servletContextEvent);
+    }
+
     private List<Module> getModules() {
         List<Module> modules = new LinkedList<>();
         modules.add(new PersistenceModule(this.context));

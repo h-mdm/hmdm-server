@@ -21,28 +21,27 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
-@ApiModel(description = "A collection of parameters for linking the single application to single configuration")
+@Schema(description = "A collection of parameters for linking the single application to single configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConfigurationApplicationParameters implements Serializable {
 
     private static final long serialVersionUID = 6239693672327794068L;
 
-    @ApiModelProperty("A record ID")
+    @Schema(description="A record ID")
     private Integer id;
 
-    @ApiModelProperty("A configuration ID")
+    @Schema(description="A configuration ID")
     private int configurationId;
 
-    @ApiModelProperty("An application ID")
+    @Schema(description="An application ID")
     private int applicationId;
 
-    @ApiModelProperty("A flag indicating if version check must be skipped on device")
+    @Schema(description="A flag indicating if version check must be skipped on device")
     private boolean skipVersionCheck;
 
     /**

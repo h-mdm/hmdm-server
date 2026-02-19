@@ -32,8 +32,8 @@ import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.FileUtil;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -95,16 +95,14 @@ public class ConfigurationFileResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload configuration file",
-            notes = "Uploads the configuration file to server. Returns a path to uploaded file",
-            response = FileUploadResult.class
+    @Operation(summary = "Upload configuration file",
+            description = "Uploads the configuration file to server. Returns a path to uploaded file"
     )
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadConfigurationFile(@FormDataParam("file") InputStream uploadedInputStream,
-                                            @ApiParam("A configuration file to upload") @FormDataParam("file")
+                                            @Parameter(description = "A configuration file to upload") @FormDataParam("file")
                                                     FormDataContentDisposition fileDetail) {
         try {
 

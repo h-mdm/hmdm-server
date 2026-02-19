@@ -22,48 +22,46 @@
 package com.hmdm.rest.json;
 
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@ApiModel(description = "A link between the single application and single configuration")
+@Schema(description = "A link between the single application and single configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationConfigurationLink implements CustomerData {
 
-    @ApiModelProperty(value = "An ID of a link between the application and configuration. " +
+    @Schema(description="An ID of a link between the application and configuration. " +
             "May be null if those are not linked", required = false)
     private Integer id;
-    @ApiModelProperty("An ID of a customer account which both the application and configuration belong to")
+    @Schema(description="An ID of a customer account which both the application and configuration belong to")
     private int customerId;
-    @ApiModelProperty("An ID of a configuration")
+    @Schema(description="An ID of a configuration")
     private int configurationId;
-    @ApiModelProperty("A name of a configuration")
+    @Schema(description="A name of a configuration")
     private String configurationName;
-    @ApiModelProperty("An ID of an application")
+    @Schema(description="An ID of an application")
     private int applicationId;
-    @ApiModelProperty("A name of an application")
+    @Schema(description="A name of an application")
     private String applicationName;
     // A helper property to indicate the action required to be performed by mobile device
     // in regard to application installation
     // 0 - do not install and hide if installed
     // 1 - install
     // 2 - do not install and remove if installed
-    @ApiModelProperty(
-            value = "An action required to be performed by mobile device in regard to application installation",
+    @Schema(description = "An action required to be performed by mobile device in regard to application installation",
             allowableValues = "0,1,2"
     )
     private int action;
-    @ApiModelProperty("A flag indicating if icon is to be shown on mobile device")
+    @Schema(description="A flag indicating if icon is to be shown on mobile device")
     private Boolean showIcon;
-    @ApiModelProperty(value = "A flag indicating that application is to be removed from the application")
+    @Schema(description="A flag indicating that application is to be removed from the application")
     private boolean remove;
-    @ApiModelProperty(value = "A flag indicating if more recent version of application exists")
+    @Schema(description="A flag indicating if more recent version of application exists")
     private boolean outdated;
-    @ApiModelProperty(value = "A latest version of the application")
+    @Schema(description="A latest version of the application")
     private String latestVersionText;
-    @ApiModelProperty(value = "A current version of the application as set for configuration")
+    @Schema(description="A current version of the application as set for configuration")
     private String currentVersionText;
-    @ApiModelProperty(value = "Set by front-end when the configuration needs to be notified about changes")
+    @Schema(description="Set by front-end when the configuration needs to be notified about changes")
     private boolean notify;
 
     /**

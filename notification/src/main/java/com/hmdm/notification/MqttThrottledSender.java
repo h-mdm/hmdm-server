@@ -1,10 +1,9 @@
 package com.hmdm.notification;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
+import com.hivemq.client.mqtt.datatypes.MqttQos;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +14,7 @@ public class MqttThrottledSender implements Runnable {
 
     private BlockingQueue<MqttEnvelope> queue = new LinkedBlockingQueue<>();
     private long mqttDelay;
-    private MqttClient mqttClient;
+    private Mqtt3BlockingClient mqttClient;
     private static final Logger log = LoggerFactory.getLogger(MqttThrottledSender.class);
 
     public MqttThrottledSender() {}
@@ -25,7 +24,7 @@ public class MqttThrottledSender implements Runnable {
         this.mqttDelay = mqttDelay;
     }
 
-    public void setClient(MqttClient mqttClient) {
+    public void setClient(Mqtt3BlockingClient mqttClient) {
         this.mqttClient = mqttClient;
     }
 
@@ -44,7 +43,13 @@ public class MqttThrottledSender implements Runnable {
             try {
                 MqttEnvelope msg = queue.take();
                 if (mqttClient != null) {
-                    mqttClient.publish(msg.getAddress(), msg.getMessage());
+                    MqttQos qos = msg.getQos() == 2 ? MqttQos.EXACTLY_ONCE
+                            : msg.getQos() == 1 ? MqttQos.AT_LEAST_ONCE : MqttQos.AT_MOST_ONCE;
+                    mqttClient.publishWith()
+                            .topic(msg.getAddress())
+                            .payload(msg.getPayload())
+                            .qos(qos)
+                            .send();
                     log.debug("Sending MQTT message to " + msg.getAddress());
                 } else {
                     log.error("MQTT client not initialized");
@@ -54,9 +59,7 @@ public class MqttThrottledSender implements Runnable {
             catch (InterruptedException e) {
                 e.printStackTrace();
                 return;
-            } catch (MqttPersistenceException e) {
-                e.printStackTrace();
-            } catch (MqttException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

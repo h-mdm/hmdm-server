@@ -39,9 +39,9 @@ import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ import static com.hmdm.plugins.deviceinfo.DeviceInfoPluginConfigurationImpl.PLUG
  */
 @Singleton
 @Path("/plugins/deviceinfo/deviceinfo")
-@Api(tags = {"Device Info plugin"})
+@Tag(name="Device Info plugin")
 public class DeviceInfoResource {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceInfoResource.class);
@@ -129,10 +129,8 @@ public class DeviceInfoResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Save device info",
-            notes = "Save the Device Info dynamic data",
-            response = Void.class
+    @Operation(summary = "Save device info",
+            description = "Save the Device Info dynamic data"
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -189,10 +187,8 @@ public class DeviceInfoResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get device info",
-            notes = "Get the current detailed info for device",
-            response = DeviceInfo.class
+    @Operation(summary = "Get device info",
+            description = "Get the current detailed info for device"
     )
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -216,11 +212,8 @@ public class DeviceInfoResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Search devices",
-            notes = "Search ",
-            response = DeviceLookupItem.class,
-            responseContainer = "List"
+    @Operation(summary = "Search devices",
+            description = "Search "
     )
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -243,11 +236,8 @@ public class DeviceInfoResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of dynamic info records matching the specified filter.
      */
-    @ApiOperation(
-            value = "Search dynamic info",
-            notes = "Gets the list of dynamic info records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Search dynamic info",
+            description = "Gets the list of dynamic info records matching the specified filter"
     )
     @POST
     @Path("/private/search/dynamic")

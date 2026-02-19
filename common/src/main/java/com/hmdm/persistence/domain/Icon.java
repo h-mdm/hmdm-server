@@ -22,8 +22,7 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -32,20 +31,20 @@ import java.io.Serializable;
  *
  * @author isv
  */
-@ApiModel(description = "A specification of a single icon used to represent an application on mobile device")
+@Schema(description = "A specification of a single icon used to represent an application on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Icon implements Serializable, CustomerData {
 
     private static final long serialVersionUID = -5082987201236988017L;
-    @ApiModelProperty("An application ID")
+    @Schema(description="An application ID")
     private Integer id;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
-    @ApiModelProperty("A name of the icon")
+    @Schema(description="A name of the icon")
     private String name;
-    @ApiModelProperty("An ID of an uploaded file storing the content of the icon")
+    @Schema(description="An ID of an uploaded file storing the content of the icon")
     private Integer fileId;
-    @ApiModelProperty("The name of an uploaded file storing the content of the icon")
+    @Schema(description="The name of an uploaded file storing the content of the icon")
     private String fileName;
 
     /**

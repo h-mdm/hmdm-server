@@ -22,7 +22,7 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -35,19 +35,19 @@ public class DeviceConfigurationFile {
     /**
      * <p>A logical name of the file.</p>
      */
-    @ApiModelProperty("A path to file on device")
+    @Schema(description="A path to file on device")
     private String path;
 
     /**
      * <p>A flag indicating if file is to be removed from the device or not.</p>
      */
-    @ApiModelProperty("A flag indicating if file is to be removed from the device or not")
+    @Schema(description="A flag indicating if file is to be removed from the device or not")
     private boolean remove;
 
     /**
      * <p>A timestamp of file uploading to server (in milliseconds since epoch time).</p>
      */
-    @ApiModelProperty("A timestamp of file uploading to server (in milliseconds since epoch time)")
+    @Schema(description="A timestamp of file uploading to server (in milliseconds since epoch time)")
     private Long lastUpdate;
 
 }

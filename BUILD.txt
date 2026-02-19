@@ -59,13 +59,7 @@ postgres=# CREATE USER hmdm WITH PASSWORD 'topsecret';
 postgres=# CREATE DATABASE hmdm WITH OWNER=hmdm;
 postgres=# \q
 
-8. Run the installer script (as root)
-
-sudo ./hmdm_install.sh
-
-9. On success, the installer script provides you with the URL. Open Headwind MDM in browser.
-
-10. (First deployment after upgrade) Clear Liquibase checksums if upgrading from Java 8/11:
+8. (Upgrading from Java 8/11 only) Clear Liquibase checksums before running the installer:
 
 # sudo su postgres
 # psql hmdm
@@ -73,3 +67,10 @@ hmdm=# UPDATE DATABASECHANGELOG SET MD5SUM = NULL;
 hmdm=# \q
 
 This is required because Liquibase 4.x uses a different checksum algorithm.
+Skip this step for fresh installations.
+
+9. Run the installer script (as root)
+
+sudo ./hmdm_install.sh
+
+10. On success, the installer script provides you with the URL. Open Headwind MDM in browser.

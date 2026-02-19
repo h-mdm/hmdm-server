@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationType;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -39,7 +39,7 @@ import jakarta.validation.constraints.NotNull;
  *
  * @author isv
  */
-@ApiModel(description = "A specification of a single application available for usage on mobile device")
+@Schema(description = "A specification of a single application available for usage on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyncApplication implements SyncApplicationInt {

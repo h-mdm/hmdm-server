@@ -22,6 +22,7 @@
 package com.hmdm.rest.resource;
 
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.apache.poi.util.IOUtils;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -51,8 +53,11 @@ import java.util.Date;
 @Deprecated
 public class PublicFilesResource {
 
+    private String filesDirectory;
+
     @Inject
-    public PublicFilesResource() {
+    public PublicFilesResource(@Named("files.directory") String filesDirectory) {
+        this.filesDirectory = filesDirectory;
     }
 
     /**
@@ -68,7 +73,7 @@ public class PublicFilesResource {
     public jakarta.ws.rs.core.Response downloadFile(@PathParam("filePath") String filePath) throws Exception {
         // TODO : ISV : Needs to identify the device and do a security check if device is granted access to specified
         //  file
-        File file = new File(filePath + "/" + URLDecoder.decode(filePath, "UTF8"));
+        File file = new File(filesDirectory + "/" + URLDecoder.decode(filePath, StandardCharsets.UTF_8));
         if (!file.exists()) {
             return jakarta.ws.rs.core.Response.status(404).build();
         } else {

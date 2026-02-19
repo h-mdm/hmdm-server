@@ -23,33 +23,32 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
-@ApiModel(description = "A link between the file and the configuration")
+@Schema(description = "A link between the file and the configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileConfigurationLink implements CustomerData, Serializable {
 
-    @ApiModelProperty(value = "An ID of a link between the file and configuration. " +
+    @Schema(description="An ID of a link between the file and configuration. " +
             "May be null if those are not linked", required = false)
     private Integer id;
-    @ApiModelProperty("An ID of a customer account which both the file and configuration belong to")
+    @Schema(description="An ID of a customer account which both the file and configuration belong to")
     private int customerId;
-    @ApiModelProperty("An ID of a configuration")
+    @Schema(description="An ID of a configuration")
     private int configurationId;
-    @ApiModelProperty("A name of a configuration")
+    @Schema(description="A name of a configuration")
     private String configurationName;
-    @ApiModelProperty("An ID of a file")
+    @Schema(description="An ID of a file")
     private int fileId;
-    @ApiModelProperty("A name of a file")
+    @Schema(description="A name of a file")
     private String fileName;
-    @ApiModelProperty(value = "A flag indicating that file is to be uploaded to device in the configuration")
+    @Schema(description="A flag indicating that file is to be uploaded to device in the configuration")
     private boolean upload;
-    @ApiModelProperty(value = "A flag indicating that file is to be removed from the configuration")
+    @Schema(description="A flag indicating that file is to be removed from the configuration")
     private boolean remove;
-    @ApiModelProperty(value = "Set by front-end when the configuration needs to be notified about changes")
+    @Schema(description="Set by front-end when the configuration needs to be notified about changes")
     private boolean notify;
 
     /**

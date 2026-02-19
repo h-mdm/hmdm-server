@@ -21,8 +21,7 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
@@ -31,19 +30,19 @@ import java.util.List;
  *
  * @author isv
  */
-@ApiModel(description = "Paginated data")
+@Schema(description = "Paginated data")
 public class PaginatedData<T> {
 
     /**
      * <p>A list of collection items for a single page.</p>
      */
-    @ApiModelProperty("A list of collection items for a single page")
+    @Schema(description="A list of collection items for a single page")
     private List<T> items;
 
     /**
      * <p>A total number of items in collection.</p>
      */
-    @ApiModelProperty("A total number of items in collection")
+    @Schema(description="A total number of items in collection")
     private long totalItemsCount;
 
     /**

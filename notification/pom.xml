@@ -55,20 +55,12 @@
             <version>2.37.0</version>
         </dependency>
 
-        <!-- Eclipse Paho MQTT Client -->
+        <!-- HiveMQ MQTT Client (replaces unmaintained Eclipse Paho v3) -->
         <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.2.2</version>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
+            <version>1.3.3</version>
         </dependency>
-
-	<!-- Jakarta Servlet API (Jakarta EE 10) -->
-	<dependency>
-	    <groupId>jakarta.servlet</groupId>
-	    <artifactId>jakarta.servlet-api</artifactId>
-	    <version>6.0.0</version>
-	    <scope>provided</scope>
-	</dependency>
 
     </dependencies>
 

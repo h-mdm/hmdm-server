@@ -27,9 +27,9 @@ import com.hmdm.persistence.domain.SummaryConfigItem;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.SummaryResponse;
 import com.hmdm.service.DeviceApplicationsStatus;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
-@Api(tags = {"Summary"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Summary")
 @Singleton
 @Path("/private/summary")
 public class SummaryResource {
@@ -62,10 +62,8 @@ public class SummaryResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get device statistics",
-            notes = "Get statistics of device enrollment",
-            response = SummaryResponse.class
+    @Operation(summary = "Get device statistics",
+            description = "Get statistics of device enrollment"
     )
     @GET
     @Path("/devices")

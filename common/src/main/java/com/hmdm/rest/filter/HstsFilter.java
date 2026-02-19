@@ -26,14 +26,13 @@ import com.google.inject.Singleton;
 
 import jakarta.inject.Named;
 import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Singleton
 public class HstsFilter implements Filter {
 
-    static boolean hsts = false;
+    private boolean hsts = false;
 
     public HstsFilter() {
     }
@@ -49,7 +48,8 @@ public class HstsFilter implements Filter {
     public void destroy() {
     }
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         if (hsts) {
             res.addHeader("Strict-Transport-Security", "max-age=31536000");

@@ -26,8 +26,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.ConfigurationFile;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
  */
 @JsonIgnoreProperties(value = {"configuration"}, ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "An MDM configuration used on mobile device")
+@Schema(description = "An MDM configuration used on mobile device")
 public class ConfigurationView implements Serializable {
 
     private static final long serialVersionUID = 3343804830704098674L;
@@ -78,32 +77,32 @@ public class ConfigurationView implements Serializable {
                 .orElse(new ArrayList<>());
     }
 
-    @ApiModelProperty("A configuration ID")
+    @Schema(description="A configuration ID")
     public Integer getId() {
         return configuration.getId();
     }
 
-    @ApiModelProperty("A unique name of configuration")
+    @Schema(description="A unique name of configuration")
     public String getName() {
         return configuration.getName();
     }
 
-    @ApiModelProperty("QR code to enroll the configuration")
+    @Schema(description="QR code to enroll the configuration")
     public String getQrCodeKey() {
         return configuration.getQrCodeKey();
     }
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     public String getBaseUrl() {
         return configuration.getBaseUrl();
     }
 
-    @ApiModelProperty("A list of applications set and available for for configuration")
+    @Schema(description="A list of applications set and available for for configuration")
     public List<ApplicationView> getApplications() {
         return this.applications;
     }
 
-    @ApiModelProperty("A list of configrration files to be set on device")
+    @Schema(description="A list of configrration files to be set on device")
     public List<ConfigurationFileView> getFiles() {
         return files;
     }

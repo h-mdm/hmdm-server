@@ -24,14 +24,13 @@ package com.hmdm.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.service.DeviceApplicationsStatus;
 import com.hmdm.service.DeviceConfigFilesStatus;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@ApiModel(description = "A request for getting the device summary")
+@Schema(description = "A request for getting the device summary")
 @JsonIgnoreProperties(value = {"customerId", "userId"}, ignoreUnknown = true)
 public class DeviceSummaryRequest implements Serializable {
 
@@ -59,31 +58,31 @@ public class DeviceSummaryRequest implements Serializable {
         this.configIds = configIds;
     }
 
-    @ApiModelProperty("Filter by file status")
+    @Schema(description="Filter by file status")
     private DeviceConfigFilesStatus fileStatus;
 
-    @ApiModelProperty("Filter by app status")
+    @Schema(description="Filter by app status")
     private DeviceApplicationsStatus appStatus;
 
-    @ApiModelProperty("Filter by min enroll time")
+    @Schema(description="Filter by min enroll time")
     private Long minEnrollTime;
 
-    @ApiModelProperty("Filter by max enroll time")
+    @Schema(description="Filter by max enroll time")
     private Long maxEnrollTime;
 
-    @ApiModelProperty("Filter by min online time")
+    @Schema(description="Filter by min online time")
     private Long minOnlineTime;
 
-    @ApiModelProperty("Filter by max online time")
+    @Schema(description="Filter by max online time")
     private Long maxOnlineTime;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int userId;
 
-    @ApiModelProperty("Filter by certain configurations only")
+    @Schema(description="Filter by certain configurations only")
     private List<Integer> configIds;
 
     public DeviceConfigFilesStatus getFileStatus() {

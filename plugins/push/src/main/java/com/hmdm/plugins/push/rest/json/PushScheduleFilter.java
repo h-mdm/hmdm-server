@@ -22,8 +22,7 @@
 package com.hmdm.plugins.push.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -33,7 +32,7 @@ import java.util.Date;
  *
  * @author seva
  */
-@ApiModel(description = "The parameters for filtering the lists of scheduled messages")
+@Schema(description = "The parameters for filtering the lists of scheduled messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PushScheduleFilter implements Serializable {
     private static final long serialVersionUID = 5138659302284486486L;
@@ -42,37 +41,37 @@ public class PushScheduleFilter implements Serializable {
     /**
      * <p>A number of records per single page of data to be retrieved.</p>
      */
-    @ApiModelProperty("A number of records per single page of data to be retrieved")
+    @Schema(description="A number of records per single page of data to be retrieved")
     private int pageSize = 50;
 
     /**
      * <p>A number of page of data to be retrieved.</p>
      */
-    @ApiModelProperty("A number of page of data to be retrieved (1-based)")
+    @Schema(description="A number of page of data to be retrieved (1-based)")
     private int pageNum = 1;
 
     /**
      * <p>A filter used for filtering the data records by message.</p>
      */
-    @ApiModelProperty("A filter used for filtering the data records by message")
+    @Schema(description="A filter used for filtering the data records by message")
     private String messageFilter;
 
     /**
      * <p>A filter used for filtering the data records by device.</p>
      */
-    @ApiModelProperty("A filter used for filtering the data records by payload")
+    @Schema(description="A filter used for filtering the data records by payload")
     private String payloadFilter;
 
     /**
      * <p>A name of sorting column.</p>
      */
-    @ApiModelProperty("A name of sorting column")
+    @Schema(description="A name of sorting column")
     private String sortValue = "id";
 
     /**
      * <p>An ID of a customer.</p>
      */
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
     /**

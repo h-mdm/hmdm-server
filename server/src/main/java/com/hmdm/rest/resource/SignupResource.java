@@ -34,9 +34,9 @@ import com.hmdm.security.SecurityContext;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.MailchimpService;
 import com.hmdm.util.PasswordUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import java.util.*;
 
-@Api(tags = {"Signup"})
+@Tag(name="Signup")
 @Singleton
 @Path("/public/signup")
 public class SignupResource {
@@ -121,9 +121,8 @@ public class SignupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Signup feature",
-            notes = "Checks if the customer signup is allowed."
+    @Operation(summary = "Signup feature",
+            description = "Checks if the customer signup is allowed."
     )
     @GET
     @Deprecated
@@ -139,9 +138,8 @@ public class SignupResource {
 
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Verify email",
-            notes = "Check whether the email doesn't exist and start the signup flow"
+    @Operation(summary = "Verify email",
+            description = "Check whether the email doesn't exist and start the signup flow"
     )
     @POST
     @Path("/verifyEmail")
@@ -181,14 +179,13 @@ public class SignupResource {
 
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Verify token",
-            notes = "Checks if the customer's token is valid."
+    @Operation(summary = "Verify token",
+            description = "Checks if the customer's token is valid."
     )
     @GET
     @Path("/verifyToken/{token}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response verifyToken(@PathParam("token") @ApiParam("Customer's token") String token) {
+    public Response verifyToken(@PathParam("token") @Parameter(description = "Customer's token") String token) {
         PendingSignup signup = pendingSignupDAO.getByToken(token);
         if (signup == null) {
             return Response.OBJECT_NOT_FOUND_ERROR();
@@ -198,9 +195,8 @@ public class SignupResource {
 
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Complete the registration",
-            notes = "Create a new customer and notify admins and customer itself."
+    @Operation(summary = "Complete the registration",
+            description = "Create a new customer and notify admins and customer itself."
     )
     @POST
     @Path("/complete")

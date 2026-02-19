@@ -26,11 +26,11 @@ import jakarta.inject.Singleton;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.ResponseHeader;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.headers.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hmdm.persistence.UnsecureDAO;
@@ -52,7 +52,7 @@ import jakarta.ws.rs.core.Response;
  */
 @Singleton
 @Path( "/public/jwt" )
-@Api(tags = {"Authentication"})
+@Tag(name="Authentication")
 public class JWTAuthResource {
 
     /**
@@ -94,18 +94,16 @@ public class JWTAuthResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Authenticate client",
-            notes = "Authenticates the client using provided credentials and responds with JWT token in case of " +
+    @Operation(
+            summary = "Authenticate client",
+            description = "Authenticates the client using provided credentials and responds with JWT token in case of " +
                     "success. The password field should contain the MD5 hash of the actual password. " +
                     "The returned JWT token must be included into 'Authorization' header for all " +
-                    "sub-sequent requests from the same client.",
-            response = JWTToken.class,
-            responseHeaders = {@ResponseHeader(name = AUTHORIZATION_HEADER)}
+                    "sub-sequent requests from the same client."
     )
     @ApiResponses({
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Unauthorized")
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @POST
     @Path( "/login" )

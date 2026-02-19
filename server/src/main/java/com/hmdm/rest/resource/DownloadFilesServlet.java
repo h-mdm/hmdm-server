@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
@@ -78,7 +79,7 @@ public class DownloadFilesServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = URLDecoder.decode(req.getRequestURI(), "UTF8");
+        String path = URLDecoder.decode(req.getRequestURI(), StandardCharsets.UTF_8);
         int index = path.indexOf("/files/", 0) + "/files/".length();
         path = path.substring(index);
 

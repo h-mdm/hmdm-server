@@ -24,7 +24,7 @@ package com.hmdm.plugins.messaging.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -43,25 +43,25 @@ public class Message implements CustomerData, Serializable {
     public static final int STATUS_DELIVERED = 1;
     public static final int STATUS_READ = 2;
 
-    @ApiModelProperty("ID of message record")
+    @Schema(description="ID of message record")
     private Integer id;
 
-    @ApiModelProperty("Customer ID")
+    @Schema(description="Customer ID")
     private int customerId;
 
-    @ApiModelProperty("Device ID")
+    @Schema(description="Device ID")
     private int deviceId;
 
-    @ApiModelProperty("Device Number")
+    @Schema(description="Device Number")
     private String deviceNumber;
 
-    @ApiModelProperty("Timestamp when the message has been sent (in milliseconds since epoch time)")
+    @Schema(description="Timestamp when the message has been sent (in milliseconds since epoch time)")
     private long ts;
 
-    @ApiModelProperty("Message text")
+    @Schema(description="Message text")
     private String message;
 
-    @ApiModelProperty("Message status")
+    @Schema(description="Message status")
     private int status;
 
     /**

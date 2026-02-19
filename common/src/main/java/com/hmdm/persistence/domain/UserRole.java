@@ -21,27 +21,26 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-@ApiModel(description = "A role of user within MDM web application")
+@Schema(description = "A role of user within MDM web application")
 public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 5723531788626059664L;
     
-    @ApiModelProperty("A user role ID")
+    @Schema(description="A user role ID")
     private Integer id;
-    @ApiModelProperty("A user role name")
+    @Schema(description="A user role name")
     private String name;
-    @ApiModelProperty("A user role description")
+    @Schema(description="A user role description")
     private String description;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean superAdmin;
-    @ApiModelProperty("A list of permissions granted to user role")
+    @Schema(description="A list of permissions granted to user role")
     private List<UserRolePermission> permissions;
 
     public UserRole() {

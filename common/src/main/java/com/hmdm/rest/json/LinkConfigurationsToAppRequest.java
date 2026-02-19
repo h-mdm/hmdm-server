@@ -21,19 +21,18 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
-@ApiModel(description = "A request to setup links between the single application and listed configurations")
+@Schema(description = "A request to setup links between the single application and listed configurations")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToAppRequest {
 
-    @ApiModelProperty("An ID of an application to link configurations to")
+    @Schema(description="An ID of an application to link configurations to")
     private int applicationId;
-    @ApiModelProperty("A list of configurations to link to application")
+    @Schema(description="A list of configurations to link to application")
     private List<ApplicationConfigurationLink> configurations;
 
     /**

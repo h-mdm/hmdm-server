@@ -34,9 +34,9 @@ import nonapi.io.github.classgraph.utils.FileUtils;
 import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ import static com.hmdm.util.FileUtil.writeToFile;
  */
 @Singleton
 @Path("/public")
-@Api(tags = {"Mobile client API"})
+@Tag(name="Mobile client API")
 public class PublicResource {
 
     private static final Logger logger  = LoggerFactory.getLogger(PublicResource.class);
@@ -126,17 +126,16 @@ public class PublicResource {
     }
     
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload application",
-            notes = "Uploads application to MDM server. This method is only used by the AppList utility, no usage by the web backend"
+    @Operation(summary = "Upload application",
+            description = "Uploads application to MDM server. This method is only used by the AppList utility, no usage by the web backend"
     )
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/applications/upload")
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
-                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail,
-                                @ApiParam("A JSON-string with application details") @FormDataParam("app") String app) throws Exception {
+                                @Parameter(description = "A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                @Parameter(description = "A JSON-string with application details") @FormDataParam("app") String app) throws Exception {
 
         logger.info("Received Upload App request. App: {}", app);
 
@@ -263,9 +262,8 @@ public class PublicResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get name and vendor",
-            notes = "Gets the application name and vendor for rebranding purposes."
+    @Operation(summary = "Get name and vendor",
+            description = "Gets the application name and vendor for rebranding purposes."
     )
     @GET
     @Path("/name")
@@ -281,9 +279,8 @@ public class PublicResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get logo",
-            notes = "Returns the rebranded logo."
+    @Operation(summary = "Get logo",
+            description = "Returns the rebranded logo."
     )
     @GET
     @Path("/logo")

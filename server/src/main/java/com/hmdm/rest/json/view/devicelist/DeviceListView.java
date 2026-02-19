@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.rest.json.PaginatedData;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "The list of devices with configurations lookup")
+@Schema(description = "The list of devices with configurations lookup")
 public class DeviceListView implements Serializable {
 
     /**

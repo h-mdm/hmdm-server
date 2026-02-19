@@ -21,8 +21,7 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -32,14 +31,14 @@ import java.util.Objects;
  *
  * @author isv
  */
-@ApiModel(description = "Authentication scheme")
+@Schema(description = "Authentication scheme")
 public class AuthScheme implements Serializable {
 
     private static final long serialVersionUID = -8203664108955594811L;
 
-    @ApiModelProperty("Scheme type")
+    @Schema(description="Scheme type")
     private String type;
-    @ApiModelProperty("Implementing class")
+    @Schema(description="Implementing class")
     private String implClass;
 
     /**

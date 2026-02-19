@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -297,7 +298,7 @@ public class APKFileAnalyzer {
                 ZipEntry entry = entries.nextElement();
                 if (entry.getName().equalsIgnoreCase("manifest.json")) {
                     InputStream stream = zipFile.getInputStream(entry);
-                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
                     StringBuilder responseStrBuilder = new StringBuilder();
                     String inputStr;
                     while ((inputStr = streamReader.readLine()) != null) {

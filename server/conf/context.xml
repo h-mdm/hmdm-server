@@ -46,7 +46,7 @@
     <!-- Fast device search by last characters, here's the length -->
     <Parameter name="device.fast.search.chars" value="${device.fast.search.chars}"/>
 
-    <!-- Set to 1 if an external MQTT server must be used (ActiveMQ Classic is recommended) -->
+    <!-- Set to 1 if an external MQTT server must be used (ActiveMQ Artemis is recommended) -->
     <Parameter name="mqtt.external" value="${mqtt.external}"/>
 
     <!-- Optional tag for the MQTT client (required if multiple Tomcat nodes are running) -->

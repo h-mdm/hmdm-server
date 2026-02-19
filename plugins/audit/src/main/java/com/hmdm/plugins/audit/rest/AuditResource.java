@@ -29,9 +29,9 @@ import com.hmdm.plugins.audit.rest.json.AuditLogFilter;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ import java.util.List;
  */
 @Singleton
 @Path("/plugins/audit")
-@Api(tags = {"Audit"})
+@Tag(name="Audit")
 public class AuditResource {
 
     private static final Logger logger = LoggerFactory.getLogger(AuditResource.class);
@@ -75,11 +75,8 @@ public class AuditResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of audit log records matching the specified filter.
      */
-    @ApiOperation(
-            value = "Search logs",
-            notes = "Gets the list of audit log records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Search logs",
+            description = "Gets the list of audit log records matching the specified filter"
     )
     @POST
     @Path("/private/log/search")

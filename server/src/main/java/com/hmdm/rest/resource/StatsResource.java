@@ -26,7 +26,7 @@ import com.hmdm.persistence.UsageStatsDAO;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.persistence.domain.UsageStats;
 import com.hmdm.rest.json.Response;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

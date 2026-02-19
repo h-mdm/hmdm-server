@@ -21,26 +21,25 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel(description = "A single file maintained by the MDM server")
+@Schema(description = "A single file maintained by the MDM server")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HFile implements Comparable<HFile>, Serializable {
 
     private static final long serialVersionUID = 7570897379289300175L;
     
-    @ApiModelProperty("A path to a file")
+    @Schema(description="A path to a file")
     private String path;
-    @ApiModelProperty("A name of file")
+    @Schema(description="A name of file")
     private String name;
-    @ApiModelProperty("An URL of file")
+    @Schema(description="An URL of file")
     private String url;
-    @ApiModelProperty("File size in bytes")
+    @Schema(description="File size in bytes")
     private long size;
 
     private List<String> usedByApps;

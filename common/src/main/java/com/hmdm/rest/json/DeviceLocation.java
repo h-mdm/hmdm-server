@@ -22,8 +22,7 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -33,17 +32,17 @@ import java.io.Serializable;
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel(description = "The latest device location")
+@Schema(description = "The latest device location")
 public class DeviceLocation implements Serializable {
 
     private static final long serialVersionUID = 5866031460781724004L;
-    @ApiModelProperty(value = "A latitude coordinate", required = true)
+    @Schema(description="A latitude coordinate", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double lat;
 
-    @ApiModelProperty(value = "A longitude coordinate", required = true)
+    @Schema(description="A longitude coordinate", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double lon;
 
-    @ApiModelProperty(value = "A timestamp of location recording by device (in milliseconds since epoch time)", required = true)
+    @Schema(description="A timestamp of location recording by device (in milliseconds since epoch time)", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long ts;
 
     /**

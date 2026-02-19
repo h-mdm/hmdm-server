@@ -32,9 +32,9 @@ import com.hmdm.plugins.deviceinfo.persistence.domain.DeviceInfoPluginSettings;
 import com.hmdm.plugins.deviceinfo.rest.json.DeviceSettings;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ import static com.hmdm.plugins.deviceinfo.DeviceInfoPluginConfigurationImpl.PLUG
  */
 @Singleton
 @Path("/plugins/deviceinfo/deviceinfo-plugin-settings")
-@Api(tags = {"Device Info plugin settings"})
+@Tag(name="Device Info plugin settings")
 public class DeviceInfoPluginSettingsResource {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceInfoPluginSettingsResource.class);
@@ -112,11 +112,8 @@ public class DeviceInfoPluginSettingsResource {
      *
      * @return plugin settings for current customer account.
      */
-    @ApiOperation(
-            value = "Get settings",
-            notes = "Gets the plugin settings for current user. If there are none found in DB then returns default ones.",
-            response = DeviceInfoPluginSettings.class,
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Get settings",
+            description = "Gets the plugin settings for current user. If there are none found in DB then returns default ones."
     )
     @GET
     @Path("/private")
@@ -129,10 +126,8 @@ public class DeviceInfoPluginSettingsResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Save settings",
-            notes = "Save the Device Info plugin settings",
-            response = Settings.class
+    @Operation(summary = "Save settings",
+            description = "Save the Device Info plugin settings"
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -153,10 +148,8 @@ public class DeviceInfoPluginSettingsResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get plugin settings by device",
-            notes = "Gets the plugin settings for usage by device ",
-            response = DeviceSettings.class
+    @Operation(summary = "Get plugin settings by device",
+            description = "Gets the plugin settings for usage by device "
     )
     @GET
     @Consumes(MediaType.APPLICATION_JSON)

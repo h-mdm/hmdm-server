@@ -22,6 +22,7 @@
 package com.hmdm.guice.module;
 
 import com.google.inject.AbstractModule;
+import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -72,7 +73,7 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
             Liquibase liquibase = new Liquibase(getChangeLogResourcePath(), getResourceAccessor(), database);
             String usageScenario = this.context.getInitParameter("usage.scenario");
             String contexts = getContexts(usageScenario);
-            liquibase.update(contexts);
+            liquibase.update(new Contexts(contexts));
         } catch (LiquibaseException | SQLException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -106,7 +107,7 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
     protected abstract String getChangeLogResourcePath();
 
     /**
-     * <p>Gets the resource accessor to be uused for loading the change log file.</p>
+     * <p>Gets the resource accessor to be used for loading the change log file.</p>
      *
      * @return a resource accessor for change log file.
      */

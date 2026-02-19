@@ -21,18 +21,17 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@ApiModel(description = "A request to upgrade application for configuration up to recent version")
+@Schema(description = "A request to upgrade application for configuration up to recent version")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpgradeConfigurationApplicationRequest {
 
-    @ApiModelProperty("An ID of a configuration to upgrade application for")
+    @Schema(description="An ID of a configuration to upgrade application for")
     private Integer configurationId;
 
-    @ApiModelProperty("An ID of an application to upgrade")
+    @Schema(description="An ID of an application to upgrade")
     private Integer applicationId;
 
     /**

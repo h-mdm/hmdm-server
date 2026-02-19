@@ -31,10 +31,10 @@ import com.hmdm.persistence.domain.UserRolePermission;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = {"UserRole"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "UserRole")
 @Singleton
 @Path("/private/roles")
 public class UserRoleResource {
@@ -68,11 +68,8 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get all permissions",
-            notes = "Gets the list of all permissions",
-            response = UserRolePermission.class,
-            responseContainer = "List"
+    @Operation(summary = "Get all permissions",
+            description = "Gets the list of all permissions"
     )
     @GET
     @Path("/permissions")
@@ -82,11 +79,8 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get all roles",
-            notes = "Get the list of all user roles",
-            response = UserRole.class,
-            responseContainer = "List"
+    @Operation(summary = "Get all roles",
+            description = "Get the list of all user roles"
     )
     @GET
     @Path("/all")
@@ -96,9 +90,8 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update user role",
-            notes = "Create a new user role (if id is not provided) or update existing one otherwise."
+    @Operation(summary = "Create or update user role",
+            description = "Create a new user role (if id is not provided) or update existing one otherwise."
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -125,14 +118,13 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete user role",
-            notes = "Delete an existing user role"
+    @Operation(summary = "Delete user role",
+            description = "Delete an existing user role"
     )
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeUserRole(@PathParam("id") @ApiParam("User role ID") Integer id) {
+    public Response removeUserRole(@PathParam("id") @Parameter(description = "User role ID") Integer id) {
         if (!userRoleDAO.hasAccess()) {
             log.error("Unauthorized attempt to remove a user role by user " +
                     SecurityContext.get().getCurrentUserName());

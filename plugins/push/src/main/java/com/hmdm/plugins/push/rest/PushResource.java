@@ -39,10 +39,10 @@ import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ import java.util.List;
  */
 @Singleton
 @Path("/plugins/push")
-@Api(tags = {"Push messaging plugin"})
+@Tag(name="Push messaging plugin")
 public class PushResource {
 
     private static final Logger logger = LoggerFactory.getLogger(PushResource.class);
@@ -125,11 +125,8 @@ public class PushResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of device log records matching the specified filter.
      */
-    @ApiOperation(
-            value = "Search Push messages",
-            notes = "Gets the list of message records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Search Push messages",
+            description = "Gets the list of message records matching the specified filter"
     )
     @POST
     @Path("/private/search")
@@ -148,10 +145,8 @@ public class PushResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Send new Push message",
-            notes = "Sends a new Push message to a specified device.",
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Send new Push message",
+            description = "Sends a new Push message to a specified device."
     )
     @POST
     @Path("/private/send")
@@ -255,14 +250,13 @@ public class PushResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete Push message",
-            notes = "Delete an existing Push message"
+    @Operation(summary = "Delete Push message",
+            description = "Delete an existing Push message"
     )
     @DELETE
     @Path("/private/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeMessage(@PathParam("id") @ApiParam("Message ID") Integer id) {
+    public Response removeMessage(@PathParam("id") @Parameter(description = "Message ID") Integer id) {
         final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_delete");
 
         if (!(canSendMessages)) {
@@ -277,10 +271,8 @@ public class PushResource {
 
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Purge old Push messages",
-            notes = "Deletes all Push messages older than a specified number of days.",
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Purge old Push messages",
+            description = "Deletes all Push messages older than a specified number of days."
     )
     @GET
     @Path("/private/purge/{days}")
@@ -314,11 +306,8 @@ public class PushResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of scheduled task records matching the specified filter.
      */
-    @ApiOperation(
-            value = "Search scheduled tasks",
-            notes = "Gets the list of scheduled task records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Search scheduled tasks",
+            description = "Gets the list of scheduled task records matching the specified filter"
     )
     @POST
     @Path("/private/searchTasks")
@@ -337,10 +326,8 @@ public class PushResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update a scheduled task",
-            notes = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise",
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Create or update a scheduled task",
+            description = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise"
     )
     @PUT
     @Path("/private/task")
@@ -377,14 +364,13 @@ public class PushResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete a scheduled task",
-            notes = "Delete an existing scheduled task"
+    @Operation(summary = "Delete a scheduled task",
+            description = "Delete an existing scheduled task"
     )
     @DELETE
     @Path("/private/task/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTask(@PathParam("id") @ApiParam("Task ID") Integer id) {
+    public Response removeTask(@PathParam("id") @Parameter(description = "Task ID") Integer id) {
         if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
             logger.error("Unauthorized attempt to delete a scheduled task by user " +
                     SecurityContext.get().getCurrentUserName());

@@ -23,8 +23,7 @@ package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.File;
 import java.io.Serializable;
@@ -36,34 +35,34 @@ import java.nio.file.Paths;
  *
  * @author isv
  */
-@ApiModel(description = "A specification of a single file uploaded to server by client")
+@Schema(description = "A specification of a single file uploaded to server by client")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UploadedFile implements Serializable, CustomerData {
 
     private static final long serialVersionUID = 963786599631403403L;
 
-    @ApiModelProperty("An application ID")
+    @Schema(description="An application ID")
     private Integer id;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
-    @ApiModelProperty("A path to a file relative to base directory for stored files, including the file name")
+    @Schema(description="A path to a file relative to base directory for stored files, including the file name")
     private String filePath;
 
     /**
      * <p>A description of the file.</p>
      */
-    @ApiModelProperty("A description of the file")
+    @Schema(description="A description of the file")
     private String description;
 
-    @ApiModelProperty("A timestamp of file uploading (in milliseconds since epoch time), should be equal to the timestamp in the file system")
+    @Schema(description="A timestamp of file uploading (in milliseconds since epoch time), should be equal to the timestamp in the file system")
     private long uploadTime;
 
     /**
      * DEPRECATED since v5.36.1 - checksum isn't used due to possible variable content, use lastUpdate instead
      */
-    @ApiModelProperty("An optional checksum of the file content")
+    @Schema(description="An optional checksum of the file content")
     @Deprecated
     private String checksum;
 
@@ -72,7 +71,7 @@ public class UploadedFile implements Serializable, CustomerData {
     /**
      * <p>A path to a file on device (including the name of the file).</p>
      */
-    @ApiModelProperty("A path to a file on device (including the file name)")
+    @Schema(description="A path to a file on device (including the file name)")
     private String devicePath;
 
     /**
@@ -80,19 +79,19 @@ public class UploadedFile implements Serializable, CustomerData {
      * Notice: "external" is not a reserved keyword in PostgreSQL but reserved in other SQL dialects
      * </p>
      */
-    @ApiModelProperty("A flag indicating whether the file is using the external URL instead of being uploaded.")
+    @Schema(description="A flag indicating whether the file is using the external URL instead of being uploaded.")
     private boolean external;
 
     /**
      * <p>An URL referencing the content of the file available on external resource, if a file is marked as external</p>
      */
-    @ApiModelProperty("An external URL referencing the content of the file")
+    @Schema(description="An external URL referencing the content of the file")
     private String externalUrl;
 
     /**
      * <p>A flag indicating whether the file content must be updated by device-specific values.
      */
-    @ApiModelProperty("A flag indicating whether the file content must be updated by device-specific values")
+    @Schema(description="A flag indicating whether the file content must be updated by device-specific values")
     private boolean replaceVariables;
 
     private String tmpPath;

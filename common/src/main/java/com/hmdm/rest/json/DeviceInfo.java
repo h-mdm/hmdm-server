@@ -26,98 +26,97 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.Application;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "The details related to a single device. Such details are sent from the MDM mobile application " +
+@Schema(description = "The details related to a single device. Such details are sent from the MDM mobile application " +
         "to MDM server")
 public class DeviceInfo implements Serializable {
 
     private static final long serialVersionUID = -3973746261808927823L;
 
-    @ApiModelProperty("A name of the device model")
+    @Schema(description="A name of the device model")
     private String model;
 
-    @ApiModelProperty("A list of permissions set for device")
+    @Schema(description="A list of permissions set for device")
     private List<Integer> permissions = new LinkedList<>();
 
-    @ApiModelProperty("A list of applications installed on device")
+    @Schema(description="A list of applications installed on device")
     private List<Application> applications = new LinkedList<>();
 
-    @ApiModelProperty("A list of configuraiton files installed on device")
+    @Schema(description="A list of configuraiton files installed on device")
     private List<DeviceConfigurationFile> files = new LinkedList<>();
 
-    @ApiModelProperty("An identifier of device within MDM server")
+    @Schema(description="An identifier of device within MDM server")
     private String deviceId;
 
-    @ApiModelProperty("An IMEI identifier")
+    @Schema(description="An IMEI identifier")
     private String imei;
 
-    @ApiModelProperty("A phone number")
+    @Schema(description="A phone number")
     private String phone;
 
-    @ApiModelProperty(value = "A battery level in percents", allowableValues = "range[0, 100]")
+    @Schema(description="A battery level in percents", allowableValues = "range[0, 100]")
     private Integer batteryLevel;
 
-    @ApiModelProperty(value = "A battery charge type", allowableValues = "usb,ac", allowEmptyValue = true)
+    @Schema(description="A battery charge type", allowableValues = "usb,ac")
     private String batteryCharging;
 
-    @ApiModelProperty(value = "Android OS version")
+    @Schema(description="Android OS version")
     private String androidVersion;
 
-    @ApiModelProperty(value = "A flag indicating if MDM mode is ON or not")
+    @Schema(description="A flag indicating if MDM mode is ON or not")
     private Boolean mdmMode;
 
-    @ApiModelProperty(value = "A flag indicating if kiosk mode is ON or not")
+    @Schema(description="A flag indicating if kiosk mode is ON or not")
     private Boolean kioskMode;
 
-    @ApiModelProperty(value = "The details on device location")
+    @Schema(description="The details on device location")
     private DeviceLocation location;
 
-    @ApiModelProperty(value = "Headwind MDM launcher build variant")
+    @Schema(description="Headwind MDM launcher build variant")
     private String launcherType;
 
-    @ApiModelProperty(value = "Package of default launcher on the device")
+    @Schema(description="Package of default launcher on the device")
     private String launcherPackage;
 
-    @ApiModelProperty(value = "Is Headwind MDM a default launcher")
+    @Schema(description="Is Headwind MDM a default launcher")
     private Boolean defaultLauncher;
 
-    @ApiModelProperty("ICC ID")
+    @Schema(description="ICC ID")
     private String iccid;
 
-    @ApiModelProperty("an IMSI identifier")
+    @Schema(description="an IMSI identifier")
     private String imsi;
 
-    @ApiModelProperty("An IMEI identifier for 2nd SIM slot")
+    @Schema(description="An IMEI identifier for 2nd SIM slot")
     private String imei2;
 
-    @ApiModelProperty("A phone number for 2nd SIM slot")
+    @Schema(description="A phone number for 2nd SIM slot")
     private String phone2;
 
-    @ApiModelProperty("ICC ID for 2nd SIM slot")
+    @Schema(description="ICC ID for 2nd SIM slot")
     private String iccid2;
 
-    @ApiModelProperty("an IMSI identifier for 2nd SIM slot")
+    @Schema(description="an IMSI identifier for 2nd SIM slot")
     private String imsi2;
 
-    @ApiModelProperty("A device serial number")
+    @Schema(description="A device serial number")
     private String serial;
 
-    @ApiModelProperty("CPU architecture")
+    @Schema(description="CPU architecture")
     private String cpu;
 
-    @ApiModelProperty(value = "Custom property #1")
+    @Schema(description="Custom property #1")
     private String custom1;
 
-    @ApiModelProperty(value = "Custom property #2")
+    @Schema(description="Custom property #2")
     private String custom2;
 
-    @ApiModelProperty(value = "Custom property #3")
+    @Schema(description="Custom property #3")
     private String custom3;
 
     public DeviceInfo() {

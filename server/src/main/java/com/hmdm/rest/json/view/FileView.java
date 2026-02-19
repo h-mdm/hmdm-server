@@ -23,37 +23,36 @@ package com.hmdm.rest.json.view;
 
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel(description = "A single file maintained by the MDM server")
+@Schema(description = "A single file maintained by the MDM server")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileView implements Serializable {
 
     private static final long serialVersionUID = 7570897379289300175L;
 
-    @ApiModelProperty("Id of the basic UploadedFile object")
+    @Schema(description="Id of the basic UploadedFile object")
     private Integer id;
-    @ApiModelProperty("A path to file including the file name")
+    @Schema(description="A path to file including the file name")
     private String filePath;
-    @ApiModelProperty("An optional file description")
+    @Schema(description="An optional file description")
     private String description;
-    @ApiModelProperty("An URL of file")
+    @Schema(description="An URL of file")
     private String url;
-    @ApiModelProperty("File size in bytes")
+    @Schema(description="File size in bytes")
     private long size;
-    @ApiModelProperty("Last update time in ms")
+    @Schema(description="Last update time in ms")
     private long uploadTime;
-    @ApiModelProperty("File path on the device")
+    @Schema(description="File path on the device")
     private String devicePath;
-    @ApiModelProperty("A flag showing whether the file has an external URL")
+    @Schema(description="A flag showing whether the file has an external URL")
     private boolean external;
-    @ApiModelProperty("A flag showing whether the file has variable content")
+    @Schema(description="A flag showing whether the file has variable content")
     private boolean replaceVariables;
 
     // APKs are not displayed in the Files section since v5.36.1

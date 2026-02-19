@@ -34,9 +34,9 @@ import com.hmdm.rest.json.PushRequest;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ import java.util.List;
  *
  * @author isv
  */
-@Api(tags = {"Push API"})
+@Tag(name="Push API")
 @Path("/private/push")
 @Singleton
 public class PushApiResource {
@@ -104,10 +104,8 @@ public class PushApiResource {
      * @return a response to client.
      */
     // =================================================================================================================
-    @ApiOperation(
-            value = "Send a Push message",
-            notes = "Sends a Push message to specified devices.",
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Send a Push message",
+            description = "Sends a Push message to specified devices."
     )
     @POST
     @Produces(MediaType.APPLICATION_JSON)

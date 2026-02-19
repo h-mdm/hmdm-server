@@ -23,14 +23,14 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * <p>A DTO carrying the data for login options/p>
  *
  * @author seva
  */
-@ApiModel(description = "Login options (reset password, recover, etc)")
+@Schema(description = "Login options (reset password, recover, etc)")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthOptionsResponse {

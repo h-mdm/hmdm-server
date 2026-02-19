@@ -36,10 +36,10 @@ import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ import java.util.List;
  */
 @Singleton
 @Path("/plugins/messaging")
-@Api(tags = {"Messaging plugin"})
+@Tag(name="Messaging plugin")
 public class MessagingResource {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagingResource.class);
@@ -115,11 +115,8 @@ public class MessagingResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of device log records matching the specified filter.
      */
-    @ApiOperation(
-            value = "Search messages",
-            notes = "Gets the list of message records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Search messages",
+            description = "Gets the list of message records matching the specified filter"
     )
     @POST
     @Path("/private/search")
@@ -137,10 +134,8 @@ public class MessagingResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Send new message",
-            notes = "Sends a new message to a specified device.",
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Send new message",
+            description = "Sends a new message to a specified device."
     )
     @POST
     @Path("/private/send")
@@ -239,14 +234,13 @@ public class MessagingResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete message",
-            notes = "Delete an existing message"
+    @Operation(summary = "Delete message",
+            description = "Delete an existing message"
     )
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeDevice(@PathParam("id") @ApiParam("Message ID") Integer id) {
+    public Response removeDevice(@PathParam("id") @Parameter(description = "Message ID") Integer id) {
         final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_messaging_delete");
 
         if (!(canSendMessages)) {
@@ -261,10 +255,8 @@ public class MessagingResource {
 
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Purge old messages",
-            notes = "Deletes all messages older than a specified number of days.",
-            authorizations = {@Authorization("Bearer Token")}
+    @Operation(summary = "Purge old messages",
+            description = "Deletes all messages older than a specified number of days."
     )
     @GET
     @Path("/private/purge/{days}")
@@ -289,9 +281,8 @@ public class MessagingResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Sets the message status",
-            notes = "Marks message as delivered or read."
+    @Operation(summary = "Sets the message status",
+            description = "Marks message as delivered or read."
     )
     @GET
     @Path("/public/status/{id}/{status}")

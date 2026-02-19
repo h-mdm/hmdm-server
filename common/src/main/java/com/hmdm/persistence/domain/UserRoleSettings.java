@@ -21,76 +21,75 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
-@ApiModel(description = "The settings for single user role at customer level")
+@Schema(description = "The settings for single user role at customer level")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserRoleSettings implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -3149133764385852478L;
 
-    @ApiModelProperty("An ID of a settings record")
+    @Schema(description="An ID of a settings record")
     private Integer id;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
     
-    @ApiModelProperty("An ID of a user role")
+    @Schema(description="An ID of a user role")
     private int roleId;
 
 
     // This group of settings corresponds to Displayed Device Columns from Common Settings
-    @ApiModelProperty("A flag indicating if Device Status column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Status column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Update Date column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Update Date column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceDate = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Nummber column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Nummber column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceNumber = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Model column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Model column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceModel;
-    @ApiModelProperty("A flag indicating if Device Permissions column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Permissions column to be displayed in MDM web application")
     private Boolean columnDisplayedDevicePermissionsStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Apps column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Apps column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceAppInstallStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Files column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Files column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceFilesStatus = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device Configuration column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Configuration column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceConfiguration = Boolean.TRUE;
-    @ApiModelProperty("A flag indicating if Device IMEI column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device IMEI column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceImei;
-    @ApiModelProperty("A flag indicating if Device Phone column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Phone column to be displayed in MDM web application")
     private Boolean columnDisplayedDevicePhone;
-    @ApiModelProperty("A flag indicating if Device Description column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Description column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceDesc;
-    @ApiModelProperty("A flag indicating if Device Group column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Device Group column to be displayed in MDM web application")
     private Boolean columnDisplayedDeviceGroup;
-    @ApiModelProperty("A flag indicating if Launcher Version column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Launcher Version column to be displayed in MDM web application")
     private Boolean columnDisplayedLauncherVersion;
-    @ApiModelProperty("A flag indicating if Battery Level column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Battery Level column to be displayed in MDM web application")
     private Boolean columnDisplayedBatteryLevel;
-    @ApiModelProperty("A flag indicating if the default launcher column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if the default launcher column to be displayed in MDM web application")
     private Boolean columnDisplayedDefaultLauncher;
-    @ApiModelProperty("A flag indicating if MDM mode column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if MDM mode column to be displayed in MDM web application")
     private Boolean columnDisplayedMdmMode;
-    @ApiModelProperty("A flag indicating if kiosk mode column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if kiosk mode column to be displayed in MDM web application")
     private Boolean columnDisplayedKioskMode;
-    @ApiModelProperty("A flag indicating if Android version column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if Android version column to be displayed in MDM web application")
     private Boolean columnDisplayedAndroidVersion;
-    @ApiModelProperty("A flag indicating if enrollment date column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if enrollment date column to be displayed in MDM web application")
     private Boolean columnDisplayedEnrollmentDate;
-    @ApiModelProperty("A flag indicating if serial number column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if serial number column to be displayed in MDM web application")
     private Boolean columnDisplayedSerial;
-    @ApiModelProperty("A flag indicating if public IP address column to be displayed in MDM web application")
+    @Schema(description="A flag indicating if public IP address column to be displayed in MDM web application")
     private Boolean columnDisplayedPublicIp;
-    @ApiModelProperty("A flag indicating if custom property #1 column must be displayed in the Devices table")
+    @Schema(description="A flag indicating if custom property #1 column must be displayed in the Devices table")
     private Boolean columnDisplayedCustom1;
-    @ApiModelProperty("A flag indicating if custom property #2 column must be displayed in the Devices table")
+    @Schema(description="A flag indicating if custom property #2 column must be displayed in the Devices table")
     private Boolean columnDisplayedCustom2;
-    @ApiModelProperty("A flag indicating if custom property #3 column must be displayed in the Devices table")
+    @Schema(description="A flag indicating if custom property #3 column must be displayed in the Devices table")
     private Boolean columnDisplayedCustom3;
 
     /**

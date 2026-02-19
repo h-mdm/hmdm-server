@@ -1,7 +1,7 @@
 package com.hmdm.guice.module;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import jakarta.inject.Named;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;

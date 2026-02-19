@@ -23,7 +23,7 @@ package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -41,31 +41,31 @@ public class DeviceInfoPluginSettings implements CustomerData, Serializable {
     /**
      * <p>An ID of a setting record.</p>
      */
-    @ApiModelProperty("An ID of a setting record.")
+    @Schema(description="An ID of a setting record.")
     private Integer id;
 
     /**
      * <p>An ID of a customer account which the record belongs to.</p>
      */
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
     /**
      * <p>A period for preserving the data records in persistent data store (in days).</p>
      */
-    @ApiModelProperty(value = "A period for preserving the data records in persistent data store (in days)", required = true)
+    @Schema(description="A period for preserving the data records in persistent data store (in days)", requiredMode = Schema.RequiredMode.REQUIRED)
     private int dataPreservePeriod = 30;
 
     /**
      * <p>An interval for transmitting data by device (in minutes)</p>
      */
-    @ApiModelProperty(value = "An interval for transmitting data by device (in minutes)", required = true)
+    @Schema(description="An interval for transmitting data by device (in minutes)", requiredMode = Schema.RequiredMode.REQUIRED)
     private int intervalMins = 15;
 
     /**
      * <p>A flag indicating if device must send dynamic data or not.</p>
      */
-    @ApiModelProperty(value = "A flag indicating if device must send dynamic data or not", required = true)
+    @Schema(description="A flag indicating if device must send dynamic data or not", requiredMode = Schema.RequiredMode.REQUIRED)
     private boolean sendData = false;
 
     /**

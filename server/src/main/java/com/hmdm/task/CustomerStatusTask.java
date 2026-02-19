@@ -1,7 +1,7 @@
 package com.hmdm.task;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import jakarta.inject.Named;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Customer;

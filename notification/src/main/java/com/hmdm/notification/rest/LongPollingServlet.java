@@ -52,6 +52,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -108,7 +109,7 @@ public class LongPollingServlet extends HttpServlet {
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        String path = URLDecoder.decode(req.getRequestURI(), "UTF8");
+        String path = URLDecoder.decode(req.getRequestURI(), StandardCharsets.UTF_8);
         int index = path.indexOf(BASE_PATH, 0) + BASE_PATH.length();
         String deviceNumber = path.substring(index);
 
@@ -176,7 +177,7 @@ public class LongPollingServlet extends HttpServlet {
                     log.debug("Buffer size: " + resp.getBufferSize());
                     resp.setStatus(200);
                     resp.setContentType("application/json");
-                    resp.getOutputStream().write(sb.toString().getBytes("UTF-8"));
+                    resp.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
                     resp.getOutputStream().flush();
                     log.debug("Succesfully delivered");
                 } catch (Exception e) {

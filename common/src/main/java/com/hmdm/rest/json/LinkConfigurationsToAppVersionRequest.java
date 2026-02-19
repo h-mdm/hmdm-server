@@ -21,8 +21,7 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
@@ -32,13 +31,13 @@ import java.util.List;
  *
  * @author isv
  */
-@ApiModel(description = "A request to setup links between the single application version and listed configurations")
+@Schema(description = "A request to setup links between the single application version and listed configurations")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToAppVersionRequest {
 
-    @ApiModelProperty("An ID of an application version to link configurations to")
+    @Schema(description="An ID of an application version to link configurations to")
     private int applicationVersionId;
-    @ApiModelProperty("A list of configurations to link to application version")
+    @Schema(description="A list of configurations to link to application version")
     private List<ApplicationVersionConfigurationLink> configurations;
 
     /**

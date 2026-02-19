@@ -1,24 +1,32 @@
 package com.hmdm.notification;
 
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-
 public class MqttEnvelope {
     private String address;
-    private MqttMessage message;
+    private byte[] payload;
+    private int qos;
 
     public MqttEnvelope() {}
 
-    public MqttEnvelope(String address, MqttMessage message) {
+    public MqttEnvelope(String address, byte[] payload, int qos) {
         this.address = address;
-        this.message = message;
+        this.payload = payload;
+        this.qos = qos;
     }
 
-    public MqttMessage getMessage() {
-        return message;
+    public byte[] getPayload() {
+        return payload;
     }
 
-    public void setMessage(MqttMessage message) {
-        this.message = message;
+    public void setPayload(byte[] payload) {
+        this.payload = payload;
+    }
+
+    public int getQos() {
+        return qos;
+    }
+
+    public void setQos(int qos) {
+        this.qos = qos;
     }
 
     public String getAddress() {

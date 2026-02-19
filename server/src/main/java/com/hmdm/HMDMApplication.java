@@ -1,6 +1,7 @@
 package com.hmdm;
 
 import com.google.inject.Injector;
+import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -13,11 +14,11 @@ import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
 import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.inject.Inject;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -31,6 +32,8 @@ import java.util.stream.Stream;
  * @author isv
  */
 public class HMDMApplication extends ResourceConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(HMDMApplication.class);
 
     /**
      * <p>
@@ -60,7 +63,17 @@ public class HMDMApplication extends ResourceConfig {
                 SwaggerConfiguration swaggerConfig = new SwaggerConfiguration()
                         .openAPI(openAPI)
                         .prettyPrint(true)
-                        .resourcePackages(Stream.of("com.hmdm").collect(Collectors.toSet()));
+                        .resourcePackages(Set.of("com.hmdm"));
+
+                // Register the OpenAPI configuration with the context
+                try {
+                    new JaxrsOpenApiContextBuilder<>()
+                            .application(HMDMApplication.this)
+                            .openApiConfiguration(swaggerConfig)
+                            .buildContext(true);
+                } catch (Exception e) {
+                    log.error("Failed to initialize OpenAPI context", e);
+                }
             }
 
             public void onReload(Container container) {
@@ -70,10 +83,9 @@ public class HMDMApplication extends ResourceConfig {
             }
         });
 
-        // OpenAPI 3.x resource (replaces Swagger 1.x ApiListingResource and
-        // SwaggerSerializers)
+        // Register OpenApiResource as a class during construction (not in onStartup)
+        // so Jersey properly picks it up during the registration phase.
         register(OpenApiResource.class);
-
     }
 
 }

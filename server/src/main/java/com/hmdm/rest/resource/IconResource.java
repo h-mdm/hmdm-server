@@ -25,9 +25,9 @@ import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author isv
  */
-@Api(tags = {"Icons"})
+@Tag(name="Icons")
 @Path("/private/icons")
 @Singleton
 public class IconResource {
@@ -102,7 +102,7 @@ public class IconResource {
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response searchIcons(@PathParam("value") @ApiParam("A filter value") String value) {
+    public Response searchIcons(@PathParam("value") @Parameter(description = "A filter value") String value) {
         try {
             final List<Icon> allIcons = this.iconDAO.getAllIconsByValue(value);
             return Response.OK(allIcons);
@@ -112,14 +112,13 @@ public class IconResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete an icon",
-            notes = "Delete an existing icon"
+    @Operation(summary = "Delete an icon",
+            description = "Delete an existing icon"
     )
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeIcon(@PathParam("id") @ApiParam("Icon ID") Integer id) {
+    public Response removeIcon(@PathParam("id") @Parameter(description = "Icon ID") Integer id) {
         if (!SecurityContext.get().hasPermission("settings")) {
             logger.error("Unauthorized attempt to update icons by user " +
                     SecurityContext.get().getCurrentUserName());

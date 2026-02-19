@@ -34,10 +34,10 @@ import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.UpgradeConfigurationApplicationRequest;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.FileUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.hmdm.rest.json.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = {"Configuration"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Configuration")
 @Singleton
 @Path("/private/configurations")
 public class ConfigurationResource {
@@ -80,11 +80,8 @@ public class ConfigurationResource {
         this.baseUrl = baseUrl;
     }
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configurations",
-            notes = "Gets the list of available configurations",
-            response = Configuration.class,
-            responseContainer = "List"
+    @Operation(summary = "Get configurations",
+            description = "Gets the list of available configurations"
     )
     @GET
     @Path("/search")
@@ -100,11 +97,8 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configuration names",
-            notes = "Gets the list of available configuration names",
-            response = LookupItem.class,
-            responseContainer = "List"
+    @Operation(summary = "Get configuration names",
+            description = "Gets the list of available configuration names"
     )
     @GET
     @Path("/list")
@@ -119,11 +113,8 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Search configurations",
-            notes = "Searches configurations meeting the specified filter value",
-            response = Configuration.class,
-            responseContainer = "List"
+    @Operation(summary = "Search configurations",
+            description = "Searches configurations meeting the specified filter value"
     )
     @GET
     @Path("/search/{value}")
@@ -146,7 +137,7 @@ public class ConfigurationResource {
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of configurations matching the specified filter.
      */
-    @ApiOperation(value = "Get configurations for autocompletions")
+    @Operation(summary = "Get configurations for autocompletions")
     @POST
     @Path("/autocomplete")
     @Produces(MediaType.APPLICATION_JSON)
@@ -164,9 +155,8 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update configuration",
-            notes = "Creates a new configuration (if id is not provided) or update existing one otherwise."
+    @Operation(summary = "Create or update configuration",
+            description = "Creates a new configuration (if id is not provided) or update existing one otherwise."
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -213,10 +203,8 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upgrade configuration application",
-            notes = "Upgrades the application used by configuration to most recent version",
-            response = Configuration.class
+    @Operation(summary = "Upgrade configuration application",
+            description = "Upgrades the application used by configuration to most recent version"
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -239,9 +227,8 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Copy configuration",
-            notes = "Creates a new copy of configuration referenced by the id and names it with provided name."
+    @Operation(summary = "Copy configuration",
+            description = "Creates a new copy of configuration referenced by the id and names it with provided name."
     )
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -275,14 +262,13 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete configuration",
-            notes = "Deletes a configuration referenced by the specified ID."
+    @Operation(summary = "Delete configuration",
+            description = "Deletes a configuration referenced by the specified ID."
     )
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeConfiguration(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
+    public Response removeConfiguration(@PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
         if (!SecurityContext.get().hasPermission("copy_config")) {
             log.error("Unauthorized attempt to delete the configuration " + id);
             return Response.PERMISSION_DENIED();
@@ -299,7 +285,7 @@ public class ConfigurationResource {
         }
     }
 
-    @ApiOperation(value = "", hidden = true)
+    @Operation(summary = "", hidden = true)
     @GET
     @Path("/applications")
     @Produces(MediaType.APPLICATION_JSON)
@@ -308,16 +294,13 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configuration applications",
-            notes = "Gets the list of all applications in context of usage by the requested configuration",
-            response = Application.class,
-            responseContainer = "List"
+    @Operation(summary = "Get configuration applications",
+            description = "Gets the list of all applications in context of usage by the requested configuration"
     )
     @GET
     @Path("/applications/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConfigurationApplications(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
+    public Response getConfigurationApplications(@PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
         if (!SecurityContext.get().hasPermission("configurations")) {
             log.error("Unauthorized attempt to access configuration applications");
             return Response.PERMISSION_DENIED();
@@ -326,10 +309,8 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configuration",
-            notes = "Gets the details for configuration referenced by the specified ID",
-            response = Configuration.class
+    @Operation(summary = "Get configuration",
+            description = "Gets the details for configuration referenced by the specified ID"
     )
     @GET
     @Path("/{id}")

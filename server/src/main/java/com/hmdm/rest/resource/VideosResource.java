@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -88,7 +89,7 @@ public class VideosResource {
             videoDir.mkdirs();
         }
 
-        File videoFile = new File(videoDir, URLDecoder.decode(fileName, "UTF8"));
+        File videoFile = new File(videoDir, URLDecoder.decode(fileName, StandardCharsets.UTF_8));
         if (!videoFile.exists()) {
             return jakarta.ws.rs.core.Response.status(404).build();
         } else {

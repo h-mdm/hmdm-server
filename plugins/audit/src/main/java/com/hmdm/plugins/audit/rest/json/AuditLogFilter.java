@@ -21,8 +21,7 @@
 
 package com.hmdm.plugins.audit.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
@@ -33,7 +32,7 @@ import java.util.Date;
  *
  * @author isv
  */
-@ApiModel(description = "The parameters for filtering the lists of audit log record objects")
+@Schema(description = "The parameters for filtering the lists of audit log record objects")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuditLogFilter implements Serializable {
 
@@ -41,49 +40,49 @@ public class AuditLogFilter implements Serializable {
     /**
      * <p>A number of records per single page of data to be retrieved.</p>
      */
-    @ApiModelProperty("A number of records per single page of data to be retrieved")
+    @Schema(description="A number of records per single page of data to be retrieved")
     private int pageSize = 50;
 
     /**
      * <p>A number of page of data to be retrieved.</p>
      */
-    @ApiModelProperty("A number of page of data to be retrieved (1-based)")
+    @Schema(description="A number of page of data to be retrieved (1-based)")
     private int pageNum = 1;
 
     /**
      * <p>A filter used for filtering the data records by message.</p>
      */
-    @ApiModelProperty("A filter used for filtering the data records by message")
+    @Schema(description="A filter used for filtering the data records by message")
     private String messageFilter;
 
     /**
      * <p>A filter used for filtering the data records by user.</p>
      */
-    @ApiModelProperty("A filter used for filtering the data records by user")
+    @Schema(description="A filter used for filtering the data records by user")
     private String userFilter;
 
     /**
      * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
      */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by dates")
+    @Schema(description="A timestamp for FROM boundary for filtering the data records by dates")
     private Date dateFrom;
 
     /**
      * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
      */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by dates")
+    @Schema(description="A timestamp for TO boundary for filtering the data records by dates")
     private Date dateTo;
 
     /**
      * <p>An ID of a customer.</p>
      */
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
     /**
      * <p>An ID of a user.</p>
      */
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int userId;
 
     /**

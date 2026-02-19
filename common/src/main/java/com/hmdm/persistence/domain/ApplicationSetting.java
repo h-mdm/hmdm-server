@@ -22,54 +22,53 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
-@ApiModel(description = "A single setting for an application installed and used on mobile device")
+@Schema(description = "A single setting for an application installed and used on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationSetting implements Serializable {
 
     private static final long serialVersionUID = -7840348027518868191L;
 
-    @ApiModelProperty("An ID of a setting record")
+    @Schema(description="An ID of a setting record")
     private Integer id;
 
-    @ApiModelProperty(value = "An ID of application", required = true)
+    @Schema(description="An ID of application", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer applicationId;
 
-    @ApiModelProperty(value = "A name of the setting", required = true)
+    @Schema(description="A name of the setting", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @ApiModelProperty(value = "A type of the application setting", required = true)
+    @Schema(description="A type of the application setting", requiredMode = Schema.RequiredMode.REQUIRED)
     private ApplicationSettingType type;
 
-    @ApiModelProperty("A value of the setting")
+    @Schema(description="A value of the setting")
     private String value;
 
-    @ApiModelProperty("A comment on the setting")
+    @Schema(description="A comment on the setting")
     private String comment;
 
-    @ApiModelProperty("A timestamp of the last update of the setting")
+    @Schema(description="A timestamp of the last update of the setting")
     private long lastUpdate;
 
-    @ApiModelProperty(value = "A flag indicating if setting can not be modified on device", required = true)
+    @Schema(description="A flag indicating if setting can not be modified on device", requiredMode = Schema.RequiredMode.REQUIRED)
     private boolean readonly;
 
-    @ApiModelProperty(value = "An ID of the external object (device, configuration) which settings belong to", required = true)
+    @Schema(description="An ID of the external object (device, configuration) which settings belong to", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer extRefId;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String applicationPkg;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String applicationName;
 
     // A name of the external object (device, configuration) which settings belong to
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String extRefName;
 
     /**

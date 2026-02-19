@@ -24,7 +24,6 @@ package com.hmdm.plugins.audit.rest.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
-import com.hmdm.plugins.audit.rest.AuditResource;
 import com.hmdm.rest.filter.BaseIPFilter;
 import com.hmdm.rest.json.Response;
 import org.json.JSONException;
@@ -40,10 +39,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
 
 /**
- * <p>An auditor for a single request-response chain.</p>
+ * <p>
+ * An auditor for a single request-response chain.
+ * </p>
  *
  * @author isv
  */
@@ -52,55 +52,75 @@ class ResourceAuditor {
     private static final Logger logger = LoggerFactory.getLogger(ResourceAuditor.class);
 
     /**
-     * <p>A name of session attribute holding the details for current user.</p>
+     * <p>
+     * A name of session attribute holding the details for current user.
+     * </p>
      */
     private static final String sessionCredentials = "credentials";
 
     /**
-     * <p>A key in message resource bundle referring to description of action mapped to audited request.</p>
+     * <p>
+     * A key in message resource bundle referring to description of action mapped to
+     * audited request.
+     * </p>
      */
     private final String auditLogActionKey;
 
     /**
-     * <p>An incoming request being processed.</p>
+     * <p>
+     * An incoming request being processed.
+     * </p>
      */
     private final ServletRequest request;
 
     /**
-     * <p>A response to be sent to client.</p>
+     * <p>
+     * A response to be sent to client.
+     * </p>
      */
     private final ServletResponseAuditWrapper response;
 
     /**
-     * <p>A filter chain</p>
+     * <p>
+     * A filter chain
+     * </p>
      */
     private final FilterChain chain;
 
     /**
-     * <p>A flag indicating if request data must be saved as a payload.</p>
+     * <p>
+     * A flag indicating if request data must be saved as a payload.
+     * </p>
      */
     private final boolean payload;
 
     /**
-     * <p>A flag indicating if response is in Headwind MDM standard format and should be checked for errors.</p>
+     * <p>
+     * A flag indicating if response is in Headwind MDM standard format and should
+     * be checked for errors.
+     * </p>
      */
     private final boolean checkResponse;
 
     private final BaseIPFilter remoteAddrResolver;
 
     /**
-     * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>ResourceAuditor</code> instance. This implementation
+     * does nothing.
+     * </p>
      */
     ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response,
-                    FilterChain chain, boolean payload, boolean checkResponse, String proxyIps, String ipHeader) throws IOException {
+            FilterChain chain, boolean payload, boolean checkResponse, String proxyIps, String ipHeader)
+            throws IOException {
         this.auditLogActionKey = auditLogActionKey;
         if (payload) {
             // Wrap request only if we need to log it
-            this.request = new ServletRequestAuditWrapper((HttpServletRequest)request);
+            this.request = new ServletRequestAuditWrapper((HttpServletRequest) request);
         } else {
             this.request = request;
         }
-        this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
+        this.response = new ServletResponseAuditWrapper((HttpServletResponse) response);
         this.chain = chain;
         this.payload = payload;
         this.checkResponse = checkResponse;
@@ -108,9 +128,11 @@ class ResourceAuditor {
     }
 
     /**
-     * <p>Executes the request/response chain and captures data necessary for auditing.</p>
+     * <p>
+     * Executes the request/response chain and captures data necessary for auditing.
+     * </p>
      *
-     * @throws IOException if an unexpected I/O error occurs.
+     * @throws IOException      if an unexpected I/O error occurs.
      * @throws ServletException if an unexpected error occurs.
      */
     void doProcess() throws IOException, ServletException {
@@ -118,9 +140,12 @@ class ResourceAuditor {
     }
 
     /**
-     * <p>Gets the audit log record for the target request/response chain.</p>
+     * <p>
+     * Gets the audit log record for the target request/response chain.
+     * </p>
      *
-     * @return an audit log record evaluated based on the request processing results or <code>null</code> if no such
+     * @return an audit log record evaluated based on the request processing results
+     *         or <code>null</code> if no such
      *         record is available.
      * @throws IOException if an unexpected I/O error occurs.
      */
@@ -136,7 +161,7 @@ class ResourceAuditor {
         String payloadString = null;
         String requestedLogin = null;
         if (payload) {
-            ServletRequestAuditWrapper requestWrapper = (ServletRequestAuditWrapper)this.request;
+            ServletRequestAuditWrapper requestWrapper = (ServletRequestAuditWrapper) this.request;
             payloadString = "Method: " + requestWrapper.getMethod() + "\n" +
                     "URI: " + requestWrapper.getRequestURI();
             String body = requestWrapper.getBody();
@@ -189,10 +214,10 @@ class ResourceAuditor {
 
     private boolean needStripPassword(String action) {
         return "plugin.audit.action.user.login".equals(action) ||
-               "plugin.audit.action.jwt.login".equals(action) ||
-               "plugin.audit.action.password.changed".equals(action) ||
-               "plugin.audit.action.update.configuration".equals(action) ||
-               "plugin.audit.action.update.user".equals(action);
+                "plugin.audit.action.jwt.login".equals(action) ||
+                "plugin.audit.action.password.changed".equals(action) ||
+                "plugin.audit.action.update.configuration".equals(action) ||
+                "plugin.audit.action.update.user".equals(action);
     }
 
     private class StripPasswordResponse {

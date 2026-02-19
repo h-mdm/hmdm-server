@@ -24,84 +24,83 @@ package com.hmdm.persistence.domain;
 import java.io.Serializable;
 import java.util.List;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.rest.json.LookupItem;
 
-@ApiModel(description = "A device registered to MDM server and running the MDM mobile application")
+@Schema(description = "A device registered to MDM server and running the MDM mobile application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Device implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 8429040669592571351L;
 
-    @ApiModelProperty("An ID of device")
+    @Schema(description="An ID of device")
     private Integer id;
-    @ApiModelProperty("An unique textual identifier of device")
+    @Schema(description="An unique textual identifier of device")
     private String number;
-    @ApiModelProperty("A description of device")
+    @Schema(description="A description of device")
     private String description;
-    @ApiModelProperty("A date of last synchronization of device state")
+    @Schema(description="A date of last synchronization of device state")
     private Long lastUpdate;
-    @ApiModelProperty("An ID of configuration for device")
+    @Schema(description="An ID of configuration for device")
     private Integer configurationId;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     @Deprecated
     private Integer oldConfigurationId;
-    @ApiModelProperty("An info on device state submitted by device to MDM server")
+    @Schema(description="An info on device state submitted by device to MDM server")
     private String info;
-    @ApiModelProperty("An IMEM of device")
+    @Schema(description="An IMEM of device")
     private String imei;
-    @ApiModelProperty("A phone number of device")
+    @Schema(description="A phone number of device")
     private String phone;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
-    @ApiModelProperty("A date of last IMEI change")
+    @Schema(description="A date of last IMEI change")
     private Long imeiUpdateTs;
-    @ApiModelProperty("Public IP address")
+    @Schema(description="Public IP address")
     private String publicIp;
-    @ApiModelProperty("Custom property #1")
+    @Schema(description="Custom property #1")
     private String custom1;
-    @ApiModelProperty("Custom property #2")
+    @Schema(description="Custom property #2")
     private String custom2;
-    @ApiModelProperty("Custom property #3")
+    @Schema(description="Custom property #3")
     private String custom3;
 
     // Many-to-many relations
-    @ApiModelProperty("A list of groups assigned to device")
+    @Schema(description="A list of groups assigned to device")
     private List<LookupItem> groups;
 
     // Helper fields, not persisted
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private List<Integer> ids;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private Configuration configuration;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String configName;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     @Deprecated
     private String oldConfigName;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean applied;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String launcherVersion;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String launcherPkg;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String statusCode;
-    @ApiModelProperty("Old device number, used when the number is changed")
+    @Schema(description="Old device number, used when the number is changed")
     private String oldNumber;
-    @ApiModelProperty("Last characters of the device number used for fast search")
+    @Schema(description="Last characters of the device number used for fast search")
     private String fastSearch;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private Boolean mdmMode;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private Boolean kioskMode;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String androidVersion;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private Long enrollTime;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String serial;
 
     public Device() {

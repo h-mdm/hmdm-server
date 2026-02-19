@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.devicelog.rest.json;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -33,16 +33,16 @@ import java.io.Serializable;
 public class UploadedDeviceLogRecord implements Serializable {
 
     private static final long serialVersionUID = -5572542628689577966L;
-    @ApiModelProperty("A timestamp of creation of log record (in milliseconds since epoch time")
+    @Schema(description="A timestamp of creation of log record (in milliseconds since epoch time")
     private Long timestamp;
 
-    @ApiModelProperty("A package ID of an application related to log record")
+    @Schema(description="A package ID of an application related to log record")
     private String packageId;
 
-    @ApiModelProperty("A severity for log record")
+    @Schema(description="A severity for log record")
     private int logLevel;
 
-    @ApiModelProperty("A message for log record")
+    @Schema(description="A message for log record")
     private String message;
 
     /**

@@ -26,9 +26,9 @@ import jakarta.inject.Singleton;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.Response;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author isv
  */
-@Api(tags = {"Hint"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Hint")
 @Singleton
 @Path("/private/hints")
 public class HintResource {
@@ -69,11 +69,8 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get shown hints",
-            notes = "Gets the list of identifiers for the hints already presented to current user",
-            response = String.class,
-            responseContainer = "List"
+    @Operation(summary = "Get shown hints",
+            description = "Gets the list of identifiers for the hints already presented to current user"
     )
     @GET
     @Path("/history")
@@ -89,10 +86,8 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Enable hints",
-            notes = "Enables the hints to be presented to current user",
-            response = Response.class
+    @Operation(summary = "Enable hints",
+            description = "Enables the hints to be presented to current user"
     )
     @POST
     @Path("/enable")
@@ -108,10 +103,8 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Disable hints",
-            notes = "Disables the hints from to be presented to current user",
-            response = Response.class
+    @Operation(summary = "Disable hints",
+            description = "Disables the hints from to be presented to current user"
     )
     @POST
     @Path("/disable")
@@ -127,10 +120,8 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "On hint shown",
-            notes = "Marks the hint as shown to current user",
-            response = Response.class
+    @Operation(summary = "On hint shown",
+            description = "Marks the hint as shown to current user"
     )
     @POST
     @Path("/history")

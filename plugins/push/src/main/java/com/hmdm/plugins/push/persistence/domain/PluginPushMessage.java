@@ -24,7 +24,7 @@ package com.hmdm.plugins.push.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -39,25 +39,25 @@ public class PluginPushMessage implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 4721182825649236306L;
 
-    @ApiModelProperty("ID of Push message record")
+    @Schema(description="ID of Push message record")
     private Integer id;
 
-    @ApiModelProperty("Customer ID")
+    @Schema(description="Customer ID")
     private int customerId;
 
-    @ApiModelProperty("Device ID")
+    @Schema(description="Device ID")
     private int deviceId;
 
-    @ApiModelProperty("Device Number")
+    @Schema(description="Device Number")
     private String deviceNumber;
 
-    @ApiModelProperty("Timestamp when the message has been sent (in milliseconds since epoch time)")
+    @Schema(description="Timestamp when the message has been sent (in milliseconds since epoch time)")
     private long ts;
 
-    @ApiModelProperty("Push Message type")
+    @Schema(description="Push Message type")
     private String messageType;
 
-    @ApiModelProperty("Push Message payload")
+    @Schema(description="Push Message payload")
     private String payload;
 
     /**

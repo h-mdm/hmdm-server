@@ -21,12 +21,12 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
-@ApiModel(description = "A request to search the customers account")
+@Schema(description = "A request to search the customers account")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerSearchRequest implements Serializable {
 

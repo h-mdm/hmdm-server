@@ -67,7 +67,7 @@ public class LiquibaseModule extends AbstractLiquibaseModule {
 
     /**
      * <p>
-     * Gets the resource accessor to be uused for loading the change log file.
+     * Gets the resource accessor to be used for loading the change log file.
      * </p>
      *
      * @return a resource accessor for change log file.

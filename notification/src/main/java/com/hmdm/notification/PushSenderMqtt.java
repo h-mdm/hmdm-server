@@ -2,20 +2,17 @@ package com.hmdm.notification;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
+import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hmdm.notification.guice.module.NotificationMqttTaskModule;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.util.BackgroundTaskRunnerService;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import jakarta.inject.Named;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class PushSenderMqtt implements PushSender {
@@ -24,10 +21,9 @@ public class PushSenderMqtt implements PushSender {
     private boolean mqttAuth;
     private String mqttAdminPassword;
     private UnsecureDAO unsecureDAO;
-    private MqttClient client;
+    private Mqtt3BlockingClient client;
     private MqttThrottledSender throttledSender;
     private BackgroundTaskRunnerService taskRunner;
-    private MemoryPersistence persistence = new MemoryPersistence();
     private long mqttDelay;
 
     @Inject
@@ -52,17 +48,39 @@ public class PushSenderMqtt implements PushSender {
     @Override
     public void init() {
         try {
-            // Only prepend tcp:// if the serverUri doesn't already have a protocol scheme
-            String brokerUrl = serverUri.contains("://") ? serverUri : "tcp://" + serverUri;
-            client = new MqttClient(brokerUrl, "HMDMServer" + clientTag, persistence);
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setCleanSession(true);
-            options.setAutomaticReconnect(true);
-            if (mqttAuth) {
-                options.setUserName(NotificationMqttTaskModule.MQTT_ADMIN_USERNAME);
-                options.setPassword(mqttAdminPassword.toCharArray());
+            // Parse host and port from serverUri
+            String hostPort = serverUri.contains("://")
+                    ? serverUri.substring(serverUri.indexOf("://") + 3)
+                    : serverUri;
+            String host = "localhost";
+            int port = 1883;
+            if (hostPort.contains(":")) {
+                String[] parts = hostPort.split(":");
+                host = parts[0];
+                port = Integer.parseInt(parts[1]);
+            } else {
+                host = hostPort;
             }
-            client.connect(options);
+
+            var clientBuilder = MqttClient.builder()
+                    .useMqttVersion3()
+                    .identifier("HMDMServer" + clientTag)
+                    .serverHost(host)
+                    .serverPort(port)
+                    .buildBlocking();
+
+            var connectBuilder = clientBuilder.connectWith()
+                    .cleanSession(true);
+
+            if (mqttAuth) {
+                connectBuilder.simpleAuth()
+                        .username(NotificationMqttTaskModule.MQTT_ADMIN_USERNAME)
+                        .password(mqttAdminPassword.getBytes(StandardCharsets.UTF_8))
+                        .applySimpleAuth();
+            }
+
+            connectBuilder.send();
+            client = clientBuilder;
 
             if (mqttDelay > 0) {
                 throttledSender.setClient(client);
@@ -75,7 +93,7 @@ public class PushSenderMqtt implements PushSender {
 
     @Override
     public int send(PushMessage message) {
-        if (client == null || !client.isConnected()) {
+        if (client == null) {
             // Not initialized
             return 0;
         }
@@ -93,13 +111,16 @@ public class PushSenderMqtt implements PushSender {
             }
             strMessage += "}";
 
-            MqttMessage mqttMessage = new MqttMessage(strMessage.getBytes());
-            mqttMessage.setQos(2);
+            byte[] payload = strMessage.getBytes(StandardCharsets.UTF_8);
             String number = device.getOldNumber() == null ? device.getNumber() : device.getOldNumber();
             if (mqttDelay == 0) {
-                client.publish(number, mqttMessage);
+                client.publishWith()
+                        .topic(number)
+                        .payload(payload)
+                        .qos(MqttQos.EXACTLY_ONCE)
+                        .send();
             } else {
-                throttledSender.send(new MqttEnvelope(number, mqttMessage));
+                throttledSender.send(new MqttEnvelope(number, payload, 2));
             }
 
         } catch (Exception e) {
