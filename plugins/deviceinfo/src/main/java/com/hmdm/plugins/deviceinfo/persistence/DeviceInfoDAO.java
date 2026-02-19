@@ -22,7 +22,7 @@
 package com.hmdm.plugins.deviceinfo.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;

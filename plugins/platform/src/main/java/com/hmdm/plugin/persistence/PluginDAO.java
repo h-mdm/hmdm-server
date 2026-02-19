@@ -22,7 +22,7 @@
 package com.hmdm.plugin.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.persistence.domain.DisabledPlugin;
 import com.hmdm.plugin.persistence.domain.Plugin;

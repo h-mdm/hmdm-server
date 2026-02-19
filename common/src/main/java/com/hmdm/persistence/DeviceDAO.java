@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import jakarta.inject.Named;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;

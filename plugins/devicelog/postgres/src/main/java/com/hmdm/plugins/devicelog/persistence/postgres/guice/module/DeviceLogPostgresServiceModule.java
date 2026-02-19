@@ -22,7 +22,7 @@
 package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogDAO;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPluginSettingsDAO;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.PostgresDeviceLogDAO;

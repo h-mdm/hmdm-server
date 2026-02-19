@@ -3,7 +3,7 @@ Headwind MDM: a corporate launcher for Android
 =    BUILD INSTRUCTIONS FOR THE WEB PANEL    =
 ==============================================
 
-This instruction has been tested on Ubuntu Linux 20.04 LTS/22.04 LTS/24.04 LTS.
+This instruction has been tested on Ubuntu Linux 22.04 LTS/24.04 LTS.
 
 IMPORTANT: This project requires Java 21+ and Tomcat 10.1+ (Jakarta EE 9+).
 
@@ -15,12 +15,6 @@ For Ubuntu Linux 24.04 LTS (recommended):
 Set Java 21 as default:
 # sudo update-alternatives --config java
 (select the Java 21 option)
-
-For older Ubuntu versions, install OpenJDK 21 manually:
-# sudo apt install software-properties-common
-# sudo add-apt-repository ppa:openjdk-r/ppa
-# sudo apt update
-# sudo apt install openjdk-21-jdk
 
 2. Verify Java version
 

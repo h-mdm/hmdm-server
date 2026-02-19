@@ -22,7 +22,7 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.domain.UserRolePermission;
 import com.hmdm.persistence.mapper.UserRoleMapper;

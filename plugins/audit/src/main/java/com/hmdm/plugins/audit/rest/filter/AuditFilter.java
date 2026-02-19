@@ -22,7 +22,7 @@
 package com.hmdm.plugins.audit.rest.filter;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.plugins.audit.AuditPluginConfigurationImpl;
 import com.hmdm.plugins.audit.persistence.AuditDAO;

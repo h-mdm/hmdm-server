@@ -17,6 +17,7 @@ import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class NotificationMqttTaskModule {
     private boolean mqttAuth;
     private String mqttAdminPassword;
     private String sslKeystorePassword;
+    private String sslKeystorePath;
     private String hashSecret;
     private EmbeddedActiveMQ embeddedBroker;
     private PushSender pushSender;
@@ -45,6 +47,7 @@ public class NotificationMqttTaskModule {
             @Named("mqtt.auth") boolean mqttAuth,
             @Named("mqtt.admin.password") String mqttAdminPassword,
             @Named("ssl.keystore.password") String sslKeystorePassword,
+            @Named("ssl.keystore.path") String sslKeystorePath,
             @Named("hash.secret") String hashSecret,
             @Named("MQTT") PushSender pushSender) {
         this.serverUri = serverUri;
@@ -53,6 +56,7 @@ public class NotificationMqttTaskModule {
         this.mqttAuth = mqttAuth;
         this.mqttAdminPassword = mqttAdminPassword;
         this.sslKeystorePassword = sslKeystorePassword;
+        this.sslKeystorePath = sslKeystorePath;
         this.hashSecret = hashSecret;
     }
 
@@ -79,31 +83,12 @@ public class NotificationMqttTaskModule {
         }
 
         try {
-            // Parse protocol and host:port from serverUri
-            boolean useSSL = false;
-            String hostPort = serverUri;
-
-            if (hostPort.contains("://")) {
-                String scheme = hostPort.substring(0, hostPort.indexOf("://")).toLowerCase();
-                hostPort = hostPort.substring(hostPort.indexOf("://") + 3);
-
-                // Detect SSL/TLS protocols
-                if (scheme.equals("ssl") || scheme.equals("mqtts") || scheme.equals("wss")) {
-                    useSSL = true;
-                }
-            }
-
-            String host = "0.0.0.0";
-            int port = 1883;
-            if (hostPort.contains(":")) {
-                String[] parts = hostPort.split(":");
-                host = parts[0];
-                port = Integer.parseInt(parts[1]);
-            } else {
-                host = hostPort;
-            }
-            // Extract domain name for keystore path
-            String domain = host;
+            // Parse protocol, host and port using URI for IPv6 safety
+            URI uri = parseServerUri(serverUri);
+            boolean useSSL = "ssl".equals(uri.getScheme()) || "mqtts".equals(uri.getScheme())
+                    || "wss".equals(uri.getScheme());
+            String domain = uri.getHost();
+            int port = uri.getPort() > 0 ? uri.getPort() : (useSSL ? 8883 : 1883);
 
             // Create Artemis configuration programmatically
             Configuration config = new ConfigurationImpl();
@@ -111,9 +96,9 @@ public class NotificationMqttTaskModule {
             config.setJMXManagementEnabled(false);
             config.setSecurityEnabled(mqttAuth);
 
-            // Configure MQTT acceptor
+            // Configure MQTT acceptor - always bind to all interfaces
             Map<String, Object> acceptorParams = new HashMap<>();
-            acceptorParams.put("host", host);
+            acceptorParams.put("host", "0.0.0.0");
             acceptorParams.put("port", port);
             acceptorParams.put("protocols", "MQTT");
 
@@ -122,7 +107,10 @@ public class NotificationMqttTaskModule {
                 if (sslKeystorePassword == null || sslKeystorePassword.isEmpty()) {
                     throw new RuntimeException("SSL protocol requested but ssl.keystore.password is not configured.");
                 }
-                String keystorePath = "/usr/local/tomcat/ssl/" + domain + ".jks";
+                String keystorePath = this.sslKeystorePath;
+                if (keystorePath == null || keystorePath.isEmpty()) {
+                    keystorePath = "/usr/local/tomcat/ssl/" + domain + ".jks";
+                }
 
                 acceptorParams.put("sslEnabled", true);
                 acceptorParams.put("keyStorePath", keystorePath);
@@ -206,6 +194,22 @@ public class NotificationMqttTaskModule {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Parses the server URI, handling IPv6 addresses safely.
+     * Normalizes URIs without a scheme by prepending "mqtt://".
+     */
+    public static URI parseServerUri(String serverUri) {
+        String normalized = serverUri;
+        if (!normalized.contains("://")) {
+            normalized = "mqtt://" + normalized;
+        }
+        URI uri = URI.create(normalized);
+        if (uri.getHost() == null) {
+            throw new IllegalArgumentException("Invalid MQTT server URI (no host): " + serverUri);
+        }
+        return uri;
     }
 
     /**

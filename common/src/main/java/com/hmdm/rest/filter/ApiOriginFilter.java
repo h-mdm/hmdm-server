@@ -21,7 +21,7 @@
 
 package com.hmdm.rest.filter;
 
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

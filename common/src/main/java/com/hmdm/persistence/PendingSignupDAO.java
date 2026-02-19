@@ -22,7 +22,7 @@
 package com.hmdm.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.Group;
 import com.hmdm.persistence.domain.PendingSignup;
 import com.hmdm.persistence.domain.User;

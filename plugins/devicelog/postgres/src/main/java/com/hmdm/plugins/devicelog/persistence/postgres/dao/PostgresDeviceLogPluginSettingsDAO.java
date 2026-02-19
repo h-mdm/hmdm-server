@@ -22,7 +22,7 @@
 package com.hmdm.plugins.devicelog.persistence.postgres.dao;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;

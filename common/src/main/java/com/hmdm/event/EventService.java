@@ -22,7 +22,7 @@
 package com.hmdm.event;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package com.hmdm.service;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.RESTUtil;

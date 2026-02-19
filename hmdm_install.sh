@@ -41,14 +41,14 @@ install_soft() {
         exit 1
     fi
     apt update
-    apt install -y aapt tomcat9 postgresql vim
+    apt install -y aapt tomcat10 postgresql vim
     TOMCAT_HOME=$(ls -d /var/lib/tomcat* | tail -n1)
     TOMCAT_USER=$(ls -ld $TOMCAT_HOME/webapps | awk '{print $3}')
 }
 
-# Use sandbox directory for tomcat 9
-if [ "$TOMCAT_HOME" == "/var/lib/tomcat9" ]; then
-    DEFAULT_LOCATION="/var/lib/tomcat9/work"
+# Use sandbox directory for tomcat 10
+if [ "$TOMCAT_HOME" == "/var/lib/tomcat10" ]; then
+    DEFAULT_LOCATION="/var/lib/tomcat10/work"
 fi
 
 # Check if we are root
@@ -96,33 +96,6 @@ if [ "$?" -ne 0 ]; then
     fi
 fi
 
-# Check for Tomcat version in Ubuntu 20.04
-OUTDATED_TOMCAT=$(/usr/share/tomcat9/bin/version.sh 2>&1 | grep "Server number" | grep "9.0.31")
-if [ ! -z "$OUTDATED_TOMCAT" ]; then
-    echo "Tomcat $OUTDATED_TOMCAT requires updating!"
-    read -e -p "Update it now [Y/n]?: " -i "Y" REPLY
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        # This clause is only for tomcat 9 so do not bother for the major version
-        VERSION=9.0.40
-        wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.40/bin/apache-tomcat-${VERSION}.tar.gz
-        tar -zxf apache-tomcat-${VERSION}.tar.gz
-        cd apache-tomcat-${VERSION}
-        chmod a+x bin
-        chmod a+x lib
-        chmod -R a+r bin
-        chmod -R a+r lib
-        chmod a+x bin/*.sh
-        mv /usr/share/tomcat9/bin /usr/share/tomcat9/bin~
-        mv /usr/share/tomcat9/lib /usr/share/tomcat9/lib~
-        cp -r bin /usr/share/tomcat9
-        cp -r lib /usr/share/tomcat9
-        service tomcat9 restart
-	cd ..
-	rm -rf apache-tomcat-${VERSION}
-	rm -f apache-tomcat-${VERSION}.tar.gz
-        apt-mark hold tomcat9
-    fi
-fi
 
 # Search for the WAR
 SERVER_WAR=./server/target/launcher.war
@@ -208,7 +181,7 @@ echo "File storage setup"
 echo "=================="
 echo "Please choose where the files uploaded to Headwind MDM will be stored"
 echo "If the directory doesn't exist, it will be created"
-echo "##### FOR TOMCAT 9, USE SANDBOXED DIR: /var/lib/tomcat9/work #####"
+echo "##### FOR TOMCAT 10, USE SANDBOXED DIR: /var/lib/tomcat10/work #####"
 echo
 
 read -e -p "Headwind MDM storage directory [$DEFAULT_LOCATION]: " -i "$DEFAULT_LOCATION" LOCATION
@@ -427,7 +400,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     echo "https://$BASE_DOMAIN:8443$BASE_PATH"
     echo
     echo "Notice: if Tomcat starts slowly:"
-    echo "Open a file /etc/java-11-openjdk/security/java.security"
+    echo "Open the Java security config, e.g. /etc/java-21-openjdk/security/java.security"
     echo "Replace securerandom.source=file:/dev/random"
     echo "to securerandom.source=file:/dev/urandom"
     echo "and restart Tomcat."

@@ -14,7 +14,7 @@ public class MqttThrottledSender implements Runnable {
 
     private BlockingQueue<MqttEnvelope> queue = new LinkedBlockingQueue<>();
     private long mqttDelay;
-    private Mqtt3BlockingClient mqttClient;
+    private volatile Mqtt3BlockingClient mqttClient;
     private static final Logger log = LoggerFactory.getLogger(MqttThrottledSender.class);
 
     public MqttThrottledSender() {}
@@ -32,35 +32,35 @@ public class MqttThrottledSender implements Runnable {
         try {
             queue.put(msg);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
+            log.warn("Interrupted while enqueuing MQTT message", e);
         }
     }
 
     @Override
     public void run() {
         log.info("Push message sending throttled, delay=" + mqttDelay + "ms");
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 MqttEnvelope msg = queue.take();
                 if (mqttClient != null) {
-                    MqttQos qos = msg.getQos() == 2 ? MqttQos.EXACTLY_ONCE
-                            : msg.getQos() == 1 ? MqttQos.AT_LEAST_ONCE : MqttQos.AT_MOST_ONCE;
                     mqttClient.publishWith()
                             .topic(msg.getAddress())
                             .payload(msg.getPayload())
-                            .qos(qos)
+                            .qos(msg.getQos())
                             .send();
-                    log.debug("Sending MQTT message to " + msg.getAddress());
+                    log.debug("Sent MQTT message to " + msg.getAddress());
                 } else {
-                    log.error("MQTT client not initialized");
+                    log.error("MQTT client not initialized, message to {} discarded", msg.getAddress());
                 }
                 Thread.sleep(mqttDelay);
             }
             catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                log.info("MQTT throttled sender interrupted, shutting down");
                 return;
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Failed to publish MQTT message: " + e.getMessage(), e);
             }
         }
 

@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.event.ConfigurationUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Application;

@@ -22,7 +22,7 @@
 package com.hmdm.plugins.push.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.push.persistence.domain.PluginPushMessage;
 import com.hmdm.plugins.push.persistence.mapper.PushMessageMapper;

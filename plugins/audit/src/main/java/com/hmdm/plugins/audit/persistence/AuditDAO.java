@@ -22,7 +22,7 @@
 package com.hmdm.plugins.audit.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.persistence.mapper.AuditMapper;

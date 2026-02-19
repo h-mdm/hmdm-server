@@ -22,7 +22,7 @@
 package com.hmdm.util;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import jakarta.inject.Named;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.domain.Application;

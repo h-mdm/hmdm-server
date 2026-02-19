@@ -22,7 +22,7 @@
 package com.hmdm.rest.resource;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import jakarta.inject.Named;
 import java.io.File;
 import java.io.FileInputStream;

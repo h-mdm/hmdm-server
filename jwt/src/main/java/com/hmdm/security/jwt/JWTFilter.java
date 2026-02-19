@@ -22,7 +22,7 @@
 package com.hmdm.security.jwt;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;

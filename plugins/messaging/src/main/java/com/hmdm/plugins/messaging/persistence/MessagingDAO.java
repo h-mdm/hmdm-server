@@ -22,7 +22,7 @@
 package com.hmdm.plugins.messaging.persistence;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.messaging.persistence.domain.Message;
 import com.hmdm.plugins.messaging.persistence.mapper.MessageMapper;

@@ -21,7 +21,7 @@
 
 package com.hmdm.service;
 
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * <p>A service to use for file uploading process.</p>

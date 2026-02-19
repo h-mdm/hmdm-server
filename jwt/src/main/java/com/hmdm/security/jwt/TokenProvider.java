@@ -23,12 +23,14 @@ package com.hmdm.security.jwt;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.StringUtil;
 import io.jsonwebtoken.Claims;
@@ -45,7 +47,9 @@ import com.hmdm.persistence.domain.User;
 import jakarta.inject.Named;
 
 /**
- * <p>A provider for JWT tokens.</p>
+ * <p>
+ * A provider for JWT tokens.
+ * </p>
  *
  * @author isv
  */
@@ -53,34 +57,45 @@ import jakarta.inject.Named;
 public class TokenProvider {
 
     /**
-     * <p>A logger used for logging various events encountered during the lifecycle.</p>
+     * <p>
+     * A logger used for logging various events encountered during the lifecycle.
+     * </p>
      */
     private final Logger log = LoggerFactory.getLogger("JWTAuth");
 
     private static final String TOKEN_KEY = "token";
 
     /**
-     * <p>A secret key used for JWT tokens generation.</p>
+     * <p>
+     * A secret key used for JWT tokens generation.
+     * </p>
      */
     private final SecretKey signingKey;
 
     /**
-     * <p>A period validity of tokens.</p>
+     * <p>
+     * A period validity of tokens.
+     * </p>
      */
     private final long tokenValidityInMilliseconds;
 
     /**
-     * <p>A period validity of tokens with "Remember Me" option enabled..</p>
+     * <p>
+     * A period validity of tokens with "Remember Me" option enabled..
+     * </p>
      */
     private final long tokenValidityInMillisecondsForRememberMe;
 
     /**
-     * <p>Constructs new <code>TokenProvider</code> instance with specified configuration.</p>
+     * <p>
+     * Constructs new <code>TokenProvider</code> instance with specified
+     * configuration.
+     * </p>
      */
     @Inject
     public TokenProvider(@Named("jwt.secretkey") String jwtSecretKey,
-                         @Named("jwt.validity") String jwtValidity,
-                         @Named("jwt.validityrememberme") String jwtValidityForRememberMe) {
+            @Named("jwt.validity") String jwtValidity,
+            @Named("jwt.validityrememberme") String jwtValidityForRememberMe) {
         long defaultValidity = 86400; // 24 hours
         long defaultValidityForRememberMe = 2592000; // 30 days
         String defaultSecretKey = CryptoUtil.randomHexString(40);
@@ -95,12 +110,14 @@ public class TokenProvider {
             defaultValidityForRememberMe = Long.parseLong(jwtValidityForRememberMe);
         }
 
-        // Ensure the key is at least 64 bytes for HS512
-        byte[] keyBytes = defaultSecretKey.getBytes(StandardCharsets.UTF_8);
-        if (keyBytes.length < 64) {
-            byte[] paddedKey = new byte[64];
-            System.arraycopy(keyBytes, 0, paddedKey, 0, keyBytes.length);
-            keyBytes = paddedKey;
+        // Derive a 64-byte key via SHA-512 to ensure sufficient length for HS512
+        // regardless of the input secret length
+        byte[] keyBytes;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            keyBytes = digest.digest(defaultSecretKey.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-512 not available", e);
         }
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
         this.tokenValidityInMilliseconds = 1000L * defaultValidity;
@@ -108,11 +125,15 @@ public class TokenProvider {
     }
 
     /**
-     * <p>Generates new JWT token for the specified authenticated principal.</p>
+     * <p>
+     * Generates new JWT token for the specified authenticated principal.
+     * </p>
      *
-     * @param user a representation of authenticated principal.
-     * @param rememberMe an optional flag indicating if <code>Remember Me</code> option is enabled.
-     * @return a generated JWT token which can be used for further authentications of the specified principal.
+     * @param user       a representation of authenticated principal.
+     * @param rememberMe an optional flag indicating if <code>Remember Me</code>
+     *                   option is enabled.
+     * @return a generated JWT token which can be used for further authentications
+     *         of the specified principal.
      */
     public String createToken(User user, Boolean rememberMe) throws IOException {
         long now = (new Date()).getTime();
@@ -124,25 +145,28 @@ public class TokenProvider {
         }
 
         return Jwts.builder()
-            .subject(user.getLogin())
-            .claim(TOKEN_KEY, user.getAuthToken())
-            .signWith(signingKey)
-            .expiration(validity)
-            .compact();
+                .subject(user.getLogin())
+                .claim(TOKEN_KEY, user.getAuthToken())
+                .signWith(signingKey)
+                .expiration(validity)
+                .compact();
     }
 
     /**
-     * <p>Parses the specified JWT token into authenticated principal.</p>
+     * <p>
+     * Parses the specified JWT token into authenticated principal.
+     * </p>
      *
      * @param jwtToken a JWT token to be parsed.
-     * @return an authenticated principal presentation constructed from the data provided by specified token.
+     * @return an authenticated principal presentation constructed from the data
+     *         provided by specified token.
      */
     User getAuthentication(String jwtToken) throws IOException {
         Claims claims = Jwts.parser()
-            .verifyWith(signingKey)
-            .build()
-            .parseSignedClaims(jwtToken)
-            .getPayload();
+                .verifyWith(signingKey)
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload();
 
         String login = claims.getSubject();
         String authToken = claims.get(TOKEN_KEY).toString();
@@ -154,10 +178,13 @@ public class TokenProvider {
     }
 
     /**
-     * <p>Validates the specified authentication token provided by the client.</p>
+     * <p>
+     * Validates the specified authentication token provided by the client.
+     * </p>
      *
      * @param jwtToken a JWT authentication token to be validated.
-     * @return <code>true</code> if specified token is valid; <code>false</code> otherwise.
+     * @return <code>true</code> if specified token is valid; <code>false</code>
+     *         otherwise.
      */
     boolean validateToken(String jwtToken) {
         try {

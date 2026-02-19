@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import jakarta.inject.Named;
 import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.persistence.domain.User;

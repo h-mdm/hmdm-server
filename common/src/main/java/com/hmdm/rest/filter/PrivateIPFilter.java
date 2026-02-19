@@ -22,7 +22,7 @@
 package com.hmdm.rest.filter;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;

@@ -24,7 +24,7 @@ package com.hmdm.persistence;
 import com.google.inject.Inject;
 import jakarta.inject.Named;
 
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import org.mybatis.guice.transactional.Transactional;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;

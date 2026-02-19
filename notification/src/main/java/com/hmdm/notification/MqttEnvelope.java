@@ -1,13 +1,15 @@
 package com.hmdm.notification;
 
+import com.hivemq.client.mqtt.datatypes.MqttQos;
+
 public class MqttEnvelope {
     private String address;
     private byte[] payload;
-    private int qos;
+    private MqttQos qos;
 
     public MqttEnvelope() {}
 
-    public MqttEnvelope(String address, byte[] payload, int qos) {
+    public MqttEnvelope(String address, byte[] payload, MqttQos qos) {
         this.address = address;
         this.payload = payload;
         this.qos = qos;
@@ -21,11 +23,11 @@ public class MqttEnvelope {
         this.payload = payload;
     }
 
-    public int getQos() {
+    public MqttQos getQos() {
         return qos;
     }
 
-    public void setQos(int qos) {
+    public void setQos(MqttQos qos) {
         this.qos = qos;
     }
 

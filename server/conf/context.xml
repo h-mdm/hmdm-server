@@ -65,6 +65,7 @@
 
     <!-- SSL keystore configuration for MQTT broker -->
     <Parameter name="ssl.keystore.password" value="${ssl.keystore.password}"/>
+    <Parameter name="ssl.keystore.path" value="${ssl.keystore.path}"/>
 
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>

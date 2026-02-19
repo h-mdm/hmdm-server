@@ -4,8 +4,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
 import jakarta.servlet.ServletContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NotificationMqttConfigModule extends AbstractModule {
+
+    private static final Logger log = LoggerFactory.getLogger(NotificationMqttConfigModule.class);
 
     /**
      * <p>
@@ -65,7 +69,7 @@ public class NotificationMqttConfigModule extends AbstractModule {
                 mqttDelay = Long.parseLong(mqttDelayTag);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            log.warn("Invalid mqtt.message.delay value: " + mqttDelayTag, e);
         }
         this.bindConstant().annotatedWith(Names.named("mqtt.message.delay")).to(mqttDelay);
 
@@ -76,7 +80,7 @@ public class NotificationMqttConfigModule extends AbstractModule {
                 pollTimeout = Long.parseLong(pollTimeoutTag);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            log.warn("Invalid polling.timeout value: " + pollTimeoutTag, e);
         }
         this.bindConstant().annotatedWith(Names.named("polling.timeout")).to(pollTimeout);
 
