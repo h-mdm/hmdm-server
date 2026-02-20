@@ -1,6 +1,6 @@
 package com.hmdm.service;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.util.FileUtil;
 import org.apache.commons.io.FileUtils;
@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import jakarta.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,7 +18,10 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * <p>A service to use for asymmetric encryption to get sensitive data from the front-end.</p>
+ * <p>
+ * A service to use for asymmetric encryption to get sensitive data from the
+ * front-end.
+ * </p>
  *
  * @author seva
  */
@@ -44,9 +46,9 @@ public class RsaKeyService {
             kpg.initialize(1024);
             KeyPair kp = kpg.generateKeyPair();
             Key pub = kp.getPublic();
-            logger.info("Public key format: " + pub.getFormat());
+            logger.info("Public key format: {}", pub.getFormat());
             Key pvt = kp.getPrivate();
-            logger.info("Private key format: " + pvt.getFormat());
+            logger.info("Private key format: {}", pvt.getFormat());
             if (baseDirectory.equals("")) {
                 logger.error("Failed to initialize RSA key: base.directory not initialized");
                 return false;
@@ -120,7 +122,7 @@ public class RsaKeyService {
             byte[] result = cipher.doFinal();
             return new String(result, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            logger.error("Failed to decrypt string: " + e.getMessage());
+            logger.error("Failed to decrypt string: {}", e.getMessage());
             return null;
         }
     }

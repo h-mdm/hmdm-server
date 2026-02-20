@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.plugins.audit.AuditPluginConfigurationImpl;

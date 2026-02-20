@@ -21,7 +21,7 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.inject.Named;
 import java.io.File;

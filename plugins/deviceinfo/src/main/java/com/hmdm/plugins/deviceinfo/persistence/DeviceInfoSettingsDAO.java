@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.deviceinfo.persistence;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.deviceinfo.persistence.domain.DeviceInfoPluginSettings;

@@ -21,7 +21,7 @@
 
 package com.hmdm.plugin.rest;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.plugin.service.PluginStatusCache;
 import org.slf4j.Logger;

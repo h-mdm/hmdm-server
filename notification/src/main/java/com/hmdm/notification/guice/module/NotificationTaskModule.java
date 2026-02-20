@@ -21,7 +21,7 @@
 
 package com.hmdm.notification.guice.module;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import com.hmdm.notification.persistence.NotificationDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

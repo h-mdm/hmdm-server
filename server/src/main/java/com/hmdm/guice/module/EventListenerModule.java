@@ -21,7 +21,7 @@
 
 package com.hmdm.guice.module;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.ConfigurationUpdatedEventListener;
 import com.hmdm.persistence.DeviceInfoUpdatedEventListener;

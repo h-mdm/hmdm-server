@@ -1,6 +1,6 @@
 package com.hmdm.notification.guice.module;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import com.hmdm.notification.PushSender;
 import com.hmdm.util.CryptoUtil;

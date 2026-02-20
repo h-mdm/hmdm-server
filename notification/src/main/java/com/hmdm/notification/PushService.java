@@ -1,6 +1,6 @@
 package com.hmdm.notification;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.inject.Named;
 import com.hmdm.notification.persistence.domain.PushMessage;

@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.push.guice.module;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.DeviceDAO;

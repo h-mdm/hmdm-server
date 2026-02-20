@@ -21,7 +21,7 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.mapper.ApplicationSettingMapper;

@@ -21,7 +21,7 @@
 
 package com.hmdm.security.jwt;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;

@@ -21,7 +21,7 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 import java.io.IOException;
 import java.net.URI;

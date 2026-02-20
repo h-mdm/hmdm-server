@@ -21,7 +21,7 @@
 
 package com.hmdm.event;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import org.slf4j.Logger;

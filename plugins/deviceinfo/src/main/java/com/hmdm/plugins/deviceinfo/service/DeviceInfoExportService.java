@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.deviceinfo.service;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.plugins.deviceinfo.persistence.mapper.DeviceInfoMapper;
 import com.hmdm.plugins.deviceinfo.rest.json.DeviceDynamicInfoRecord;

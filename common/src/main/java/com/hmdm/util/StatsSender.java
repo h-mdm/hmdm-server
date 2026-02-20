@@ -1,6 +1,6 @@
 package com.hmdm.util;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.UsageStats;

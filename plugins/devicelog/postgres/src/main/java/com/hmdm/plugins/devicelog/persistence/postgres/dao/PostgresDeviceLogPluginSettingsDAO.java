@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.devicelog.persistence.postgres.dao;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.persistence.domain.Customer;

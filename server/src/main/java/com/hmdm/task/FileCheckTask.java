@@ -1,6 +1,6 @@
 package com.hmdm.task;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.UnsecureDAO;

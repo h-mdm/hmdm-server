@@ -1,6 +1,6 @@
 package com.hmdm.notification;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
@@ -19,6 +19,11 @@ import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class PushSenderMqtt implements PushSender {
+    private static final Logger log = LoggerFactory.getLogger(PushSenderMqtt.class);
+    private static final int MAX_CONNECT_RETRIES = 5;
+    private static final int EXTERNAL_CONNECT_RETRIES = 3;
+    private static final long RETRY_DELAY_MS = 1000;
+
     private String serverUri;
     private String clientTag;
     private String mqttExternal;
@@ -57,11 +62,6 @@ public class PushSenderMqtt implements PushSender {
         this.unsecureDAO = unsecureDAO;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(PushSenderMqtt.class);
-    private static final int MAX_CONNECT_RETRIES = 5;
-    private static final int EXTERNAL_CONNECT_RETRIES = 3;
-    private static final long RETRY_DELAY_MS = 1000;
-
     @Override
     public void init() {
         isExternal = "1".equals(mqttExternal) || "true".equalsIgnoreCase(mqttExternal);
@@ -81,7 +81,7 @@ public class PushSenderMqtt implements PushSender {
 
             connectAndStart();
         } catch (Exception e) {
-            log.error("Failed to initialize MQTT client: " + e.getMessage(), e);
+            log.error("Failed to initialize MQTT client: {}", e.getMessage(), e);
         }
     }
 
@@ -90,10 +90,12 @@ public class PushSenderMqtt implements PushSender {
                 .useMqttVersion3()
                 .identifier("HMDMServer" + clientTag)
                 .serverHost(connectHost)
-                .serverPort(connectPort);
+                .serverPort(connectPort)
+                .automaticReconnectWithDefaultConfig();
 
         if (connectSSL) {
             if (!isExternal) {
+                // Embedded broker runs on localhost — skip hostname verification
                 clientBuilder.sslConfig()
                         .hostnameVerifier((hostname, session) -> true)
                         .applySslConfig();
@@ -119,7 +121,7 @@ public class PushSenderMqtt implements PushSender {
         connectBuilder.send();
     }
 
-    private void connectAndStart() throws InterruptedException {
+    private synchronized void connectAndStart() throws InterruptedException {
         var mqttClient = buildClient();
 
         // Retry connection to handle embedded broker startup delay
@@ -127,13 +129,13 @@ public class PushSenderMqtt implements PushSender {
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 connectClient(mqttClient);
-                log.info("MQTT client connected successfully to " + connectHost + ":" + connectPort
-                        + (isExternal ? " (external)" : " (embedded)"));
+                log.info("MQTT client connected successfully to {}:{}{}", connectHost, connectPort,
+                        isExternal ? " (external)" : " (embedded)");
                 break;
             } catch (Exception e) {
                 if (attempt < maxRetries) {
-                    log.warn("MQTT connection attempt " + attempt + " failed, retrying in " + RETRY_DELAY_MS
-                            + "ms: " + e.getMessage());
+                    log.warn("MQTT connection attempt {} failed, retrying in {}ms: {}",
+                            attempt, RETRY_DELAY_MS, e.getMessage());
                     Thread.sleep(RETRY_DELAY_MS);
                 } else {
                     throw e;
@@ -158,9 +160,9 @@ public class PushSenderMqtt implements PushSender {
      * Attempts to reconnect to the MQTT broker.
      * Returns true if reconnection succeeded.
      */
-    private synchronized boolean reconnect() {
+    private boolean reconnect() {
         try {
-            log.info("Attempting MQTT reconnection to " + connectHost + ":" + connectPort);
+            log.info("Attempting MQTT reconnection to {}:{}", connectHost, connectPort);
             connectAndStart();
             return true;
         } catch (InterruptedException e) {
@@ -168,7 +170,7 @@ public class PushSenderMqtt implements PushSender {
             log.error("MQTT reconnection interrupted");
             return false;
         } catch (Exception e) {
-            log.error("MQTT reconnection failed: " + e.getMessage());
+            log.error("MQTT reconnection failed: {}", e.getMessage());
             return false;
         }
     }

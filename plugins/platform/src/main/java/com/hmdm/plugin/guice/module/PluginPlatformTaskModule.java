@@ -21,7 +21,7 @@
 
 package com.hmdm.plugin.guice.module;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugin.persistence.CustomerCreatedEventListener;

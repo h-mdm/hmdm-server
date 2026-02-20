@@ -1,6 +1,6 @@
 package com.hmdm.auth;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;

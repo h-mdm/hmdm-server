@@ -21,7 +21,7 @@
 
 package com.hmdm.plugin.service;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugin.PluginList;

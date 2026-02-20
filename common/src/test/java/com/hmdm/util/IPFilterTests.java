@@ -22,18 +22,23 @@
 package com.hmdm.util;
 
 import com.hmdm.rest.filter.BaseIPFilter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * <p>A test suite for {@link BaseIPFilter} class.</p>
+ * <p>
+ * A test suite for {@link BaseIPFilter} class.
+ * </p>
  *
  * @author seva
  */
 public class IPFilterTests {
 
     /**
-     * <p>Constructs new <code>IPFilterTests</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>IPFilterTests</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     public IPFilterTests() {
     }
@@ -41,7 +46,7 @@ public class IPFilterTests {
     @Test
     public void testMatch() {
         BaseIPFilter filter = new BaseIPFilter("192.168.0.0/26,1.0.0.0/1,11.11.11.11/32,10.1.2.3", "", "");
-        Assert.assertEquals(filter.match("192.168.0.1"), true);
-        Assert.assertEquals(filter.match("213.110.2.1"), false);
+        Assertions.assertTrue(filter.match("192.168.0.1"));
+        Assertions.assertFalse(filter.match("213.110.2.1"));
     }
 }

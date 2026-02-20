@@ -85,10 +85,6 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
             Database database = DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase(getChangeLogResourcePath(), getResourceAccessor(), database);
-            // Clear checksums to handle Liquibase 3.x → 4.x migration.
-            // This sets MD5SUM to NULL so they are recalculated on update,
-            // preventing checksum mismatch errors on existing installations.
-            liquibase.clearCheckSums();
             String usageScenario = this.context.getInitParameter("usage.scenario");
             String contexts = getContexts(usageScenario);
             liquibase.update(new Contexts(contexts));

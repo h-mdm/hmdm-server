@@ -59,6 +59,9 @@ mqtt.admin.password=
 # SSL keystore password for MQTT broker
 ssl.keystore.password=
 
+# SSL keystore path for MQTT broker (default: /usr/local/tomcat/ssl/<domain>.jks)
+ssl.keystore.path=
+
 # Delaying MQTT messages in milliseconds to avoid congestion
 mqtt.message.delay=1000
 

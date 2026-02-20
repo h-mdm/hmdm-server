@@ -29,7 +29,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.StringUtil;

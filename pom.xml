@@ -69,7 +69,7 @@
         <poi.version>5.4.0</poi.version>
         <lombok.version>1.18.36</lombok.version>
         <slf4j.version>2.0.16</slf4j.version>
-        <junit.version>4.13.2</junit.version>
+        <junit.version>5.10.2</junit.version>
 
         <!-- Build timestamps -->
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -194,10 +194,10 @@
         </dependency>
 
 
-        <!-- Testing -->
+        <!-- Testing (JUnit 5) -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
@@ -300,7 +300,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20231013</version>
+            <version>20240303</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
@@ -386,6 +386,11 @@
                         </fileset>
                     </filesets>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
             </plugin>
         </plugins>
     </build>

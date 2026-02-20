@@ -21,7 +21,7 @@
 
 package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.PostgresDeviceLogDAO;
 import com.hmdm.util.BackgroundTaskRunnerService;
