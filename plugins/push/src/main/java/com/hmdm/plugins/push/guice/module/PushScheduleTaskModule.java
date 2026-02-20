@@ -24,17 +24,13 @@ package com.hmdm.plugins.push.guice.module;
 import jakarta.inject.Inject;
 import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.domain.PushMessage;
-import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
-import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.push.persistence.PushDAO;
 import com.hmdm.plugins.push.persistence.PushScheduleDAO;
 import com.hmdm.plugins.push.persistence.domain.PluginPushMessage;
 import com.hmdm.plugins.push.persistence.domain.PluginPushSchedule;
-import com.hmdm.rest.json.Response;
-import com.hmdm.security.SecurityContext;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +40,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>A module used for initializing the tasks to be executed in background.</p>
+ * <p>
+ * A module used for initializing the tasks to be executed in background.
+ * </p>
  *
  * @author isv
  */
@@ -53,32 +51,45 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     private static final Logger logger = LoggerFactory.getLogger(PushScheduleTaskModule.class);
 
     /**
-     * <p>An interface to push message records persistence.</p>
+     * <p>
+     * An interface to push message records persistence.
+     * </p>
      */
     private PushDAO pushDAO;
 
     /**
-     * <p>An interface to persistence layer.</p>
+     * <p>
+     * An interface to persistence layer.
+     * </p>
      */
     private final UnsecureDAO unsecureDAO;
 
     /**
-     * <p>An interface to persistence layer.</p>
+     * <p>
+     * An interface to persistence layer.
+     * </p>
      */
     private final PushScheduleDAO pushScheduleDAO;
 
     /**
-     * <p>An interface to notification services.</p>
+     * <p>
+     * An interface to notification services.
+     * </p>
      */
     private PushService pushService;
 
     /**
-     * <p>A runner for the repeatable tasks.</p>
+     * <p>
+     * A runner for the repeatable tasks.
+     * </p>
      */
     private final BackgroundTaskRunnerService taskRunner;
 
     /**
-     * <p>Constructs new <code>DeviceInfoTaskModule</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>DeviceInfoTaskModule</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     @Inject
     public PushScheduleTaskModule(
@@ -95,33 +106,35 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     }
 
     /**
-     * <p>Initializes this module. Schedules the task for sending scheduled messages.</p>
+     * <p>
+     * Initializes this module. Schedules the task for sending scheduled messages.
+     * </p>
      */
     @Override
     public void init() {
         taskRunner.submitRepeatableTask(this::sendScheduledMessages, 1, 1, TimeUnit.MINUTES);
     }
 
-
     /**
-     * <p>Retrieves scheduled messages from the database and sends them.</p>
+     * <p>
+     * Retrieves scheduled messages from the database and sends them.
+     * </p>
      */
     public void sendScheduledMessages() {
         try {
             List<PluginPushSchedule> taskList = pushScheduleDAO.findMatchingTime();
             taskList.forEach(task -> sendScheduledMessage(task));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Unexpected error when sending scheduled messages", e);
         }
     }
 
     public void sendScheduledMessage(PluginPushSchedule task) {
         List<PluginPushMessage> messages = new LinkedList<>();
         List<Device> devices = new LinkedList<>();
-        logger.info("Processing scheduled message: type " + task.getMessageType() +
-                ", customer " + task.getCustomerId() +
-                ", scope " + task.getScope() + ", device " + task.getDeviceId() +
-                ", group " + task.getGroupId() + ", config " + task.getConfigurationId());
+        logger.info("Processing scheduled message: type {}, customer {}, scope {}, device {}, group {}, config {}",
+                task.getMessageType(), task.getCustomerId(), task.getScope(),
+                task.getDeviceId(), task.getGroupId(), task.getConfigurationId());
 
         if (task.getScope().equals("device")) {
             PluginPushMessage message = new PluginPushMessage();
@@ -154,7 +167,7 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     }
 
     private boolean sendSingleMessage(PluginPushMessage message) {
-        logger.info("Sending Push message " + message.getMessageType() + " to device " + message.getDeviceId());
+        logger.info("Sending Push message {} to device {}", message.getMessageType(), message.getDeviceId());
         try {
             this.pushDAO.insertRawMessage(message);
 
@@ -168,8 +181,7 @@ public class PushScheduleTaskModule implements PluginTaskModule {
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Unexpected error when sending a Push message to " + message.getDeviceId(), e);
+            logger.error("Unexpected error when sending a Push message to {}", message.getDeviceId(), e);
             return false;
         }
     }

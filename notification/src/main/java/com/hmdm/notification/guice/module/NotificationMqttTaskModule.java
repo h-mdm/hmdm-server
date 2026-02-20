@@ -78,7 +78,7 @@ public class NotificationMqttTaskModule {
             return false;
         }
         if ("1".equals(mqttExternal) || "true".equalsIgnoreCase(mqttExternal)) {
-            log.info("MQTT service not started, use external MQTT server " + serverUri);
+            log.info("MQTT service not started, use external MQTT server {}", serverUri);
             return true;
         }
 
@@ -118,7 +118,7 @@ public class NotificationMqttTaskModule {
                 acceptorParams.put("trustStorePath", keystorePath);
                 acceptorParams.put("trustStorePassword", sslKeystorePassword);
 
-                log.info("Configuring SSL for MQTT broker with keystore: " + keystorePath);
+                log.info("Configuring SSL for MQTT broker with keystore: {}", keystorePath);
             }
 
             TransportConfiguration mqttAcceptor = new TransportConfiguration(
@@ -187,10 +187,10 @@ public class NotificationMqttTaskModule {
             }
 
             embeddedBroker.start();
-            log.info("Artemis MQTT notification service started at " + serverUri);
+            log.info("Artemis MQTT notification service started at {}", serverUri);
 
         } catch (Exception e) {
-            log.error("Failed to create Artemis MQTT broker service: " + e.getMessage(), e);
+            log.error("Failed to create Artemis MQTT broker service: {}", e.getMessage(), e);
             return false;
         }
         return true;
@@ -221,7 +221,7 @@ public class NotificationMqttTaskModule {
                 embeddedBroker.stop();
                 log.info("Artemis MQTT notification service stopped");
             } catch (Exception e) {
-                log.error("Error stopping Artemis broker: " + e.getMessage(), e);
+                log.error("Error stopping Artemis broker: {}", e.getMessage(), e);
             }
         }
     }

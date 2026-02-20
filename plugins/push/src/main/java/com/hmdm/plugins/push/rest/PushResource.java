@@ -54,61 +54,79 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>A resource to be used for managing the <code>Push</code> plugin data for customer account associated
- * with current user.</p>
+ * <p>
+ * A resource to be used for managing the <code>Push</code> plugin data for
+ * customer account associated
+ * with current user.
+ * </p>
  *
  * @author isv
  */
 @Singleton
 @Path("/plugins/push")
-@Tag(name="Push messaging plugin")
+@Tag(name = "Push messaging plugin")
 public class PushResource {
 
     private static final Logger logger = LoggerFactory.getLogger(PushResource.class);
 
     /**
-     * <p>An interface to push message records persistence.</p>
+     * <p>
+     * An interface to push message records persistence.
+     * </p>
      */
     private PushDAO pushDAO;
 
     /**
-     * <p>An interface to scheduled task records persistence.</p>
+     * <p>
+     * An interface to scheduled task records persistence.
+     * </p>
      */
     private PushScheduleDAO pushScheduleDAO;
 
     /**
-     * <p>An interface to persistence without security checks.</p>
+     * <p>
+     * An interface to persistence without security checks.
+     * </p>
      */
     private UnsecureDAO unsecureDAO;
 
     /**
-     * <p>An interface to device records persistence.</p>
+     * <p>
+     * An interface to device records persistence.
+     * </p>
      */
     private DeviceDAO deviceDAO;
 
     /**
-     * <p>An interface to notification services.</p>
+     * <p>
+     * An interface to notification services.
+     * </p>
      */
     private PushService pushService;
 
     private PluginStatusCache pluginStatusCache;
 
     /**
-     * <p>A constructor required by swagger.</p>
+     * <p>
+     * A constructor required by swagger.
+     * </p>
      */
     public PushResource() {
     }
 
     /**
-     * <p>Constructs new <code>PushResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>PushResource</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     @Inject
     public PushResource(PushDAO pushDAO,
-                             PushScheduleDAO pushScheduleDAO,
-                             UnsecureDAO unsecureDAO,
-                             DeviceDAO deviceDAO,
-                             PushService pushService,
-                             PluginStatusCache pluginStatusCache) {
+            PushScheduleDAO pushScheduleDAO,
+            UnsecureDAO unsecureDAO,
+            DeviceDAO deviceDAO,
+            PushService pushService,
+            PluginStatusCache pluginStatusCache) {
         this.pushDAO = pushDAO;
         this.pushScheduleDAO = pushScheduleDAO;
         this.unsecureDAO = unsecureDAO;
@@ -120,14 +138,15 @@ public class PushResource {
     // =================================================================================================================
 
     /**
-     * <p>Gets the list of push message records matching the specified filter.</p>
+     * <p>
+     * Gets the list of push message records matching the specified filter.
+     * </p>
      *
      * @param filter a filter to be used for filtering the records.
-     * @return a response with list of device log records matching the specified filter.
+     * @return a response with list of device log records matching the specified
+     *         filter.
      */
-    @Operation(summary = "Search Push messages",
-            description = "Gets the list of message records matching the specified filter"
-    )
+    @Operation(summary = "Search Push messages", description = "Gets the list of message records matching the specified filter")
     @POST
     @Path("/private/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -138,16 +157,13 @@ public class PushResource {
 
             return Response.OK(new PaginatedData<>(records, count));
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Failed to search the push message records due to unexpected error. Filter: {}", filter, e);
             return Response.INTERNAL_ERROR();
         }
     }
 
     // =================================================================================================================
-    @Operation(summary = "Send new Push message",
-            description = "Sends a new Push message to a specified device."
-    )
+    @Operation(summary = "Send new Push message", description = "Sends a new Push message to a specified device.")
     @POST
     @Path("/private/send")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -170,7 +186,8 @@ public class PushResource {
                     PluginPushMessage message = new PluginPushMessage();
                     Device device = deviceDAO.getDeviceByNumber(sendRequest.getDeviceNumber());
                     if (device == null) {
-                        String error = "Attempt to send Push message to wrong device number " + sendRequest.getDeviceNumber();
+                        String error = "Attempt to send Push message to wrong device number "
+                                + sendRequest.getDeviceNumber();
                         logger.error(error);
                         return Response.ERROR(error);
                     }
@@ -193,8 +210,7 @@ public class PushResource {
                         return Response.ERROR(error);
                     }
                     dsr.setGroupId(sendRequest.getGroupId());
-                }
-                else if (sendRequest.getScope().equals("configuration")) {
+                } else if (sendRequest.getScope().equals("configuration")) {
                     if (sendRequest.getConfigurationId() == null || sendRequest.getConfigurationId() == 0) {
                         String error = "Empty configuration id while trying to send a Push message to configuration!";
                         logger.error(error);
@@ -223,36 +239,32 @@ public class PushResource {
 
             return Response.OK();
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Unexpected error when sending a Push message", e);
             return Response.ERROR();
         }
     }
 
     private boolean sendSingleMessage(PluginPushMessage message) {
-         try {
-             this.pushDAO.insertMessage(message);
+        try {
+            this.pushDAO.insertMessage(message);
 
-             PushMessage pushMessage = new PushMessage();
-             pushMessage.setDeviceId(message.getDeviceId());
-             pushMessage.setMessageType(message.getMessageType());
-             pushMessage.setPayload(message.getPayload());
+            PushMessage pushMessage = new PushMessage();
+            pushMessage.setDeviceId(message.getDeviceId());
+            pushMessage.setMessageType(message.getMessageType());
+            pushMessage.setPayload(message.getPayload());
 
-             this.pushService.send(pushMessage);
+            this.pushService.send(pushMessage);
 
-             return true;
+            return true;
 
-         } catch (Exception e) {
-             e.printStackTrace();
-             logger.error("Unexpected error when sending a Push message to " + message.getDeviceId(), e);
-             return false;
-         }
+        } catch (Exception e) {
+            logger.error("Unexpected error when sending a Push message to {}", message.getDeviceId(), e);
+            return false;
+        }
     }
 
     // =================================================================================================================
-    @Operation(summary = "Delete Push message",
-            description = "Delete an existing Push message"
-    )
+    @Operation(summary = "Delete Push message", description = "Delete an existing Push message")
     @DELETE
     @Path("/private/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -269,11 +281,8 @@ public class PushResource {
         return Response.OK();
     }
 
-
     // =================================================================================================================
-    @Operation(summary = "Purge old Push messages",
-            description = "Deletes all Push messages older than a specified number of days."
-    )
+    @Operation(summary = "Purge old Push messages", description = "Deletes all Push messages older than a specified number of days.")
     @GET
     @Path("/private/purge/{days}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -291,24 +300,23 @@ public class PushResource {
 
             return Response.OK();
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Unexpected error when purging old Push messages", e);
             return Response.ERROR();
         }
     }
 
-
     // =================================================================================================================
 
     /**
-     * <p>Gets the list of scheduled task records matching the specified filter.</p>
+     * <p>
+     * Gets the list of scheduled task records matching the specified filter.
+     * </p>
      *
      * @param filter a filter to be used for filtering the records.
-     * @return a response with list of scheduled task records matching the specified filter.
+     * @return a response with list of scheduled task records matching the specified
+     *         filter.
      */
-    @Operation(summary = "Search scheduled tasks",
-            description = "Gets the list of scheduled task records matching the specified filter"
-    )
+    @Operation(summary = "Search scheduled tasks", description = "Gets the list of scheduled task records matching the specified filter")
     @POST
     @Path("/private/searchTasks")
     @Produces(MediaType.APPLICATION_JSON)
@@ -319,23 +327,20 @@ public class PushResource {
 
             return Response.OK(new PaginatedData<>(records, count));
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Failed to search the scheduled task records due to unexpected error. Filter: {}", filter, e);
             return Response.INTERNAL_ERROR();
         }
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update a scheduled task",
-            description = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise"
-    )
+    @Operation(summary = "Create or update a scheduled task", description = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise")
     @PUT
     @Path("/private/task")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveTask(PluginPushSchedule task) {
         if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
-            logger.error("Unauthorized attempt to save scheduled task by user " +
+            logger.error("Unauthorized attempt to save scheduled task by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -344,7 +349,7 @@ public class PushResource {
                 // Autocomplete returns device number
                 Device dbDevice = deviceDAO.getDeviceByNumber(task.getDeviceNumber());
                 if (dbDevice == null) {
-                    logger.error("Invalid device number in the scheduled task! " + task.getDeviceNumber());
+                    logger.error("Invalid device number in the scheduled task! {}", task.getDeviceNumber());
                     return Response.INTERNAL_ERROR();
                 }
                 task.setDeviceId(dbDevice.getId());
@@ -357,22 +362,19 @@ public class PushResource {
 
             return Response.OK();
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Failed to create or update device log plugin settings rule", e);
             return Response.INTERNAL_ERROR();
         }
     }
 
     // =================================================================================================================
-    @Operation(summary = "Delete a scheduled task",
-            description = "Delete an existing scheduled task"
-    )
+    @Operation(summary = "Delete a scheduled task", description = "Delete an existing scheduled task")
     @DELETE
     @Path("/private/task/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeTask(@PathParam("id") @Parameter(description = "Task ID") Integer id) {
         if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
-            logger.error("Unauthorized attempt to delete a scheduled task by user " +
+            logger.error("Unauthorized attempt to delete a scheduled task by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -383,11 +385,9 @@ public class PushResource {
             logger.error("Prohibited to delete a scheduled task #{} by current user", id, e);
             return Response.PERMISSION_DENIED();
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Failed to delete a scheduled task #{} due to unexpected error", id, e);
             return Response.INTERNAL_ERROR();
         }
     }
-
 
 }

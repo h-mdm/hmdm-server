@@ -61,22 +61,29 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * <p>A resource to be used for accessing the settings for <code>Photo Plugin</code>.</p>
+ * <p>
+ * A resource to be used for accessing the settings for
+ * <code>Photo Plugin</code>.
+ * </p>
  *
  * @author isv
  */
-@Tag(name="Plugin - Device Log")
+@Tag(name = "Plugin - Device Log")
 @Singleton
 @Path("/plugins/devicelog/devicelog-plugin-settings")
 public class DeviceLogPluginSettingsResource {
 
     /**
-     * <p>A logger to be used for logging the events.</p>
+     * <p>
+     * A logger to be used for logging the events.
+     * </p>
      */
     private static final Logger log = LoggerFactory.getLogger("plugin-photo");
 
     /**
-     * <p>A DAO for managing the plugin settings.</p>
+     * <p>
+     * A DAO for managing the plugin settings.
+     * </p>
      */
     private DeviceLogPluginSettingsDAO settingsDAO;
 
@@ -85,38 +92,44 @@ public class DeviceLogPluginSettingsResource {
     private PushService pushService;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public DeviceLogPluginSettingsResource() {
     }
 
     /**
-     * <p>Constructs new <code>PhotoPluginSettingsResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>PhotoPluginSettingsResource</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     @Inject
     public DeviceLogPluginSettingsResource(DeviceLogPluginSettingsDAO settingsDAO,
-                                           DeviceDAO deviceDAO,
-                                           PushService pushService) {
+            DeviceDAO deviceDAO,
+            PushService pushService) {
         this.settingsDAO = settingsDAO;
         this.deviceDAO = deviceDAO;
         this.pushService = pushService;
     }
 
     /**
-     * <p>Gets the plugin settings for customer account associated with current user. If there are none found in DB
-     * then returns default ones.</p>
+     * <p>
+     * Gets the plugin settings for customer account associated with current user.
+     * If there are none found in DB
+     * then returns default ones.
+     * </p>
      *
      * @return plugin settings for current customer account.
      */
-    @Operation(summary = "Get settings",
-            description = "Gets the plugin settings for current user. If there are none found in DB then returns default ones."
-    )
+    @Operation(summary = "Get settings", description = "Gets the plugin settings for current user. If there are none found in DB then returns default ones.")
     @GET
     @Path("/private")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings() {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            log.error("Unauthorized attempt to get device log settings by user " +
+            log.error("Unauthorized attempt to get device log settings by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -141,23 +154,21 @@ public class DeviceLogPluginSettingsResource {
         }
     }
 
-    @Operation(summary = "Create or update plugin settings",
-            description = "Creates a new plugin settings record (if id is not provided) or updates existing one otherwise"
-    )
+    @Operation(summary = "Create or update plugin settings", description = "Creates a new plugin settings record (if id is not provided) or updates existing one otherwise")
     @PUT
     @Path("/private")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveMainSettings(String settingsJSON) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            log.error("Unauthorized attempt to save device log settings by user " +
+            log.error("Unauthorized attempt to save device log settings by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
             ObjectMapper mapper = new ObjectMapper();
             DeviceLogPluginSettings settings = mapper.readValue(settingsJSON, this.settingsDAO.getSettingsClass());
-            
+
             if (settings.getIdentifier() == null) {
                 this.settingsDAO.insertPluginSettings(settings);
             } else {
@@ -170,16 +181,15 @@ public class DeviceLogPluginSettingsResource {
             return Response.INTERNAL_ERROR();
         }
     }
-    @Operation(summary = "Create or update plugin settings rule",
-            description = "Creates a new plugin settings rule record (if id is not provided) or updates existing one otherwise"
-    )
+
+    @Operation(summary = "Create or update plugin settings rule", description = "Creates a new plugin settings rule record (if id is not provided) or updates existing one otherwise")
     @PUT
     @Path("/private/rule")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveSettingsRule(String ruleJSON) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            log.error("Unauthorized attempt to save device log settings by user " +
+            log.error("Unauthorized attempt to save device log settings by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -196,16 +206,15 @@ public class DeviceLogPluginSettingsResource {
             return Response.INTERNAL_ERROR();
         }
     }
+
     // =================================================================================================================
-    @Operation(summary = "Delete rule",
-            description = "Delete an existing plugin settings rule"
-    )
+    @Operation(summary = "Delete rule", description = "Delete an existing plugin settings rule")
     @DELETE
     @Path("/private/rule/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeRule(@PathParam("id") @Parameter(description = "Rule ID") Integer id) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            log.error("Unauthorized attempt to save device log settings by user " +
+            log.error("Unauthorized attempt to save device log settings by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -237,7 +246,6 @@ public class DeviceLogPluginSettingsResource {
             }
         }
     }
-
 
     // Applicable only to rules which do not contain explicit list of devices!
     private List<Device> getDevicesByRule(DeviceLogRule rule) {

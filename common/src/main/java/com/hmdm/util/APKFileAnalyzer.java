@@ -24,7 +24,6 @@ package com.hmdm.util;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.inject.Named;
-import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.APKFileDetails;
 import net.dongliu.apk.parser.ApkFile;
@@ -58,7 +57,7 @@ public class APKFileAnalyzer {
      * A logger for the encountered events.
      * </p>
      */
-    private static final Logger log = LoggerFactory.getLogger(ApplicationDAO.class);
+    private static final Logger log = LoggerFactory.getLogger(APKFileAnalyzer.class);
 
     /**
      * <p>
@@ -279,30 +278,28 @@ public class APKFileAnalyzer {
             final AtomicReference<String> appPkg,
             final AtomicReference<String> appVersion,
             final AtomicReference<Integer> appVersionCode) {
-        Scanner scanner = new Scanner(line).useDelimiter(" ");
-        while (scanner.hasNext()) {
-            final String token = scanner.next();
-            if (token.startsWith("name=")) {
-                String appPkgLocal = token.substring("name=".length());
-                if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
-                    appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
-                }
-                appPkg.set(appPkgLocal);
-            } else if (token.startsWith("versionCode=")) {
-                String appVersionCodeLocal = token.substring("versionCode=".length());
-                if (appVersionCodeLocal.startsWith("'") && appVersionCodeLocal.endsWith("'")) {
-                    appVersionCodeLocal = appVersionCodeLocal.substring(1, appVersionCodeLocal.length() - 1);
-                }
-                try {
+        try (Scanner scanner = new Scanner(line).useDelimiter(" ")) {
+            while (scanner.hasNext()) {
+                final String token = scanner.next();
+                if (token.startsWith("name=")) {
+                    String appPkgLocal = token.substring("name=".length());
+                    if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
+                        appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
+                    }
+                    appPkg.set(appPkgLocal);
+                } else if (token.startsWith("versionCode=")) {
+                    String appVersionCodeLocal = token.substring("versionCode=".length());
+                    if (appVersionCodeLocal.startsWith("'") && appVersionCodeLocal.endsWith("'")) {
+                        appVersionCodeLocal = appVersionCodeLocal.substring(1, appVersionCodeLocal.length() - 1);
+                    }
                     appVersionCode.set(Integer.parseInt(appVersionCodeLocal));
-                } catch (NumberFormatException e) {
+                } else if (token.startsWith("versionName=")) {
+                    String appVersionLocal = token.substring("versionName=".length());
+                    if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
+                        appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
+                    }
+                    appVersion.set(appVersionLocal);
                 }
-            } else if (token.startsWith("versionName=")) {
-                String appVersionLocal = token.substring("versionName=".length());
-                if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
-                    appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
-                }
-                appVersion.set(appVersionLocal);
             }
         }
     }
@@ -367,7 +364,7 @@ public class APKFileAnalyzer {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    log.debug(type + "> " + line);
+                    log.debug("{} > {}", type, line);
                     this.lineConsumer.accept(line);
                 }
             } catch (Exception e) {
@@ -385,8 +382,7 @@ public class APKFileAnalyzer {
      * @throws APKFileAnalyzerException if an unexpected error occurs
      */
     private APKFileDetails analyzeXapkFile(String filePath) {
-        try {
-            ZipFile zipFile = new ZipFile(filePath);
+        try (ZipFile zipFile = new ZipFile(filePath)) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
             while (entries.hasMoreElements()) {
@@ -401,14 +397,12 @@ public class APKFileAnalyzer {
                         responseStrBuilder.append(inputStr);
                     }
                     stream.close();
-                    zipFile.close();
                     return analyzeXapkManifest(responseStrBuilder.toString());
                 }
-
             }
-            zipFile.close();
             throw new APKFileAnalyzerException("Missing manifest in XAPK-file", new Exception());
-
+        } catch (APKFileAnalyzerException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error while analyzing XAPK-file: {}", filePath, e);
             throw new APKFileAnalyzerException("Unexpected error while analyzing XAPK-file", e);

@@ -42,7 +42,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * <p>A service to use for email sending.</p>
+ * <p>
+ * A service to use for email sending.
+ * </p>
  *
  * @author seva
  */
@@ -73,22 +75,22 @@ public class EmailService {
 
     @Inject
     public EmailService(@Named("smtp.host") String smtpHost,
-                        @Named("smtp.port") int smtpPort,
-                        @Named("smtp.ssl") boolean sslEnabled,
-                        @Named("smtp.starttls") boolean startTlsEnabled,
-                        @Named("smtp.ssl.protocols") String sslProtocols,
-                        @Named("smtp.ssl.trust") String sslTrust,
-                        @Named("smtp.username") String smtpUsername,
-                        @Named("smtp.password") String smtpPassword,
-                        @Named("smtp.from") String smtpFrom,
-                        @Named("rebranding.name") String appName,
-                        @Named("base.url") String baseUrl,
-                        @Named("email.recovery.subj") String recoveryEmailSubj,
-                        @Named("email.recovery.body") String recoveryEmailBody,
-                        @Named("email.signup.subj") String signupEmailSubj,
-                        @Named("email.signup.body") String signupEmailBody,
-                        @Named("email.signup.complete.subj") String signupCompleteEmailSubj,
-                        @Named("email.signup.complete.body") String signupCompleteEmailBody) {
+            @Named("smtp.port") int smtpPort,
+            @Named("smtp.ssl") boolean sslEnabled,
+            @Named("smtp.starttls") boolean startTlsEnabled,
+            @Named("smtp.ssl.protocols") String sslProtocols,
+            @Named("smtp.ssl.trust") String sslTrust,
+            @Named("smtp.username") String smtpUsername,
+            @Named("smtp.password") String smtpPassword,
+            @Named("smtp.from") String smtpFrom,
+            @Named("rebranding.name") String appName,
+            @Named("base.url") String baseUrl,
+            @Named("email.recovery.subj") String recoveryEmailSubj,
+            @Named("email.recovery.body") String recoveryEmailBody,
+            @Named("email.signup.subj") String signupEmailSubj,
+            @Named("email.signup.body") String signupEmailBody,
+            @Named("email.signup.complete.subj") String signupCompleteEmailSubj,
+            @Named("email.signup.complete.body") String signupCompleteEmailBody) {
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.sslEnabled = sslEnabled;
@@ -115,7 +117,6 @@ public class EmailService {
         return !smtpHost.equals("");
     }
 
-
     public boolean sendEmail(String to, String subj, String body) {
         return sendEmail(to, subj, body, null);
     }
@@ -138,7 +139,7 @@ public class EmailService {
                 properties.put("mail.smtp.ssl.trust", sslTrust);
             }
 
-            logger.info("SMTP connection: " + smtpHost + ":" + smtpPort + ", ssl:" + sslEnabled + ", startTls:" + startTlsEnabled);
+            logger.info("SMTP connection: {}:{}, ssl:{}, startTls:{}", smtpHost, smtpPort, sslEnabled, startTlsEnabled);
 
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
@@ -199,7 +200,6 @@ public class EmailService {
         return getLocalizedText(signupCompleteEmailSubj, language);
     }
 
-
     public String getSignupCompleteEmailBody(Customer customer) {
         String deviceIds = customer.getPrefix() + "001, " +
                 customer.getPrefix() + "002," +
@@ -259,7 +259,7 @@ public class EmailService {
             ret = readFile(file);
         }
         if (ret == null) {
-            logger.error("Email template not found: " + file.getAbsolutePath());
+            logger.error("Email template not found: {}", file.getAbsolutePath());
             return null;
         }
 
@@ -273,7 +273,7 @@ public class EmailService {
             try {
                 return FileUtils.readFileToString(file, "UTF-8");
             } catch (IOException e) {
-                logger.error("Failed to read email template: " + file.getAbsolutePath());
+                logger.error("Failed to read email template: {}", file.getAbsolutePath());
                 return null;
             }
         }

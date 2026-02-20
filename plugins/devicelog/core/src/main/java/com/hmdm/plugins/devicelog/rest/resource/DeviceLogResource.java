@@ -66,67 +66,80 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.hmdm.plugins.devicelog.DeviceLogPluginConfigurationImpl.PLUGIN_ID;
 
 /**
- * <p>A resource to be used for accessing the data for <code>Device Log</code> records.</p>
+ * <p>
+ * A resource to be used for accessing the data for <code>Device Log</code>
+ * records.
+ * </p>
  *
  * @author isv
  */
-@Tag(name="Plugin - Device Log")
+@Tag(name = "Plugin - Device Log")
 @Singleton
 @Path("/plugins/devicelog/log")
 public class DeviceLogResource {
 
     // A logging service
-    private static final Logger logger  = LoggerFactory.getLogger(DeviceLogResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceLogResource.class);
 
     // An executor for the log recrods upload tasks
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     /**
-     * <p>An interface to device log records persistence layer.</p>
+     * <p>
+     * An interface to device log records persistence layer.
+     * </p>
      */
     private DeviceLogDAO deviceLogDAO;
 
     private PluginStatusCache pluginStatusCache;
 
     /**
-     * <p>An interface to persistence without security checks.</p>
+     * <p>
+     * An interface to persistence without security checks.
+     * </p>
      */
     private UnsecureDAO unsecureDAO;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public DeviceLogResource() {
         // Empty
     }
 
     /**
-     * <p>Constructs new <code>DeviceLogResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>DeviceLogResource</code> instance. This implementation
+     * does nothing.
+     * </p>
      */
     @Inject
     public DeviceLogResource(DeviceLogDAO deviceLogDAO,
-                             PluginStatusCache pluginStatusCache,
-                             UnsecureDAO unsecureDAO) {
+            PluginStatusCache pluginStatusCache,
+            UnsecureDAO unsecureDAO) {
         this.deviceLogDAO = deviceLogDAO;
         this.pluginStatusCache = pluginStatusCache;
         this.unsecureDAO = unsecureDAO;
     }
 
     /**
-     * <p>Gets the list of device log records matching the specified filter.</p>
+     * <p>
+     * Gets the list of device log records matching the specified filter.
+     * </p>
      *
      * @param filter a filter to be used for filtering the records.
-     * @return a response with list of device log records matching the specified filter.
+     * @return a response with list of device log records matching the specified
+     *         filter.
      */
-    @Operation(summary = "Search logs",
-            description = "Gets the list of log records matching the specified filter"
-    )
+    @Operation(summary = "Search logs", description = "Gets the list of log records matching the specified filter")
     @POST
     @Path("/private/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLogs(DeviceLogFilter filter) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            logger.error("Unauthorized attempt to get device logs by user " +
+            logger.error("Unauthorized attempt to get device logs by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -141,15 +154,13 @@ public class DeviceLogResource {
         }
     }
 
-    @Operation(summary = "Exports logs",
-            description = "Export the list of log records matching the specified filter"
-    )
+    @Operation(summary = "Exports logs", description = "Export the list of log records matching the specified filter")
     @POST
     @Path("/private/search/export")
     @Produces(MediaType.APPLICATION_JSON)
     public jakarta.ws.rs.core.Response exportLogs(DeviceLogFilter filter) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            logger.error("Unauthorized attempt to get device logs by user " +
+            logger.error("Unauthorized attempt to get device logs by user {}",
                     SecurityContext.get().getCurrentUserName());
             return jakarta.ws.rs.core.Response.serverError().status(403).build();
         }
@@ -157,14 +168,14 @@ public class DeviceLogResource {
         filter.setPageNum(1);
         filter.setExport(true);
 
-        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName("logs.csv").creationDate(new Date()).build();
+        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName("logs.csv")
+                .creationDate(new Date()).build();
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
 
         AtomicBoolean stop = new AtomicBoolean(false);
 
-
-        return jakarta.ws.rs.core.Response.ok( (StreamingOutput) output -> {
+        return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
             try {
                 List<DeviceLogRecord> records = this.deviceLogDAO.findAll(filter);
                 while (!stop.get() && !records.isEmpty()) {
@@ -184,8 +195,9 @@ public class DeviceLogResource {
                         try {
                             output.write(b.toString().getBytes());
                         } catch (IOException e) {
-                            logger.error("Failed to write log record {} to output stream. Stopping to export the " +
-                                    "further log records.", log, e);
+                            logger.error(
+                                    "Failed to write log record {} to output stream. Stopping to export further log records.",
+                                    log, e);
                             stop.set(true);
                         }
                     });
@@ -199,26 +211,24 @@ public class DeviceLogResource {
                 }
 
                 output.flush();
-            } catch ( Exception e ) {
+            } catch (Exception e) {
                 logger.error("Failed to export the device log records due to unexpected error. Filter: {}", filter, e);
             }
-        } )
+        })
                 .header("Cache-Control", "no-cache")
-                .header( "Content-Type", "text/plain" )
-                .header( "Content-Disposition", contentDisposition )
+                .header("Content-Type", "text/plain")
+                .header("Content-Disposition", contentDisposition)
                 .build();
     }
 
-    @Operation(summary = "Upload logs",
-            description = "Uploads the list of log records from device to server"
-    )
+    @Operation(summary = "Upload logs", description = "Uploads the list of log records from device to server")
     @POST
     @Path("/list/{deviceNumber}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadLogs(@PathParam("deviceNumber") String deviceNumber,
-                               List<UploadedDeviceLogRecord> logs,
-                               @Context HttpServletRequest httpRequest) {
+            List<UploadedDeviceLogRecord> logs,
+            @Context HttpServletRequest httpRequest) {
         logger.debug("#uploadLogs: {} => {}", deviceNumber, logs);
         try {
             final Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
@@ -235,8 +245,8 @@ public class DeviceLogResource {
                 }
 
                 this.executor.submit(
-                        new InsertDeviceLogRecordsTask(deviceNumber, httpRequest.getRemoteAddr(), logs, this.deviceLogDAO)
-                );
+                        new InsertDeviceLogRecordsTask(deviceNumber, httpRequest.getRemoteAddr(), logs,
+                                this.deviceLogDAO));
                 return Response.OK();
             } finally {
                 SecurityContext.release();
@@ -247,9 +257,7 @@ public class DeviceLogResource {
         }
     }
 
-    @Operation(summary = "Get log rules",
-            description = "Gets the list of log rules for device"
-    )
+    @Operation(summary = "Get log rules", description = "Gets the list of log rules for device")
     @GET
     @Path("/rules/{deviceNumber}")
     @Consumes(MediaType.APPLICATION_JSON)

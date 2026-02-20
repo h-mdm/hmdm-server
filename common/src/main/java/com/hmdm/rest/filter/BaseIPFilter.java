@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BaseIPFilter {
 
-    private Logger logger = LoggerFactory.getLogger(BaseIPFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseIPFilter.class);
 
     public class Net {
         private byte[] value;
@@ -30,10 +30,10 @@ public class BaseIPFilter {
             } else {
                 maskLength = Integer.parseInt(s[1]);
             }
-            mask[0] = (byte)(maskLength < 8 ? (0xff << (8 - maskLength)) : 0xff);
-            mask[1] = (byte)(maskLength < 16 ? (0xff << (16 - maskLength)) : 0xff);
-            mask[2] = (byte)(maskLength < 24 ? (0xff << (24 - maskLength)) : 0xff);
-            mask[3] = (byte)(maskLength < 32 ? (0xff << (32 - maskLength)) : 0xff);
+            mask[0] = (byte) (maskLength < 8 ? (0xff << (8 - maskLength)) : 0xff);
+            mask[1] = (byte) (maskLength < 16 ? (0xff << (16 - maskLength)) : 0xff);
+            mask[2] = (byte) (maskLength < 24 ? (0xff << (24 - maskLength)) : 0xff);
+            mask[3] = (byte) (maskLength < 32 ? (0xff << (32 - maskLength)) : 0xff);
         }
 
         public boolean match(byte[] ip) {
@@ -51,22 +51,30 @@ public class BaseIPFilter {
     }
 
     /**
-     * <p>Whitelist of allowed networks/addresses</p>
+     * <p>
+     * Whitelist of allowed networks/addresses
+     * </p>
      */
     private List<Net> whitelist;
 
     /**
-     * <p>Empty whitelist means all IPs are allowed</p>
+     * <p>
+     * Empty whitelist means all IPs are allowed
+     * </p>
      */
     private boolean allAllowed = false;
 
     /**
-     * <p>IP addresses of reverse proxies</p>
+     * <p>
+     * IP addresses of reverse proxies
+     * </p>
      */
     private String[] proxies;
 
     /**
-     * <p>Header containing real IP address when a proxy is used</p>
+     * <p>
+     * Header containing real IP address when a proxy is used
+     * </p>
      */
     private String ipHeader;
 
