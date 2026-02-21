@@ -21,11 +21,10 @@
 
 package com.hmdm.event;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * <p>An event fired when info for configuration was updated.</p>

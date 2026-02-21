@@ -22,7 +22,6 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -149,9 +148,7 @@ public class Customer implements Serializable {
      */
     private String signupToken;
 
-
-    public Customer() {
-    }
+    public Customer() {}
 
     public Integer getId() {
         return id;
@@ -382,27 +379,12 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", description='" + description + '\'' +
-                ", filesDir='" + filesDir + '\'' +
-                ", master=" + master +
-                ", prefix=" + prefix +
-                ", deviceConfigurationId=" + deviceConfigurationId +
-                ", accountType=" + accountType +
-                ", deviceLimit=" + deviceLimit +
-                ", sizeLimit=" + sizeLimit +
-                ", customerStatus='" + customerStatus + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", language='" + language + '\'' +
-                ", inactiveState=" + inactiveState +
-                ", pauseState=" + pauseState +
-                ", abandonState=" + abandonState +
-                ", signupStatus=" + signupStatus +
-                ", signupToken=" + signupToken +
-                '}';
+        return "Customer{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", description='"
+                + description + '\'' + ", filesDir='" + filesDir + '\'' + ", master=" + master + ", prefix=" + prefix
+                + ", deviceConfigurationId=" + deviceConfigurationId + ", accountType=" + accountType + ", deviceLimit="
+                + deviceLimit + ", sizeLimit=" + sizeLimit + ", customerStatus='" + customerStatus + '\''
+                + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", language='" + language
+                + '\'' + ", inactiveState=" + inactiveState + ", pauseState=" + pauseState + ", abandonState="
+                + abandonState + ", signupStatus=" + signupStatus + ", signupToken=" + signupToken + '}';
     }
 }

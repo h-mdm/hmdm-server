@@ -1,7 +1,5 @@
 package com.hmdm.guice.module;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;
@@ -12,18 +10,15 @@ import com.hmdm.task.FileCheckTask;
 import com.hmdm.task.FileMigrateTask;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StartupTaskModule {
 
@@ -45,15 +40,18 @@ public class StartupTaskModule {
      * <p>Constructs new <code>StartupTaskModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public StartupTaskModule(CommonDAO commonDAO, UnsecureDAO unsecureDAO, BackgroundTaskRunnerService taskRunner,
-                             CustomerStatusTask customerStatusTask,
-                             FileCheckTask fileCheckTask,
-                             FileMigrateTask fileMigrateTask,
-                             RsaKeyService rsaKeyService,
-                             @Named("device.fast.search.chars") int deviceFastSearchChars,
-                             @Named("sql.init.script.path") String sqlInitScriptPath,
-                             @Named("customer.auto.status") boolean customerAutoStatus,
-                             @Named("transmit.password") boolean transmitPassword) {
+    public StartupTaskModule(
+            CommonDAO commonDAO,
+            UnsecureDAO unsecureDAO,
+            BackgroundTaskRunnerService taskRunner,
+            CustomerStatusTask customerStatusTask,
+            FileCheckTask fileCheckTask,
+            FileMigrateTask fileMigrateTask,
+            RsaKeyService rsaKeyService,
+            @Named("device.fast.search.chars") int deviceFastSearchChars,
+            @Named("sql.init.script.path") String sqlInitScriptPath,
+            @Named("customer.auto.status") boolean customerAutoStatus,
+            @Named("transmit.password") boolean transmitPassword) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.taskRunner = taskRunner;
@@ -91,7 +89,8 @@ public class StartupTaskModule {
         public void run() {
             List<User> users = unsecureDAO.findAllWithOldPassword();
             for (User user : users) {
-                user.setNewPassword(PasswordUtil.getHashFromMd5(user.getPassword().toUpperCase()));
+                user.setNewPassword(
+                        PasswordUtil.getHashFromMd5(user.getPassword().toUpperCase()));
                 unsecureDAO.setUserNewPasswordUnsecure(user);
             }
         }
@@ -117,14 +116,11 @@ public class StartupTaskModule {
         @Override
         public void run() {
             if (!commonDAO.isDatabaseInitialized()) {
-                try
-                {
+                try {
                     byte[] bytes = Files.readAllBytes(Paths.get(sqlInitScriptPath));
                     String sqlContent = new String(bytes, StandardCharsets.UTF_8);
                     commonDAO.executeRawQuery(sqlContent);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     logger.error("Failed to execute startup SQL script " + sqlInitScriptPath + ": " + e.getMessage());
                     e.printStackTrace();
                 }

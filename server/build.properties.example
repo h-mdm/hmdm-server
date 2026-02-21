@@ -53,6 +53,15 @@ mqtt.server.uri=localhost:31000
 # MQTT authentication for more security (supported by Headwind MDM launcher v5.05 and above)
 mqtt.auth=true
 
+# MQTT admin password for broker authentication
+mqtt.admin.password=
+
+# SSL keystore password for MQTT broker
+ssl.keystore.password=
+
+# SSL keystore path for MQTT broker (default: /usr/local/tomcat/ssl/<domain>.jks)
+ssl.keystore.path=
+
 # Delaying MQTT messages in milliseconds to avoid congestion
 mqtt.message.delay=1000
 

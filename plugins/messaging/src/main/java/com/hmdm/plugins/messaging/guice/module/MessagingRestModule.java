@@ -28,7 +28,6 @@ import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.filter.PrivateIPFilter;
 import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,22 +41,17 @@ public class MessagingRestModule extends ServletModule {
     /**
      * <p>A list of patterns for URIs for plugin resources which prohibit anonymous access.</p>
      */
-    private static final List<String> protectedResources = Arrays.asList(
-            "/rest/plugins/messaging/private/*"
-    );
+    private static final List<String> protectedResources = Arrays.asList("/rest/plugins/messaging/private/*");
 
     /**
-     * <p> A list of patterns for URIs for plugin resources available to devices</p>
+     * <p>A list of patterns for URIs for plugin resources available to devices</p>
      */
-    private static final List<String> publicResources = Arrays.asList(
-            "/rest/plugins/messaging/public/*"
-    );
+    private static final List<String> publicResources = Arrays.asList("/rest/plugins/messaging/public/*");
 
     /**
      * <p>Constructs new <code>MessagingRestModule</code> instance. This implementation does nothing.</p>
      */
-    public MessagingRestModule() {
-    }
+    public MessagingRestModule() {}
 
     /**
      * <p>Configures the <code>Messaging Plugin</code> REST resources.</p>
@@ -70,5 +64,4 @@ public class MessagingRestModule extends ServletModule {
         this.filter(publicResources).through(PublicIPFilter.class);
         this.bind(MessagingResource.class);
     }
-
 }

@@ -21,102 +21,131 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.io.Serializable;
-
 import static com.hmdm.persistence.domain.DesktopHeader.NO_HEADER;
 import static com.hmdm.persistence.domain.IconSize.SMALL;
 
-@ApiModel(description = "The settings for MDM web application")
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
+
+@Schema(description = "The settings for MDM web application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Settings implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -7584080480340396129L;
 
-    @ApiModelProperty("An ID of a settings record")
+    @Schema(description = "An ID of a settings record")
     private Integer id;
 
     // This group of settings corresponds to Default Design
-    @ApiModelProperty("A background color for Default Design of mobile application")
+    @Schema(description = "A background color for Default Design of mobile application")
     private String backgroundColor;
-    @ApiModelProperty("A text color for Default Design of mobile application")
+
+    @Schema(description = "A text color for Default Design of mobile application")
     private String textColor;
-    @ApiModelProperty("An URL for background image color for Default Design of mobile application")
+
+    @Schema(description = "An URL for background image color for Default Design of mobile application")
     private String backgroundImageUrl;
-    @ApiModelProperty("A size of the icons for Default Design of mobile application")
+
+    @Schema(description = "A size of the icons for Default Design of mobile application")
     private IconSize iconSize = SMALL;
-    @ApiModelProperty("A type of desktop header for Default Design of mobile application")
+
+    @Schema(description = "A type of desktop header for Default Design of mobile application")
     private DesktopHeader desktopHeader = NO_HEADER;
-    @ApiModelProperty("Desktop header template for Default Design of mobile application")
+
+    @Schema(description = "Desktop header template for Default Design of mobile application")
     private String desktopHeaderTemplate;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private int customerId;
 
     // A language used for localization
-    @ApiModelProperty("A flag indicating if browser-dependent language is to be used for content localization")
+    @Schema(description = "A flag indicating if browser-dependent language is to be used for content localization")
     private boolean useDefaultLanguage = true;
-    @ApiModelProperty("A combination of language and country codes used for content localization (e.g. 'en_US')")
+
+    @Schema(description = "A combination of language and country codes used for content localization (e.g. 'en_US')")
     private String language;
-    @ApiModelProperty("Flag indicating if the new devices must be created on first access")
+
+    @Schema(description = "Flag indicating if the new devices must be created on first access")
     private boolean createNewDevices = false;
-    @ApiModelProperty("Default group for the new devices")
+
+    @Schema(description = "Default group for the new devices")
     private Integer newDeviceGroupId;
-    @ApiModelProperty("Default configuration for the new devices")
+
+    @Schema(description = "Default configuration for the new devices")
     private Integer newDeviceConfigurationId;
-    @ApiModelProperty("Phone number format")
+
+    @Schema(description = "Phone number format")
     private String phoneNumberFormat;
-    @ApiModelProperty("Custom property name 1")
+
+    @Schema(description = "Custom property name 1")
     private String customPropertyName1;
-    @ApiModelProperty("Custom property name 2")
+
+    @Schema(description = "Custom property name 2")
     private String customPropertyName2;
-    @ApiModelProperty("Custom property name 3")
+
+    @Schema(description = "Custom property name 3")
     private String customPropertyName3;
-    @ApiModelProperty("Is custom property 1 multiline")
+
+    @Schema(description = "Is custom property 1 multiline")
     private boolean customMultiline1;
-    @ApiModelProperty("Is custom property 2 multiline")
+
+    @Schema(description = "Is custom property 2 multiline")
     private boolean customMultiline2;
-    @ApiModelProperty("Is custom property 3 multiline")
+
+    @Schema(description = "Is custom property 3 multiline")
     private boolean customMultiline3;
-    @ApiModelProperty("Send custom property 1 to device")
+
+    @Schema(description = "Send custom property 1 to device")
     private boolean customSend1;
-    @ApiModelProperty("Send custom property 2 to device")
+
+    @Schema(description = "Send custom property 2 to device")
     private boolean customSend2;
-    @ApiModelProperty("Send custom property 3 to device")
+
+    @Schema(description = "Send custom property 3 to device")
     private boolean customSend3;
-    @ApiModelProperty("Send description to device")
+
+    @Schema(description = "Send description to device")
     private boolean sendDescription;
-    @ApiModelProperty("Request password reset to new users")
+
+    @Schema(description = "Request password reset to new users")
     private boolean passwordReset;
-    @ApiModelProperty("Minimal password length for users")
+
+    @Schema(description = "Minimal password length for users")
     private int passwordLength;
-    @ApiModelProperty("Password strength for users (0 - none, 1 - alphanumeric, 2 - alphanumeric + special characters")
+
+    @Schema(
+            description =
+                    "Password strength for users (0 - none, 1 - alphanumeric, 2 - alphanumeric + special characters")
     private int passwordStrength;
-    @ApiModelProperty("Two-factor authentication")
+
+    @Schema(description = "Two-factor authentication")
     private boolean twoFactor;
-    @ApiModelProperty("Timeout in seconds for logging out while idle (0 - no logout)")
+
+    @Schema(description = "Timeout in seconds for logging out while idle (0 - no logout)")
     private Integer idleLogout;
 
     // This property is not stored in the database, it is a transient field used by the Settings resource
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean singleCustomer;
 
     // Customer settings stored in the customers table (default for single customer)
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int accountType;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private Long expiryTime;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private int deviceLimit;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private int deviceCount;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private int sizeLimit;
 
-    public Settings() {
-    }
+    public Settings() {}
 
     public String getBackgroundColor() {
         return this.backgroundColor;
@@ -400,29 +429,15 @@ public class Settings implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "Settings{" +
-                "id=" + id +
-                ", backgroundColor='" + backgroundColor + '\'' +
-                ", textColor='" + textColor + '\'' +
-                ", backgroundImageUrl='" + backgroundImageUrl + '\'' +
-                ", iconSize=" + iconSize +
-                ", desktopHeader=" + desktopHeader +
-                ", customerId=" + customerId +
-                ", useDefaultLanguage=" + useDefaultLanguage +
-                ", language='" + language + '\'' +
-                ", phoneNumberFormat='" + phoneNumberFormat + '\'' +
-                ", customPropertyName1='" + customPropertyName1 + '\'' +
-                ", customPropertyName2='" + customPropertyName2 + '\'' +
-                ", customPropertyName3='" + customPropertyName3 + '\'' +
-                ", createNewDevices=" + createNewDevices +
-                ", newDeviceGroupId=" + newDeviceGroupId +
-                ", newDeviceConfigurationId=" + newDeviceConfigurationId +
-                ", singleCustomer=" + singleCustomer +
-                ", accountType=" + accountType +
-                ", expiryTime=" + expiryTime +
-                ", deviceLimit=" + deviceLimit +
-                ", deviceCount=" + deviceCount +
-                ", sizeLimit=" + sizeLimit +
-                '}';
+        return "Settings{" + "id=" + id + ", backgroundColor='" + backgroundColor + '\'' + ", textColor='" + textColor
+                + '\'' + ", backgroundImageUrl='" + backgroundImageUrl + '\'' + ", iconSize=" + iconSize
+                + ", desktopHeader=" + desktopHeader + ", customerId=" + customerId + ", useDefaultLanguage="
+                + useDefaultLanguage + ", language='" + language + '\'' + ", phoneNumberFormat='" + phoneNumberFormat
+                + '\'' + ", customPropertyName1='" + customPropertyName1 + '\'' + ", customPropertyName2='"
+                + customPropertyName2 + '\'' + ", customPropertyName3='" + customPropertyName3 + '\''
+                + ", createNewDevices=" + createNewDevices + ", newDeviceGroupId=" + newDeviceGroupId
+                + ", newDeviceConfigurationId=" + newDeviceConfigurationId + ", singleCustomer=" + singleCustomer
+                + ", accountType=" + accountType + ", expiryTime=" + expiryTime + ", deviceLimit=" + deviceLimit
+                + ", deviceCount=" + deviceCount + ", sizeLimit=" + sizeLimit + '}';
     }
 }

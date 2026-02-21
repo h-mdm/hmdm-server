@@ -22,14 +22,12 @@
 package com.hmdm.plugins.push.guice.module;
 
 import com.hmdm.guice.module.AbstractLiquibaseModule;
-import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
+import jakarta.servlet.ServletContext;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
-import javax.servlet.ServletContext;
-
 /**
- * <p>A module used for initializing and managing the state of the database tables related to <code>Push</code>
- * plugin.</p>
+ * <p>A module used for initializing and managing the state of the database tables related to <code>Push</code> plugin.</p>
  *
  * @author isv
  */
@@ -51,11 +49,8 @@ public class PushLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected String getChangeLogResourcePath() {
-        String path = this.getClass().getResource("/liquibase/push.changelog.xml").getPath();
-        if (!path.startsWith("jar:")) {
-            path = "jar:" + path;
-        }
-        return path;
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/push.changelog.xml";
     }
 
     /**
@@ -65,7 +60,6 @@ public class PushLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new PluginLiquibaseResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
-
 }

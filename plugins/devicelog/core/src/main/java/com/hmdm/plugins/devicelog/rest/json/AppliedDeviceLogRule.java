@@ -21,13 +21,10 @@
 
 package com.hmdm.plugins.devicelog.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
-import com.hmdm.plugins.devicelog.model.LogLevel;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
@@ -35,27 +32,26 @@ import java.io.Serializable;
  *
  * @author isv
  */
-@ApiModel(description = "The parameters for filtering the lists of device log record objects")
+@Schema(description = "The parameters for filtering the lists of device log record objects")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AppliedDeviceLogRule implements Serializable {
 
     private static final long serialVersionUID = -1856203581931832489L;
 
-    @ApiModelProperty("A package ID for application")
+    @Schema(description = "A package ID for application")
     private String packageId;
 
-    @ApiModelProperty("A severity level")
+    @Schema(description = "A severity level")
     private int logLevel;
 
-    @ApiModelProperty("A filter for log rule")
+    @Schema(description = "A filter for log rule")
     private String filter;
 
     /**
      * <p>Constructs new <code>AppliedDeviceLogRule</code> instance. This implementation does nothing.</p>
      */
-    public AppliedDeviceLogRule() {
-    }
+    public AppliedDeviceLogRule() {}
 
     public AppliedDeviceLogRule(DeviceLogRule rule) {
         this.packageId = rule.getApplicationPkg();
@@ -89,10 +85,7 @@ public class AppliedDeviceLogRule implements Serializable {
 
     @Override
     public String toString() {
-        return "AppliedDeviceLogRule{" +
-                "packageId='" + packageId + '\'' +
-                ", logLevel=" + logLevel +
-                ", filter='" + filter + '\'' +
-                '}';
+        return "AppliedDeviceLogRule{" + "packageId='" + packageId + '\'' + ", logLevel=" + logLevel + ", filter='"
+                + filter + '\'' + '}';
     }
 }

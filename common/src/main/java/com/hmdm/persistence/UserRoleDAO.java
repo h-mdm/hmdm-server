@@ -21,14 +21,13 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.domain.UserRolePermission;
 import com.hmdm.persistence.mapper.UserRoleMapper;
 import com.hmdm.security.SecurityContext;
-
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +39,11 @@ public class UserRoleDAO {
     private final int orgAdminRoleId;
 
     @Inject
-    public UserRoleDAO(UnsecureDAO unsecureDAO,
-                       UserDAO userDAO,
-                       UserRoleMapper mapper,
-                       @Named("role.orgadmin.id") int orgAdminRoleId) {
+    public UserRoleDAO(
+            UnsecureDAO unsecureDAO,
+            UserDAO userDAO,
+            UserRoleMapper mapper,
+            @Named("role.orgadmin.id") int orgAdminRoleId) {
         this.unsecureDAO = unsecureDAO;
         this.userDAO = userDAO;
         this.mapper = mapper;
@@ -51,16 +51,19 @@ public class UserRoleDAO {
     }
 
     public boolean hasAccess() {
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            if (unsecureDAO.isSingleCustomer()) {
-                if (!u.getUserRole().isSuperAdmin() && !userDAO.isOrgAdmin(u)) {
-                    return false;
-                }
-            } else if (!u.getUserRole().isSuperAdmin()) {
-                return false;
-            }
-            return true;
-        }).orElse(false);
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    if (unsecureDAO.isSingleCustomer()) {
+                        if (!u.getUserRole().isSuperAdmin() && !userDAO.isOrgAdmin(u)) {
+                            return false;
+                        }
+                    } else if (!u.getUserRole().isSuperAdmin()) {
+                        return false;
+                    }
+                    return true;
+                })
+                .orElse(false);
     }
 
     void checkAccess() {
@@ -77,7 +80,7 @@ public class UserRoleDAO {
     public List<UserRole> findAll() {
         checkAccess();
         List<UserRole> roles = mapper.findAll();
-        roles.removeIf(role -> (role.getId() == orgAdminRoleId));   // Admin cannot edit admin permissions!
+        roles.removeIf(role -> (role.getId() == orgAdminRoleId)); // Admin cannot edit admin permissions!
         return roles;
     }
 
@@ -95,8 +98,11 @@ public class UserRoleDAO {
         checkAccess();
         mapper.insert(userRole);
         if (userRole.getPermissions() != null && userRole.getPermissions().size() > 0) {
-            mapper.insertPermissions(userRole.getId(),
-                    userRole.getPermissions().stream().map(UserRolePermission::getId).collect(Collectors.toList()));
+            mapper.insertPermissions(
+                    userRole.getId(),
+                    userRole.getPermissions().stream()
+                            .map(UserRolePermission::getId)
+                            .collect(Collectors.toList()));
         }
     }
 
@@ -105,8 +111,11 @@ public class UserRoleDAO {
         mapper.update(userRole);
         mapper.deletePermissions(userRole.getId());
         if (userRole.getPermissions() != null && userRole.getPermissions().size() > 0) {
-            mapper.insertPermissions(userRole.getId(),
-                    userRole.getPermissions().stream().map(UserRolePermission::getId).collect(Collectors.toList()));
+            mapper.insertPermissions(
+                    userRole.getId(),
+                    userRole.getPermissions().stream()
+                            .map(UserRolePermission::getId)
+                            .collect(Collectors.toList()));
         }
     }
 

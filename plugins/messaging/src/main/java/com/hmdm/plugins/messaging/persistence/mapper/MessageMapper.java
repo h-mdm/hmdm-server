@@ -23,9 +23,8 @@ package com.hmdm.plugins.messaging.persistence.mapper;
 
 import com.hmdm.plugins.messaging.persistence.domain.Message;
 import com.hmdm.plugins.messaging.rest.json.MessageFilter;
-import org.apache.ibatis.annotations.*;
-
 import java.util.List;
+import org.apache.ibatis.annotations.*;
 
 /**
  * <p>An ORM mapper for {@link Message} domain objects.</p>
@@ -34,13 +33,14 @@ import java.util.List;
  */
 public interface MessageMapper {
 
-    @Insert("INSERT INTO plugin_messaging_messages " +
-            "(customerId, deviceId, ts, message, status) " +
-            "VALUES " +
-            "(#{customerId}, #{deviceId}, #{ts}, #{message}, #{status})"
-    )
-    @SelectKey( statement = "SELECT currval('plugin_messaging_messages_id_seq')",
-            keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert("INSERT INTO plugin_messaging_messages " + "(customerId, deviceId, ts, message, status) " + "VALUES "
+            + "(#{customerId}, #{deviceId}, #{ts}, #{message}, #{status})")
+    @SelectKey(
+            statement = "SELECT currval('plugin_messaging_messages_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     int insertMessage(Message msg);
 
     @Update("UPDATE plugin_messaging_messages SET status = #{status} WHERE id = #{id}")

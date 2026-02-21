@@ -21,25 +21,22 @@
 
 package com.hmdm.service;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.util.StringUtil;
-import liquibase.util.FileUtil;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A service to use for email sending.</p>
@@ -72,23 +69,24 @@ public class EmailService {
     private final String signupCompleteEmailBody;
 
     @Inject
-    public EmailService(@Named("smtp.host") String smtpHost,
-                        @Named("smtp.port") int smtpPort,
-                        @Named("smtp.ssl") boolean sslEnabled,
-                        @Named("smtp.starttls") boolean startTlsEnabled,
-                        @Named("smtp.ssl.protocols") String sslProtocols,
-                        @Named("smtp.ssl.trust") String sslTrust,
-                        @Named("smtp.username") String smtpUsername,
-                        @Named("smtp.password") String smtpPassword,
-                        @Named("smtp.from") String smtpFrom,
-                        @Named("rebranding.name") String appName,
-                        @Named("base.url") String baseUrl,
-                        @Named("email.recovery.subj") String recoveryEmailSubj,
-                        @Named("email.recovery.body") String recoveryEmailBody,
-                        @Named("email.signup.subj") String signupEmailSubj,
-                        @Named("email.signup.body") String signupEmailBody,
-                        @Named("email.signup.complete.subj") String signupCompleteEmailSubj,
-                        @Named("email.signup.complete.body") String signupCompleteEmailBody) {
+    public EmailService(
+            @Named("smtp.host") String smtpHost,
+            @Named("smtp.port") int smtpPort,
+            @Named("smtp.ssl") boolean sslEnabled,
+            @Named("smtp.starttls") boolean startTlsEnabled,
+            @Named("smtp.ssl.protocols") String sslProtocols,
+            @Named("smtp.ssl.trust") String sslTrust,
+            @Named("smtp.username") String smtpUsername,
+            @Named("smtp.password") String smtpPassword,
+            @Named("smtp.from") String smtpFrom,
+            @Named("rebranding.name") String appName,
+            @Named("base.url") String baseUrl,
+            @Named("email.recovery.subj") String recoveryEmailSubj,
+            @Named("email.recovery.body") String recoveryEmailBody,
+            @Named("email.signup.subj") String signupEmailSubj,
+            @Named("email.signup.body") String signupEmailBody,
+            @Named("email.signup.complete.subj") String signupCompleteEmailSubj,
+            @Named("email.signup.complete.body") String signupCompleteEmailBody) {
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.sslEnabled = sslEnabled;
@@ -115,7 +113,6 @@ public class EmailService {
         return !smtpHost.equals("");
     }
 
-
     public boolean sendEmail(String to, String subj, String body) {
         return sendEmail(to, subj, body, null);
     }
@@ -138,7 +135,7 @@ public class EmailService {
                 properties.put("mail.smtp.ssl.trust", sslTrust);
             }
 
-            logger.info("SMTP connection: " + smtpHost + ":" + smtpPort + ", ssl:" + sslEnabled + ", startTls:" + startTlsEnabled);
+            logger.info("SMTP connection: {}:{}, ssl:{}, startTls:{}", smtpHost, smtpPort, sslEnabled, startTlsEnabled);
 
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
@@ -180,8 +177,7 @@ public class EmailService {
     public String getRecoveryEmailBody(String language, String passwordResetToken) {
         String passwordResetUrl = baseUrl + "/#/passwordReset/" + passwordResetToken;
 
-        return getLocalizedText(recoveryEmailBody, language)
-                .replace("${passwordResetUrl}", passwordResetUrl);
+        return getLocalizedText(recoveryEmailBody, language).replace("${passwordResetUrl}", passwordResetUrl);
     }
 
     public String getVerifyEmailSubj(String language) {
@@ -191,19 +187,16 @@ public class EmailService {
     public String getVerifyEmailBody(String language, String verifyToken) {
         String signupCompleteUrl = baseUrl + "/#/signupComplete/" + verifyToken;
 
-        return getLocalizedText(signupEmailBody, language)
-                .replace("${signupCompleteUrl}", signupCompleteUrl);
+        return getLocalizedText(signupEmailBody, language).replace("${signupCompleteUrl}", signupCompleteUrl);
     }
 
     public String getSignupCompleteEmailSubj(String language) {
         return getLocalizedText(signupCompleteEmailSubj, language);
     }
 
-
     public String getSignupCompleteEmailBody(Customer customer) {
-        String deviceIds = customer.getPrefix() + "001, " +
-                customer.getPrefix() + "002," +
-                customer.getPrefix() + "003";
+        String deviceIds =
+                customer.getPrefix() + "001, " + customer.getPrefix() + "002," + customer.getPrefix() + "003";
 
         return getLocalizedText(signupCompleteEmailBody, customer.getLanguage())
                 .replace("${firstName}", customer.getFirstName())
@@ -259,13 +252,11 @@ public class EmailService {
             ret = readFile(file);
         }
         if (ret == null) {
-            logger.error("Email template not found: " + file.getAbsolutePath());
+            logger.error("Email template not found: {}", file.getAbsolutePath());
             return null;
         }
 
-        return ret
-                .replace("${baseUrl}", baseUrl)
-                .replace("${appName}", appName);
+        return ret.replace("${baseUrl}", baseUrl).replace("${appName}", appName);
     }
 
     private String readFile(File file) {
@@ -273,11 +264,10 @@ public class EmailService {
             try {
                 return FileUtils.readFileToString(file, "UTF-8");
             } catch (IOException e) {
-                logger.error("Failed to read email template: " + file.getAbsolutePath());
+                logger.error("Failed to read email template: {}", file.getAbsolutePath());
                 return null;
             }
         }
         return null;
     }
-
 }

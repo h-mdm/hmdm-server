@@ -21,9 +21,9 @@
 
 package com.hmdm.plugins.devicelog.persistence.postgres.dao.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.plugins.devicelog.model.DeviceLogRecord;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * <p>A device log record stored in <code>Postgres</code> database.</p>
@@ -48,8 +48,7 @@ public class PostgresDeviceLogRecord extends DeviceLogRecord implements Customer
     /**
      * <p>Constructs new <code>PostgresDeviceLogRecord</code> instance. This implementation does nothing.</p>
      */
-    public PostgresDeviceLogRecord() {
-    }
+    public PostgresDeviceLogRecord() {}
 
     @Override
     public Integer getId() {

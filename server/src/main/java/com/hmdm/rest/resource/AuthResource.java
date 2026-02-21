@@ -22,29 +22,27 @@
 package com.hmdm.rest.resource;
 
 import com.hmdm.auth.HmdmAuthInterface;
-import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Settings;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.json.AuthOptionsResponse;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
-import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.view.user.UserView;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.RsaKeyService;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import java.security.PublicKey;
 import java.util.Base64;
 
@@ -54,7 +52,7 @@ import java.util.Base64;
  * @author isv
  */
 @Singleton
-@Path( "/public/auth" )
+@Path("/public/auth")
 public class AuthResource {
 
     private UnsecureDAO userDAO;
@@ -70,22 +68,22 @@ public class AuthResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public AuthResource() {
-    }
+    public AuthResource() {}
 
     /**
      * <p>Constructs new <code>AuthResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public AuthResource(UnsecureDAO userDAO,
-                        CustomerDAO customerDAO,
-                        UnsecureDAO settingsDAO,
-                        BackgroundTaskRunnerService taskRunner,
-                        EmailService emailService,
-                        RsaKeyService rsaKeyService,
-                        @Named("customer.signup") boolean customerSignup,
-                        @Named("transmit.password") boolean transmitPassword,
-                        @Named("auth.class") HmdmAuthInterface authEngine) {
+    public AuthResource(
+            UnsecureDAO userDAO,
+            CustomerDAO customerDAO,
+            UnsecureDAO settingsDAO,
+            BackgroundTaskRunnerService taskRunner,
+            EmailService emailService,
+            RsaKeyService rsaKeyService,
+            @Named("customer.signup") boolean customerSignup,
+            @Named("transmit.password") boolean transmitPassword,
+            @Named("auth.class") HmdmAuthInterface authEngine) {
         this.userDAO = userDAO;
         this.customerDAO = customerDAO;
         this.settingsDAO = settingsDAO;
@@ -103,15 +101,15 @@ public class AuthResource {
      *
      * @param credentials the credentials to be used for authenticating the user to application.
      * @param req an incoming request.
+     *
      * @return a response containing the details for authenticated user.
      */
     @POST
-    @Path( "/login" )
-    @Consumes( MediaType.APPLICATION_JSON )
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response login( UserCredentials credentials,
-                           @Context HttpServletRequest req ) throws InterruptedException {
-        if ( credentials.getLogin() == null || credentials.getPassword() == null ) {
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(UserCredentials credentials, @Context HttpServletRequest req) throws InterruptedException {
+        if (credentials.getLogin() == null || credentials.getPassword() == null) {
             return Response.ERROR();
         }
 
@@ -145,7 +143,7 @@ public class AuthResource {
             });
 
             HttpSession userSession = req.getSession();
-            userSession.setAttribute(AuthFilter.sessionCredentials, user );
+            userSession.setAttribute(AuthFilter.sessionCredentials, user);
 
             Settings settings = settingsDAO.getSettings(user.getCustomerId());
             if (settings != null) {
@@ -158,7 +156,7 @@ public class AuthResource {
 
             if (user.getAuthToken() == null || user.getAuthToken().length() == 0) {
                 user.setAuthToken(PasswordUtil.generateToken());
-                user.setNewPassword(user.getPassword());        // copy value for setUserNewPasswordUnsecure
+                user.setNewPassword(user.getPassword()); // copy value for setUserNewPasswordUnsecure
                 userDAO.setUserNewPasswordUnsecure(user);
             }
 
@@ -179,20 +177,19 @@ public class AuthResource {
      * @param req an incoming request.
      */
     @POST
-    @Path( "/logout" )
-    public void logout( @Context HttpServletRequest req ) {
-        HttpSession session = req.getSession( false );
-        if ( session != null ) {
+    @Path("/logout")
+    public void logout(@Context HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
             session.invalidate();
         }
     }
-
 
     /**
      * <p>Returns the login options</p>
      */
     @GET
-    @Path( "/options" )
+    @Path("/options")
     public Response options() {
         AuthOptionsResponse response = new AuthOptionsResponse();
         response.setSignup(emailService.isConfigured() && customerSignup);

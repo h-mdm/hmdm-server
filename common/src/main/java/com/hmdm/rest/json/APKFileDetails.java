@@ -60,8 +60,7 @@ public class APKFileDetails implements Serializable {
     /**
      * <p>Constructs new <code>APKFileDetails</code> instance. This implementation does nothing.</p>
      */
-    public APKFileDetails() {
-    }
+    public APKFileDetails() {}
 
     public String getPkg() {
         return pkg;
@@ -105,12 +104,7 @@ public class APKFileDetails implements Serializable {
 
     @Override
     public String toString() {
-        return "APKFileDetails{" +
-                "pkg='" + pkg + '\'' +
-                ", name='" + name + '\'' +
-                ", version='" + version + '\'' +
-                ", versionCode=" + versionCode +
-                ", arch='" + arch + '\'' +
-                '}';
+        return "APKFileDetails{" + "pkg='" + pkg + '\'' + ", name='" + name + '\'' + ", version='" + version + '\''
+                + ", versionCode=" + versionCode + ", arch='" + arch + '\'' + '}';
     }
 }

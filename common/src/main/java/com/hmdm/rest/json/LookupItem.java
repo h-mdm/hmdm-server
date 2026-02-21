@@ -22,7 +22,6 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.Objects;
 
 /**
@@ -42,8 +41,7 @@ public class LookupItem {
     /**
      * <p>Constructs new <code>LookupItem</code> instance. This implementation does nothing.</p>
      */
-    public LookupItem() {
-    }
+    public LookupItem() {}
 
     public LookupItem(int id, String name) {
         this.id = id;
@@ -81,9 +79,6 @@ public class LookupItem {
 
     @Override
     public String toString() {
-        return "LookupItem{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "LookupItem{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 }

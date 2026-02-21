@@ -21,17 +21,15 @@
 
 package com.hmdm.persistence.mapper;
 
-import com.hmdm.persistence.domain.DeviceSearchRequest;
+import com.hmdm.persistence.domain.Customer;
 import com.hmdm.rest.json.CustomerSearchRequest;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
-import com.hmdm.persistence.domain.Customer;
-
-import java.util.List;
 
 /**
  * <p>An ORM mapper for {@link Customer} domain object.</p>
@@ -45,51 +43,56 @@ public interface CustomerMapper {
     @Select({SELECT_BASE})
     List<Customer> findAll();
 
-    @Select({SELECT_BASE + "WHERE " +
-            " customerStatus='customer.new' OR " +
-            " customerStatus='customer.active' OR " +
-            " customerStatus='customer.inactive' OR " +
-            " customerStatus='customer.pause' OR " +
-            " customerStatus='customer.abandon' "
+    @Select({
+        SELECT_BASE + "WHERE " + " customerStatus='customer.new' OR " + " customerStatus='customer.active' OR "
+                + " customerStatus='customer.inactive' OR " + " customerStatus='customer.pause' OR "
+                + " customerStatus='customer.abandon' "
     })
     List<Customer> findFollowedUp();
 
     @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
     List<Customer> findAllExceptMaster();
 
-    @Insert({"INSERT INTO customers (name, email, description, filesDir, master, prefix, registrationTime, " +
-             "accountType, expiryTime, deviceLimit, customerStatus, firstName, lastName, language, " +
-             "inactiveState, pauseState, abandonState, sizeLimit, signupStatus, signupToken) " +
-             "VALUES (#{name}, #{email}, #{description}, #{filesDir}, FALSE, #{prefix}, #{registrationTime}, " +
-             "#{accountType}, #{expiryTime}, #{deviceLimit}, #{customerStatus}, #{firstName}, #{lastName}, #{language}, " + "" +
-            "#{inactiveState}, #{pauseState}, #{abandonState}, #{sizeLimit}, #{signupStatus}, #{signupToken})"})
-    @SelectKey( statement = "SELECT currval('customers_id_seq')", keyColumn = "id",
-            keyProperty = "id", before = false, resultType = int.class )
+    @Insert({
+        "INSERT INTO customers (name, email, description, filesDir, master, prefix, registrationTime, "
+                + "accountType, expiryTime, deviceLimit, customerStatus, firstName, lastName, language, "
+                + "inactiveState, pauseState, abandonState, sizeLimit, signupStatus, signupToken) "
+                + "VALUES (#{name}, #{email}, #{description}, #{filesDir}, FALSE, #{prefix}, #{registrationTime}, "
+                + "#{accountType}, #{expiryTime}, #{deviceLimit}, #{customerStatus}, #{firstName}, #{lastName}, #{language}, "
+                + ""
+                + "#{inactiveState}, #{pauseState}, #{abandonState}, #{sizeLimit}, #{signupStatus}, #{signupToken})"
+    })
+    @SelectKey(
+            statement = "SELECT currval('customers_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insert(Customer customer);
 
-    @Update({"UPDATE customers SET name=#{name}, email=#{email}, description=#{description}, " +
-            "accountType=#{accountType}, expiryTime=#{expiryTime}, deviceLimit=#{deviceLimit}, " +
-            "customerStatus=#{customerStatus}, firstName=#{firstName}, lastName=#{lastName}, language=#{language}, " +
-            "inactiveState=#{inactiveState}, pauseState=#{pauseState}, abandonState=#{abandonState}, " +
-            "sizeLimit=#{sizeLimit}, signupStatus=#{signupStatus}, signupToken=#{signupToken} " +
-            "WHERE id=#{id} AND master = FALSE"})
+    @Update({
+        "UPDATE customers SET name=#{name}, email=#{email}, description=#{description}, "
+                + "accountType=#{accountType}, expiryTime=#{expiryTime}, deviceLimit=#{deviceLimit}, "
+                + "customerStatus=#{customerStatus}, firstName=#{firstName}, lastName=#{lastName}, language=#{language}, "
+                + "inactiveState=#{inactiveState}, pauseState=#{pauseState}, abandonState=#{abandonState}, "
+                + "sizeLimit=#{sizeLimit}, signupStatus=#{signupStatus}, signupToken=#{signupToken} "
+                + "WHERE id=#{id} AND master = FALSE"
+    })
     void update(Customer customer);
 
     @Delete({"DELETE FROM customers WHERE id=#{id} AND master = FALSE"})
     void delete(@Param("id") Integer id);
 
-    @Select({SELECT_BASE +
-            "WHERE master = FALSE " +
-            "AND (LOWER(name) LIKE #{filter} OR LOWER(description) LIKE #{filter}) " +
-            "ORDER BY name"})
+    @Select({
+        SELECT_BASE + "WHERE master = FALSE " + "AND (LOWER(name) LIKE #{filter} OR LOWER(description) LIKE #{filter}) "
+                + "ORDER BY name"
+    })
     List<Customer> findAllByValue(@Param("filter") String value);
 
     @Select({SELECT_BASE + " WHERE id=#{id}"})
     Customer findCustomerById(@Param("id") Integer id);
 
-    @Select({"SELECT customers.* " +
-            "FROM customers " +
-            "WHERE id = #{id}"})
+    @Select({"SELECT customers.* " + "FROM customers " + "WHERE id = #{id}"})
     Customer findCustomerByIdForUpdate(@Param("id") Integer id);
 
     @Select({SELECT_BASE + " WHERE LOWER(name) = LOWER(#{name}) LIMIT 1"})

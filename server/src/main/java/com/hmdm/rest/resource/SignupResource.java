@@ -26,28 +26,25 @@ import com.hmdm.persistence.PendingSignupDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.PendingSignup;
-import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.SignupCompleteRequest;
-import com.hmdm.security.SecurityContext;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.MailchimpService;
 import com.hmdm.util.PasswordUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.*;
-
-@Api(tags = {"Signup"})
+@Tag(name = "Signup")
 @Singleton
 @Path("/public/signup")
 public class SignupResource {
@@ -73,25 +70,28 @@ public class SignupResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public SignupResource() {
-    }
+    public SignupResource() {}
 
     /**
      * <p>Constructs new <code>SignupResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public SignupResource(CommonDAO commonDAO, UnsecureDAO unsecureDAO, PendingSignupDAO pendingSignupDAO,
-                          EmailService emailService, MailchimpService mailchimpService,
-                          @Named("admin.email") String adminEmail,
-                          @Named("base.url") String baseUrl,
-                          @Named("customer.signup") boolean customerSignup,
-                          @Named("customer.signup.copy.settings") boolean customerSignupCopySettings,
-                          @Named("customer.signup.configurations") String customerSignupConfigStr,
-                          @Named("customer.signup.support.email") String customerSignupSupportEmail,
-                          @Named("customer.signup.device.limit") String customerSignupDeviceLimitStr,
-                          @Named("customer.signup.size.limit") String customerSignupSizeLimitStr,
-                          @Named("customer.signup.expiry.days") String customerSignupExpiryDaysStr,
-                          @Named("customer.signup.device.config") String customerSignupDeviceConfigStr) {
+    public SignupResource(
+            CommonDAO commonDAO,
+            UnsecureDAO unsecureDAO,
+            PendingSignupDAO pendingSignupDAO,
+            EmailService emailService,
+            MailchimpService mailchimpService,
+            @Named("admin.email") String adminEmail,
+            @Named("base.url") String baseUrl,
+            @Named("customer.signup") boolean customerSignup,
+            @Named("customer.signup.copy.settings") boolean customerSignupCopySettings,
+            @Named("customer.signup.configurations") String customerSignupConfigStr,
+            @Named("customer.signup.support.email") String customerSignupSupportEmail,
+            @Named("customer.signup.device.limit") String customerSignupDeviceLimitStr,
+            @Named("customer.signup.size.limit") String customerSignupSizeLimitStr,
+            @Named("customer.signup.expiry.days") String customerSignupExpiryDaysStr,
+            @Named("customer.signup.device.config") String customerSignupDeviceConfigStr) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.pendingSignupDAO = pendingSignupDAO;
@@ -121,10 +121,7 @@ public class SignupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Signup feature",
-            notes = "Checks if the customer signup is allowed."
-    )
+    @Operation(summary = "Signup feature", description = "Checks if the customer signup is allowed.")
     @GET
     @Deprecated
     @Path("/canSignup")
@@ -137,12 +134,10 @@ public class SignupResource {
         }
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Verify email",
-            notes = "Check whether the email doesn't exist and start the signup flow"
-    )
+    @Operation(
+            summary = "Verify email",
+            description = "Check whether the email doesn't exist and start the signup flow")
     @POST
     @Path("/verifyEmail")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -161,8 +156,9 @@ public class SignupResource {
 
         // Protection against email bombing
         PendingSignup pendingSignup = pendingSignupDAO.getByEmail(signupData.getEmail());
-        if (pendingSignup != null && pendingSignup.getSignupTime() != null &&
-                pendingSignup.getSignupTime() + 60000 > System.currentTimeMillis()) {
+        if (pendingSignup != null
+                && pendingSignup.getSignupTime() != null
+                && pendingSignup.getSignupTime() + 60000 > System.currentTimeMillis()) {
             // We allow resending email only after 1 minute
             return Response.DUPLICATE_ENTITY("signup.email.used");
         }
@@ -179,16 +175,12 @@ public class SignupResource {
         return Response.OK();
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Verify token",
-            notes = "Checks if the customer's token is valid."
-    )
+    @Operation(summary = "Verify token", description = "Checks if the customer's token is valid.")
     @GET
     @Path("/verifyToken/{token}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response verifyToken(@PathParam("token") @ApiParam("Customer's token") String token) {
+    public Response verifyToken(@PathParam("token") @Parameter(description = "Customer's token") String token) {
         PendingSignup signup = pendingSignupDAO.getByToken(token);
         if (signup == null) {
             return Response.OBJECT_NOT_FOUND_ERROR();
@@ -196,12 +188,10 @@ public class SignupResource {
         return Response.OK(signup);
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Complete the registration",
-            notes = "Create a new customer and notify admins and customer itself."
-    )
+    @Operation(
+            summary = "Complete the registration",
+            description = "Create a new customer and notify admins and customer itself.")
     @POST
     @Path("/complete")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -247,19 +237,22 @@ public class SignupResource {
             pendingSignupDAO.remove(customer.getEmail());
 
             // Notify the customer
-            emailService.sendEmail(customer.getEmail(),
+            emailService.sendEmail(
+                    customer.getEmail(),
                     emailService.getSignupCompleteEmailSubj(customer.getLanguage()),
                     emailService.getSignupCompleteEmailBody(customer),
                     customerSignupSupportEmail);
 
             // Notify the admin
-            emailService.sendEmail(adminEmail,
+            emailService.sendEmail(
+                    adminEmail,
                     emailService.getSignupNotifyEmailSubj(),
                     emailService.getSignupNotifyEmailBody(customer));
 
             // Notify the support
             if (!customerSignupSupportEmail.equals("")) {
-                emailService.sendEmail(customerSignupSupportEmail,
+                emailService.sendEmail(
+                        customerSignupSupportEmail,
                         emailService.getSignupNotifyEmailSubj(),
                         emailService.getSignupNotifyEmailBody(customer));
             }
@@ -287,5 +280,4 @@ public class SignupResource {
         }
         return ret;
     }
-
 }

@@ -24,8 +24,7 @@ package com.hmdm.plugins.push.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
@@ -39,80 +38,79 @@ public class PluginPushSchedule implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 4721182825649279472L;
 
-    @ApiModelProperty("ID of scheduled Push record")
+    @Schema(description = "ID of scheduled Push record")
     private Integer id;
 
-    @ApiModelProperty("Customer ID")
+    @Schema(description = "Customer ID")
     private int customerId;
 
-    @ApiModelProperty("Device ID (if scope is device)")
+    @Schema(description = "Device ID (if scope is device)")
     private int deviceId;
 
-    @ApiModelProperty("Group ID (if scope is group)")
+    @Schema(description = "Group ID (if scope is group)")
     private int groupId;
 
-    @ApiModelProperty("Configuration ID (if scope is configuration)")
+    @Schema(description = "Configuration ID (if scope is configuration)")
     private int configurationId;
 
-    @ApiModelProperty("Device number (if scope is device)")
+    @Schema(description = "Device number (if scope is device)")
     private String deviceNumber;
 
-    @ApiModelProperty("Group name (if scope is group)")
+    @Schema(description = "Group name (if scope is group)")
     private String groupName;
 
-    @ApiModelProperty("Configuration name (if scope is configuration)")
+    @Schema(description = "Configuration name (if scope is configuration)")
     private String configurationName;
 
-    @ApiModelProperty("Target name (device number or group name or config name)")
+    @Schema(description = "Target name (device number or group name or config name)")
     private String target;
 
-    @ApiModelProperty("Message scope (device, group, configuration, all)")
+    @Schema(description = "Message scope (device, group, configuration, all)")
     private String scope;
 
-    @ApiModelProperty("Push Message type")
+    @Schema(description = "Push Message type")
     private String messageType;
 
-    @ApiModelProperty("Push Message payload")
+    @Schema(description = "Push Message payload")
     private String payload;
 
-    @ApiModelProperty("Comment to the scheduled task")
+    @Schema(description = "Comment to the scheduled task")
     private String comment;
 
-    @ApiModelProperty("Scheduled minutes (readable representation in Crontab format)")
+    @Schema(description = "Scheduled minutes (readable representation in Crontab format)")
     private String min;
 
-    @ApiModelProperty("Scheduled minutes (bit string representation '0101...')")
+    @Schema(description = "Scheduled minutes (bit string representation '0101...')")
     private String minBit;
 
-    @ApiModelProperty("Scheduled hours (readable representation in Crontab format)")
+    @Schema(description = "Scheduled hours (readable representation in Crontab format)")
     private String hour;
 
-    @ApiModelProperty("Scheduled hours (bit string representation '0101...')")
+    @Schema(description = "Scheduled hours (bit string representation '0101...')")
     private String hourBit;
 
-    @ApiModelProperty("Scheduled days of month (readable representation in Crontab format)")
+    @Schema(description = "Scheduled days of month (readable representation in Crontab format)")
     private String day;
 
-    @ApiModelProperty("Scheduled days of month (bit string representation '0101...')")
+    @Schema(description = "Scheduled days of month (bit string representation '0101...')")
     private String dayBit;
 
-    @ApiModelProperty("Scheduled days of week (readable representation in Crontab format)")
+    @Schema(description = "Scheduled days of week (readable representation in Crontab format)")
     private String weekday;
 
-    @ApiModelProperty("Scheduled days of week (bit string representation '0101...')")
+    @Schema(description = "Scheduled days of week (bit string representation '0101...')")
     private String weekdayBit;
 
-    @ApiModelProperty("Scheduled months (readable representation in Crontab format)")
+    @Schema(description = "Scheduled months (readable representation in Crontab format)")
     private String month;
 
-    @ApiModelProperty("Scheduled months (bit string representation '0101...')")
+    @Schema(description = "Scheduled months (bit string representation '0101...')")
     private String monthBit;
 
     /**
      * <p>Constructs new <code>PluginPushMessage</code> instance. This implementation does nothing.</p>
      */
-    public PluginPushSchedule() {
-    }
+    public PluginPushSchedule() {}
 
     public Integer getId() {
         return id;
@@ -302,24 +300,10 @@ public class PluginPushSchedule implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "PluginPushMessage{" +
-                "id=" + id +
-                ", deviceId=" + deviceId +
-                ", groupId=" + groupId +
-                ", configurationId=" + configurationId +
-                ", deviceNumber=" + deviceNumber +
-                ", groupName=" + groupName +
-                ", configurationName=" + configurationName +
-                ", target=" + target +
-                ", scope=" + scope +
-                ", messageType=" + messageType +
-                ", payload=" + payload +
-                ", comment=" + comment +
-                ", min=" + min +
-                ", hour=" + hour +
-                ", day=" + day +
-                ", weekday=" + weekday +
-                ", month=" + month +
-                '}';
+        return "PluginPushMessage{" + "id=" + id + ", deviceId=" + deviceId + ", groupId=" + groupId
+                + ", configurationId=" + configurationId + ", deviceNumber=" + deviceNumber + ", groupName=" + groupName
+                + ", configurationName=" + configurationName + ", target=" + target + ", scope=" + scope
+                + ", messageType=" + messageType + ", payload=" + payload + ", comment=" + comment + ", min=" + min
+                + ", hour=" + hour + ", day=" + day + ", weekday=" + weekday + ", month=" + month + '}';
     }
 }

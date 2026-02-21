@@ -23,7 +23,6 @@ package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
-
 import java.io.Serializable;
 
 /**
@@ -83,8 +82,7 @@ public class DeviceDynamicInfo implements Serializable, CustomerData {
     /**
      * <p>Constructs new <code>DeviceDynamicInfo</code> instance. This implementation does nothing.</p>
      */
-    public DeviceDynamicInfo() {
-    }
+    public DeviceDynamicInfo() {}
 
     public Integer getId() {
         return id;
@@ -162,16 +160,8 @@ public class DeviceDynamicInfo implements Serializable, CustomerData {
 
     @Override
     public String toString() {
-        return "DeviceDynamicInfo{" +
-                "id=" + id +
-                ", deviceId=" + deviceId +
-                ", customerId=" + customerId +
-                ", ts=" + ts +
-                ", device=" + device +
-                ", wifi=" + wifi +
-                ", gps=" + gps +
-                ", mobile=" + mobile +
-                ", mobile2=" + mobile2 +
-                '}';
+        return "DeviceDynamicInfo{" + "id=" + id + ", deviceId=" + deviceId + ", customerId=" + customerId + ", ts="
+                + ts + ", device=" + device + ", wifi=" + wifi + ", gps=" + gps + ", mobile=" + mobile + ", mobile2="
+                + mobile2 + '}';
     }
 }

@@ -22,12 +22,11 @@
 package com.hmdm.guice.module;
 
 import com.google.inject.name.Names;
+import jakarta.servlet.ServletContext;
+import java.util.Enumeration;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.guice.MyBatisModule;
 import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
-
-import javax.servlet.ServletContext;
-import java.util.Enumeration;
 
 /**
  * <p>A base for module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the
@@ -55,14 +54,14 @@ public abstract class AbstractPersistenceModule extends MyBatisModule {
      * <p>Initializes this module.</p>
      *
      * <ul>
-     *     <li>Binds the constants with names starting with "JDBC" to values set in context</li>
-     *     <li>Configures the SQL session factory to use conection pool and JDBC transaction strategy</li>
-     *     <li>Sets database connection poll size to 30</li>
-     *     <li>Register the mapper classes and aliases for domain objects</li>
+     * <li>Binds the constants with names starting with "JDBC" to values set in context</li>
+     * <li>Configures the SQL session factory to use conection pool and JDBC transaction strategy</li>
+     * <li>Sets database connection poll size to 30</li>
+     * <li>Register the mapper classes and aliases for domain objects</li>
      * </ul>
      *
-     * <p>The plugin MUST override the {@link #getMapperPackageName()} and {@link #getDomainObjectsPackageName()} to
-     * return the package names specific to plugins.</p>
+     * <p>The plugin MUST override the {@link #getMapperPackageName()} and {@link #getDomainObjectsPackageName()} to return
+     * the package names specific to plugins.</p>
      *
      * @see PooledDataSourceProvider
      * @see JdbcTransactionFactory
@@ -70,14 +69,16 @@ public abstract class AbstractPersistenceModule extends MyBatisModule {
     protected final void initialize() {
         Enumeration params = this.context.getInitParameterNames();
 
-        while(params.hasMoreElements()) {
+        while (params.hasMoreElements()) {
             String paramName = params.nextElement().toString();
             if (paramName.startsWith("JDBC") && this.context.getInitParameter(paramName) != null) {
                 this.bindConstant().annotatedWith(Names.named(paramName)).to(this.context.getInitParameter(paramName));
             }
         }
 
-        this.bindConstant().annotatedWith(Names.named("mybatis.pooled.maximumActiveConnections")).to(30);
+        this.bindConstant()
+                .annotatedWith(Names.named("mybatis.pooled.maximumActiveConnections"))
+                .to(30);
         this.environmentId("production");
         this.bindDataSourceProviderType(PooledDataSourceProvider.class);
         this.bindTransactionFactoryType(JdbcTransactionFactory.class);
@@ -100,5 +101,4 @@ public abstract class AbstractPersistenceModule extends MyBatisModule {
      * @return a fully-qualified name of package with Domain Object classes.
      */
     protected abstract String getDomainObjectsPackageName();
-
 }

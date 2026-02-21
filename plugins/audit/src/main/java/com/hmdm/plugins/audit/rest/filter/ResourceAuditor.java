@@ -24,23 +24,20 @@ package com.hmdm.plugins.audit.rest.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
-import com.hmdm.plugins.audit.rest.AuditResource;
 import com.hmdm.rest.filter.BaseIPFilter;
 import com.hmdm.rest.json.Response;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Enumeration;
 
 /**
  * <p>An auditor for a single request-response chain.</p>
@@ -91,16 +88,24 @@ class ResourceAuditor {
     /**
      * <p>Constructs new <code>ResourceAuditor</code> instance. This implementation does nothing.</p>
      */
-    ResourceAuditor(String auditLogActionKey, ServletRequest request, ServletResponse response,
-                    FilterChain chain, boolean payload, boolean checkResponse, String proxyIps, String ipHeader) throws IOException {
+    ResourceAuditor(
+            String auditLogActionKey,
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain,
+            boolean payload,
+            boolean checkResponse,
+            String proxyIps,
+            String ipHeader)
+            throws IOException {
         this.auditLogActionKey = auditLogActionKey;
         if (payload) {
             // Wrap request only if we need to log it
-            this.request = new ServletRequestAuditWrapper((HttpServletRequest)request);
+            this.request = new ServletRequestAuditWrapper((HttpServletRequest) request);
         } else {
             this.request = request;
         }
-        this.response = new ServletResponseAuditWrapper((HttpServletResponse)response);
+        this.response = new ServletResponseAuditWrapper((HttpServletResponse) response);
         this.chain = chain;
         this.payload = payload;
         this.checkResponse = checkResponse;
@@ -110,8 +115,10 @@ class ResourceAuditor {
     /**
      * <p>Executes the request/response chain and captures data necessary for auditing.</p>
      *
-     * @throws IOException if an unexpected I/O error occurs.
-     * @throws ServletException if an unexpected error occurs.
+     * @throws IOException
+     *             if an unexpected I/O error occurs.
+     * @throws ServletException
+     *             if an unexpected error occurs.
      */
     void doProcess() throws IOException, ServletException {
         chain.doFilter(this.request, this.response);
@@ -122,7 +129,9 @@ class ResourceAuditor {
      *
      * @return an audit log record evaluated based on the request processing results or <code>null</code> if no such
      *         record is available.
-     * @throws IOException if an unexpected I/O error occurs.
+     *
+     * @throws IOException
+     *             if an unexpected I/O error occurs.
      */
     AuditLogRecord getAuditLogRecord() throws IOException {
         final HttpServletRequest httpRequest = (HttpServletRequest) this.request;
@@ -136,9 +145,8 @@ class ResourceAuditor {
         String payloadString = null;
         String requestedLogin = null;
         if (payload) {
-            ServletRequestAuditWrapper requestWrapper = (ServletRequestAuditWrapper)this.request;
-            payloadString = "Method: " + requestWrapper.getMethod() + "\n" +
-                    "URI: " + requestWrapper.getRequestURI();
+            ServletRequestAuditWrapper requestWrapper = (ServletRequestAuditWrapper) this.request;
+            payloadString = "Method: " + requestWrapper.getMethod() + "\n" + "URI: " + requestWrapper.getRequestURI();
             String body = requestWrapper.getBody();
             if (body != null && body.length() > 0) {
                 if (needStripPassword(action)) {
@@ -170,8 +178,7 @@ class ResourceAuditor {
             final byte[] content = this.response.getContent();
             ObjectMapper objectMapper = new ObjectMapper();
             final Response response = objectMapper.readValue(content, Response.class);
-            if (checkResponse &&
-                    (response == null || response.getStatus() != Response.ResponseStatus.OK)) {
+            if (checkResponse && (response == null || response.getStatus() != Response.ResponseStatus.OK)) {
                 logRecord.setErrorCode(1);
             } else {
                 logRecord.setErrorCode(0);
@@ -188,11 +195,11 @@ class ResourceAuditor {
     }
 
     private boolean needStripPassword(String action) {
-        return "plugin.audit.action.user.login".equals(action) ||
-               "plugin.audit.action.jwt.login".equals(action) ||
-               "plugin.audit.action.password.changed".equals(action) ||
-               "plugin.audit.action.update.configuration".equals(action) ||
-               "plugin.audit.action.update.user".equals(action);
+        return "plugin.audit.action.user.login".equals(action)
+                || "plugin.audit.action.jwt.login".equals(action)
+                || "plugin.audit.action.password.changed".equals(action)
+                || "plugin.audit.action.update.configuration".equals(action)
+                || "plugin.audit.action.update.user".equals(action);
     }
 
     private class StripPasswordResponse {

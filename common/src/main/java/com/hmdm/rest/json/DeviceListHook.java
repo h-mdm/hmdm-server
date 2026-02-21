@@ -22,13 +22,11 @@
 package com.hmdm.rest.json;
 
 import com.hmdm.persistence.domain.Device;
-
 import java.util.List;
 
 /**
- * <p>An interface for the hooks to be executed when a device list is going to be returned to client. The hooks may
- * extend the device objects with additional properties or perform any other desired actions based on provided
- * response.</p>
+ * <p>An interface for the hooks to be executed when a device list is going to be returned to client. The hooks may extend
+ * the device objects with additional properties or perform any other desired actions based on provided response.</p>
  *
  * @author isv
  */
@@ -38,6 +36,7 @@ public interface DeviceListHook {
      * <p>Performs the logic specific to this hook.</p>
      *
      * @param original an original list of devices to be handled by this hook.
+     *
      * @return a list of devices to be used further in process.
      */
     List<Device> handle(List<Device> original);

@@ -46,7 +46,7 @@
     <!-- Fast device search by last characters, here's the length -->
     <Parameter name="device.fast.search.chars" value="${device.fast.search.chars}"/>
 
-    <!-- Set to 1 if an external MQTT server must be used (ActiveMQ Classic is recommended) -->
+    <!-- Set to 1 if an external MQTT server must be used (ActiveMQ Artemis is recommended) -->
     <Parameter name="mqtt.external" value="${mqtt.external}"/>
 
     <!-- Optional tag for the MQTT client (required if multiple Tomcat nodes are running) -->
@@ -59,6 +59,13 @@
     <!-- Optional tag for delaying MQTT messages in milliseconds
      to avoid congestion when all devices are updating configuration at the same time -->
     <Parameter name="mqtt.message.delay" value="${mqtt.message.delay}"/>
+
+    <!-- MQTT admin password for broker authentication -->
+    <Parameter name="mqtt.admin.password" value="${mqtt.admin.password}"/>
+
+    <!-- SSL keystore configuration for MQTT broker -->
+    <Parameter name="ssl.keystore.password" value="${ssl.keystore.password}"/>
+    <Parameter name="ssl.keystore.path" value="${ssl.keystore.path}"/>
 
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>

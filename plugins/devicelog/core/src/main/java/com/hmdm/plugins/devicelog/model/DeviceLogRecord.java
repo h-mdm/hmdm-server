@@ -21,48 +21,44 @@
 
 package com.hmdm.plugins.devicelog.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
-import java.util.Date;
 
-@ApiModel(description = "A single log record received from device")
+@Schema(description = "A single log record received from device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class DeviceLogRecord implements Serializable {
 
     private static final long serialVersionUID = 7956573806273714751L;
-    
-    @ApiModelProperty("A timestamp of creation of log record (in milliseconds since epoch time")
+
+    @Schema(description = "A timestamp of creation of log record (in milliseconds since epoch time")
     private Long createTime;
 
-    @ApiModelProperty("An ID of an application related to log record")
+    @Schema(description = "An ID of an application related to log record")
     private int applicationId;
 
-    @ApiModelProperty("An ID of a device related to log record")
+    @Schema(description = "An ID of a device related to log record")
     private int deviceId;
 
-    @ApiModelProperty("An IP-address for the originating request")
+    @Schema(description = "An IP-address for the originating request")
     private String ipAddress;
 
-    @ApiModelProperty("A severity for log record")
+    @Schema(description = "A severity for log record")
     private LogLevel severity;
 
-    @ApiModelProperty("A message for log record")
+    @Schema(description = "A message for log record")
     private String message;
 
-    @ApiModelProperty("A device identifier")
+    @Schema(description = "A device identifier")
     private String deviceNumber;
 
-    @ApiModelProperty("A package ID for application")
+    @Schema(description = "A package ID for application")
     private String applicationPkg;
 
     /**
      * <p>Constructs new <code>DeviceLogRecord</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogRecord() {
-    }
+    public DeviceLogRecord() {}
 
     public Long getCreateTime() {
         return createTime;
@@ -137,15 +133,8 @@ public abstract class DeviceLogRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceLogRecord{" +
-                "createTime=" + createTime +
-                ", applicationId=" + applicationId +
-                ", deviceId=" + deviceId +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", severity=" + severity +
-                ", message='" + message + '\'' +
-                ", deviceNumber='" + deviceNumber + '\'' +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                '}';
+        return "DeviceLogRecord{" + "createTime=" + createTime + ", applicationId=" + applicationId + ", deviceId="
+                + deviceId + ", ipAddress='" + ipAddress + '\'' + ", severity=" + severity + ", message='" + message
+                + '\'' + ", deviceNumber='" + deviceNumber + '\'' + ", applicationPkg='" + applicationPkg + '\'' + '}';
     }
 }

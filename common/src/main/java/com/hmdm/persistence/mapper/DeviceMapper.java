@@ -21,37 +21,29 @@
 
 package com.hmdm.persistence.mapper;
 
-import java.util.List;
-
 import com.hmdm.persistence.domain.*;
+import com.hmdm.rest.json.DeviceLookupItem;
 import com.hmdm.service.DeviceApplicationsStatus;
 import com.hmdm.service.DeviceConfigFilesStatus;
+import java.util.List;
 import org.apache.ibatis.annotations.*;
-import com.hmdm.rest.json.DeviceLookupItem;
 
 public interface DeviceMapper {
 
     int insertDevice(Device device);
 
-    void insertDeviceGroups(@Param("id") Integer deviceId,
-                            @Param("groups") List<Integer> groups);
+    void insertDeviceGroups(@Param("id") Integer deviceId, @Param("groups") List<Integer> groups);
 
-    @Delete({"DELETE FROM deviceGroups " +
-            "WHERE deviceId=#{deviceId} " +
-            "  AND groupId IN ( " +
-            "      SELECT groups.id " +
-            "      FROM groups " +
-            "      INNER JOIN users ON users.id = #{userId} " +
-            "      WHERE groups.customerId = #{customerId} " +
-            "      AND (users.allDevicesAvailable AND users.customerId = #{customerId} " +
-            "           OR " +
-            "           EXISTS (SELECT 1 FROM userDeviceGroupsAccess access WHERE groups.id = access.groupId AND access.userId = users.id)" +
-            "      )" +
-            "  )"})
+    @Delete({
+        "DELETE FROM deviceGroups " + "WHERE deviceId=#{deviceId} " + "  AND groupId IN ( "
+                + "      SELECT groups.id " + "      FROM groups " + "      INNER JOIN users ON users.id = #{userId} "
+                + "      WHERE groups.customerId = #{customerId} "
+                + "      AND (users.allDevicesAvailable AND users.customerId = #{customerId} " + "           OR "
+                + "           EXISTS (SELECT 1 FROM userDeviceGroupsAccess access WHERE groups.id = access.groupId AND access.userId = users.id)"
+                + "      )" + "  )"
+    })
     void removeDeviceGroupsByDeviceId(
-            @Param("userId") int userId,
-            @Param("customerId") int customerId,
-            @Param("deviceId") Integer deviceId);
+            @Param("userId") int userId, @Param("customerId") int customerId, @Param("deviceId") Integer deviceId);
 
     void updateDevice(Device device);
 
@@ -65,34 +57,30 @@ public interface DeviceMapper {
 
     Device getDeviceById(@Param("id") Integer id);
 
-    @Select({"SELECT * FROM devices " +
-            "WHERE configurationId = #{configurationId} AND customerId = #{customerId}"})
-    List<Device> getAllConfigurationDevices(@Param("configurationId") int configurationId,
-                                            @Param("customerId") int customerId);
+    @Select({"SELECT * FROM devices " + "WHERE configurationId = #{configurationId} AND customerId = #{customerId}"})
+    List<Device> getAllConfigurationDevices(
+            @Param("configurationId") int configurationId, @Param("customerId") int customerId);
 
-    @Select({"SELECT * FROM devices " +
-            "LEFT JOIN deviceGroups ON deviceGroups.deviceId = devices.id " +
-            "WHERE deviceGroups.groupId = #{groupId} AND devices.customerId = #{customerId}"})
+    @Select({
+        "SELECT * FROM devices " + "LEFT JOIN deviceGroups ON deviceGroups.deviceId = devices.id "
+                + "WHERE deviceGroups.groupId = #{groupId} AND devices.customerId = #{customerId}"
+    })
     List<Device> getAllGroupDevices(@Param("groupId") int groupId, @Param("customerId") int customerId);
 
-    @Select({"SELECT * FROM devices " +
-            "WHERE customerId = #{customerId}"})
+    @Select({"SELECT * FROM devices " + "WHERE customerId = #{customerId}"})
     List<Device> getAllCustomerDevices(@Param("customerId") int customerId);
 
     List<Device> getAllDevices(DeviceSearchRequest deviceSearchRequest);
 
-    @Select({"SELECT COUNT(*) " +
-            "FROM devices " +
-            "WHERE customerId = #{customerId}"})
+    @Select({"SELECT COUNT(*) " + "FROM devices " + "WHERE customerId = #{customerId}"})
     Long countAllDevicesForCustomer(@Param("customerId") Integer customerId);
 
-    @Select({"SELECT COUNT(*) " +
-            "FROM devices"})
+    @Select({"SELECT COUNT(*) " + "FROM devices"})
     Long countTotalDevices();
 
-    @Select({"SELECT COUNT(*) " +
-            "FROM devices " +
-            "WHERE devices.lastUpdate >= extract(epoch from now()) * 1000 - 3600000"})
+    @Select({
+        "SELECT COUNT(*) " + "FROM devices " + "WHERE devices.lastUpdate >= extract(epoch from now()) * 1000 - 3600000"
+    })
     Long countOnlineDevices();
 
     Long countAllDevices(DeviceSearchRequest filter);
@@ -101,59 +89,57 @@ public interface DeviceMapper {
 
     List<SummaryConfigItem> countDevicesByConfig(DeviceSummaryRequest filter);
 
-    @Update({"UPDATE devices SET " +
-            "  info = #{info}, " +
-            "  infojson = #{info}::json, " +
-            "  lastUpdate = CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT), " +
-            "  enrollTime = COALESCE(enrollTime, CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT)), " +
-            "  imeiUpdateTs = #{imeiUpdateTs}, " +
-            "  publicIp = #{publicIp} " +
-            "WHERE id = #{deviceId}"})
-    void updateDeviceInfo(@Param("deviceId") Integer deviceId,
-                          @Param("info") String info,
-                          @Param("imeiUpdateTs") Long imeiUpdateTs,
-                          @Param("publicIp") String publicIp);
+    @Update({
+        "UPDATE devices SET " + "  info = #{info}, " + "  infojson = #{info}::json, "
+                + "  lastUpdate = CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT), "
+                + "  enrollTime = COALESCE(enrollTime, CAST(EXTRACT(EPOCH FROM NOW()) * 1000 AS BIGINT)), "
+                + "  imeiUpdateTs = #{imeiUpdateTs}, " + "  publicIp = #{publicIp} " + "WHERE id = #{deviceId}"
+    })
+    void updateDeviceInfo(
+            @Param("deviceId") Integer deviceId,
+            @Param("info") String info,
+            @Param("imeiUpdateTs") Long imeiUpdateTs,
+            @Param("publicIp") String publicIp);
 
-    @Update({"UPDATE devices SET " +
-            "  custom1 = #{custom1}, " +
-            "  custom2 = #{custom2}, " +
-            "  custom3 = #{custom3} " +
-            "WHERE id = #{deviceId}"})
-    void updateDeviceCustomProperties(@Param("deviceId") Integer deviceId,
-                                      @Param("custom1") String custom1,
-                                      @Param("custom2") String custom2,
-                                      @Param("custom3") String custom3);
+    @Update({
+        "UPDATE devices SET " + "  custom1 = #{custom1}, " + "  custom2 = #{custom2}, " + "  custom3 = #{custom3} "
+                + "WHERE id = #{deviceId}"
+    })
+    void updateDeviceCustomProperties(
+            @Param("deviceId") Integer deviceId,
+            @Param("custom1") String custom1,
+            @Param("custom2") String custom2,
+            @Param("custom3") String custom3);
 
-    @Update({"UPDATE devices SET oldNumber = null " +
-            "WHERE id = #{deviceId}"})
+    @Update({"UPDATE devices SET oldNumber = null " + "WHERE id = #{deviceId}"})
     void clearOldNumber(@Param("deviceId") Integer deviceId);
 
-    List<DeviceLookupItem> lookupDevices(@Param("userId") int userId,
-                                         @Param("customerId") int customerId,
-                                         @Param("filter") String filter,
-                                         @Param("limit") int limit);
+    List<DeviceLookupItem> lookupDevices(
+            @Param("userId") int userId,
+            @Param("customerId") int customerId,
+            @Param("filter") String filter,
+            @Param("limit") int limit);
 
     @Delete({"DELETE FROM devices WHERE id = #{id}"})
     void removeDevice(@Param("id") Integer id);
 
     @Update({"UPDATE devices SET configurationId = #{configurationId} WHERE id = #{deviceId}"})
-    void updateDeviceConfiguration(@Param("deviceId") Integer deviceId,
-                                   @Param("configurationId") Integer configurationId);
+    void updateDeviceConfiguration(
+            @Param("deviceId") Integer deviceId, @Param("configurationId") Integer configurationId);
 
     @Update({"UPDATE devices SET description = #{description} WHERE id = #{deviceId}"})
-    void updateDeviceDescription(@Param("deviceId") Integer deviceId,
-                                 @Param("description") String newDeviceDesc);
+    void updateDeviceDescription(@Param("deviceId") Integer deviceId, @Param("description") String newDeviceDesc);
 
-    @Update({"UPDATE devices SET fastSearch = RIGHT(number, #{fastSearchChars}) WHERE fastSearch IS NULL " +
-            " OR LENGTH(fastSearch) != #{fastSearchChars}"})
+    @Update({
+        "UPDATE devices SET fastSearch = RIGHT(number, #{fastSearchChars}) WHERE fastSearch IS NULL "
+                + " OR LENGTH(fastSearch) != #{fastSearchChars}"
+    })
     void updateFastSearch(@Param("fastSearchChars") Integer fastSearchChars);
 
-    List<Group> getAllGroups(@Param("customerId") int customerId,
-                             @Param("userId") Integer userId);
+    List<Group> getAllGroups(@Param("customerId") int customerId, @Param("userId") Integer userId);
 
-    List<Group> getAllGroupsByValue(@Param("customerId") int customerId,
-                                    @Param("value") String value,
-                                    @Param("userId") Integer userId);
+    List<Group> getAllGroupsByValue(
+            @Param("customerId") int customerId, @Param("value") String value, @Param("userId") Integer userId);
 
     @Select({"SELECT * FROM groups WHERE customerId=#{customerId} AND name = #{name}"})
     Group getGroupByName(@Param("customerId") int customerId, @Param("name") String name);
@@ -165,9 +151,7 @@ public interface DeviceMapper {
     @Update({"UPDATE groups SET name = #{name} WHERE id = #{id}"})
     void updateGroup(Group group);
 
-    @Select({"SELECT COUNT(*) " +
-            "FROM deviceGroups " +
-            "WHERE groupId = #{groupId}"})
+    @Select({"SELECT COUNT(*) " + "FROM deviceGroups " + "WHERE groupId = #{groupId}"})
     Long countDevicesByGroupId(@Param("groupId") Integer groupId);
 
     @Delete({"DELETE FROM groups WHERE id = #{id}"})
@@ -177,36 +161,33 @@ public interface DeviceMapper {
     Group getGroupById(@Param("id") Integer id);
 
     @Select("SELECT devices.id FROM devices WHERE customerId = #{customerId} AND configurationId = #{configurationId}")
-    List<Device> getDeviceIdsByConfigurationId(@Param("customerId") Integer customerId,
-                                               @Param("configurationId") int configurationId);
+    List<Device> getDeviceIdsByConfigurationId(
+            @Param("customerId") Integer customerId, @Param("configurationId") int configurationId);
 
     @Select("SELECT devices.id FROM devices WHERE configurationId = #{configurationId}")
     List<Device> getDeviceIdsBySoleConfigurationId(@Param("configurationId") int configurationId);
 
-    void insertDeviceApplicationSettings(@Param("id") Integer deviceId,
-                                         @Param("appSettings") List<ApplicationSetting> applicationSettings);
+    void insertDeviceApplicationSettings(
+            @Param("id") Integer deviceId, @Param("appSettings") List<ApplicationSetting> applicationSettings);
 
     @Delete("DELETE FROM deviceApplicationSettings WHERE extRefId = #{id}")
     void deleteDeviceApplicationSettings(@Param("id") Integer deviceId);
 
-    @Select("SELECT " +
-            "    deviceApps.app ->> 'pkg' AS pkg, " +
-            "    deviceApps.app ->> 'version' AS version, " +
-            "    deviceApps.app ->> 'name' AS name " +
-            "FROM (" +
-            "    SELECT jsonb_array_elements(infojson -> 'applications') AS app " +
-            "    FROM devices " +
-            "    WHERE id = #{deviceId}" +
-            ") deviceApps")
+    @Select("SELECT " + "    deviceApps.app ->> 'pkg' AS pkg, " + "    deviceApps.app ->> 'version' AS version, "
+            + "    deviceApps.app ->> 'name' AS name " + "FROM ("
+            + "    SELECT jsonb_array_elements(infojson -> 'applications') AS app " + "    FROM devices "
+            + "    WHERE id = #{deviceId}" + ") deviceApps")
     List<DeviceApplication> getDeviceInstalledApplications(@Param("deviceId") int deviceId);
 
-    @Update("INSERT INTO deviceStatuses (deviceId, configFilesStatus, applicationsStatus) " +
-            "VALUES (#{deviceId}, #{filesStatus}, #{appsStatus})" +
-            "ON CONFLICT ON CONSTRAINT deviceStatuses_pr_key DO " +
-            "UPDATE SET configFilesStatus = EXCLUDED.configFilesStatus, applicationsStatus = EXCLUDED.applicationsStatus")
-    int updateDeviceStatuses(@Param("deviceId") Integer deviceId,
-                             @Param("filesStatus") DeviceConfigFilesStatus deviceConfigFilesStatus,
-                             @Param("appsStatus") DeviceApplicationsStatus deviceApplicatiosStatus);
+    @Update(
+            "INSERT INTO deviceStatuses (deviceId, configFilesStatus, applicationsStatus) "
+                    + "VALUES (#{deviceId}, #{filesStatus}, #{appsStatus})"
+                    + "ON CONFLICT ON CONSTRAINT deviceStatuses_pr_key DO "
+                    + "UPDATE SET configFilesStatus = EXCLUDED.configFilesStatus, applicationsStatus = EXCLUDED.applicationsStatus")
+    int updateDeviceStatuses(
+            @Param("deviceId") Integer deviceId,
+            @Param("filesStatus") DeviceConfigFilesStatus deviceConfigFilesStatus,
+            @Param("appsStatus") DeviceApplicationsStatus deviceApplicatiosStatus);
 
     @Select("SELECT id FROM devices")
     List<Integer> getAllDeviceIds();

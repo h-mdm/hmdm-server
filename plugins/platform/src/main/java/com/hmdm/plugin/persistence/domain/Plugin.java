@@ -81,8 +81,7 @@ public class Plugin implements Serializable {
     /**
      * <p>Constructs new <code>Plugin</code> instance. This implementation does nothing.</p>
      */
-    public Plugin() {
-    }
+    public Plugin() {}
 
     public int getId() {
         return id;
@@ -211,21 +210,13 @@ public class Plugin implements Serializable {
 
     @Override
     public String toString() {
-        return "Plugin{" +
-                "id=" + id +
-                ", identifier='" + identifier + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", createTime='" + createTime + '\'' +
-                ", disabled=" + disabled +
-                ", enabledForDevice=" + enabledForDevice +
-                ", javascriptModuleFile='" + javascriptModuleFile + '\'' +
-                ", functionsViewTemplate='" + functionsViewTemplate + '\'' +
-                ", settingsViewTemplate='" + settingsViewTemplate + '\'' +
-                ", nameLocalizationKey='" + nameLocalizationKey + '\'' +
-                ", settingsPermission='" + settingsPermission + '\'' +
-                ", functionsPermission='" + functionsPermission + '\'' +
-                ", deviceFunctionsPermission='" + deviceFunctionsPermission + '\'' +
-                '}';
+        return "Plugin{" + "id=" + id + ", identifier='" + identifier + '\'' + ", name='" + name + '\''
+                + ", description='" + description + '\'' + ", createTime='" + createTime + '\'' + ", disabled="
+                + disabled + ", enabledForDevice=" + enabledForDevice + ", javascriptModuleFile='"
+                + javascriptModuleFile + '\'' + ", functionsViewTemplate='" + functionsViewTemplate + '\''
+                + ", settingsViewTemplate='" + settingsViewTemplate + '\'' + ", nameLocalizationKey='"
+                + nameLocalizationKey + '\'' + ", settingsPermission='" + settingsPermission + '\''
+                + ", functionsPermission='" + functionsPermission + '\'' + ", deviceFunctionsPermission='"
+                + deviceFunctionsPermission + '\'' + '}';
     }
 }

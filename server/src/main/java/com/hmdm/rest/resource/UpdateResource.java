@@ -22,33 +22,30 @@
 package com.hmdm.rest.resource;
 
 import com.google.common.io.Files;
-import com.hmdm.notification.PushService;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.*;
-import org.json.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @Path("/private/update")
@@ -65,16 +62,16 @@ public class UpdateResource {
     private static final Logger logger = LoggerFactory.getLogger(UpdateResource.class);
     private static final String WEB_MANIFEST_FILE_NAME = "hmdm_web_update_manifest.txt";
 
-    public UpdateResource() {
-    }
+    public UpdateResource() {}
 
     @Inject
-    public UpdateResource(@Named("files.directory") String filesDirectory,
-                          @Named("base.url") String baseUrl,
-                          ApplicationDAO applicationDAO,
-                          UnsecureDAO unsecureDAO,
-                          StatsSender statsSender,
-                          APKFileAnalyzer apkFileAnalyzer) {
+    public UpdateResource(
+            @Named("files.directory") String filesDirectory,
+            @Named("base.url") String baseUrl,
+            ApplicationDAO applicationDAO,
+            UnsecureDAO unsecureDAO,
+            StatsSender statsSender,
+            APKFileAnalyzer apkFileAnalyzer) {
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
         this.applicationDAO = applicationDAO;
@@ -82,14 +79,13 @@ public class UpdateResource {
         this.statsSender = statsSender;
         this.apkFileAnalyzer = apkFileAnalyzer;
         try {
-            URL url = new URL(baseUrl);
+            URL url = URI.create(baseUrl).toURL();
             protocol = url.getProtocol();
             customerDomain = url.getHost();
         } catch (MalformedURLException e) {
             // We shouldn't be here!
             e.printStackTrace();
         }
-
     }
 
     @GET
@@ -103,7 +99,8 @@ public class UpdateResource {
                 throw new SecurityException("Only superadmin can check for updates");
             }
 
-            URL url = new URL(UpdateSettings.MANIFEST_URL.replace("CUSTOMER_DOMAIN", customerDomain));
+            URL url = URI.create(UpdateSettings.MANIFEST_URL.replace("CUSTOMER_DOMAIN", customerDomain))
+                    .toURL();
             logger.info("Checking for update: " + url.toString());
             manifestStr = FileUtil.downloadTextFile(url);
 
@@ -177,12 +174,13 @@ public class UpdateResource {
         return Response.OK(request.getUpdates());
     }
 
-    // Download the web app (using the authentification!) and create the manifest file
+    // Download the web app (using the authentification!) and create the manifest
+    // file
     private boolean downloadWebApp(UpdateEntry app) {
         InputStream inputStream = null;
         HttpURLConnection conn = null;
         try {
-            URL url = new URL(app.getUrl());
+            URL url = URI.create(app.getUrl()).toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(30000);
             conn.setConnectTimeout(30000);
@@ -192,7 +190,8 @@ public class UpdateResource {
 
             if (UpdateSettings.WEB_UPDATE_USERNAME != null && UpdateSettings.WEB_UPDATE_PASSWORD != null) {
                 String userCredentials = UpdateSettings.WEB_UPDATE_USERNAME + ":" + UpdateSettings.WEB_UPDATE_PASSWORD;
-                String basicAuth = "Basic " + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
+                String basicAuth =
+                        "Basic " + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
                 conn.setRequestProperty("Authorization", basicAuth);
             }
 
@@ -243,7 +242,7 @@ public class UpdateResource {
 
             // We download to the temp file to reuse the existing Application management API
             File tempFile = FileUtil.createTempFile(FileUtil.adjustFileName(name));
-            FileUtil.writeToFile(new URL(app.getUrl()).openStream(), tempFile.getAbsolutePath());
+            FileUtil.writeToFile(URI.create(app.getUrl()).toURL().openStream(), tempFile.getAbsolutePath());
 
             APKFileDetails fileDetails = apkFileAnalyzer.analyzeFile(tempFile.getAbsolutePath());
 
@@ -275,18 +274,21 @@ public class UpdateResource {
     // Update installedVersion to version in all configs
     // Record which configurations are affected to notify them via Push notification
     private void updateAppInConfig(UpdateEntry app) {
-        ApplicationVersion currentVersion = applicationDAO.findApplicationVersion(app.getPkg(), app.getCurrentVersion());
+        ApplicationVersion currentVersion =
+                applicationDAO.findApplicationVersion(app.getPkg(), app.getCurrentVersion());
         ApplicationVersion newVersion = applicationDAO.findApplicationVersion(app.getPkg(), app.getVersion());
 
         LinkConfigurationsToAppVersionRequest request = new LinkConfigurationsToAppVersionRequest();
         request.setApplicationVersionId(newVersion.getId());
-        List<ApplicationVersionConfigurationLink> linkList = applicationDAO.getApplicationVersionConfigurations(currentVersion.getId());
+        List<ApplicationVersionConfigurationLink> linkList =
+                applicationDAO.getApplicationVersionConfigurations(currentVersion.getId());
         for (ApplicationVersionConfigurationLink link : linkList) {
             link.setApplicationVersionId(newVersion.getId());
         }
         request.setConfigurations(linkList);
         logger.info("Application versions updated by the superadmin through 'Check for updates'");
-        applicationDAO.updateApplicationVersionConfigurations(request, SecurityContext.get().getCurrentUser().get());
+        applicationDAO.updateApplicationVersionConfigurations(
+                request, SecurityContext.get().getCurrentUser().get());
     }
 
     private void processWebAppEntry(UpdateEntry entry) {
@@ -309,7 +311,8 @@ public class UpdateResource {
     }
 
     private void processLauncherAppEntry(UpdateEntry entry) {
-        // We need to determine the currently installed launcher variant (os/master/system or custom)
+        // We need to determine the currently installed launcher variant
+        // (os/master/system or custom)
         List<Application> appList = applicationDAO.findByPackageId(entry.getPkg());
         if (appList.size() != 1) {
             // Not available for update
@@ -325,7 +328,8 @@ public class UpdateResource {
         }
 
         entry.setName(appList.get(0).getName());
-        List<ApplicationVersion> versions = applicationDAO.getApplicationVersions(appList.get(0).getId());
+        List<ApplicationVersion> versions =
+                applicationDAO.getApplicationVersions(appList.get(0).getId());
         if (versions.size() == 0) {
             // We shouldn't be here!
             entry.setUpdateDisabled(true);
@@ -385,7 +389,8 @@ public class UpdateResource {
             return false;
         }
 
-        List<ApplicationVersion> versions = applicationDAO.getApplicationVersions(appList.get(0).getId());
+        List<ApplicationVersion> versions =
+                applicationDAO.getApplicationVersions(appList.get(0).getId());
         if (versions.size() == 0) {
             // We shouldn't be here!
             return false;
@@ -413,7 +418,8 @@ public class UpdateResource {
     private ApplicationVersion findLatestInstalledVersion(List<ApplicationVersion> versions) {
         ApplicationVersion result = null;
         for (ApplicationVersion v : versions) {
-            if (v.isDeletionProhibited() && (result == null || ApplicationUtil.compareVersions(v.getVersion(), result.getVersion()) > 0)) {
+            if (v.isDeletionProhibited()
+                    && (result == null || ApplicationUtil.compareVersions(v.getVersion(), result.getVersion()) > 0)) {
                 result = v;
             }
         }

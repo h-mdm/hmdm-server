@@ -29,7 +29,6 @@ import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.filter.PrivateIPFilter;
 import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,21 +44,17 @@ public class DeviceInfoRestModule extends ServletModule {
      */
     private static final List<String> protectedResources = Arrays.asList(
             "/rest/plugins/deviceinfo/deviceinfo-plugin-settings/private",
-            "/rest/plugins/deviceinfo/deviceinfo/private/*"
-    );
+            "/rest/plugins/deviceinfo/deviceinfo/private/*");
 
     /**
-     * <p> A list of patterns for URIs for plugin resources available to devices</p>
+     * <p>A list of patterns for URIs for plugin resources available to devices</p>
      */
-    private static final List<String> publicResources = Arrays.asList(
-            "/rest/plugins/deviceinfo/deviceinfo/public/*"
-    );
+    private static final List<String> publicResources = Arrays.asList("/rest/plugins/deviceinfo/deviceinfo/public/*");
 
     /**
      * <p>Constructs new <code>DeviceInfoRestModule</code> instance. This implementation does nothing.</p>
      */
-    public DeviceInfoRestModule() {
-    }
+    public DeviceInfoRestModule() {}
 
     /**
      * <p>Configures the <code>Device Info Plugin</code> REST resources.</p>

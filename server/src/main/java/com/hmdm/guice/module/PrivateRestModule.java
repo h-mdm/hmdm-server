@@ -21,16 +21,14 @@
 
 package com.hmdm.guice.module;
 
-import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.filter.PrivateIPFilter;
 import com.hmdm.rest.resource.*;
-import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.security.jwt.JWTFilter;
 
 public class PrivateRestModule extends ServletModule {
-    public PrivateRestModule() {
-    }
+    public PrivateRestModule() {}
 
     protected void configureServlets() {
         this.filter("/rest/private/*").through(JWTFilter.class);

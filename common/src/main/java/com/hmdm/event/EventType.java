@@ -27,7 +27,6 @@ package com.hmdm.event;
  * @author isv
  */
 public enum EventType {
-
     DEVICE_BATTERY_LEVEL_UPDATED(DeviceBatteryLevelUpdatedEvent.class),
     DEVICE_LOCATION_UPDATED(DeviceLocationUpdatedEvent.class),
     DEVICE_INFO_UPDATED(DeviceInfoUpdatedEvent.class),

@@ -24,38 +24,27 @@ package com.hmdm.notification.rest;
 import com.hmdm.notification.PushSenderPolling;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.notification.persistence.domain.PushMessage;
-import com.hmdm.notification.rest.json.PlainPushMessage;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.rest.filter.PublicIPFilter;
-import com.hmdm.rest.json.Response;
 import com.hmdm.util.CryptoUtil;
-import com.hmdm.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.servlet.AsyncContext;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource to be used for publishing/receiving the notification messages.</p>
@@ -77,8 +66,6 @@ public class LongPollingServlet extends HttpServlet {
     private static final String HEADER_SIGNATURE = "X-Request-Signature";
     public static final String BASE_PATH = "/rest/notification/polling/";
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
-
     /**
      * <p>A constructor required by Swagger.</p>
      */
@@ -90,13 +77,14 @@ public class LongPollingServlet extends HttpServlet {
      * <p>Constructs new <code>NotificationResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public LongPollingServlet(UnsecureDAO unsecureDAO,
-                              NotificationDAO notificationDAO,
-                              PushSenderPolling pushSenderPolling,
-                              PublicIPFilter publicIPFilter,
-                              @Named("polling.timeout") long pollingTimeout,
-                              @Named("secure.enrollment") boolean secureEnrollment,
-                              @Named("hash.secret") String hashSecret) {
+    public LongPollingServlet(
+            UnsecureDAO unsecureDAO,
+            NotificationDAO notificationDAO,
+            PushSenderPolling pushSenderPolling,
+            PublicIPFilter publicIPFilter,
+            @Named("polling.timeout") long pollingTimeout,
+            @Named("secure.enrollment") boolean secureEnrollment,
+            @Named("hash.secret") String hashSecret) {
         this.unsecureDAO = unsecureDAO;
         this.notificationDAO = notificationDAO;
         this.pushSenderPolling = pushSenderPolling;
@@ -107,8 +95,9 @@ public class LongPollingServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        String path = URLDecoder.decode(req.getRequestURI(), "UTF8");
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+        String path = URLDecoder.decode(req.getRequestURI(), StandardCharsets.UTF_8);
         int index = path.indexOf(BASE_PATH, 0) + BASE_PATH.length();
         String deviceNumber = path.substring(index);
 
@@ -127,7 +116,8 @@ public class LongPollingServlet extends HttpServlet {
             try {
                 String goodSignature = CryptoUtil.getSHA1String(hashSecret + path);
                 if (!signature.equalsIgnoreCase(goodSignature)) {
-                    log.warn("Wrong signature for push request from " + path + ": " + signature + " Should be: " + goodSignature);
+                    log.warn("Wrong signature for push request from " + path + ": " + signature + " Should be: "
+                            + goodSignature);
                     resp.sendError(403);
                     return;
                 }
@@ -142,13 +132,18 @@ public class LongPollingServlet extends HttpServlet {
             return;
         }
 
-        // Unfortunately the output buffer can't be disabled or reduced (the minimal buffer size is 8192)
-        // Even setting in server.xml: <Connector ... socket.appWriteBufSize="1" /> doesn't change anything!
-        // Therefore, when the client is disconnected, the response is still "sent" to him without an exception.
-        // This may cause message loss if a message is sent within a minute after the client's disconnection.
-        // A workaround would be to use a padding so the response would exceed 8192 bytes, but this will increase
+        // Unfortunately the output buffer can't be disabled or reduced (the minimal
+        // buffer size is 8192)
+        // Even setting in server.xml: <Connector ... socket.appWriteBufSize="1" />
+        // doesn't change anything!
+        // Therefore, when the client is disconnected, the response is still "sent" to
+        // him without an exception.
+        // This may cause message loss if a message is sent within a minute after the
+        // client's disconnection.
+        // A workaround would be to use a padding so the response would exceed 8192
+        // bytes, but this will increase
         // the traffic.
-        //resp.setBufferSize(0);
+        // resp.setBufferSize(0);
         req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(pollingTimeout);
@@ -176,7 +171,7 @@ public class LongPollingServlet extends HttpServlet {
                     log.debug("Buffer size: " + resp.getBufferSize());
                     resp.setStatus(200);
                     resp.setContentType("application/json");
-                    resp.getOutputStream().write(sb.toString().getBytes("UTF-8"));
+                    resp.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
                     resp.getOutputStream().flush();
                     log.debug("Succesfully delivered");
                 } catch (Exception e) {

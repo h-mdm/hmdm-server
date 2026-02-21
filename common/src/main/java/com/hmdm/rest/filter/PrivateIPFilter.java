@@ -21,17 +21,12 @@
 
 package com.hmdm.rest.filter;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.security.SecurityContext;
-
-import javax.inject.Named;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Singleton
@@ -39,27 +34,26 @@ public class PrivateIPFilter implements Filter {
 
     BaseIPFilter filter;
 
-    public PrivateIPFilter() {
-    }
+    public PrivateIPFilter() {}
 
     @Inject
-    public PrivateIPFilter(@Named("ui.allowed.address") String whitelist,
-                           @Named("proxy.addresses") String proxyIps,
-                           @Named("proxy.ip.header") String ipHeader) {
+    public PrivateIPFilter(
+            @Named("ui.allowed.address") String whitelist,
+            @Named("proxy.addresses") String proxyIps,
+            @Named("proxy.ip.header") String ipHeader) {
         if (!whitelist.equals("")) {
             filter = new BaseIPFilter(whitelist, proxyIps, ipHeader);
         }
     }
 
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
-    public void destroy() {
-    }
+    public void destroy() {}
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         if (filter != null && !filter.match((HttpServletRequest) servletRequest)) {
-            ((HttpServletResponse)servletResponse).sendError(403);
+            ((HttpServletResponse) servletResponse).sendError(403);
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

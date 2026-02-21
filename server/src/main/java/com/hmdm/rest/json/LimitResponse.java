@@ -23,14 +23,14 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * <p>A DTO carrying the data for storage limit response</p>
  *
  * @author isv
  */
-@ApiModel(description = "Storage limit response")
+@Schema(description = "Storage limit response")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LimitResponse {
@@ -41,8 +41,7 @@ public class LimitResponse {
     /**
      * <p>Constructs new <code>LimitResponse</code> instance. This implementation does nothing.</p>
      */
-    public LimitResponse() {
-    }
+    public LimitResponse() {}
 
     public int getSizeLimit() {
         return sizeLimit;

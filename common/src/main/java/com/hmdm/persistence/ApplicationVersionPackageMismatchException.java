@@ -22,8 +22,8 @@
 package com.hmdm.persistence;
 
 /**
- * <p>An exception to be thrown in case the package ID provided by uploaded APK-file for new application version does
- * not match the package ID for respective application.</p>
+ * <p>An exception to be thrown in case the package ID provided by uploaded APK-file for new application version does not
+ * match the package ID for respective application.</p>
  *
  * @author isv
  */
@@ -40,10 +40,12 @@ public class ApplicationVersionPackageMismatchException extends RuntimeException
     private final String expectedPackageName;
 
     /**
-     * <p>Constructs new <code>ApplicationVersionPackageMismatchException</code> instance. This implementation does nothing.</p>
+     * <p>Constructs new <code>ApplicationVersionPackageMismatchException</code> instance. This implementation does
+     * nothing.</p>
      */
     public ApplicationVersionPackageMismatchException(String actualPackageName, String expectedPackageName) {
-        super(String.format("Application version package from uploaded file does not match the application package. Expected %s but got %s",
+        super(String.format(
+                "Application version package from uploaded file does not match the application package. Expected %s but got %s",
                 expectedPackageName, actualPackageName));
         this.actualPackageName = actualPackageName;
         this.expectedPackageName = expectedPackageName;

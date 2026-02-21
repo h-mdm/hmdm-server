@@ -21,9 +21,6 @@
 
 package com.hmdm.rest.json;
 
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.ConfigurationFile;
-
 import java.util.List;
 
 /**

@@ -21,45 +21,47 @@
 
 package com.hmdm.rest.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.hmdm.persistence.domain.ApplicationSettingType;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A single setting for an application installed and used on mobile device and used in data " +
-        "sycnhronization between mobile device and server application")
+@Schema(
+        description = "A single setting for an application installed and used on mobile device and used in data "
+                + "sycnhronization between mobile device and server application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyncApplicationSetting implements Serializable, SyncApplicationSettingInt {
 
     private static final long serialVersionUID = -3986494672661532347L;
-    
-    @ApiModelProperty(value = "A package of the application", required = true)
+
+    @Schema(description = "A package of the application", requiredMode = Schema.RequiredMode.REQUIRED)
     private String packageId;
 
-    @ApiModelProperty(value = "A name of the setting", required = true)
+    @Schema(description = "A name of the setting", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @ApiModelProperty(value = "A type of the application setting. 1 - String, 2 - Integer, 3 - Boolean", required = true, allowableValues = "1,2,3")
+    @Schema(
+            description = "A type of the application setting. 1 - String, 2 - Integer, 3 - Boolean",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = "1,2,3")
     private int type;
 
-    @ApiModelProperty("A value of the setting")
+    @Schema(description = "A value of the setting")
     private String value;
 
-    @ApiModelProperty(value = "A flag indicating if setting can not be modified on device", required = true)
+    @Schema(
+            description = "A flag indicating if setting can not be modified on device",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean readonly;
 
-    @ApiModelProperty("A timestamp of the last update of the setting (in milliseconds since epoch time")
+    @Schema(description = "A timestamp of the last update of the setting (in milliseconds since epoch time")
     private long lastUpdate;
 
     /**
      * <p>Constructs new <code>SyncApplicationSetting</code> instance. This implementation does nothing.</p>
      */
-    public SyncApplicationSetting() {
-    }
+    public SyncApplicationSetting() {}
 
     @Override
     public String getPackageId() {
@@ -117,13 +119,7 @@ public class SyncApplicationSetting implements Serializable, SyncApplicationSett
 
     @Override
     public String toString() {
-        return "SyncApplicationSetting{" +
-                "packageId='" + packageId + '\'' +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", value='" + value + '\'' +
-                ", readonly=" + readonly +
-                ", lastUpdate=" + lastUpdate +
-                '}';
+        return "SyncApplicationSetting{" + "packageId='" + packageId + '\'' + ", name='" + name + '\'' + ", type="
+                + type + ", value='" + value + '\'' + ", readonly=" + readonly + ", lastUpdate=" + lastUpdate + '}';
     }
 }

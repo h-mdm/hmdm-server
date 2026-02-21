@@ -45,8 +45,7 @@ public class PostgresDeviceLogRule extends DeviceLogRule {
     /**
      * <p>Constructs new <code>PostgresDeviceLogRule</code> instance. This implementation does nothing.</p>
      */
-    public PostgresDeviceLogRule() {
-    }
+    public PostgresDeviceLogRule() {}
 
     public Integer getId() {
         return id;
@@ -76,10 +75,6 @@ public class PostgresDeviceLogRule extends DeviceLogRule {
 
     @Override
     public String toString() {
-        return "PostgresDeviceLogRule{" +
-                "id=" + id +
-                ", settingId=" + settingId +
-                ", data=" + super.toString() +
-                '}';
+        return "PostgresDeviceLogRule{" + "id=" + id + ", settingId=" + settingId + ", data=" + super.toString() + '}';
     }
 }

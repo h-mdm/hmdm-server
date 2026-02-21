@@ -38,8 +38,7 @@ public class DisabledPlugin implements Serializable {
     /**
      * <p>Constructs new <code>DisabledPlugin</code> instance. This implementation does nothing.</p>
      */
-    public DisabledPlugin() {
-    }
+    public DisabledPlugin() {}
 
     public int getCustomerId() {
         return customerId;
@@ -59,9 +58,6 @@ public class DisabledPlugin implements Serializable {
 
     @Override
     public String toString() {
-        return "DisabledPlugin{" +
-                "customerId=" + customerId +
-                ", pluginId=" + pluginId +
-                '}';
+        return "DisabledPlugin{" + "customerId=" + customerId + ", pluginId=" + pluginId + '}';
     }
 }

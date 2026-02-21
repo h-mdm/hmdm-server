@@ -3,7 +3,6 @@ package com.hmdm.rest.json.view.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.domain.UserRolePermission;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,12 +22,15 @@ public class UserRoleView {
     public int getId() {
         return userRole.getId();
     }
+
     public String getName() {
         return userRole.getName();
     }
+
     public boolean isSuperAdmin() {
         return userRole.isSuperAdmin();
     }
+
     public List<PermissionView> getPermissions() {
         List<PermissionView> result = new LinkedList<>();
         for (UserRolePermission permission : userRole.getPermissions()) {

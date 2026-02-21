@@ -22,7 +22,6 @@
 package com.hmdm.rest.json;
 
 import com.hmdm.persistence.domain.Application;
-
 import java.io.Serializable;
 
 /**
@@ -67,8 +66,7 @@ public class FileUploadResult implements Serializable {
     /**
      * <p>Constructs new <code>FileUploadResult</code> instance. This implementation does nothing.</p>
      */
-    public FileUploadResult() {
-    }
+    public FileUploadResult() {}
 
     public String getServerPath() {
         return serverPath;
@@ -120,13 +118,8 @@ public class FileUploadResult implements Serializable {
 
     @Override
     public String toString() {
-        return "FileUploadResult{" +
-                "serverPath='" + serverPath + '\'' +
-                ", fileDetails=" + fileDetails +
-                ", application=" + application +
-                ", complete=" + complete +
-                ", exists=" + exists +
-                ", name='" + name + '\'' +
-                '}';
+        return "FileUploadResult{" + "serverPath='" + serverPath + '\'' + ", fileDetails=" + fileDetails
+                + ", application=" + application + ", complete=" + complete + ", exists=" + exists + ", name='" + name
+                + '\'' + '}';
     }
 }

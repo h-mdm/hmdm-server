@@ -21,31 +21,28 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
 import com.hmdm.notification.PushService;
 import com.hmdm.persistence.*;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.LookupItem;
+import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UpgradeConfigurationApplicationRequest;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.FileUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import com.hmdm.rest.json.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Api(tags = {"Configuration"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Configuration")
 @Singleton
 @Path("/private/configurations")
 public class ConfigurationResource {
@@ -62,16 +59,16 @@ public class ConfigurationResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public ConfigurationResource() {
-    }
+    public ConfigurationResource() {}
 
     @Inject
-    public ConfigurationResource(ConfigurationDAO configurationDAO,
-                                 ApplicationDAO applicationDAO,
-                                 PushService pushService,
-                                 CustomerDAO customerDAO,
-                                 UserDAO userDAO,
-                                 @Named("base.url") String baseUrl) {
+    public ConfigurationResource(
+            ConfigurationDAO configurationDAO,
+            ApplicationDAO applicationDAO,
+            PushService pushService,
+            CustomerDAO customerDAO,
+            UserDAO userDAO,
+            @Named("base.url") String baseUrl) {
         this.configurationDAO = configurationDAO;
         this.applicationDAO = applicationDAO;
         this.pushService = pushService;
@@ -79,13 +76,9 @@ public class ConfigurationResource {
         this.userDAO = userDAO;
         this.baseUrl = baseUrl;
     }
+
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configurations",
-            notes = "Gets the list of available configurations",
-            response = Configuration.class,
-            responseContainer = "List"
-    )
+    @Operation(summary = "Get configurations", description = "Gets the list of available configurations")
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,31 +93,22 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configuration names",
-            notes = "Gets the list of available configuration names",
-            response = LookupItem.class,
-            responseContainer = "List"
-    )
+    @Operation(summary = "Get configuration names", description = "Gets the list of available configuration names")
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllConfigurationNames() {
         // This list is available to users with all permissions
-        List<LookupItem> items = this.configurationDAO.getAllConfigurations()
-                .stream()
+        List<LookupItem> items = this.configurationDAO.getAllConfigurations().stream()
                 .map(configuration -> new LookupItem(configuration.getId(), configuration.getName()))
                 .collect(Collectors.toList());
         return Response.OK(items);
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Search configurations",
-            notes = "Searches configurations meeting the specified filter value",
-            response = Configuration.class,
-            responseContainer = "List"
-    )
+    @Operation(
+            summary = "Search configurations",
+            description = "Searches configurations meeting the specified filter value")
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -138,22 +122,21 @@ public class ConfigurationResource {
         return Response.OK(configurations);
     }
 
-
     // =================================================================================================================
     /**
      * <p>Gets the list of configuration id/names matching the specified filter for autocompletions.</p>
      *
      * @param filter a filter to be used for filtering the records.
+     *
      * @return a response with list of configurations matching the specified filter.
      */
-    @ApiOperation(value = "Get configurations for autocompletions")
+    @Operation(summary = "Get configurations for autocompletions")
     @POST
     @Path("/autocomplete")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurations(String filter) {
         try {
-            List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByValue(filter)
-                    .stream()
+            List<LookupItem> groups = this.configurationDAO.getAllConfigurationsByValue(filter).stream()
                     .map(configuration -> new LookupItem(configuration.getId(), configuration.getName()))
                     .collect(Collectors.toList());
             return Response.OK(groups);
@@ -164,17 +147,16 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update configuration",
-            notes = "Creates a new configuration (if id is not provided) or update existing one otherwise."
-    )
+    @Operation(
+            summary = "Create or update configuration",
+            description = "Creates a new configuration (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateConfiguration(Configuration configuration) {
         if (!SecurityContext.get().hasPermission("configurations")) {
-            log.error("Unauthorized attempt to update the configuration " + configuration.getId() +
-            ", user " + SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update the configuration " + configuration.getId() + ", user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -185,11 +167,11 @@ public class ConfigurationResource {
             } else {
                 if (id == null) {
                     if (!SecurityContext.get().hasPermission("add_config")) {
-                        log.error("Unauthorized attempt to create the configuration " + configuration.getId() +
-                                "by user " + SecurityContext.get().getCurrentUserName());
+                        log.error("Unauthorized attempt to create the configuration " + configuration.getId()
+                                + "by user " + SecurityContext.get().getCurrentUserName());
                         return Response.PERMISSION_DENIED();
                     }
-                    configuration.setDisableLocation(false);        // Not used but shouldn't be NULL
+                    configuration.setDisableLocation(false); // Not used but shouldn't be NULL
                     this.configurationDAO.insertConfiguration(configuration);
                     User user = SecurityContext.get().getCurrentUser().get();
                     if (!user.isAllConfigAvailable()) {
@@ -199,11 +181,12 @@ public class ConfigurationResource {
                     }
                 } else {
                     if (!configurationDAO.hasConfigurationAccess(id)) {
-                        log.error("Unauthorized attempt to update the configuration " + configuration.getId() +
-                                "by user " + SecurityContext.get().getCurrentUserName());
+                        log.error("Unauthorized attempt to update the configuration " + configuration.getId()
+                                + "by user " + SecurityContext.get().getCurrentUserName());
                         return Response.PERMISSION_DENIED();
                     }
-                    log.info("Configuration " + configuration.getName() + " updated by user "  + SecurityContext.get().getCurrentUserName());
+                    log.info("Configuration " + configuration.getName() + " updated by user "
+                            + SecurityContext.get().getCurrentUserName());
                     this.configurationDAO.updateConfiguration(configuration);
                     this.pushService.notifyDevicesOnUpdate(configuration.getId());
                 }
@@ -219,44 +202,45 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upgrade configuration application",
-            notes = "Upgrades the application used by configuration to most recent version",
-            response = Configuration.class
-    )
+    @Operation(
+            summary = "Upgrade configuration application",
+            description = "Upgrades the application used by configuration to most recent version")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/application/upgrade")
     public Response upgradeConfiguration(UpgradeConfigurationApplicationRequest request) {
-        if (!SecurityContext.get().hasPermission("configurations") ||
-                !configurationDAO.hasConfigurationAccess(request.getConfigurationId())) {
+        if (!SecurityContext.get().hasPermission("configurations")
+                || !configurationDAO.hasConfigurationAccess(request.getConfigurationId())) {
             log.error("Unauthorized attempt to upgrade the configuration " + request.getConfigurationId());
             return Response.PERMISSION_DENIED();
         }
         try {
-            this.configurationDAO.upgradeConfigurationApplication(request.getConfigurationId(), request.getApplicationId());
+            this.configurationDAO.upgradeConfigurationApplication(
+                    request.getConfigurationId(), request.getApplicationId());
             final Configuration configuration = this.getConfiguration(request.getConfigurationId());
             return Response.OK(configuration);
         } catch (Exception e) {
-            log.error("Failed to upgrade application #{} for configuration #{} to latest version due to unexpected error",
-                    request.getConfigurationId(), request.getApplicationId(), e);
+            log.error(
+                    "Failed to upgrade application #{} for configuration #{} to latest version due to unexpected error",
+                    request.getConfigurationId(),
+                    request.getApplicationId(),
+                    e);
             return Response.INTERNAL_ERROR();
         }
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Copy configuration",
-            notes = "Creates a new copy of configuration referenced by the id and names it with provided name."
-    )
+    @Operation(
+            summary = "Copy configuration",
+            description = "Creates a new copy of configuration referenced by the id and names it with provided name.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/copy")
     public Response copyConfiguration(Configuration configuration) {
-        if (!SecurityContext.get().hasPermission("copy_config") ||
-                !configurationDAO.hasConfigurationAccess(configuration.getId())) {
+        if (!SecurityContext.get().hasPermission("copy_config")
+                || !configurationDAO.hasConfigurationAccess(configuration.getId())) {
             log.error("Unauthorized attempt to copy the configuration " + configuration.getId());
             return Response.PERMISSION_DENIED();
         }
@@ -265,7 +249,8 @@ public class ConfigurationResource {
             return Response.DUPLICATE_ENTITY("error.duplicate.configuration");
         } else {
             dbConfiguration = this.getConfiguration(configuration.getId());
-            List<Application> configurationApplications = this.configurationDAO.getPlainConfigurationApplications(configuration.getId());
+            List<Application> configurationApplications =
+                    this.configurationDAO.getPlainConfigurationApplications(configuration.getId());
             Configuration copy = dbConfiguration.newCopy();
             copy.setName(configuration.getName());
             copy.setDescription(configuration.getDescription());
@@ -283,16 +268,14 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete configuration",
-            notes = "Deletes a configuration referenced by the specified ID."
-    )
+    @Operation(
+            summary = "Delete configuration",
+            description = "Deletes a configuration referenced by the specified ID.")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeConfiguration(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("copy_config") ||
-                !configurationDAO.hasConfigurationAccess(id)) {
+    public Response removeConfiguration(@PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("copy_config") || !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to delete the configuration " + id);
             return Response.PERMISSION_DENIED();
         }
@@ -308,7 +291,7 @@ public class ConfigurationResource {
         }
     }
 
-    @ApiOperation(value = "", hidden = true)
+    @Operation(summary = "", hidden = true)
     @GET
     @Path("/applications")
     @Produces(MediaType.APPLICATION_JSON)
@@ -317,18 +300,15 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configuration applications",
-            notes = "Gets the list of all applications in context of usage by the requested configuration",
-            response = Application.class,
-            responseContainer = "List"
-    )
+    @Operation(
+            summary = "Get configuration applications",
+            description = "Gets the list of all applications in context of usage by the requested configuration")
     @GET
     @Path("/applications/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConfigurationApplications(@PathParam("id") @ApiParam("Configuration ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("configurations") ||
-                !configurationDAO.hasConfigurationAccess(id)) {
+    public Response getConfigurationApplications(
+            @PathParam("id") @Parameter(description = "Configuration ID") Integer id) {
+        if (!SecurityContext.get().hasPermission("configurations") || !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to access configuration applications");
             return Response.PERMISSION_DENIED();
         }
@@ -336,17 +316,14 @@ public class ConfigurationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get configuration",
-            notes = "Gets the details for configuration referenced by the specified ID",
-            response = Configuration.class
-    )
+    @Operation(
+            summary = "Get configuration",
+            description = "Gets the details for configuration referenced by the specified ID")
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigurationById(@PathParam("id") Integer id) {
-        if (!SecurityContext.get().hasPermission("configurations") ||
-                !configurationDAO.hasConfigurationAccess(id)) {
+        if (!SecurityContext.get().hasPermission("configurations") || !configurationDAO.hasConfigurationAccess(id)) {
             log.error("Unauthorized attempt to access the configuration " + id);
             return Response.PERMISSION_DENIED();
         }
@@ -376,12 +353,12 @@ public class ConfigurationResource {
                     if (file.getExternalUrl() != null) {
                         file.setUrl(file.getExternalUrl());
                     } else if (file.getFilePath() != null) {
-                        final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), file.getFilePath());
+                        final String url =
+                                FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), file.getFilePath());
                         file.setUrl(url);
                     }
                 });
             }
-
         }
         return configuration;
     }

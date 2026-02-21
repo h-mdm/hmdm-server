@@ -21,27 +21,22 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.ConfigurationFile;
-import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
 import com.hmdm.persistence.mapper.ConfigurationFileMapper;
 import com.hmdm.persistence.mapper.UploadedFileMapper;
 import com.hmdm.rest.json.FileConfigurationLink;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A DAO used for managing the icon data.</p>
@@ -57,6 +52,7 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      * <p>An interface to file data persistence layer.</p>
      */
     private final UploadedFileMapper fileMapper;
+
     private final ConfigurationFileMapper configurationFileMapper;
     private final CustomerDAO customerDAO;
     private String filesDirectory;
@@ -65,10 +61,11 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      * <p>Constructs new <code>UploadedFileDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public UploadedFileDAO(UploadedFileMapper fileMapper,
-                           ConfigurationFileMapper configurationFileMapper,
-                           CustomerDAO customerDAO,
-                           @Named("files.directory") String filesDirectory) {
+    public UploadedFileDAO(
+            UploadedFileMapper fileMapper,
+            ConfigurationFileMapper configurationFileMapper,
+            CustomerDAO customerDAO,
+            @Named("files.directory") String filesDirectory) {
         this.fileMapper = fileMapper;
         this.configurationFileMapper = configurationFileMapper;
         this.customerDAO = customerDAO;
@@ -79,20 +76,22 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
      * <p>Inserts new record for the specified uploaded file.</p>
      *
      * @param file an uploaded filed to be inserted into DB.
+     *
      * @return a created file.
      */
     public UploadedFile insert(UploadedFile file) {
         insertRecord(file, this.fileMapper::insert);
-        return getSingleRecord(() -> this.fileMapper.findById(file.getId()), SecurityException::onUploadedFileAccessViolation);
+        return getSingleRecord(
+                () -> this.fileMapper.findById(file.getId()), SecurityException::onUploadedFileAccessViolation);
     }
-
 
     public List<UploadedFile> getAll() {
         return getListWithCurrentUser(currentUser -> this.fileMapper.getAll(currentUser.getCustomerId()));
     }
 
     public List<UploadedFile> getAllByValue(String value) {
-        return getListWithCurrentUser(currentUser -> this.fileMapper.getAllByValue(currentUser.getCustomerId(), "%" + value + "%"));
+        return getListWithCurrentUser(
+                currentUser -> this.fileMapper.getAllByValue(currentUser.getCustomerId(), "%" + value + "%"));
     }
 
     public void update(UploadedFile file) {
@@ -104,7 +103,9 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
     }
 
     public UploadedFile getByPath(Integer customerId, String filePath) {
-        return getSingleRecord(() -> this.fileMapper.findByPath(customerId, filePath), SecurityException::onUploadedFileAccessViolation);
+        return getSingleRecord(
+                () -> this.fileMapper.findByPath(customerId, filePath),
+                SecurityException::onUploadedFileAccessViolation);
     }
 
     /**
@@ -135,18 +136,15 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
     @Transactional
     public void updateFileConfigurations(List<FileConfigurationLink> linkList) {
 
-        final List<FileConfigurationLink> noUploadLinks = linkList
-                .stream()
+        final List<FileConfigurationLink> noUploadLinks = linkList.stream()
                 .filter(c -> c.getId() != null && !c.isUpload())
                 .collect(Collectors.toList());
         noUploadLinks.forEach(link -> {
             configurationFileMapper.deleteConfigurationFile(link.getId());
         });
 
-        final List<FileConfigurationLink> newUploadLinks = linkList
-                .stream()
-                .filter(c -> c.getId() == null && c.isUpload())
-                .collect(Collectors.toList());
+        final List<FileConfigurationLink> newUploadLinks =
+                linkList.stream().filter(c -> c.getId() == null && c.isUpload()).collect(Collectors.toList());
         if (newUploadLinks.size() > 0) {
             UploadedFile file = getById(newUploadLinks.get(0).getFileId());
             newUploadLinks.forEach(link -> {
@@ -155,5 +153,4 @@ public class UploadedFileDAO extends AbstractDAO<UploadedFile> {
             });
         }
     }
-
 }

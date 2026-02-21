@@ -22,11 +22,11 @@
 package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogDAO;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPluginSettingsDAO;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.PostgresDeviceLogDAO;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.PostgresDeviceLogPluginSettingsDAO;
+import jakarta.inject.Singleton;
 
 /**
  * <p>A module used to bind the service interfaces to specific implementations provided by the <code>Postgres</code>
@@ -39,8 +39,7 @@ public class DeviceLogPostgresServiceModule extends AbstractModule {
     /**
      * <p>Constructs new <code>DeviceLogPostgresServiceModule</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogPostgresServiceModule() {
-    }
+    public DeviceLogPostgresServiceModule() {}
 
     /**
      * <p>Configures the services exposed by the <code>Postgres</code> persistence layer for <code>Device Log</code>
@@ -48,7 +47,9 @@ public class DeviceLogPostgresServiceModule extends AbstractModule {
      */
     @Override
     protected void configure() {
-        bind(DeviceLogPluginSettingsDAO.class).to(PostgresDeviceLogPluginSettingsDAO.class).in(Singleton.class);
+        bind(DeviceLogPluginSettingsDAO.class)
+                .to(PostgresDeviceLogPluginSettingsDAO.class)
+                .in(Singleton.class);
         bind(DeviceLogDAO.class).to(PostgresDeviceLogDAO.class).in(Singleton.class);
     }
 }

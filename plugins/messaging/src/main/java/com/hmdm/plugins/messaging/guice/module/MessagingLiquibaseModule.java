@@ -22,10 +22,9 @@
 package com.hmdm.plugins.messaging.guice.module;
 
 import com.hmdm.guice.module.AbstractLiquibaseModule;
-import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
+import jakarta.servlet.ServletContext;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
-
-import javax.servlet.ServletContext;
 
 /**
  * <p>A module used for initializing and managing the state of the database tables related to <code>Messaging</code>
@@ -51,11 +50,8 @@ public class MessagingLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected String getChangeLogResourcePath() {
-        String path = this.getClass().getResource("/liquibase/messaging.changelog.xml").getPath();
-        if (!path.startsWith("jar:")) {
-            path = "jar:" + path;
-        }
-        return path;
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/messaging.changelog.xml";
     }
 
     /**
@@ -65,7 +61,6 @@ public class MessagingLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new PluginLiquibaseResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
-
 }

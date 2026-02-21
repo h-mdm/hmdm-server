@@ -42,4 +42,5 @@ public enum IconSize {
 
     public String getTransmittedValue() {
         return transmittedValue;
-    }}
+    }
+}

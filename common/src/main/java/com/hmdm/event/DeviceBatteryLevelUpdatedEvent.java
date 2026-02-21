@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class DeviceBatteryLevelUpdatedEvent implements Event, Serializable {
 
     private static final long serialVersionUID = -8793985695970335908L;
-    
+
     /**
      * <p>An unique identifier of the device.</p>
      */
@@ -80,9 +80,7 @@ public class DeviceBatteryLevelUpdatedEvent implements Event, Serializable {
 
     @Override
     public String toString() {
-        return "DeviceBatteryLevelUpdatedEvent{" +
-                "deviceId='" + deviceId + '\'' +
-                ", batteryLevel=" + batteryLevel +
-                '}';
+        return "DeviceBatteryLevelUpdatedEvent{" + "deviceId='" + deviceId + '\'' + ", batteryLevel=" + batteryLevel
+                + '}';
     }
 }

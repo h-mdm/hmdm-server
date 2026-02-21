@@ -22,12 +22,11 @@
 package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the device parameters related to Wi-Fi.</p>
+ * <p>A domain object representing the device parameters related to Wi-Fi.</p>
  *
  * @author isv
  */
@@ -35,36 +34,35 @@ import java.io.Serializable;
 public class WifiData implements Serializable {
 
     private static final long serialVersionUID = 8330103616369245912L;
-    
-    @ApiModelProperty("An ID of Wi-Fi data record")
+
+    @Schema(description = "An ID of Wi-Fi data record")
     private Integer id;
 
-    @ApiModelProperty("A signal level")
+    @Schema(description = "A signal level")
     private Integer rssi;
 
-    @ApiModelProperty("A SSID")
+    @Schema(description = "A SSID")
     private String ssid;
 
-    @ApiModelProperty("A security status")
+    @Schema(description = "A security status")
     private String security;
 
-    @ApiModelProperty("A connection status")
+    @Schema(description = "A connection status")
     private String state;
 
-    @ApiModelProperty("A used IP-address")
+    @Schema(description = "A used IP-address")
     private String ip;
 
-    @ApiModelProperty("A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long tx;
 
-    @ApiModelProperty("A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long rx;
 
     /**
      * <p>Constructs new <code>WifiData</code> instance. This implementation does nothing.</p>
      */
-    public WifiData() {
-    }
+    public WifiData() {}
 
     public Integer getId() {
         return id;
@@ -132,15 +130,7 @@ public class WifiData implements Serializable {
 
     @Override
     public String toString() {
-        return "WifiData{" +
-                "id=" + id +
-                ", rssi=" + rssi +
-                ", ssid='" + ssid + '\'' +
-                ", security='" + security + '\'' +
-                ", state='" + state + '\'' +
-                ", ip='" + ip + '\'' +
-                ", tx=" + tx +
-                ", rx=" + rx +
-                '}';
+        return "WifiData{" + "id=" + id + ", rssi=" + rssi + ", ssid='" + ssid + '\'' + ", security='" + security + '\''
+                + ", state='" + state + '\'' + ", ip='" + ip + '\'' + ", tx=" + tx + ", rx=" + rx + '}';
     }
 }

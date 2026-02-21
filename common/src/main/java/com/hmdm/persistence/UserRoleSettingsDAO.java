@@ -21,14 +21,13 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.UserRoleSettings;
 import com.hmdm.persistence.mapper.UserRoleSettingsMapper;
 import com.hmdm.security.SecurityContext;
-import org.mybatis.guice.transactional.Transactional;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
+import org.mybatis.guice.transactional.Transactional;
 
 /**
  * <p>A DAO used for managing the user role settings data.</p>
@@ -49,16 +48,16 @@ public class UserRoleSettingsDAO extends AbstractDAO<UserRoleSettings> {
     }
 
     public UserRoleSettings getUserRoleSettings(int roleId) {
-        return getSingleRecordWithCurrentUser(
-                u -> this.mapper.getUserRoleSettings(u.getCustomerId(), roleId)
-        );
+        return getSingleRecordWithCurrentUser(u -> this.mapper.getUserRoleSettings(u.getCustomerId(), roleId));
     }
 
     @Transactional
     public void saveCommonSettings(List<UserRoleSettings> settings) {
-        SecurityContext.get().getCurrentUser().ifPresent(u -> settings.forEach(s -> {
-            s.setCustomerId(u.getCustomerId());
-            this.mapper.saveUserRoleCommonSettings(s);
-        }));
+        SecurityContext.get()
+                .getCurrentUser()
+                .ifPresent(u -> settings.forEach(s -> {
+                    s.setCustomerId(u.getCustomerId());
+                    this.mapper.saveUserRoleCommonSettings(s);
+                }));
     }
 }

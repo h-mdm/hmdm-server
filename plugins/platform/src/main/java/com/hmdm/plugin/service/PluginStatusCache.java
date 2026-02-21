@@ -21,19 +21,16 @@
 
 package com.hmdm.plugin.service;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.hmdm.persistence.domain.User;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.persistence.domain.DisabledPlugin;
 import com.hmdm.plugin.persistence.domain.Plugin;
 import com.hmdm.plugin.persistence.mapper.PluginMapper;
 import com.hmdm.security.SecurityContext;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -62,8 +59,7 @@ public class PluginStatusCache {
     public PluginStatusCache(PluginMapper pluginMapper) {
         this.pluginMapper = pluginMapper;
 
-        final List<Plugin> registeredPlugins = this.pluginMapper.findRegisteredPlugins()
-                .stream()
+        final List<Plugin> registeredPlugins = this.pluginMapper.findRegisteredPlugins().stream()
                 .filter(p -> PluginList.isPluginEnabled(p.getIdentifier()))
                 .collect(Collectors.toList());
 
@@ -80,7 +76,6 @@ public class PluginStatusCache {
         });
 
         this.customerDisabledPlugins = customerDisabledPlugins;
-
     }
 
     public boolean isPluginDisabled(String pluginIdentifier) {
@@ -90,13 +85,14 @@ public class PluginStatusCache {
 
         final Plugin plugin = this.pluginsByIdentifiers.get(pluginIdentifier);
 
-        if (SecurityContext.get() != null && SecurityContext.get().getCurrentCustomerId().isPresent()) {
+        if (SecurityContext.get() != null
+                && SecurityContext.get().getCurrentCustomerId().isPresent()) {
             final int customerId = SecurityContext.get().getCurrentCustomerId().get();
             if (!this.customerDisabledPlugins.containsKey(customerId)) {
-                final Set<Integer> customerDisabledPlugins = this.pluginMapper.getDisabledPluginsForCustomer(customerId)
-                        .stream()
-                        .map(DisabledPlugin::getPluginId)
-                        .collect(Collectors.toSet());
+                final Set<Integer> customerDisabledPlugins =
+                        this.pluginMapper.getDisabledPluginsForCustomer(customerId).stream()
+                                .map(DisabledPlugin::getPluginId)
+                                .collect(Collectors.toSet());
                 this.customerDisabledPlugins.put(customerId, customerDisabledPlugins);
             }
 
@@ -104,9 +100,9 @@ public class PluginStatusCache {
                 return true;
             }
         } else {
-            // TODO : Need to check the potential anonymous calls from devices to plugin endpoints by getting the device number from request and mapping it to customer
+            // TODO : Need to check the potential anonymous calls from devices to plugin endpoints by getting the device
+            // number from request and mapping it to customer
         }
-
 
         return false;
     }

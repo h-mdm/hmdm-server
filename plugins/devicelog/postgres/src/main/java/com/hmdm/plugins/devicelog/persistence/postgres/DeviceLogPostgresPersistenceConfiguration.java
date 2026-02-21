@@ -28,8 +28,7 @@ import com.hmdm.plugins.devicelog.persistence.postgres.guice.module.DeviceLogPos
 import com.hmdm.plugins.devicelog.persistence.postgres.guice.module.DeviceLogPostgresPersistenceModule;
 import com.hmdm.plugins.devicelog.persistence.postgres.guice.module.DeviceLogPostgresServiceModule;
 import com.hmdm.plugins.devicelog.persistence.postgres.guice.module.DeviceLogPostgresTaskModule;
-
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,13 +43,13 @@ public class DeviceLogPostgresPersistenceConfiguration implements DeviceLogPersi
     /**
      * <p>Constructs new <code>DeviceLogPostgresPersistenceConfiguration</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogPostgresPersistenceConfiguration() {
-    }
+    public DeviceLogPostgresPersistenceConfiguration() {}
 
     /**
      * <p>Gets the list of modules to be used for initializing the persistence layer.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return a list of modules to be used for persistence layer initialization.
      */
     @Override
@@ -68,6 +67,7 @@ public class DeviceLogPostgresPersistenceConfiguration implements DeviceLogPersi
      * <p>Gets the list of task modules to be initialized upon application startup.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return an optional list of task modules for plugins.
      */
     @Override

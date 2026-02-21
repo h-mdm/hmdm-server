@@ -1,18 +1,18 @@
 package com.hmdm.util;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class RESTUtil {
     public static String send(String location, String method, String auth, String body) {
         HttpURLConnection conn = null;
         try {
-            URL url = new URL(location);
+            URL url = URI.create(location).toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(30000);
             conn.setConnectTimeout(30000);
@@ -30,13 +30,13 @@ public class RESTUtil {
 
             if (body != null) {
                 try (OutputStream os = conn.getOutputStream()) {
-                    byte[] input = body.getBytes("utf-8");
+                    byte[] input = body.getBytes(StandardCharsets.UTF_8);
                     os.write(input, 0, input.length);
                 }
             }
 
-            try(BufferedReader br = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+            try (BufferedReader br =
+                    new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
                 String responseLine = null;
                 while ((responseLine = br.readLine()) != null) {
@@ -55,5 +55,4 @@ public class RESTUtil {
             }
         }
     }
-
 }

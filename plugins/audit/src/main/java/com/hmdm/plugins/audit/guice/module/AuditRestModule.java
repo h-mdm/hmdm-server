@@ -27,7 +27,6 @@ import com.hmdm.plugins.audit.rest.AuditResource;
 import com.hmdm.plugins.audit.rest.filter.AuditFilter;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.filter.PrivateIPFilter;
-import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
 
 /**
@@ -40,8 +39,7 @@ public class AuditRestModule extends ServletModule {
     /**
      * <p>Constructs new <code>AuditRestModule</code> instance. This implementation does nothing.</p>
      */
-    public AuditRestModule() {
-    }
+    public AuditRestModule() {}
 
     /**
      * <p>Configures the <code>Licensing Plugin</code> REST resources.</p>
@@ -50,12 +48,11 @@ public class AuditRestModule extends ServletModule {
         this.filter("/rest/private/*").through(AuditFilter.class);
         this.filter("/rest/public/*").through(AuditFilter.class);
         this.filter("/rest/plugins/*").through(AuditFilter.class);
-//        this.filter("/rest/plugins/audit/*").through(ApiOriginFilter.class);
+        // this.filter("/rest/plugins/audit/*").through(ApiOriginFilter.class);
         this.filter("/rest/plugins/audit/private/*").through(JWTFilter.class);
         this.filter("/rest/plugins/audit/private/*").through(AuthFilter.class);
         this.filter("/rest/plugins/audit/private/*").through(PluginAccessFilter.class);
         this.filter("/rest/plugins/audit/private/*").through(PrivateIPFilter.class);
         this.bind(AuditResource.class);
     }
-
 }

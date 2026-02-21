@@ -21,10 +21,8 @@
 
 package com.hmdm.plugins.deviceinfo.rest.json;
 
-import com.hmdm.persistence.domain.Application;
 import com.hmdm.util.ApplicationUtil;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
@@ -35,24 +33,23 @@ import java.io.Serializable;
 public class DeviceInfoApplication implements Serializable {
 
     private static final long serialVersionUID = -2704172120435523175L;
-    
-    @ApiModelProperty("A name of the application")
+
+    @Schema(description = "A name of the application")
     private String applicationName;
 
-    @ApiModelProperty("A package ID of the application")
+    @Schema(description = "A package ID of the application")
     private String applicationPkg;
 
-    @ApiModelProperty("A number of application version already installed on device")
+    @Schema(description = "A number of application version already installed on device")
     private String versionInstalled;
 
-    @ApiModelProperty("A number of application version which is required to be installed on device")
+    @Schema(description = "A number of application version which is required to be installed on device")
     private String versionRequired;
 
     /**
      * <p>Constructs new <code>DeviceInfoApplication</code> instance. This implementation does nothing.</p>
      */
-    public DeviceInfoApplication() {
-    }
+    public DeviceInfoApplication() {}
 
     public String getApplicationName() {
         return applicationName;
@@ -87,8 +84,7 @@ public class DeviceInfoApplication implements Serializable {
     }
 
     /**
-     * <p>Checks if application version already installed on device is the same as required one to be installed on
-     * device.</p>
+     * <p>Checks if application version already installed on device is the same as required one to be installed on device.</p>
      *
      * @return <code>true</code> if installed application version matches the required application version;
      *         <code>false</code> otherwise.
@@ -102,11 +98,8 @@ public class DeviceInfoApplication implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceInfoApplication{" +
-                "applicationName='" + applicationName + '\'' +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                ", versionInstalled='" + versionInstalled + '\'' +
-                ", versionRequired='" + versionRequired + '\'' +
-                '}';
+        return "DeviceInfoApplication{" + "applicationName='" + applicationName + '\'' + ", applicationPkg='"
+                + applicationPkg + '\'' + ", versionInstalled='" + versionInstalled + '\'' + ", versionRequired='"
+                + versionRequired + '\'' + '}';
     }
 }

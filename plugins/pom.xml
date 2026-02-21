@@ -27,13 +27,13 @@
     <groupId>com.hmdm.plugin</groupId>
     <artifactId>base</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>Plugins for MDM Server</name>
 
     <parent>
         <groupId>com.hmdm</groupId>
         <artifactId>root</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.hmdm</groupId>
             <artifactId>common</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
     </dependencies>
 

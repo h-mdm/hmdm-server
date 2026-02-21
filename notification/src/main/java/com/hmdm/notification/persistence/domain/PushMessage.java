@@ -21,9 +21,7 @@
 
 package com.hmdm.notification.persistence.domain;
 
-import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.util.StringUtil;
-
 import java.io.Serializable;
 
 /**
@@ -34,7 +32,7 @@ import java.io.Serializable;
 public class PushMessage implements Serializable {
 
     private static final long serialVersionUID = 2664701750054255531L;
-    
+
     private Integer id;
 
     private String messageType;
@@ -50,8 +48,7 @@ public class PushMessage implements Serializable {
     /**
      * <p>Constructs new <code>PushMessage</code> instance. This implementation does nothing.</p>
      */
-    public PushMessage() {
-    }
+    public PushMessage() {}
 
     public PushMessage(String messageType, String payload, int deviceId) {
         this.messageType = messageType;
@@ -93,12 +90,8 @@ public class PushMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "PushMessage{" +
-                "id=" + id +
-                ", messageType='" + messageType + '\'' +
-                ", deviceId='" + deviceId + '\'' +
-                ", payload='" + payload + '\'' +
-                '}';
+        return "PushMessage{" + "id=" + id + ", messageType='" + messageType + '\'' + ", deviceId='" + deviceId + '\''
+                + ", payload='" + payload + '\'' + '}';
     }
 
     public String toJsonString() {

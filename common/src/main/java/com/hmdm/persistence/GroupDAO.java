@@ -21,14 +21,13 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Group;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,17 +45,21 @@ public class GroupDAO extends AbstractDAO<Group> {
     }
 
     public List<Group> getAllGroups() {
-        return getListWithCurrentUser(currentUser -> this.mapper.getAllGroups(currentUser.getCustomerId(), currentUser.getId()));
+        return getListWithCurrentUser(
+                currentUser -> this.mapper.getAllGroups(currentUser.getCustomerId(), currentUser.getId()));
     }
 
     public List<Group> getAllGroupsByValue(String value) {
-        return getListWithCurrentUser(currentUser -> this.mapper.getAllGroupsByValue(currentUser.getCustomerId(), "%" + value + "%", currentUser.getId()));
+        return getListWithCurrentUser(currentUser ->
+                this.mapper.getAllGroupsByValue(currentUser.getCustomerId(), "%" + value + "%", currentUser.getId()));
     }
 
     public Group getGroupByName(String name) {
         Optional<User> currentUser = SecurityContext.get().getCurrentUser();
         if (currentUser.isPresent()) {
-            return getSingleRecord(() -> this.mapper.getGroupByName(currentUser.get().getCustomerId(), name), SecurityException::onGroupAccessViolation);
+            return getSingleRecord(
+                    () -> this.mapper.getGroupByName(currentUser.get().getCustomerId(), name),
+                    SecurityException::onGroupAccessViolation);
         } else {
             throw SecurityException.onAnonymousAccess();
         }
@@ -75,8 +78,7 @@ public class GroupDAO extends AbstractDAO<Group> {
                 id,
                 this.mapper::getGroupById,
                 group -> this.mapper.removeGroupById(group.getId()),
-                SecurityException::onGroupAccessViolation
-        );
+                SecurityException::onGroupAccessViolation);
     }
 
     public Long countDevicesByGroupId(Integer id) {
@@ -86,5 +88,4 @@ public class GroupDAO extends AbstractDAO<Group> {
     public Group getGroupById(Integer id) {
         return getSingleRecord(() -> this.mapper.getGroupById(id), SecurityException::onGroupAccessViolation);
     }
-
 }

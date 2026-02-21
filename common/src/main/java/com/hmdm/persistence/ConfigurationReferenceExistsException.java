@@ -22,19 +22,17 @@
 package com.hmdm.persistence;
 
 /**
- * <p>An exception to be thrown in case there is an attempt to delete the configuration while there are active
- * references to it found.</p>
+ * <p>An exception to be thrown in case there is an attempt to delete the configuration while there are active references
+ * to it found.</p>
  *
  * @author isv
  */
 public class ConfigurationReferenceExistsException extends RuntimeException {
 
     /**
-     * <p>Constructs new <code>ConfigurationReferenceExistsException</code> instance. This implementation does nothing.
-     * </p>
+     * <p>Constructs new <code>ConfigurationReferenceExistsException</code> instance. This implementation does nothing.</p>
      */
     public ConfigurationReferenceExistsException(Integer configurationId, String refType) {
         super(String.format("A configuration %s is still referenced by %s.", configurationId, refType));
     }
-
 }

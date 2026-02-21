@@ -21,8 +21,6 @@
 
 package com.hmdm.plugins.deviceinfo.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;
@@ -35,10 +33,8 @@ import com.hmdm.plugins.deviceinfo.rest.json.DeviceInfo;
 import com.hmdm.plugins.deviceinfo.rest.json.DeviceInfoApplication;
 import com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoFilter;
 import com.hmdm.rest.json.LookupItem;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -48,6 +44,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A DAO for {@link DeviceDynamicInfo} domain objects.</p>
@@ -85,11 +84,12 @@ public class DeviceInfoDAO {
      * <p>Constructs new <code>DeviceInfoDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceInfoDAO(DeviceInfoMapper deviceInfoMapper,
-                         ApplicationDAO applicationDAO,
-                         ConfigurationDAO configurationDAO,
-                         DeviceDAO deviceDAO,
-                         UnsecureDAO unsecureDAO) {
+    public DeviceInfoDAO(
+            DeviceInfoMapper deviceInfoMapper,
+            ApplicationDAO applicationDAO,
+            ConfigurationDAO configurationDAO,
+            DeviceDAO deviceDAO,
+            UnsecureDAO unsecureDAO) {
         this.deviceInfoMapper = deviceInfoMapper;
         this.applicationDAO = applicationDAO;
         this.configurationDAO = configurationDAO;
@@ -112,45 +112,36 @@ public class DeviceInfoDAO {
         AtomicInteger countMobile2 = new AtomicInteger(0);
 
         data.forEach(record -> {
-            countMain.addAndGet(
-                    this.deviceInfoMapper.insertDeviceInfoMain(record)
-            );
+            countMain.addAndGet(this.deviceInfoMapper.insertDeviceInfoMain(record));
             if (record.getDevice() != null) {
                 countDevice.addAndGet(
-                    this.deviceInfoMapper.insertDeviceInfoGroupDevice(record.getId(), record.getDevice())
-                );
+                        this.deviceInfoMapper.insertDeviceInfoGroupDevice(record.getId(), record.getDevice()));
             }
             if (record.getWifi() != null) {
-                countWifi.addAndGet(
-                    this.deviceInfoMapper.insertDeviceInfoGroupWifi(record.getId(), record.getWifi())
-                );
+                countWifi.addAndGet(this.deviceInfoMapper.insertDeviceInfoGroupWifi(record.getId(), record.getWifi()));
             }
             if (record.getGps() != null) {
-                countGps.addAndGet(
-                    this.deviceInfoMapper.insertDeviceInfoGroupGps(record.getId(), record.getGps())
-                );
+                countGps.addAndGet(this.deviceInfoMapper.insertDeviceInfoGroupGps(record.getId(), record.getGps()));
             }
             if (record.getMobile() != null) {
                 countMobile1.addAndGet(
-                        this.deviceInfoMapper.insertDeviceInfoGroupMobile(record.getId(), record.getMobile())
-                );
+                        this.deviceInfoMapper.insertDeviceInfoGroupMobile(record.getId(), record.getMobile()));
             }
             if (record.getMobile2() != null) {
                 countMobile2.addAndGet(
-                        this.deviceInfoMapper.insertDeviceInfoGroupMobile2(record.getId(), record.getMobile2())
-                );
+                        this.deviceInfoMapper.insertDeviceInfoGroupMobile2(record.getId(), record.getMobile2()));
             }
         });
 
-        logger.debug("Number of records inserted: main {}, device group: {}, wi-fi group: {}, gps group: {}, " +
-                        "mobile data group 1: {}, mobile data group 2: {} ",
+        logger.debug(
+                "Number of records inserted: main {}, device group: {}, wi-fi group: {}, gps group: {}, "
+                        + "mobile data group 1: {}, mobile data group 2: {} ",
                 countMain.get(),
                 countDevice.get(),
                 countWifi.get(),
                 countGps.get(),
                 countMobile1.get(),
-                countMobile2.get()
-        );
+                countMobile2.get());
     }
 
     /**
@@ -177,6 +168,7 @@ public class DeviceInfoDAO {
      * <p>Gets the current detailed info for the specified device.</p>
      *
      * @param deviceId an ID of a device to get the detailed info for.
+     *
      * @return a most recent detailed info for device.
      */
     @Transactional
@@ -192,15 +184,14 @@ public class DeviceInfoDAO {
             final Device dbDevice = this.deviceDAO.getDeviceById(deviceId);
             final Integer deviceConfigurationId = dbDevice.getConfigurationId();
 
-            final Map<String, Application> configurationApps = this.configurationDAO
-                    .getPlainConfigurationApplications(deviceConfigurationId)
-                    .stream()
-                    .filter(app -> app.getAction() == 1)
-                    .collect(Collectors.toMap(Application::getPkg, app -> app, (app1, app2) -> app1));
+            final Map<String, Application> configurationApps =
+                    this.configurationDAO.getPlainConfigurationApplications(deviceConfigurationId).stream()
+                            .filter(app -> app.getAction() == 1)
+                            .collect(Collectors.toMap(Application::getPkg, app -> app, (app1, app2) -> app1));
 
-            final Map<String, DeviceApplication> deviceApps = this.deviceDAO.getDeviceInstalledApplications(deviceId)
-                    .stream()
-                    .collect(Collectors.toMap(DeviceApplication::getPkg, app -> app, (app1, app2) -> app1));
+            final Map<String, DeviceApplication> deviceApps =
+                    this.deviceDAO.getDeviceInstalledApplications(deviceId).stream()
+                            .collect(Collectors.toMap(DeviceApplication::getPkg, app -> app, (app1, app2) -> app1));
 
             Set<String> allAppPackages = new TreeSet<>();
             allAppPackages.addAll(configurationApps.keySet());
@@ -212,27 +203,26 @@ public class DeviceInfoDAO {
                 Optional<DeviceApplication> deviceAppVersion = Optional.ofNullable(deviceApps.get(pkg));
 
                 DeviceInfoApplication app = new DeviceInfoApplication();
-                app.setApplicationName(
-                        configApp.map(Application::getName)
-                                .orElse(deviceAppVersion.map(DeviceApplication::getName)
-                                        .orElse(""))
-                );
+                app.setApplicationName(configApp
+                        .map(Application::getName)
+                        .orElse(deviceAppVersion.map(DeviceApplication::getName).orElse("")));
                 app.setApplicationPkg(pkg);
-                app.setVersionInstalled(deviceAppVersion.map(DeviceApplication::getVersion).orElse(null));
+                app.setVersionInstalled(
+                        deviceAppVersion.map(DeviceApplication::getVersion).orElse(null));
                 app.setVersionRequired(configApp.map(Application::getVersion).orElse(null));
 
                 // Not installed system apps as well as web apps are not displayed
-                if (ApplicationType.app.equals(configApp.map(Application::getType).orElse(null)) &&
-                        (true != configApp.map(Application::isSystem).orElse(false) ||
-                         app.getVersionInstalled() != null)) {
+                if (ApplicationType.app.equals(
+                                configApp.map(Application::getType).orElse(null))
+                        && (true != configApp.map(Application::isSystem).orElse(false)
+                                || app.getVersionInstalled() != null)) {
                     deviceInfoApps.add(app);
                 }
             });
-            
+
             deviceInfoApps.sort(Comparator.comparing(DeviceInfoApplication::getApplicationName));
 
             deviceInfo.setApplications(deviceInfoApps);
-
         }
         return deviceInfo;
     }

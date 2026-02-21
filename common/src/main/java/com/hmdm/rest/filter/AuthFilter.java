@@ -21,22 +21,21 @@
 
 package com.hmdm.rest.filter;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @Singleton
 public class AuthFilter implements Filter {
@@ -46,26 +45,25 @@ public class AuthFilter implements Filter {
 
     private UserDAO userDAO;
 
-    public AuthFilter() {
-    }
+    public AuthFilter() {}
 
     @Inject
     public AuthFilter(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
-    public void destroy() {
-    }
+    public void destroy() {}
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         // If security context is already established then let the request to continue without check
-        if (SecurityContext.get() != null && SecurityContext.get().getCurrentUser().isPresent()) {
+        if (SecurityContext.get() != null
+                && SecurityContext.get().getCurrentUser().isPresent()) {
             User user = SecurityContext.get().getCurrentUser().get();
             if (user.isPasswordReset()) {
-                ((HttpServletResponse)servletResponse).sendError(403);
+                ((HttpServletResponse) servletResponse).sendError(403);
                 return;
             }
             filterChain.doFilter(servletRequest, servletResponse);
@@ -75,9 +73,9 @@ public class AuthFilter implements Filter {
         // Check that the user is authenticated and forbid access to app if not
         User currentUser = null;
         if (servletRequest instanceof HttpServletRequest && servletResponse instanceof HttpServletResponse) {
-            HttpSession session = ((HttpServletRequest)servletRequest).getSession(false);
+            HttpSession session = ((HttpServletRequest) servletRequest).getSession(false);
             if (session == null || session.getAttribute(sessionCredentials) == null) {
-                ((HttpServletResponse)servletResponse).sendError(403);
+                ((HttpServletResponse) servletResponse).sendError(403);
                 return;
             } else {
                 currentUser = (User) session.getAttribute(sessionCredentials);
@@ -91,7 +89,7 @@ public class AuthFilter implements Filter {
                     if (!path.contains("/rest/private/twofactor")) {
                         session.removeAttribute(sessionCredentials);
                         session.removeAttribute(twoFactorNeeded);
-                        ((HttpServletResponse)servletResponse).sendError(403);
+                        ((HttpServletResponse) servletResponse).sendError(403);
                         return;
                     }
                     // 2FA methods receive the user information,
@@ -104,9 +102,11 @@ public class AuthFilter implements Filter {
         try {
             SecurityContext.init(currentUser);
             User dbUser = userDAO.getUserDetails(currentUser.getId());
-            if (dbUser.isPasswordReset() || dbUser.getAuthToken() == null || currentUser.getAuthToken() == null ||
-                    !currentUser.getAuthToken().equals(dbUser.getAuthToken())) {
-                ((HttpServletResponse)servletResponse).sendError(403);
+            if (dbUser.isPasswordReset()
+                    || dbUser.getAuthToken() == null
+                    || currentUser.getAuthToken() == null
+                    || !currentUser.getAuthToken().equals(dbUser.getAuthToken())) {
+                ((HttpServletResponse) servletResponse).sendError(403);
                 return;
             }
             // Avoid cookie-based penetration

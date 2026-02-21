@@ -21,11 +21,10 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.mapper.ApplicationSettingMapper;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 /**

@@ -21,202 +21,274 @@
 
 package com.hmdm.persistence.domain;
 
+import static com.hmdm.persistence.domain.DesktopHeader.NO_HEADER;
+import static com.hmdm.persistence.domain.IconSize.SMALL;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import static com.hmdm.persistence.domain.DesktopHeader.NO_HEADER;
-import static com.hmdm.persistence.domain.IconSize.SMALL;
-
-@ApiModel(description = "An MDM configuration used on mobile device")
+@Schema(description = "An MDM configuration used on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Configuration implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -7028146375054564719L;
-    
+
     // This group of settings corresponds to common settings
-    @ApiModelProperty("A configuration ID")
+    @Schema(description = "A configuration ID")
     private Integer id;
-    @ApiModelProperty("A unique name of configuration")
+
+    @Schema(description = "A unique name of configuration")
     private String name;
-    @ApiModelProperty("A description of configuration")
+
+    @Schema(description = "A description of configuration")
     private String description;
-    @ApiModelProperty("A password for administrator of configuration (MD5 hash)")
+
+    @Schema(description = "A password for administrator of configuration (MD5 hash)")
     private String password;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private int type;
-    @ApiModelProperty("A list of applications set for configuration")
+
+    @Schema(description = "A list of applications set for configuration")
     private List<Application> applications = new LinkedList<>();
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private int customerId;
-    @ApiModelProperty(value = "A flag indicating if application versions update is enabled", hidden = true)
+
+    @Schema(description = "A flag indicating if application versions update is enabled", hidden = true)
     private final boolean autoUpdate = false;
-    @ApiModelProperty("A flag indicating if status bar is locked")
+
+    @Schema(description = "A flag indicating if status bar is locked")
     private boolean blockStatusBar;
-    @ApiModelProperty(value = "A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed", allowableValues = "0,1,2,3")
+
+    @Schema(
+            description = "A system update type. 0-Default, 1-Immediately, 2-Scheduled, 3-Postponed",
+            allowableValues = "0,1,2,3")
     private int systemUpdateType;
-    @ApiModelProperty(value = "A start time for system update period formatted as HH:MM. (If system update time is 2)")
+
+    @Schema(description = "A start time for system update period formatted as HH:MM. (If system update time is 2)")
     private String systemUpdateFrom;
-    @ApiModelProperty(value = "An end time for system update period formatted as HH:MM. (If system update time is 2)")
+
+    @Schema(description = "An end time for system update period formatted as HH:MM. (If system update time is 2)")
     private String systemUpdateTo;
-    @ApiModelProperty("A flag indicating if the application update must be scheduled")
+
+    @Schema(description = "A flag indicating if the application update must be scheduled")
     private boolean scheduleAppUpdate;
-    @ApiModelProperty(value = "A start time for app update period formatted as HH:MM.")
+
+    @Schema(description = "A start time for app update period formatted as HH:MM.")
     private String appUpdateFrom;
-    @ApiModelProperty(value = "An end time for system update period formatted as HH:MM.")
+
+    @Schema(description = "An end time for system update period formatted as HH:MM.")
     private String appUpdateTo;
-    @ApiModelProperty("Limits downloading updates")
+
+    @Schema(description = "Limits downloading updates")
     private DownloadUpdatesType downloadUpdates = DownloadUpdatesType.UNLIMITED;
 
-    @ApiModelProperty("A flag indicating if GPS is enabled on device")
+    @Schema(description = "A flag indicating if GPS is enabled on device")
     private Boolean gps;
-    @ApiModelProperty("A flag indicating if Bluetooth is enabled on device")
+
+    @Schema(description = "A flag indicating if Bluetooth is enabled on device")
     private Boolean bluetooth;
-    @ApiModelProperty("A flag indicating if Wi-Fi is enabled on device")
+
+    @Schema(description = "A flag indicating if Wi-Fi is enabled on device")
     private Boolean wifi;
-    @ApiModelProperty("A flag indicating if Mobile Data is enabled on device")
+
+    @Schema(description = "A flag indicating if Mobile Data is enabled on device")
     private Boolean mobileData;
-    @ApiModelProperty("A flag indicating if USB storage is enabled on device")
+
+    @Schema(description = "A flag indicating if USB storage is enabled on device")
     private Boolean usbStorage;
-    @ApiModelProperty("A type of location tracking")
+
+    @Schema(description = "A type of location tracking")
     private RequestUpdatesType requestUpdates = RequestUpdatesType.DONOTTRACK;
-    @ApiModelProperty("A flag indicating if location permission shouldn't be granted")
+
+    @Schema(description = "A flag indicating if location permission shouldn't be granted")
     private Boolean disableLocation;
-    @ApiModelProperty("Strategy of app permission auto-granting")
+
+    @Schema(description = "Strategy of app permission auto-granting")
     private AppPermissionsType appPermissions = AppPermissionsType.GRANTALL;
-    @ApiModelProperty("Push notification options")
+
+    @Schema(description = "Push notification options")
     private String pushOptions;
-    @ApiModelProperty("Keep-Alive time for MQTT connection")
+
+    @Schema(description = "Keep-Alive time for MQTT connection")
     private Integer keepaliveTime;
-    @ApiModelProperty("Brightness management flag. null: not managed, false: manual, true: auto")
+
+    @Schema(description = "Brightness management flag. null: not managed, false: manual, true: auto")
     private Boolean autoBrightness;
-    @ApiModelProperty("Brightness value (if manual), 0-255")
+
+    @Schema(description = "Brightness value (if manual), 0-255")
     private Integer brightness;
-    @ApiModelProperty("A flag indicating if screen timeout is managed on device")
+
+    @Schema(description = "A flag indicating if screen timeout is managed on device")
     private Boolean manageTimeout;
-    @ApiModelProperty("Timeout value (in seconds)")
+
+    @Schema(description = "Timeout value (in seconds)")
     private Integer timeout;
-    @ApiModelProperty("A flag indicating if volume is locked on device")
+
+    @Schema(description = "A flag indicating if volume is locked on device")
     private Boolean lockVolume;
-    @ApiModelProperty("A flag indicating if volume must be adjusted on device")
+
+    @Schema(description = "A flag indicating if volume must be adjusted on device")
     private Boolean manageVolume;
-    @ApiModelProperty("Volume value (in percents)")
+
+    @Schema(description = "Volume value (in percents)")
     private Integer volume;
-    @ApiModelProperty("Password requirements for the mobile device")
+
+    @Schema(description = "Password requirements for the mobile device")
     private String passwordMode;
-    @ApiModelProperty("Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
+
+    @Schema(description = "Orientation lock: 0 - none, 1 - portrait, 2 - landscape")
     private Integer orientation;
-    @ApiModelProperty("Flag enabling usage with default launcher")
+
+    @Schema(description = "Flag enabling usage with default launcher")
     private Boolean runDefaultLauncher;
-    @ApiModelProperty("Flag indicating if screenshots are disabled on the device")
+
+    @Schema(description = "Flag indicating if screenshots are disabled on the device")
     private Boolean disableScreenshots;
-    @ApiModelProperty("Flag indicating if auto-started apps should be kept in the foreground")
+
+    @Schema(description = "Flag indicating if auto-started apps should be kept in the foreground")
     private Boolean autostartForeground;
-    @ApiModelProperty("Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
+
+    @Schema(
+            description =
+                    "Time zone settings: null for using default settings, auto for automatic time zone, or Olson time zone string")
     private String timeZone;
-    @ApiModelProperty("Allowed classes, separated by comma")
+
+    @Schema(description = "Allowed classes, separated by comma")
     private String allowedClasses;
-    @ApiModelProperty("New server URL used to migrate to another server")
+
+    @Schema(description = "New server URL used to migrate to another server")
     private String newServerUrl;
-    @ApiModelProperty("Flag disabling safe settings")
+
+    @Schema(description = "Flag disabling safe settings")
     private Boolean lockSafeSettings;
-    @ApiModelProperty("Flag enabling permissive mode")
+
+    @Schema(description = "Flag enabling permissive mode")
     private Boolean permissive;
-    @ApiModelProperty("Flag enabling the kiosk exit button")
+
+    @Schema(description = "Flag enabling the kiosk exit button")
     private Boolean kioskExit;
-    @ApiModelProperty("Show WiFi settings if there's a connection error, also in Kiosk mode")
+
+    @Schema(description = "Show WiFi settings if there's a connection error, also in Kiosk mode")
     private Boolean showWifi;
 
     // This group of settings corresponds to MDM settings
-    @ApiModelProperty("A package ID for main application")
+    @Schema(description = "A package ID for main application")
     private Integer mainAppId;
-    @ApiModelProperty("A package ID for event receiving component")
+
+    @Schema(description = "A package ID for event receiving component")
     private String eventReceivingComponent;
-    @ApiModelProperty("A flag indicating if MDM is operating in kiosk mode")
+
+    @Schema(description = "A flag indicating if MDM is operating in kiosk mode")
     private boolean kioskMode;
-    @ApiModelProperty("A package ID for content application")
+
+    @Schema(description = "A package ID for content application")
     private Integer contentAppId;
-    @ApiModelProperty("WiFi SSID for provisioning")
+
+    @Schema(description = "WiFi SSID for provisioning")
     private String wifiSSID;
-    @ApiModelProperty("WiFi password for provisioning")
+
+    @Schema(description = "WiFi password for provisioning")
     private String wifiPassword;
-    @ApiModelProperty("WiFi security type for provisioning: NONE/WPA/WEP/EAP")
+
+    @Schema(description = "WiFi security type for provisioning: NONE/WPA/WEP/EAP")
     private String wifiSecurityType;
-    @ApiModelProperty("Device encryption")
+
+    @Schema(description = "Device encryption")
     private boolean encryptDevice;
-    @ApiModelProperty("Additional QR code parameters")
+
+    @Schema(description = "Additional QR code parameters")
     private String qrParameters;
-    @ApiModelProperty("Admin extras in QR code")
+
+    @Schema(description = "Admin extras in QR code")
     private String adminExtras;
-    @ApiModelProperty("Prefer mobile data for provisioning")
+
+    @Schema(description = "Prefer mobile data for provisioning")
     private boolean mobileEnrollment;
-    @ApiModelProperty("Flag enabling Home button in kiosk mode")
+
+    @Schema(description = "Flag enabling Home button in kiosk mode")
     private Boolean kioskHome;
-    @ApiModelProperty("Flag enabling Recents button in kiosk mode")
+
+    @Schema(description = "Flag enabling Recents button in kiosk mode")
     private Boolean kioskRecents;
-    @ApiModelProperty("Flag enabling notifications in kiosk mode")
+
+    @Schema(description = "Flag enabling notifications in kiosk mode")
     private Boolean kioskNotifications;
-    @ApiModelProperty("Flag enabling system info in kiosk mode")
+
+    @Schema(description = "Flag enabling system info in kiosk mode")
     private Boolean kioskSystemInfo;
-    @ApiModelProperty("Flag enabling lock screen in kiosk mode")
+
+    @Schema(description = "Flag enabling lock screen in kiosk mode")
     private Boolean kioskKeyguard;
-    @ApiModelProperty("Flag locking power button in kiosk mode")
+
+    @Schema(description = "Flag locking power button in kiosk mode")
     private Boolean kioskLockButtons;
-    @ApiModelProperty("Flag forcing screen to be on in kiosk mode")
+
+    @Schema(description = "Flag forcing screen to be on in kiosk mode")
     private Boolean kioskScreenOn;
-    @ApiModelProperty("Overridden launcher URL")
+
+    @Schema(description = "Overridden launcher URL")
     private String launcherUrl;
-    @ApiModelProperty("Additional comma separated restrictions in MDM mode")
+
+    @Schema(description = "Additional comma separated restrictions in MDM mode")
     private String restrictions;
 
     // This group of settings corresponds to Design settings
     private boolean useDefaultDesignSettings;
-    @ApiModelProperty("A background color to use when running MDM application")
+
+    @Schema(description = "A background color to use when running MDM application")
     private String backgroundColor;
-    @ApiModelProperty("A text color to use when running MDM application")
+
+    @Schema(description = "A text color to use when running MDM application")
     private String textColor;
-    @ApiModelProperty("An URL for background image to use when running MDM application")
+
+    @Schema(description = "An URL for background image to use when running MDM application")
     private String backgroundImageUrl;
-    @ApiModelProperty("A size of the icons to use when running MDM application")
+
+    @Schema(description = "A size of the icons to use when running MDM application")
     private IconSize iconSize = SMALL;
-    @ApiModelProperty("A type of desktop header to use when running MDM application")
+
+    @Schema(description = "A type of desktop header to use when running MDM application")
     private DesktopHeader desktopHeader = NO_HEADER;
-    @ApiModelProperty("Desktop header template")
+
+    @Schema(description = "Desktop header template")
     private String desktopHeaderTemplate;
-    @ApiModelProperty("If checked, the data of the device status bar (time, battery, etc) are displayed by Headwind MDM")
+
+    @Schema(
+            description =
+                    "If checked, the data of the device status bar (time, battery, etc) are displayed by Headwind MDM")
     private boolean displayStatus;
 
     // An unique key used for retrieving the QR code for configuration
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String qrCodeKey;
 
-    @ApiModelProperty("A list of settings for applications set for configuration")
+    @Schema(description = "A list of settings for applications set for configuration")
     private List<ApplicationSetting> applicationSettings;
 
-    @ApiModelProperty("A list of files to be used on devices")
+    @Schema(description = "A list of files to be used on devices")
     private List<ConfigurationFile> files;
 
-    @ApiModelProperty("The parameters for using applications set for configuration")
+    @Schema(description = "The parameters for using applications set for configuration")
     private List<ConfigurationApplicationParameters> applicationUsageParameters;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean selected;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private String baseUrl;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private List<Integer> filesToRemove;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String defaultFilePath;
 
-    public Configuration() {
-    }
+    public Configuration() {}
 
     public Integer getId() {
         return this.id;
@@ -560,9 +632,9 @@ public class Configuration implements CustomerData, Serializable {
         return autoUpdate;
     }
 
-//    public void setAutoUpdate(boolean autoUpdate) {
-//        this.autoUpdate = autoUpdate;
-//    }
+    // public void setAutoUpdate(boolean autoUpdate) {
+    // this.autoUpdate = autoUpdate;
+    // }
 
     public boolean isBlockStatusBar() {
         return blockStatusBar;
@@ -880,7 +952,7 @@ public class Configuration implements CustomerData, Serializable {
         copy.setPassword(getPassword());
         copy.setType(getType());
         copy.setCustomerId(getCustomerId());
-//        copy.setAutoUpdate(isAutoUpdate());
+        // copy.setAutoUpdate(isAutoUpdate());
         copy.setBlockStatusBar(isBlockStatusBar());
         copy.setSystemUpdateType(getSystemUpdateType());
         copy.setSystemUpdateFrom(getSystemUpdateFrom());

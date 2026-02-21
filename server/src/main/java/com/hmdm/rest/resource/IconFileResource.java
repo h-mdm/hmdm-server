@@ -25,31 +25,29 @@ import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UploadedFileDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
-import com.hmdm.rest.json.FileUploadResult;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.InputStream;
+import java.util.UUID;
+import javax.imageio.ImageIO;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
-import java.util.UUID;
 
 /**
  * <p>$</p>
@@ -68,72 +66,74 @@ public class IconFileResource {
     private CustomerDAO customerDAO;
     private String filesDirectory;
 
-
     /**
      * <p>Constructs new <code>IconFileResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public IconFileResource(UploadedFileDAO uploadedFileDAO,
-                            CustomerDAO customerDAO,
-                            @Named("files.directory") String filesDirectory) {
+    public IconFileResource(
+            UploadedFileDAO uploadedFileDAO, CustomerDAO customerDAO, @Named("files.directory") String filesDirectory) {
         this.uploadedFileDAO = uploadedFileDAO;
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload icon",
-            notes = "Uploads the icon to server. Returns a path to uploaded icon file",
-            response = FileUploadResult.class
-    )
+    @Operation(
+            summary = "Upload icon",
+            description = "Uploads the icon to server. Returns a path to uploaded icon file")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadIconFile(@FormDataParam("file") InputStream uploadedInputStream,
-                                   @ApiParam("An icon file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+    public Response uploadIconFile(
+            @FormDataParam("file") InputStream uploadedInputStream,
+            @Parameter(description = "An icon file to upload") @FormDataParam("file")
+                    FormDataContentDisposition fileDetail)
+            throws Exception {
         try {
             BufferedImage img = ImageIO.read(uploadedInputStream);
             if (img.getWidth() != img.getHeight()) {
-                logger.error("Rejecting the icon file {} upload due to unequal icon width and height", fileDetail.getFileName());
+                logger.error(
+                        "Rejecting the icon file {} upload due to unequal icon width and height",
+                        fileDetail.getFileName());
                 return Response.ERROR("error.icon.dimension.invalid");
             }
 
-            return SecurityContext.get().getCurrentCustomerId().map(customerId -> {
-                try {
-                    final Customer customer = this.customerDAO.findById(customerId);
-                    final String customerFilesDir = customer.getFilesDir();
+            return SecurityContext.get()
+                    .getCurrentCustomerId()
+                    .map(customerId -> {
+                        try {
+                            final Customer customer = this.customerDAO.findById(customerId);
+                            final String customerFilesDir = customer.getFilesDir();
 
-                    final File customerFilesDirectory = new File(this.filesDirectory, customerFilesDir);
-                    if (!customerFilesDirectory.exists()) {
-                        customerFilesDirectory.mkdirs();
-                    }
+                            final File customerFilesDirectory = new File(this.filesDirectory, customerFilesDir);
+                            if (!customerFilesDirectory.exists()) {
+                                customerFilesDirectory.mkdirs();
+                            }
 
-                    File iconFile = new File(customerFilesDirectory, UUID.randomUUID().toString() + ".png");
+                            File iconFile = new File(
+                                    customerFilesDirectory, UUID.randomUUID().toString() + ".png");
 
-                    BufferedImage scaledImage = Scalr.resize(img, 144);
-                    ImageIO.write(scaledImage, "png", iconFile);
+                            BufferedImage scaledImage = Scalr.resize(img, 144);
+                            ImageIO.write(scaledImage, "png", iconFile);
 
-                    UploadedFile uploadedFile = new UploadedFile();
-                    uploadedFile.setCustomerId(customerId);
-                    uploadedFile.setFilePath(iconFile.getName());
-                    uploadedFile.setUploadTime(System.currentTimeMillis());
+                            UploadedFile uploadedFile = new UploadedFile();
+                            uploadedFile.setCustomerId(customerId);
+                            uploadedFile.setFilePath(iconFile.getName());
+                            uploadedFile.setUploadTime(System.currentTimeMillis());
 
-                    uploadedFile = this.uploadedFileDAO.insert(uploadedFile);
+                            uploadedFile = this.uploadedFileDAO.insert(uploadedFile);
 
-                    return Response.OK(uploadedFile);
-                } catch (Exception e) {
-                    logger.error("Unexpected error when handling icon file upload", e);
-                    return Response.INTERNAL_ERROR();
-                }
-
-            }).orElseThrow(SecurityException::onAnonymousAccess);
+                            return Response.OK(uploadedFile);
+                        } catch (Exception e) {
+                            logger.error("Unexpected error when handling icon file upload", e);
+                            return Response.INTERNAL_ERROR();
+                        }
+                    })
+                    .orElseThrow(SecurityException::onAnonymousAccess);
 
         } catch (Exception e) {
             logger.error("Unexpected error when handling icon file upload", e);
             return Response.INTERNAL_ERROR();
         }
     }
-
 }

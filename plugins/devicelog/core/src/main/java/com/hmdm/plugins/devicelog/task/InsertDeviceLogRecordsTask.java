@@ -23,10 +23,9 @@ package com.hmdm.plugins.devicelog.task;
 
 import com.hmdm.plugins.devicelog.persistence.DeviceLogDAO;
 import com.hmdm.plugins.devicelog.rest.json.UploadedDeviceLogRecord;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * <p>A standalone task to be used for saving the .</p>
@@ -63,10 +62,8 @@ public class InsertDeviceLogRecordsTask implements Runnable {
     /**
      * <p>Constructs new <code>InsertDeviceLogRecordsTask</code> instance. This implementation does nothing.</p>
      */
-    public InsertDeviceLogRecordsTask(String deviceNumber,
-                                      String ipAddress,
-                                      List<UploadedDeviceLogRecord> logs,
-                                      DeviceLogDAO deviceLogDAO) {
+    public InsertDeviceLogRecordsTask(
+            String deviceNumber, String ipAddress, List<UploadedDeviceLogRecord> logs, DeviceLogDAO deviceLogDAO) {
         this.deviceNumber = deviceNumber;
         this.ipAddress = ipAddress;
         this.logs = logs;
@@ -80,7 +77,8 @@ public class InsertDeviceLogRecordsTask implements Runnable {
     public void run() {
         try {
             int insertedCount = this.deviceLogDAO.insertDeviceLogRecords(this.deviceNumber, this.ipAddress, this.logs);
-            log.debug("Inserted {} log records for device '{}' into persistent data store", insertedCount, deviceNumber);
+            log.debug(
+                    "Inserted {} log records for device '{}' into persistent data store", insertedCount, deviceNumber);
         } catch (Exception e) {
             log.error("Unexpected error while inserting log records for device '{}'", this.deviceNumber, e);
         }

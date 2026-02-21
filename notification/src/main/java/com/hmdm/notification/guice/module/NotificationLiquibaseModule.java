@@ -21,11 +21,10 @@
 
 package com.hmdm.notification.guice.module;
 
-import com.hmdm.guice.LiquibaseJARResourceAccessor;
 import com.hmdm.guice.module.AbstractLiquibaseModule;
+import jakarta.servlet.ServletContext;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
-
-import javax.servlet.ServletContext;
 
 /**
  * <p>A module used for initializing and managing the state of the database tables related to <code>Notification</code>
@@ -42,7 +41,6 @@ public class NotificationLiquibaseModule extends AbstractLiquibaseModule {
         super(context);
     }
 
-
     /**
      * <p>Gets the path to the DB change log to be used by this module.</p>
      *
@@ -50,11 +48,8 @@ public class NotificationLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected String getChangeLogResourcePath() {
-        String path = this.getClass().getResource("/liquibase/notification.changelog.xml").getPath();
-        if (!path.startsWith("jar:")) {
-            path = "jar:" + path;
-        }
-        return path;
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/notification.changelog.xml";
     }
 
     /**
@@ -64,6 +59,6 @@ public class NotificationLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new LiquibaseJARResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
 }

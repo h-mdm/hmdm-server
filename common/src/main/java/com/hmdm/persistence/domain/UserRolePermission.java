@@ -21,9 +21,7 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -32,25 +30,27 @@ import java.util.Objects;
  *
  * @author isv
  */
-@ApiModel(description = "A permission to perform desired action which might be granted to user role")
+@Schema(description = "A permission to perform desired action which might be granted to user role")
 public class UserRolePermission implements Serializable {
 
     private static final long serialVersionUID = -8203664108953283604L;
 
-    @ApiModelProperty("An ID of the permission")
+    @Schema(description = "An ID of the permission")
     private int id;
-    @ApiModelProperty("A name of the permission")
+
+    @Schema(description = "A name of the permission")
     private String name;
-    @ApiModelProperty("A description of the permission")
+
+    @Schema(description = "A description of the permission")
     private String description;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private boolean superAdmin;
 
     /**
      * <p>Constructs new <code>UserRolePermission</code> instance. This implementation does nothing.</p>
      */
-    public UserRolePermission() {
-    }
+    public UserRolePermission() {}
 
     public int getId() {
         return id;
@@ -99,10 +99,6 @@ public class UserRolePermission implements Serializable {
 
     @Override
     public String toString() {
-        return "UserRolePermission{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", superAdmin=" + superAdmin +
-                '}';
+        return "UserRolePermission{" + "id=" + id + ", name='" + name + '\'' + ", superAdmin=" + superAdmin + '}';
     }
 }

@@ -23,9 +23,8 @@ package com.hmdm.plugins.push.persistence.mapper;
 
 import com.hmdm.plugins.push.persistence.domain.PluginPushMessage;
 import com.hmdm.plugins.push.rest.json.PushMessageFilter;
-import org.apache.ibatis.annotations.*;
-
 import java.util.List;
+import org.apache.ibatis.annotations.*;
 
 /**
  * <p>An ORM mapper for {@link PluginPushMessage} domain objects.</p>
@@ -34,13 +33,14 @@ import java.util.List;
  */
 public interface PushMessageMapper {
 
-    @Insert("INSERT INTO plugin_push_messages " +
-            "(customerId, deviceId, ts, messageType, payload) " +
-            "VALUES " +
-            "(#{customerId}, #{deviceId}, #{ts}, #{messageType}, #{payload})"
-    )
-    @SelectKey( statement = "SELECT currval('plugin_push_messages_id_seq')",
-            keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert("INSERT INTO plugin_push_messages " + "(customerId, deviceId, ts, messageType, payload) " + "VALUES "
+            + "(#{customerId}, #{deviceId}, #{ts}, #{messageType}, #{payload})")
+    @SelectKey(
+            statement = "SELECT currval('plugin_push_messages_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     int insertMessage(PluginPushMessage msg);
 
     @Delete("DELETE FROM plugin_push_messages WHERE id = #{id} AND customerId = #{customerId}")

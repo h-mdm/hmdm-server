@@ -24,7 +24,7 @@ package com.hmdm.plugins.deviceinfo.rest.json;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * <p>A DTO carrying the details for a single record of dynamic data for device.</p>
@@ -35,145 +35,144 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeviceDynamicInfoRecord {
 
-    @ApiModelProperty("A timestamp of most recent update of device info (in milliseconds since epoch time)")
+    @Schema(description = "A timestamp of most recent update of device info (in milliseconds since epoch time)")
     private Long latestUpdateTime;
 
-    @ApiModelProperty("An interval passed from the most recent update of device info from current time")
+    @Schema(description = "An interval passed from the most recent update of device info from current time")
     private Long latestUpdateInterval;
 
-    @ApiModelProperty(value = "A type of interval passed from the most recent update of device info from current time",
+    @Schema(
+            description = "A type of interval passed from the most recent update of device info from current time",
             allowableValues = "min,hour,day")
     private String latestUpdateIntervalType;
 
-    @ApiModelProperty(value = "A battery level in percents", allowableValues = "range[0, 100]")
+    @Schema(description = "A battery level in percents", allowableValues = "range[0, 100]")
     private Integer deviceBatteryLevel;
 
-    @ApiModelProperty(value = "A battery charge type", allowableValues = "usb,ac", allowEmptyValue = true)
+    @Schema(description = "A battery charge type", allowableValues = "usb,ac")
     private String deviceBatteryCharging;
 
-    @ApiModelProperty(value = "A used IP-address")
+    @Schema(description = "A used IP-address")
     private String deviceIpAddress;
 
-    @ApiModelProperty(value = "A flag indicating if keyguard is on")
+    @Schema(description = "A flag indicating if keyguard is on")
     private Boolean deviceKeyguard;
 
-    @ApiModelProperty(value = "A ring volume level")
+    @Schema(description = "A ring volume level")
     private Integer deviceRingVolume;
 
-    @ApiModelProperty(value = "A flag indicating if Wi-FI is on")
+    @Schema(description = "A flag indicating if Wi-FI is on")
     private Boolean deviceWifiEnabled;
 
-    @ApiModelProperty(value = "A flag indicating if Mobile Data is on")
+    @Schema(description = "A flag indicating if Mobile Data is on")
     private Boolean deviceMobileDataEnabled;
 
-    @ApiModelProperty(value = "A flag indicating if GPS is on")
+    @Schema(description = "A flag indicating if GPS is on")
     private Boolean deviceGpsEnabled;
 
-    @ApiModelProperty(value = "A flag indicating if Bluetooth is on")
+    @Schema(description = "A flag indicating if Bluetooth is on")
     private Boolean deviceBluetoothEnabled;
 
-    @ApiModelProperty(value = "A flag indicating if USB storage is on")
+    @Schema(description = "A flag indicating if USB storage is on")
     private Boolean deviceUsbEnabled;
 
-    @ApiModelProperty(value = "Total device memory in Mb")
+    @Schema(description = "Total device memory in Mb")
     private Integer deviceMemoryTotal;
 
-    @ApiModelProperty(value = "Available device memory in Mb")
+    @Schema(description = "Available device memory in Mb")
     private Integer deviceMemoryAvailable;
 
-    @ApiModelProperty("A signal level")
+    @Schema(description = "A signal level")
     private Integer wifiRssi;
 
-    @ApiModelProperty("A SSID")
+    @Schema(description = "A SSID")
     private String wifiSsid;
 
-    @ApiModelProperty("A security status")
+    @Schema(description = "A security status")
     private String wifiSecurity;
 
-    @ApiModelProperty("A connection status")
+    @Schema(description = "A connection status")
     private String wifiState;
 
-    @ApiModelProperty("A used IP-address")
+    @Schema(description = "A used IP-address")
     private String wifiIpAddress;
 
-    @ApiModelProperty("A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long wifiTx;
 
-    @ApiModelProperty("A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long wifiRx;
 
-    @ApiModelProperty("A connection status")
+    @Schema(description = "A connection status")
     private String gpsState;
 
-    @ApiModelProperty("A latitude coordinate")
+    @Schema(description = "A latitude coordinate")
     private Double gpsLat;
 
-    @ApiModelProperty("A longitude coordinate")
+    @Schema(description = "A longitude coordinate")
     private Double gpsLon;
 
-    @ApiModelProperty("An altitude coordinate")
+    @Schema(description = "An altitude coordinate")
     private Double gpsAlt;
 
-    @ApiModelProperty("A speed in km/h")
+    @Schema(description = "A speed in km/h")
     private Double gpsSpeed;
 
-    @ApiModelProperty("A course direction in degrees")
+    @Schema(description = "A course direction in degrees")
     private Double gpsCourse;
 
-    @ApiModelProperty("A signal level")
+    @Schema(description = "A signal level")
     private Integer mobile1Rssi;
 
-    @ApiModelProperty("A carrier name")
+    @Schema(description = "A carrier name")
     private String mobile1Carrier;
 
-    @ApiModelProperty("A flag indicating if data transmission is on")
+    @Schema(description = "A flag indicating if data transmission is on")
     private Boolean mobile1DataEnabled;
 
-    @ApiModelProperty("A used IP-address")
+    @Schema(description = "A used IP-address")
     private String mobile1IpAddress;
 
-    @ApiModelProperty("A connection status")
+    @Schema(description = "A connection status")
     private String mobile1State;
 
-    @ApiModelProperty("A SIM-card status")
+    @Schema(description = "A SIM-card status")
     private String mobile1SimState;
 
-    @ApiModelProperty("A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long mobile1Tx;
 
-    @ApiModelProperty("A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long mobile1Rx;
 
-    @ApiModelProperty("A signal level")
+    @Schema(description = "A signal level")
     private Integer mobile2Rssi;
 
-    @ApiModelProperty("A carrier name")
+    @Schema(description = "A carrier name")
     private String mobile2Carrier;
 
-    @ApiModelProperty("A flag indicating if data transmission is on")
+    @Schema(description = "A flag indicating if data transmission is on")
     private Boolean mobile2DataEnabled;
 
-    @ApiModelProperty("A used IP-address")
+    @Schema(description = "A used IP-address")
     private String mobile2IpAddress;
 
-    @ApiModelProperty("A connection status")
+    @Schema(description = "A connection status")
     private String mobile2State;
 
-    @ApiModelProperty("A SIM-card status")
+    @Schema(description = "A SIM-card status")
     private String mobile2SimState;
 
-    @ApiModelProperty("A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long mobile2Tx;
 
-    @ApiModelProperty("A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long mobile2Rx;
-
 
     /**
      * <p>Constructs new <code>DeviceDynamicInfoRecord</code> instance. This implementation does nothing.</p>
      */
-    public DeviceDynamicInfoRecord() {
-    }
+    public DeviceDynamicInfoRecord() {}
 
     @JsonSetter
     public void setLatestUpdateTime(Long latestUpdateTime) {
@@ -548,8 +547,7 @@ public class DeviceDynamicInfoRecord {
                 || deviceBluetoothEnabled != null
                 || deviceUsbEnabled != null
                 || deviceMemoryTotal != null
-                || deviceMemoryAvailable != null
-                ;
+                || deviceMemoryAvailable != null;
     }
 
     public boolean isWifiDataIncluded() {
@@ -559,8 +557,7 @@ public class DeviceDynamicInfoRecord {
                 || wifiState != null
                 || wifiIpAddress != null
                 || wifiTx != null
-                || wifiRx != null
-                ;
+                || wifiRx != null;
     }
 
     public boolean isGpsDataIncluded() {
@@ -569,8 +566,7 @@ public class DeviceDynamicInfoRecord {
                 || gpsLon != null
                 || gpsAlt != null
                 || gpsSpeed != null
-                || gpsCourse != null
-                ;
+                || gpsCourse != null;
     }
 
     public boolean isMobile1DataIncluded() {
@@ -581,8 +577,7 @@ public class DeviceDynamicInfoRecord {
                 || mobile1State != null
                 || mobile1SimState != null
                 || mobile1Tx != null
-                || mobile1Rx != null
-                ;
+                || mobile1Rx != null;
     }
 
     public boolean isMobile2DataIncluded() {
@@ -593,7 +588,6 @@ public class DeviceDynamicInfoRecord {
                 || mobile2State != null
                 || mobile2SimState != null
                 || mobile2Tx != null
-                || mobile2Rx != null
-                ;
+                || mobile2Rx != null;
     }
 }

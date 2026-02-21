@@ -21,35 +21,33 @@
 
 package com.hmdm.notification.rest;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.notification.rest.json.PlainPushMessage;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.rest.json.Response;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource to be used for publishing/receiving the notification messages.</p>
  *
  * @author isv
  */
-@Api(tags = {"Notifications"})
+@Tag(name = "Notifications")
 @Singleton
 @Path("/notifications")
 public class NotificationResource {
@@ -61,8 +59,7 @@ public class NotificationResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public NotificationResource() {
-    }
+    public NotificationResource() {}
 
     /**
      * <p>Constructs new <code>NotificationResource</code> instance. This implementation does nothing.</p>
@@ -74,18 +71,15 @@ public class NotificationResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get device notifications",
-            notes = "Gets the notifications for device from the MDM server.",
-            response = PlainPushMessage.class,
-            responseContainer = "List"
-    )
+    @Operation(
+            summary = "Get device notifications",
+            description = "Gets the notifications for device from the MDM server.")
     @Path("/device/{deviceNumber}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPushMessages(@PathParam("deviceNumber")
-                                        @ApiParam("An identifier of device within MDM server")
-                                                String deviceNumber) {
+    public Response getPushMessages(
+            @PathParam("deviceNumber") @Parameter(description = "An identifier of device within MDM server")
+                    String deviceNumber) {
         log.debug("#getPushMessages: deviceNumber = {}", deviceNumber);
         try {
             Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
@@ -96,8 +90,8 @@ public class NotificationResource {
                 List<PushMessage> messages = this.notificationDAO.getPendingMessagesForDelivery(deviceNumber);
                 log.info("Delivering push-messages to device '{}': {}", deviceNumber, messages);
 
-                final List<PlainPushMessage> messagesToDeliver
-                        = messages.stream().map(PlainPushMessage::new).collect(Collectors.toList());
+                final List<PlainPushMessage> messagesToDeliver =
+                        messages.stream().map(PlainPushMessage::new).collect(Collectors.toList());
                 return Response.OK(messagesToDeliver);
             } else {
                 return Response.DEVICE_NOT_FOUND_ERROR();
@@ -107,5 +101,4 @@ public class NotificationResource {
             return Response.INTERNAL_ERROR();
         }
     }
-
 }

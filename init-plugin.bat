@@ -14,7 +14,7 @@ grep -r ^<artifactId^>%~1^</artifactId^> server\pom.xml >NUL 2>NUL && goto exist
 
 rem Plugin doesn't exist, we need to add it to the code
 copy server\pom.xml server\pom.xml.bak >NUL 2>NUL
-sed "s|    </dependencies>|        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>%~1</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>\n    </dependencies>|g" server/pom.xml > server/pom.xml.new
+sed "s|    </dependencies>|        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>%~1</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>\n    </dependencies>|g" server/pom.xml > server/pom.xml.new
 move server\pom.xml.new server\pom.xml >NUL 2>NUL
 echo server/pom.xml updated
 

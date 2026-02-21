@@ -1,17 +1,16 @@
 package com.hmdm.rest.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BaseIPFilter {
 
-    private Logger logger = LoggerFactory.getLogger(BaseIPFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseIPFilter.class);
 
     public class Net {
         private byte[] value;
@@ -30,10 +29,10 @@ public class BaseIPFilter {
             } else {
                 maskLength = Integer.parseInt(s[1]);
             }
-            mask[0] = (byte)(maskLength < 8 ? (0xff << (8 - maskLength)) : 0xff);
-            mask[1] = (byte)(maskLength < 16 ? (0xff << (16 - maskLength)) : 0xff);
-            mask[2] = (byte)(maskLength < 24 ? (0xff << (24 - maskLength)) : 0xff);
-            mask[3] = (byte)(maskLength < 32 ? (0xff << (32 - maskLength)) : 0xff);
+            mask[0] = (byte) (maskLength < 8 ? (0xff << (8 - maskLength)) : 0xff);
+            mask[1] = (byte) (maskLength < 16 ? (0xff << (16 - maskLength)) : 0xff);
+            mask[2] = (byte) (maskLength < 24 ? (0xff << (24 - maskLength)) : 0xff);
+            mask[3] = (byte) (maskLength < 32 ? (0xff << (32 - maskLength)) : 0xff);
         }
 
         public boolean match(byte[] ip) {

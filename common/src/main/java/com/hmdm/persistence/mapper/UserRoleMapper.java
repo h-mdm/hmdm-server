@@ -21,12 +21,10 @@
 
 package com.hmdm.persistence.mapper;
 
-import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.domain.UserRolePermission;
-import org.apache.ibatis.annotations.*;
-
 import java.util.List;
+import org.apache.ibatis.annotations.*;
 
 public interface UserRoleMapper {
 
@@ -38,22 +36,25 @@ public interface UserRoleMapper {
 
     UserRole findById(@Param("id") Integer id);
 
-    @Insert({"INSERT INTO userroles (name, description, superadmin) " +
-            "VALUES (#{name}, #{description}, false)"})
-    @SelectKey( statement = "SELECT currval('userroles_id_seq')", keyColumn = "id", keyProperty = "id",
-                before = false, resultType = int.class )
+    @Insert({"INSERT INTO userroles (name, description, superadmin) " + "VALUES (#{name}, #{description}, false)"})
+    @SelectKey(
+            statement = "SELECT currval('userroles_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insert(UserRole userRole);
 
-    @Update({"UPDATE userroles " +
-            "SET name = #{name}, description=#{description}, superadmin=false " +
-            "WHERE id=#{id} AND NOT superadmin"})
+    @Update({
+        "UPDATE userroles " + "SET name = #{name}, description=#{description}, superadmin=false "
+                + "WHERE id=#{id} AND NOT superadmin"
+    })
     void update(UserRole userRole);
 
     @Delete({"DELETE FROM userroles WHERE id=#{id} AND NOT superadmin"})
     void delete(@Param("id") Integer roleId);
 
-    @Delete({"DELETE FROM userrolepermissions " +
-            "WHERE roleid=#{id} "})
+    @Delete({"DELETE FROM userrolepermissions " + "WHERE roleid=#{id} "})
     void deletePermissions(@Param("id") Integer roleId);
 
     void insertPermissions(@Param("id") Integer roleId, @Param("permissions") List<Integer> permissions);

@@ -21,9 +21,7 @@
 
 package com.hmdm.util;
 
-import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.Customer;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -39,15 +37,13 @@ public final class FileUtil {
     /**
      * <p>Constructs new <code>FileUtil</code> instance. This implementation does nothing.</p>
      */
-    private FileUtil() {
-    }
+    private FileUtil() {}
 
     public static String adjustFileName(String fileName) {
-        return fileName
-                .replace(' ', '_')
-                .replace('+', '_')          // Not valid in URL
-                .replace('%', '_')          // Not valid in URL
-                .replace("(", "")           // These characters are used by Windows when a file is downloaded twice
+        return fileName.replace(' ', '_')
+                .replace('+', '_') // Not valid in URL
+                .replace('%', '_') // Not valid in URL
+                .replace("(", "") // These characters are used by Windows when a file is downloaded twice
                 .replace(")", "");
     }
 
@@ -60,7 +56,7 @@ public final class FileUtil {
             byte[] bytes = new byte[1024];
 
             int read;
-            while((read = uploadedInputStream.read(bytes)) != -1) {
+            while ((read = uploadedInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
 
@@ -80,14 +76,16 @@ public final class FileUtil {
     }
 
     /**
-     * <p>Moves the specified uploaded file to desired location related to specified customer account.
-     * The target file name is determined from the tmp file name</p>
+     * <p>Moves the specified uploaded file to desired location related to specified customer account. The target file name
+     * is determined from the tmp file name</p>
      *
      * @param customer a customer account which the file belongs to.
      * @param filesDirectory a directory which holds all the files maintained by the application.
      * @param localPath an optional local path to move file to.
      * @param tmpFilePath a path to a temorary file to be moved.
+     *
      * @return a file referencing the moved file if operation was successful; <code>null</code> otherwise.
+     *
      * @throws FileExistsException if file already exists in
      */
     public static File moveFile(Customer customer, String filesDirectory, String localPath, String tmpFilePath) {
@@ -95,8 +93,8 @@ public final class FileUtil {
     }
 
     /**
-     * <p>Moves the specified uploaded file to desired location related to specified customer account.
-     * The target file name is explicitly specified</p>
+     * <p>Moves the specified uploaded file to desired location related to specified customer account. The target file name
+     * is explicitly specified</p>
      *
      * @param customer a customer account which the file belongs to.
      * @param filesDirectory a directory which holds all the files maintained by the application.
@@ -105,7 +103,8 @@ public final class FileUtil {
      * @return a file referencing the moved file if operation was successful; <code>null</code> otherwise.
      * @throws FileExistsException if file already exists in
      */
-    public static File moveFile(Customer customer, String filesDirectory, String localPath, String tmpFilePath, String newName) {
+    public static File moveFile(
+            Customer customer, String filesDirectory, String localPath, String tmpFilePath, String newName) {
         File localFile = new File(tmpFilePath);
         String fileName = newName != null ? newName : getNameFromTmpPath(tmpFilePath);
         while (fileName.startsWith("/")) {
@@ -130,7 +129,8 @@ public final class FileUtil {
             return file;
         } else {
             // Try to copy and delete because rename can fail due to different file systems
-            // For example, on Tomcat 9 renaming from /tmp to /var/lib/tomcat9/work will fail due to sandbox restrictions
+            // For example, on Tomcat 9 renaming from /tmp to /var/lib/tomcat9/work will fail due to sandbox
+            // restrictions
             try {
                 FileInputStream inputStream = new FileInputStream(localFile);
                 writeToFile(inputStream, file.getAbsolutePath());
@@ -142,7 +142,6 @@ public final class FileUtil {
                 return null;
             }
         }
-
     }
 
     public static String translateURLToLocalFilePath(Customer customer, String url, String baseUrl) {
@@ -167,7 +166,8 @@ public final class FileUtil {
      * @return <code>true</code> if file was deleted successfully; <code>false</code> otherwise.
      */
     public static boolean deleteFile(Customer customer, String baseDirectory, String path) {
-        String filePath = String.format("%s/%s", baseDirectory, customer.getFilesDir()).replace("/", File.separator);
+        String filePath =
+                String.format("%s/%s", baseDirectory, customer.getFilesDir()).replace("/", File.separator);
         final File fileToDelete = new File(filePath, path);
         return fileToDelete.delete();
     }
@@ -186,8 +186,8 @@ public final class FileUtil {
         BufferedInputStream bis = new BufferedInputStream(url.openStream());
         StringBuffer stringBuffer = new StringBuffer();
         byte[] buffer = new byte[1024];
-        int count=0;
-        while((count = bis.read(buffer,0,1024)) != -1) {
+        int count = 0;
+        while ((count = bis.read(buffer, 0, 1024)) != -1) {
             stringBuffer.append(new String(buffer, StandardCharsets.UTF_8));
         }
         bis.close();
@@ -202,8 +202,8 @@ public final class FileUtil {
         }
         FileOutputStream fos = new FileOutputStream(file);
         byte[] buffer = new byte[1024];
-        int count=0;
-        while((count = bis.read(buffer,0,1024)) != -1) {
+        int count = 0;
+        while ((count = bis.read(buffer, 0, 1024)) != -1) {
             fos.write(buffer, 0, count);
         }
         bis.close();

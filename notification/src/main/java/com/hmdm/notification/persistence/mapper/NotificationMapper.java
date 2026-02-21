@@ -22,13 +22,12 @@
 package com.hmdm.notification.persistence.mapper;
 
 import com.hmdm.notification.persistence.domain.PushMessage;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
-
-import java.util.List;
 
 /**
  * <p>An ORM mapper for <code>Notification</code> sub-system domain objects.</p>
@@ -37,48 +36,43 @@ import java.util.List;
  */
 public interface NotificationMapper {
 
-    @Select("SELECT pushMessages.* " +
-            "FROM pendingPushes " +
-            "INNER JOIN pushMessages ON pushMessages.id = pendingPushes.messageId " +
-            "INNER JOIN devices ON devices.id = pushMessages.deviceId " +
-            "WHERE (devices.number = #{deviceNumber} OR devices.oldNumber = #{deviceNumber}) " +
-            "AND pendingPushes.status = 0 " +
-            "ORDER BY pendingPushes.createTime ASC")
+    @Select("SELECT pushMessages.* " + "FROM pendingPushes "
+            + "INNER JOIN pushMessages ON pushMessages.id = pendingPushes.messageId "
+            + "INNER JOIN devices ON devices.id = pushMessages.deviceId "
+            + "WHERE (devices.number = #{deviceNumber} OR devices.oldNumber = #{deviceNumber}) "
+            + "AND pendingPushes.status = 0 " + "ORDER BY pendingPushes.createTime ASC")
     List<PushMessage> getPendingMessagesByNumber(@Param("deviceNumber") String deviceNumber);
 
-    @Select("SELECT pushMessages.* " +
-            "FROM pendingPushes " +
-            "INNER JOIN pushMessages ON pushMessages.id = pendingPushes.messageId " +
-            "WHERE pushMessages.deviceId = #{deviceId} " +
-            "AND pendingPushes.status = 0 " +
-            "ORDER BY pendingPushes.createTime ASC")
+    @Select("SELECT pushMessages.* " + "FROM pendingPushes "
+            + "INNER JOIN pushMessages ON pushMessages.id = pendingPushes.messageId "
+            + "WHERE pushMessages.deviceId = #{deviceId} " + "AND pendingPushes.status = 0 "
+            + "ORDER BY pendingPushes.createTime ASC")
     List<PushMessage> getPendingMessagesById(@Param("deviceId") int deviceId);
 
     void markMessagesAsDelivered(@Param("messageIds") List<Integer> messageIds);
 
-    @Insert("INSERT INTO pushMessages (messageType, deviceId, payload) " +
-            "VALUES (#{messageType}, #{deviceId}, #{payload})")
-    @SelectKey( statement = "SELECT currval('pushmessages_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert("INSERT INTO pushMessages (messageType, deviceId, payload) "
+            + "VALUES (#{messageType}, #{deviceId}, #{payload})")
+    @SelectKey(
+            statement = "SELECT currval('pushmessages_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insertPushMessage(PushMessage message);
 
-    @Insert("INSERT INTO pendingPushes (messageId, status, createTime) " +
-            "VALUES (#{messageId}, 0, EXTRACT(EPOCH FROM NOW()) * 1000)")
+    @Insert("INSERT INTO pendingPushes (messageId, status, createTime) "
+            + "VALUES (#{messageId}, 0, EXTRACT(EPOCH FROM NOW()) * 1000)")
     void insertPendingPush(int messageId);
 
     @Select("SELECT status FROM pendingPushes WHERE messageId = #{messageId}")
     Integer getDeliveryStatus(@Param("messageId") int messageId);
 
-    @Delete("DELETE FROM pushMessages " +
-            "WHERE EXISTS " +
-            "(" +
-            " SELECT 1 " +
-            " FROM pendingPushes " +
-            " WHERE pendingPushes.messageId = pushMessages.id " +
-            " AND (" +
-            "      pendingPushes.status = 0 AND EXTRACT(EPOCH FROM NOW()) * 1000 - pendingPushes.createTime >= #{d1}" +
-            "      OR " +
-            "      pendingPushes.status = 1 AND NOT pendingPushes.sendTime IS NULL AND EXTRACT(EPOCH FROM NOW()) * 1000 - pendingPushes.sendTime >= #{d2}" +
-            "     )" +
-            ")")
+    @Delete("DELETE FROM pushMessages " + "WHERE EXISTS " + "(" + " SELECT 1 " + " FROM pendingPushes "
+            + " WHERE pendingPushes.messageId = pushMessages.id " + " AND ("
+            + "      pendingPushes.status = 0 AND EXTRACT(EPOCH FROM NOW()) * 1000 - pendingPushes.createTime >= #{d1}"
+            + "      OR "
+            + "      pendingPushes.status = 1 AND NOT pendingPushes.sendTime IS NULL AND EXTRACT(EPOCH FROM NOW()) * 1000 - pendingPushes.sendTime >= #{d2}"
+            + "     )" + ")")
     void purgeMessages(@Param("d1") long nonDeliveredMessagesLifeSpan, @Param("d2") long deliveredMessagesLifeSpan);
 }

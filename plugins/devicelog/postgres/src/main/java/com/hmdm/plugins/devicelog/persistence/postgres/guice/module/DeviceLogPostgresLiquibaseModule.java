@@ -22,10 +22,9 @@
 package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 
 import com.hmdm.guice.module.AbstractLiquibaseModule;
-import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
+import jakarta.servlet.ServletContext;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
-
-import javax.servlet.ServletContext;
 
 /**
  * <p>A module used for initializing and managing the state of the database tables related to <code>Device Log</code>
@@ -42,7 +41,6 @@ public class DeviceLogPostgresLiquibaseModule extends AbstractLiquibaseModule {
         super(context);
     }
 
-
     /**
      * <p>Gets the path to the DB change log to be used by this module.</p>
      *
@@ -52,11 +50,8 @@ public class DeviceLogPostgresLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected String getChangeLogResourcePath() {
-        String path = this.getClass().getResource("/liquibase/devicelog.postgres.changelog.xml").getPath();
-        if (!path.startsWith("jar:")) {
-            path = "jar:" + path;
-        }
-        return path;
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/devicelog.postgres.changelog.xml";
     }
 
     /**
@@ -66,7 +61,6 @@ public class DeviceLogPostgresLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new PluginLiquibaseResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
-
 }

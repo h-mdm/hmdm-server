@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class UploadAppRequest implements Serializable {
 
     private static final long serialVersionUID = 514589555301053784L;
-    
+
     // Application data
     private String localPath;
     private String name;
@@ -51,8 +51,7 @@ public class UploadAppRequest implements Serializable {
     /**
      * <p>Constructs new <code>UploadAppRequest</code> instance. This implementation does nothing.</p>
      */
-    public UploadAppRequest() {
-    }
+    public UploadAppRequest() {}
 
     public String getName() {
         return name;
@@ -152,19 +151,9 @@ public class UploadAppRequest implements Serializable {
 
     @Override
     public String toString() {
-        return "UploadAppRequest{" +
-                "localPath='" + localPath + '\'' +
-                ", name='" + name + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", version='" + version + '\'' +
-                ", pkg='" + pkg + '\'' +
-                ", showIcon=" + showIcon +
-                ", useKiosk=" + useKiosk +
-                ", runAfterInstall=" + runAfterInstall +
-                ", runAtBoot=" + runAtBoot +
-                ", system=" + system +
-                ", deviceId='" + deviceId + '\'' +
-                ", hash='" + hash + '\'' +
-                '}';
+        return "UploadAppRequest{" + "localPath='" + localPath + '\'' + ", name='" + name + '\'' + ", fileName='"
+                + fileName + '\'' + ", version='" + version + '\'' + ", pkg='" + pkg + '\'' + ", showIcon=" + showIcon
+                + ", useKiosk=" + useKiosk + ", runAfterInstall=" + runAfterInstall + ", runAtBoot=" + runAtBoot
+                + ", system=" + system + ", deviceId='" + deviceId + '\'' + ", hash='" + hash + '\'' + '}';
     }
 }

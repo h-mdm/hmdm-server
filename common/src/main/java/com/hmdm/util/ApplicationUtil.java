@@ -33,16 +33,15 @@ public final class ApplicationUtil {
     /**
      * <p>Constructs new <code>ApplicationUtil</code> instance. This implementation does nothing.</p>
      */
-    private ApplicationUtil() {
-    }
+    private ApplicationUtil() {}
 
     /**
      * <p>Compares the specified application versions.</p>
      *
      * @param version1 a first application version to compare.
      * @param version2 a second application version to compare.
-     * @return a comparison result. 0 - if versions are equal, -1 - if first version is considered to be less than the
-     *         second one; 1 - otherwise.
+     *
+     * @return a comparison result. 0 - if versions are equal, -1 - if first version is considered to be less than the second one; 1 - otherwise.
      */
     public static int compareVersions(String version1, String version2) {
         if (version1 == null && version2 == null) {
@@ -90,6 +89,7 @@ public final class ApplicationUtil {
      * <p>Normalizes the specified string for comparison. Strips off all non-digit and non-dot characters from it.</p>
      *
      * @param version a version text to normalize.
+     *
      * @return a normalized version text.
      */
     public static String normalizeVersion(String version) {

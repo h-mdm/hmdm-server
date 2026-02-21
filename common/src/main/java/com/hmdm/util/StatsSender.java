@@ -1,19 +1,18 @@
 package com.hmdm.util;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.UsageStats;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.*;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class StatsSender {
@@ -31,8 +30,8 @@ public class StatsSender {
         stats.setInstanceId(CryptoUtil.getMD5String(customerDomain));
         stats.setWebVersion(webVersion);
         stats.setCommunity(UpdateSettings.WEB_UPDATE_USERNAME == null);
-        stats.setDevicesTotal((int)deviceDAO.getTotalDevicesCount());
-        stats.setDevicesOnline((int)deviceDAO.getOnlineDevicesCount());
+        stats.setDevicesTotal((int) deviceDAO.getTotalDevicesCount());
+        stats.setDevicesOnline((int) deviceDAO.getOnlineDevicesCount());
 
         try {
             OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
@@ -47,9 +46,9 @@ public class StatsSender {
 
             stats.setArch(arch);
             stats.setCpuTotal(cpuCount);
-            stats.setCpuUsed((int)(loadAverage * 100.0));
-            stats.setRamTotal((int)(max / 1048576l));
-            stats.setRamUsed((int)(used / 1048576l));
+            stats.setCpuUsed((int) (loadAverage * 100.0));
+            stats.setRamTotal((int) (max / 1048576l));
+            stats.setRamUsed((int) (used / 1048576l));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +65,7 @@ public class StatsSender {
 
         HttpURLConnection conn = null;
         try {
-            URL url = new URL(statUrl);
+            URL url = URI.create(statUrl).toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(30000);
             conn.setConnectTimeout(30000);
@@ -77,14 +76,14 @@ public class StatsSender {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.connect();
 
-            try(OutputStream os = conn.getOutputStream()) {
+            try (OutputStream os = conn.getOutputStream()) {
                 String jsonString = stats.toJsonString();
-                byte[] input = jsonString.getBytes("utf-8");
+                byte[] input = jsonString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
-            try(BufferedReader br = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+            try (BufferedReader br =
+                    new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
                 String responseLine = null;
                 while ((responseLine = br.readLine()) != null) {

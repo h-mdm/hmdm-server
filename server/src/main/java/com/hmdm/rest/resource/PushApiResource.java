@@ -25,34 +25,30 @@ import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.GroupDAO;
-import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.domain.DeviceSearchRequest;
 import com.hmdm.persistence.domain.Group;
-import com.hmdm.persistence.domain.Icon;
 import com.hmdm.rest.json.PushRequest;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource providing interface to send Push messages.</p>
  *
  * @author isv
  */
-@Api(tags = {"Push API"})
+@Tag(name = "Push API")
 @Path("/private/push")
 @Singleton
 public class PushApiResource {
@@ -68,8 +64,7 @@ public class PushApiResource {
 
     private GroupDAO groupDAO;
 
-    public PushApiResource() {
-    }
+    public PushApiResource() {}
 
     /**
      * <p>Constructs new <code>PushApiResource</code> instance. This implementation does nothing.</p>
@@ -89,7 +84,8 @@ public class PushApiResource {
         return dsr;
     }
 
-    private void createPushMessages(DeviceSearchRequest dsr, String messageType, String payload, List<PushMessage> messages) {
+    private void createPushMessages(
+            DeviceSearchRequest dsr, String messageType, String payload, List<PushMessage> messages) {
         List<Device> devices = deviceDAO.getAllDevices(dsr).getItems();
         for (Device device : devices) {
             PushMessage pushMessage = new PushMessage(messageType, payload, device.getId());
@@ -101,14 +97,11 @@ public class PushApiResource {
      * <p>Sends a Push message to devices.</p>
      *
      * @param pushRequest A command to send a Push message.
+     *
      * @return a response to client.
      */
     // =================================================================================================================
-    @ApiOperation(
-            value = "Send a Push message",
-            notes = "Sends a Push message to specified devices.",
-            authorizations = {@Authorization("Bearer Token")}
-    )
+    @Operation(summary = "Send a Push message", description = "Sends a Push message to specified devices.")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -116,7 +109,8 @@ public class PushApiResource {
         final boolean canSendMessages = SecurityContext.get().hasPermission("push_api");
 
         if (!canSendMessages) {
-            logger.error("Unauthorized attempt to send a message",
+            logger.error(
+                    "Unauthorized attempt to send a message",
                     SecurityException.onCustomerDataAccessViolation(0, "message"));
             return Response.PERMISSION_DENIED();
         }
@@ -143,8 +137,8 @@ public class PushApiResource {
                 for (String deviceNumber : pushRequest.getDeviceNumbers()) {
                     Device device = deviceDAO.getDeviceByNumber(deviceNumber);
                     if (device != null) {
-                        PushMessage pushMessage = new PushMessage(pushRequest.getMessageType(),
-                                pushRequest.getPayload(), device.getId());
+                        PushMessage pushMessage =
+                                new PushMessage(pushRequest.getMessageType(), pushRequest.getPayload(), device.getId());
                         messages.add(pushMessage);
                     } else {
                         logger.warn("Failed to send Push message to device '" + deviceNumber + "': device not found");
@@ -152,8 +146,8 @@ public class PushApiResource {
                 }
             }
         }
-        String logString = "Push message type '" + pushRequest.getMessageType() + "', payload '" + pushRequest.getPayload() +
-                "' is sent to device ids: ";
+        String logString = "Push message type '" + pushRequest.getMessageType() + "', payload '"
+                + pushRequest.getPayload() + "' is sent to device ids: ";
         String logDevices = "";
         if (messages.size() > 0) {
             for (PushMessage pushMessage : messages) {
@@ -169,7 +163,5 @@ public class PushApiResource {
         }
 
         return Response.OK();
-
     }
-
 }

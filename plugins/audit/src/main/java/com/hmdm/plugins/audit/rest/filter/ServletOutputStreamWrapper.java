@@ -21,13 +21,16 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
  * <p>A wrapper around the servlet response stream used for capturing the content of the response.</p>
+ *
+ * <p>Updated for Jakarta Servlet 6.0 compatibility.</p>
  *
  * @author isv
  */
@@ -63,4 +66,23 @@ public class ServletOutputStreamWrapper extends ServletOutputStream {
         return copy.toByteArray();
     }
 
+    /**
+     * <p>Required by Jakarta Servlet 6.0 - checks if data can be written without blocking.</p>
+     *
+     * @return true since we're always ready to write (synchronous implementation)
+     */
+    @Override
+    public boolean isReady() {
+        return true;
+    }
+
+    /**
+     * <p>Required by Jakarta Servlet 6.0 - sets a write listener for async operations.</p>
+     *
+     * @param writeListener the write listener (not used in synchronous implementation)
+     */
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+        // Not used in this synchronous implementation
+    }
 }

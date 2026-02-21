@@ -22,7 +22,6 @@
 package com.hmdm.security;
 
 import com.hmdm.persistence.domain.User;
-
 import java.util.Optional;
 
 /**
@@ -105,9 +104,7 @@ public class SecurityContext {
      * <p>Gets the user name for logging purposes</p>
      */
     public String getCurrentUserName() {
-        return getCurrentUser()
-                .map(u -> u.getLogin())
-                .orElse("null");
+        return getCurrentUser().map(u -> u.getLogin()).orElse("null");
     }
 
     /**
@@ -132,15 +129,14 @@ public class SecurityContext {
      * <p>Checks if current user is granted specified permission.</p>
      *
      * @param permission a permission to check for granting.
+     *
      * @return <code>true</code> if current user is granted a specified permission; <code>false</code> otherwise.
      */
     public boolean hasPermission(String permission) {
-        return isSuperAdmin() ||
-                getCurrentUser()
-                        .map(u -> u.getUserRole()
-                                .getPermissions()
-                                .stream()
-                                .anyMatch(p -> p.getName().equalsIgnoreCase(permission))
-                        ).orElse(false);
+        return isSuperAdmin()
+                || getCurrentUser()
+                        .map(u -> u.getUserRole().getPermissions().stream()
+                                .anyMatch(p -> p.getName().equalsIgnoreCase(permission)))
+                        .orElse(false);
     }
 }

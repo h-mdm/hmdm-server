@@ -21,11 +21,26 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.persistence.mapper.ApplicationMapper;
+import com.hmdm.rest.json.APKFileDetails;
+import com.hmdm.rest.json.ApplicationConfigurationLink;
+import com.hmdm.rest.json.ApplicationVersionConfigurationLink;
+import com.hmdm.rest.json.LinkConfigurationsToAppRequest;
+import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
+import com.hmdm.rest.json.LookupItem;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
+import com.hmdm.util.*;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,30 +50,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
-import com.google.inject.Singleton;
-import javax.inject.Named;
-import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.rest.json.APKFileDetails;
-import com.hmdm.rest.json.ApplicationConfigurationLink;
-import com.hmdm.rest.json.ApplicationVersionConfigurationLink;
-import com.hmdm.rest.json.LinkConfigurationsToAppRequest;
-import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
-import com.hmdm.rest.json.LookupItem;
-import com.hmdm.util.*;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.glassfish.jersey.jaxb.internal.XmlJaxbElementProvider;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.mapper.ApplicationMapper;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
-
-import javax.validation.constraints.NotNull;
 
 @Singleton
 public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationConfigurationLink> {
@@ -73,11 +68,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     private APKFileAnalyzer apkFileAnalyzer;
 
     @Inject
-    public ApplicationDAO(ApplicationMapper mapper, CustomerDAO customerDAO,
-                          @Named("files.directory") String filesDirectory,
-                          @Named("base.url") String baseUrl,
-                          @Named("apk.trusted.url") String apkTrustedUrl,
-                          APKFileAnalyzer apkFileAnalyzer) {
+    public ApplicationDAO(
+            ApplicationMapper mapper,
+            CustomerDAO customerDAO,
+            @Named("files.directory") String filesDirectory,
+            @Named("base.url") String baseUrl,
+            @Named("apk.trusted.url") String apkTrustedUrl,
+            APKFileAnalyzer apkFileAnalyzer) {
         this.mapper = mapper;
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
@@ -111,14 +108,15 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Creates new application record in DB.</p>
      *
      * @param application an application record to be created.
-     * @throws DuplicateApplicationException if another application record with same package ID and version already
-     *         exists either for current or master customer account.
+     *
+     * @throws DuplicateApplicationException if another application record with same package ID and version already exists either for current or master customer account.
      */
     @Transactional
     public int insertApplication(Application application) {
         log.debug("Entering #insertApplication: application = {}", application);
 
-        // If an APK-file was set for new app then make the file available in Files area and parse the app parameters
+        // If an APK-file was set for new app then make the file available in Files area
+        // and parse the app parameters
         // from it (package ID, version)
         final String filePath = application.getFilePath();
         if (filePath != null && !filePath.trim().isEmpty()) {
@@ -136,16 +134,19 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 final String fileName = movedFile.getAbsolutePath();
                 final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(fileName);
 
-                // If URL is not specified explicitly for new app then set the application URL to reference to that
+                // If URL is not specified explicitly for new app then set the application URL
+                // to reference to that
                 // file
                 if ((application.getUrl() == null || application.getUrl().trim().isEmpty())) {
-                    application.setUrl(FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), movedFile.getName()));
+                    application.setUrl(
+                            FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), movedFile.getName()));
                 }
 
                 application.setPkg(apkFileDetails.getPkg());
                 application.setVersion(apkFileDetails.getVersion());
-                // APK architecture is determined on a previous step, and can be overridden by user's request
-                //application.setArch(apkFileDetails.getArch());
+                // APK architecture is determined on a previous step, and can be overridden by
+                // user's request
+                // application.setArch(apkFileDetails.getArch());
             } else {
                 log.error("Could not move the uploaded .apk-file {}", filePath);
                 throw new DAOException("Could not move the uploaded .apk-file");
@@ -199,81 +200,94 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Checks if another application with same package ID and version already exists or not.</p>
      *
      * @param application an application to check against duplicates.
+     *
      * @throws DuplicateApplicationException if a duplicated application is found.
      */
     private void guardDuplicateApp(Application application) {
         if (application.getPkg() != null && application.getVersion() != null) {
             final List<Application> dbApps = findByPackageIdAndVersion(application.getPkg(), application.getVersion());
             if (!dbApps.isEmpty()) {
-                throw new DuplicateApplicationException(application.getPkg(), application.getVersion(), dbApps.get(0).getCustomerId());
+                throw new DuplicateApplicationException(
+                        application.getPkg(),
+                        application.getVersion(),
+                        dbApps.get(0).getCustomerId());
             }
         }
     }
 
     /**
-     * <p>Checks if another application version with same version number already exists for specified application or
-     * not.</p>
+     * <p>Checks if another application version with same version number already exists for specified application or not.</p>
      *
      * @param application an application to check against duplicates.
      * @param version an application version to check against duplicates.
-     * @throws DuplicateApplicationException if a duplicated application is found.
+     *
+     * @throws DuplicateApplicationException
+     *             if a duplicated application is found.
      */
     private void guardDuplicateAppVersion(Application application, ApplicationVersion version) {
         if (getDuplicateAppVersion(application, version) != 0) {
-            throw new DuplicateApplicationException(application.getPkg(), version.getVersion(), application.getCustomerId());
+            throw new DuplicateApplicationException(
+                    application.getPkg(), version.getVersion(), application.getCustomerId());
         }
     }
 
     /**
-     * <p>Checks if another application version with same version number already exists for specified application or
-     * not.</p>
+     * <p>Checks if another application version with same version number already exists for specified application or not.</p>
      *
      * @param application an application to check against duplicates.
      * @param version an application version to check against duplicates.
+     *
      * @return id of a duplicated application if found, otherwise 0
      */
     private int getDuplicateAppVersion(Application application, ApplicationVersion version) {
         return this.mapper.getDuplicateVersionForApp(
-                application.getId(), version.getId() == null ? -1 : version.getId(), version.getVersion()
-        );
+                application.getId(), version.getId() == null ? -1 : version.getId(), version.getVersion());
     }
 
     /**
      * <p>Checks if another application with same package ID and version already exists or not.</p>
      *
      * @param application an application to check against duplicates.
+     *
      * @throws DuplicateApplicationException if a duplicated application is found.
      */
-//    private void guardDowngradeAppVersion(Application application) {
-//        if (application.getPkg() != null && application.getVersion() != null) {
-//            final List<Application> dbApps = findByPackageIdAndNewerVersion(application.getPkg(), application.getVersion());
-//            if (!dbApps.isEmpty()) {
-//                throw new RecentApplicationVersionExistsException(application.getPkg(), application.getVersion(), dbApps.get(0).getCustomerId());
-//            }
-//        }
-//    }
+    // private void guardDowngradeAppVersion(Application application) {
+    // if (application.getPkg() != null && application.getVersion() != null) {
+    // final List<Application> dbApps =
+    // findByPackageIdAndNewerVersion(application.getPkg(),
+    // application.getVersion());
+    // if (!dbApps.isEmpty()) {
+    // throw new RecentApplicationVersionExistsException(application.getPkg(),
+    // application.getVersion(), dbApps.get(0).getCustomerId());
+    // }
+    // }
+    // }
 
     /**
      * <p>Checks if another application with same package ID and version already exists or not.</p>
      *
      * @param application an application to check against duplicates.
+     *
      * @throws DuplicateApplicationException if a duplicated application is found.
      */
-//    private void guardDowngradeAppVersion(Application application, ApplicationVersion version) {
-//        if (application.getPkg() != null && version.getVersion() != null) {
-//            final List<Application> dbApps = findByPackageIdAndNewerVersion(application.getPkg(), version.getVersion());
-//            if (!dbApps.isEmpty()) {
-//                throw new RecentApplicationVersionExistsException(application.getPkg(), version.getVersion(), dbApps.get(0).getCustomerId());
-//            }
-//        }
-//    }
+    // private void guardDowngradeAppVersion(Application application,
+    // ApplicationVersion version) {
+    // if (application.getPkg() != null && version.getVersion() != null) {
+    // final List<Application> dbApps =
+    // findByPackageIdAndNewerVersion(application.getPkg(), version.getVersion());
+    // if (!dbApps.isEmpty()) {
+    // throw new RecentApplicationVersionExistsException(application.getPkg(),
+    // version.getVersion(), dbApps.get(0).getCustomerId());
+    // }
+    // }
+    // }
 
     /**
      * <p>Updates existing application record in DB.</p>
      *
      * @param application an application record to be updated.
-     * @throws DuplicateApplicationException if another application record with same package ID and version already
-     *         exists either for current or master customer account.
+     *
+     * @throws DuplicateApplicationException if another application record with same package ID and version already exists either for current or master customer account.
      */
     @Transactional
     public void updateApplication(Application application) {
@@ -284,8 +298,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Updates existing web application record in DB.</p>
      *
      * @param application an application record to be updated.
-     * @throws DuplicateApplicationException if another application record with same package ID and version already
-     *         exists either for current or master customer account.
+     *
+     * @throws DuplicateApplicationException if another application record with same package ID and version already exists either for current or master customer account.
      */
     @Transactional
     public void updateWebApplication(Application application) {
@@ -305,16 +319,15 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Updates existing application version record in DB.</p>
      *
      * @param applicationVersion an application version record to be updated.
-     * @throws DuplicateApplicationException if another application record with same package ID and version already
-     *         exists either for current or master customer account.
+     *
+     * @throws DuplicateApplicationException if another application record with same package ID and version already exists either for current or master customer account.
      */
     @Transactional
     public void updateApplicationVersion(ApplicationVersion applicationVersion) {
         final Application application = getSingleRecord(
                 () -> this.mapper.findById(applicationVersion.getApplicationId()),
-                SecurityException::onApplicationAccessViolation
-        );
-        
+                SecurityException::onApplicationAccessViolation);
+
         guardDuplicateAppVersion(application, applicationVersion);
 
         final ApplicationVersion dbApplicationVersion = this.mapper.findVersionById(applicationVersion.getId());
@@ -323,16 +336,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             existingUrl = null;
         }
 
-        if (applicationVersion.getUrl() != null && applicationVersion.getUrl().trim().isEmpty()) {
+        if (applicationVersion.getUrl() != null
+                && applicationVersion.getUrl().trim().isEmpty()) {
             applicationVersion.setUrl(null);
         }
         final String newUrl = applicationVersion.getUrl();
-        
-        boolean urlChanged = newUrl == null && existingUrl != null ||
-                newUrl != null && existingUrl == null ||
-                newUrl != null && !newUrl.equals(existingUrl);
-        boolean isTrustedUrl = newUrl != null && !apkTrustedUrl.equals("") &&
-                newUrl.startsWith(apkTrustedUrl);
+
+        boolean urlChanged = newUrl == null && existingUrl != null
+                || newUrl != null && existingUrl == null
+                || newUrl != null && !newUrl.equals(existingUrl);
+        boolean isTrustedUrl = newUrl != null && !apkTrustedUrl.equals("") && newUrl.startsWith(apkTrustedUrl);
         if (urlChanged && !isTrustedUrl) {
             applicationVersion.setApkHash(null);
         } else {
@@ -344,7 +357,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         this.mapper.updateApplicationVersion(applicationVersion);
         this.mapper.recalculateLatestVersion(application.getId());
 
-        final Integer newLatestVersionId = this.mapper.findById(applicationVersion.getApplicationId()).getLatestVersion();
+        final Integer newLatestVersionId =
+                this.mapper.findById(applicationVersion.getApplicationId()).getLatestVersion();
         if (!currentLatestVersionId.equals(newLatestVersionId)) {
             final ApplicationVersion newLatestVersion = this.mapper.findVersionById(newLatestVersionId);
             doAutoUpdateToApplicationVersion(newLatestVersion);
@@ -352,10 +366,10 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     }
 
     /**
-     * <p>Removes the application referenced by the specified ID. The associated application versions are removed as
-     * well.</p>
+     * <p>Removes the application referenced by the specified ID. The associated application versions are removed as well.</p>
      *
      * @param id an ID of an application to delete.
+     *
      * @throws SecurityException if current user is not granted a permission to delete the specified application.
      */
     @Transactional
@@ -378,8 +392,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 id,
                 this::findById,
                 (record) -> this.mapper.removeApplicationById(record.getId()),
-                SecurityException::onApplicationAccessViolation
-        );
+                SecurityException::onApplicationAccessViolation);
 
         if (removeApk) {
             final int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
@@ -390,7 +403,6 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 removeVersionApk(customer, version.getId(), version.getUrlArm64());
             }
         }
-
     }
 
     private void removeVersionApk(Customer customer, Integer id, String url) {
@@ -399,7 +411,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             if (apkFile != null) {
                 final boolean deleted = FileUtil.deleteFile(customer, filesDirectory, apkFile);
                 if (!deleted) {
-                    log.warn("Could not delete the APK-file {} related to deleted application version #{}", apkFile, id);
+                    log.warn(
+                            "Could not delete the APK-file {} related to deleted application version #{}", apkFile, id);
                 }
             }
         }
@@ -411,8 +424,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 id,
                 this::findById,
                 customerId -> this.mapper.getApplicationConfigurations(customerId, userId, id),
-                SecurityException::onApplicationAccessViolation
-        );
+                SecurityException::onApplicationAccessViolation);
     }
 
     public List<ApplicationVersionConfigurationLink> getApplicationVersionConfigurations(Integer versionId) {
@@ -422,8 +434,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         final int userCustomerId = user.getCustomerId();
 
         if (application.isCommon() || application.getCustomerId() == userCustomerId) {
-            return this.mapper.getApplicationVersionConfigurationsWithCandidates(userCustomerId, user.getId(),
-                    application.getId(), versionId);
+            return this.mapper.getApplicationVersionConfigurationsWithCandidates(
+                    userCustomerId, user.getId(), application.getId(), versionId);
         } else {
             throw SecurityException.onApplicationAccessViolation(application);
         }
@@ -431,36 +443,34 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
     @Transactional
     public void updateApplicationConfigurations(LinkConfigurationsToAppRequest request) {
-        final List<ApplicationConfigurationLink> activeLinks = request.getConfigurations()
-                .stream()
+        final List<ApplicationConfigurationLink> activeLinks = request.getConfigurations().stream()
                 .filter(c -> c.getAction() == 1)
                 .collect(Collectors.toList());
         if (!activeLinks.isEmpty()) {
             activeLinks.forEach(link -> {
                 final int deletedCount = this.mapper.deleteApplicationConfigurationLinksForSamePkg(
-                        link.getApplicationId(), link.getConfigurationId()
-                );
-                log.debug("Deleted {} links to applications with same package as for application #{} for configuration #{}",
-                        deletedCount, link.getApplicationId(), link.getConfigurationId());
+                        link.getApplicationId(), link.getConfigurationId());
+                log.debug(
+                        "Deleted {} links to applications with same package as for application #{} for configuration #{}",
+                        deletedCount,
+                        link.getApplicationId(),
+                        link.getConfigurationId());
             });
         }
 
-        final List<ApplicationConfigurationLink> deletedLinks = request.getConfigurations()
-                .stream()
+        final List<ApplicationConfigurationLink> deletedLinks = request.getConfigurations().stream()
                 .filter(c -> c.getId() != null && c.getAction() == 0)
                 .collect(Collectors.toList());
         deletedLinks.forEach(link -> {
             this.mapper.deleteApplicationConfigurationLink(link.getId());
         });
 
-        final List<ApplicationConfigurationLink> updatedLinks = request.getConfigurations()
-                .stream()
+        final List<ApplicationConfigurationLink> updatedLinks = request.getConfigurations().stream()
                 .filter(c -> c.getId() != null && c.getAction() > 0)
                 .collect(Collectors.toList());
         updatedLinks.forEach(this.mapper::updateApplicationConfigurationLink);
 
-        final List<ApplicationConfigurationLink> newLinks = request.getConfigurations()
-                .stream()
+        final List<ApplicationConfigurationLink> newLinks = request.getConfigurations().stream()
                 .filter(c -> c.getId() == null && c.getAction() > 0)
                 .collect(Collectors.toList());
         this.insertApplicationConfigurations(request.getApplicationId(), newLinks);
@@ -470,7 +480,6 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             this.mapper.recheckConfigurationContentApplications(user.getCustomerId());
             this.mapper.recheckConfigurationKioskModes(user.getCustomerId());
         });
-
     }
 
     @Transactional
@@ -478,26 +487,37 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         final int applicationVersionId = request.getApplicationVersionId();
         this.removeApplicationConfigurationsByVersionId(applicationVersionId, user);
 
-        // If this version is set for installation, then other versions of same app must be set for de-installation
+        // If this version is set for installation, then other versions of same app must
+        // be set for de-installation
         final List<ApplicationVersionConfigurationLink> configurations = request.getConfigurations();
         configurations.forEach(link -> {
             if (link.getAction() == 1) {
-                final int uninstalledCount = this.mapper.uninstallOtherVersions(applicationVersionId, link.getConfigurationId());
-                log.debug("Uninstalled {} application versions of application #{} ({}) for configuration #{} ({})",
-                        uninstalledCount, link.getApplicationId(), link.getApplicationName(),
-                        link.getConfigurationId(), link.getConfigurationName());
+                final int uninstalledCount =
+                        this.mapper.uninstallOtherVersions(applicationVersionId, link.getConfigurationId());
+                log.debug(
+                        "Uninstalled {} application versions of application #{} ({}) for configuration #{} ({})",
+                        uninstalledCount,
+                        link.getApplicationId(),
+                        link.getApplicationName(),
+                        link.getConfigurationId(),
+                        link.getConfigurationName());
 
-                // Update the Main App and Content App references to refer to new application version (if necessary)
-//                final int mainAppUpdateCount
-//                        = this.mapper.syncConfigurationMainApplication(link.getConfigurationId(), applicationVersionId);
-//                log.debug("Synchronized {} main application versions of application #{} ({}) for configuration #{} ({})",
-//                        mainAppUpdateCount, link.getApplicationId(), link.getApplicationName(),
-//                        link.getConfigurationId(), link.getConfigurationName());
-//                final int contentAppUpdateCount
-//                        = this.mapper.syncConfigurationContentApplication(link.getConfigurationId(), applicationVersionId);
-//                log.debug("Synchronized {} content application versions of application #{} ({}) for configuration #{} ({})",
-//                        contentAppUpdateCount, link.getApplicationId(), link.getApplicationName(),
-//                        link.getConfigurationId(), link.getConfigurationName());
+                // Update the Main App and Content App references to refer to new application
+                // version (if necessary)
+                // final int mainAppUpdateCount
+                // = this.mapper.syncConfigurationMainApplication(link.getConfigurationId(),
+                // applicationVersionId);
+                // log.debug("Synchronized {} main application versions of application #{} ({})
+                // for configuration #{} ({})",
+                // mainAppUpdateCount, link.getApplicationId(), link.getApplicationName(),
+                // link.getConfigurationId(), link.getConfigurationName());
+                // final int contentAppUpdateCount
+                // = this.mapper.syncConfigurationContentApplication(link.getConfigurationId(),
+                // applicationVersionId);
+                // log.debug("Synchronized {} content application versions of application #{}
+                // ({}) for configuration #{} ({})",
+                // contentAppUpdateCount, link.getApplicationId(), link.getApplicationName(),
+                // link.getConfigurationId(), link.getConfigurationName());
             }
         });
 
@@ -524,40 +544,43 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         }
     }
 
-    public void insertApplicationVersionConfigurations(Integer applicationVersionId, List<ApplicationVersionConfigurationLink> configurations) {
+    public void insertApplicationVersionConfigurations(
+            Integer applicationVersionId, List<ApplicationVersionConfigurationLink> configurations) {
         if (configurations != null && !configurations.isEmpty()) {
             final ApplicationVersion applicationVersion = findApplicationVersionById(applicationVersionId);
             final Application application = this.mapper.findById(applicationVersion.getApplicationId());
-            final int userCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
+            final int userCustomerId =
+                    SecurityContext.get().getCurrentUser().get().getCustomerId();
 
             if (application.isCommon() || application.getCustomerId() == userCustomerId) {
-                this.mapper.insertApplicationVersionConfigurations(application.getId(), applicationVersionId, configurations);
+                this.mapper.insertApplicationVersionConfigurations(
+                        application.getId(), applicationVersionId, configurations);
             } else {
                 throw SecurityException.onApplicationAccessViolation(application);
             }
-
         }
     }
 
-//    public void removeApplicationConfigurationsById(Integer applicationId) {
-//        updateLinkedData(
-//                applicationId,
-//                this::findById,
-//                app -> this.mapper.removeApplicationConfigurationsById(
-//                        SecurityContext.get().getCurrentUser().get().getCustomerId(), app.getId()
-//                ),
-//                SecurityException::onApplicationAccessViolation
-//        );
-//    }
+    // public void removeApplicationConfigurationsById(Integer applicationId) {
+    // updateLinkedData(
+    // applicationId,
+    // this::findById,
+    // app -> this.mapper.removeApplicationConfigurationsById(
+    // SecurityContext.get().getCurrentUser().get().getCustomerId(), app.getId()
+    // ),
+    // SecurityException::onApplicationAccessViolation
+    // );
+    // }
 
-    public void insertApplicationConfigurations(Integer applicationId, List<ApplicationConfigurationLink> configurations) {
+    public void insertApplicationConfigurations(
+            Integer applicationId, List<ApplicationConfigurationLink> configurations) {
         if (configurations != null && !configurations.isEmpty()) {
             updateLinkedData(
                     applicationId,
                     this::findById,
-                    app -> this.mapper.insertApplicationConfigurations(app.getId(), app.getLatestVersion(), configurations),
-                    SecurityException::onApplicationAccessViolation
-            );
+                    app -> this.mapper.insertApplicationConfigurations(
+                            app.getId(), app.getLatestVersion(), configurations),
+                    SecurityException::onApplicationAccessViolation);
         }
     }
 
@@ -620,11 +643,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         Application application = this.mapper.findById(id);
         if (application != null) {
             if (!application.isCommonApplication()) {
-                final int currentUserCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
+                final int currentUserCustomerId =
+                        SecurityContext.get().getCurrentUser().get().getCustomerId();
                 final Customer newAppCustomer = customerDAO.findById(currentUserCustomerId);
 
                 // Create new common application record
-                // Notice: all applications belonging to a super-admin are considered as common (or shared)
+                // Notice: all applications belonging to a super-admin are considered as common
+                // (or shared)
                 final Application newCommonApplication = new Application();
                 newCommonApplication.setPkg(application.getPkg());
                 newCommonApplication.setName(application.getName());
@@ -638,7 +663,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 this.mapper.insertApplication(newCommonApplication);
                 final Integer newAppId = newCommonApplication.getId();
 
-                // Find all applications among all customers which have the same package ID and build the list of
+                // Find all applications among all customers which have the same package ID and
+                // build the list of
                 // all possible version for target application
                 final List<Application> candidateApplications = mapper.findAllByPackageId(application.getPkg());
                 final List<Application> affectedApplications = new ArrayList<>();
@@ -646,14 +672,18 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 final List<ApplicationVersion> affectedAppVersions = new ArrayList<>();
                 Map<String, ApplicationVersion> candidateApplicationVersions = new HashMap<>();
                 candidateApplications.forEach(app -> {
-                    final List<ApplicationVersion> applicationVersions = this.mapper.getApplicationVersions(app.getId());
+                    final List<ApplicationVersion> applicationVersions =
+                            this.mapper.getApplicationVersions(app.getId());
                     applicationVersions.forEach(ver -> {
                         final String normalizedVersion = ApplicationUtil.normalizeVersion(ver.getVersion());
                         if (!candidateApplicationVersions.containsKey(normalizedVersion)) {
                             candidateApplicationVersions.put(normalizedVersion, ver);
                         } else {
-                            log.debug("Will use following substitution for application versions when turning application {} to common: {} -> {}",
-                                    application.getPkg(), ver, candidateApplicationVersions.get(normalizedVersion));
+                            log.debug(
+                                    "Will use following substitution for application versions when turning application {} to common: {} -> {}",
+                                    application.getPkg(),
+                                    ver,
+                                    candidateApplicationVersions.get(normalizedVersion));
                         }
 
                         affectedAppVersions.add(ver);
@@ -663,7 +693,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                     affectedCustomers.put(app.getId(), customerDAO.findById(app.getCustomerId()));
                 });
 
-                // Re-create the collected application versions and link them to new application. At the same time
+                // Re-create the collected application versions and link them to new
+                // application. At the same time
                 // collect the files to copy to master-customer account
                 final Map<String, Integer> versionIdMapping = new HashMap<>();
                 candidateApplicationVersions.forEach((normalizedVersionText, appVersionObject) -> {
@@ -671,8 +702,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                             appVersionObject,
                             affectedCustomers.get(appVersionObject.getApplicationId()),
                             newAppCustomer,
-                            filesToCopyCollector
-                    );
+                            filesToCopyCollector);
 
                     ApplicationVersion newAppVersion = new ApplicationVersion();
                     newAppVersion.setApplicationId(newAppId);
@@ -684,15 +714,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                     versionIdMapping.put(normalizedVersionText, newAppVersion.getId());
                 });
 
-                // Replace the references to existing applications and application versions to new one
+                // Replace the references to existing applications and application versions to
+                // new one
                 affectedAppVersions.forEach(appVer -> {
                     final String normalizedVersionText = ApplicationUtil.normalizeVersion(appVer.getVersion());
                     final Integer newAppVersionId = versionIdMapping.get(normalizedVersionText);
 
-                    mapper.changeConfigurationsApplication(appVer.getApplicationId(), appVer.getId(), newAppId, newAppVersionId);
+                    mapper.changeConfigurationsApplication(
+                            appVer.getApplicationId(), appVer.getId(), newAppId, newAppVersionId);
                     mapper.changeConfigurationsMainApplication(appVer.getId(), newAppVersionId);
                     mapper.changeConfigurationsContentApplication(appVer.getId(), newAppVersionId);
-
                 });
 
                 // Remove migrated applications
@@ -705,7 +736,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             }
         }
     }
-    
+
     public void turnApplicationIntoCommon(Integer id) {
         if (SecurityContext.get().isSuperAdmin()) {
             final Map<File, File> filesToCopy = new HashMap<>();
@@ -715,29 +746,41 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             // Move the files from affected versions
             filesToCopy.forEach((currentAppFile, newAppFile) -> {
                 if (newAppFile.exists()) {
-                    log.warn("Skip copying file: {} -> {} since the target file already exists",
-                            currentAppFile.getAbsolutePath(), newAppFile.getAbsolutePath());
+                    log.warn(
+                            "Skip copying file: {} -> {} since the target file already exists",
+                            currentAppFile.getAbsolutePath(),
+                            newAppFile.getAbsolutePath());
                 } else if (!currentAppFile.exists()) {
-                    log.warn("Skip copying file: {} -> {} since the source file does not exist",
-                            currentAppFile.getAbsolutePath(), newAppFile.getAbsolutePath());
+                    log.warn(
+                            "Skip copying file: {} -> {} since the source file does not exist",
+                            currentAppFile.getAbsolutePath(),
+                            newAppFile.getAbsolutePath());
                 } else if (!currentAppFile.isFile()) {
-                    log.warn("Skip copying file: {} -> {} since the source file is not a regular file",
-                            currentAppFile.getAbsolutePath(), newAppFile.getAbsolutePath());
+                    log.warn(
+                            "Skip copying file: {} -> {} since the source file is not a regular file",
+                            currentAppFile.getAbsolutePath(),
+                            newAppFile.getAbsolutePath());
                 } else {
-                    log.debug("Copying file: {} -> {}...", currentAppFile.getAbsolutePath(), newAppFile.getAbsolutePath());
+                    log.debug(
+                            "Copying file: {} -> {}...",
+                            currentAppFile.getAbsolutePath(),
+                            newAppFile.getAbsolutePath());
                     try {
                         Path newAppFileDir = newAppFile.toPath().getParent();
                         newAppFileDir = Files.createDirectories(newAppFileDir);
                         if (!Files.exists(newAppFileDir)) {
-                            log.error("Couldn't create a directory '{}' in files area for Master-customer account",
+                            log.error(
+                                    "Couldn't create a directory '{}' in files area for Master-customer account",
                                     newAppFileDir.toAbsolutePath());
                         } else {
                             Files.copy(currentAppFile.toPath(), newAppFile.toPath());
                             deleteAppFile(currentAppFile);
                         }
                     } catch (IOException e) {
-                        log.error("Failed to copy file: {} -> {} due to unexpected error. The process continues.",
-                                currentAppFile.getAbsolutePath(), newAppFile.getAbsolutePath());
+                        log.error(
+                                "Failed to copy file: {} -> {} due to unexpected error. The process continues.",
+                                currentAppFile.getAbsolutePath(),
+                                newAppFile.getAbsolutePath());
                     }
                 }
             });
@@ -749,11 +792,9 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
     private void deleteAppFile(File appFile) {
         final boolean deleted = appFile.delete();
         if (deleted) {
-            log.info("Deleted the file {} when turning application to common",
-                    appFile.getAbsolutePath());
+            log.info("Deleted the file {} when turning application to common", appFile.getAbsolutePath());
         } else {
-            log.error("Failed to delete the file {} when turning application to common",
-                    appFile.getAbsolutePath());
+            log.error("Failed to delete the file {} when turning application to common", appFile.getAbsolutePath());
         }
     }
 
@@ -761,14 +802,17 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Gets the list of versions for specified application.</p>
      *
      * @param id an ID of an application to get versions for.
+     *
      * @return a list of versions for requested application.
      */
     public List<ApplicationVersion> getApplicationVersions(Integer id) {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(currentUser -> {
                     Application dbApplication = this.mapper.findById(id);
                     if (dbApplication != null) {
-                        if (dbApplication.getCustomerId() == currentUser.getCustomerId() || dbApplication.isCommonApplication()) {
+                        if (dbApplication.getCustomerId() == currentUser.getCustomerId()
+                                || dbApplication.isCommonApplication()) {
                             return this.mapper.getApplicationVersions(id);
                         }
                     }
@@ -776,16 +820,17 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                     throw SecurityException.onApplicationAccessViolation(id);
                 })
                 .orElseThrow(SecurityException::onAnonymousAccess);
-
-
     }
 
     /**
      * <p>Removes the application version referenced by the specified ID.</p>
      *
      * @param id an ID of an application to delete.
+     *
      * @return an URL for the deleted application version.
-     * @throws SecurityException if current user is not granted a permission to delete the specified application.
+     *
+     * @throws SecurityException
+     *             if current user is not granted a permission to delete the specified application.
      */
     @Transactional
     public String removeApplicationVersionById(@NotNull Integer id) {
@@ -810,15 +855,16 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             this.mapper.removeApplicationVersionById(id);
 
             // Recalculate latest version for application if necessary
-            if (dbApplication.getLatestVersion() != null && dbApplication.getLatestVersion().equals(id)) {
+            if (dbApplication.getLatestVersion() != null
+                    && dbApplication.getLatestVersion().equals(id)) {
                 this.mapper.recalculateLatestVersion(dbApplication.getId());
                 final Application application = this.mapper.findById(dbApplication.getId());
                 if (application.getLatestVersion() != null) {
-                    final ApplicationVersion latestVersion = this.mapper.findVersionById(application.getLatestVersion());
+                    final ApplicationVersion latestVersion =
+                            this.mapper.findVersionById(application.getLatestVersion());
                     doAutoUpdateToApplicationVersion(latestVersion);
                 }
             }
-
 
             return dbApplicationVersion.getUrl();
         }
@@ -831,6 +877,7 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * file system.</p>
      *
      * @param id an ID of an application to delete.
+     *
      * @throws SecurityException if current user is not granted a permission to delete the specified application.
      */
     public void removeApplicationVersionByIdWithAPKFile(@NotNull Integer id) {
@@ -857,15 +904,17 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Creates new application version record in DB.</p>
      *
      * @param applicationVersion an application version record to be created.
-     * @throws DuplicateApplicationException if another application record with same package ID and version already
-     *         exists either for current or master customer account.
-     * @throws CommonAppAccessException if target application is common and current user is not a super-admin.
+     *
+     * @throws DuplicateApplicationException if another application record with same package ID and version already exists either for current or master customer account.
+     * @throws CommonAppAccessException
+     *             if target application is common and current user is not a super-admin.
      */
     @Transactional
     public int insertApplicationVersion(ApplicationVersion applicationVersion) {
         log.debug("Entering #insertApplicationVersion: application = {}", applicationVersion);
 
-        // If an APK-file was set for new app then make the file available in Files area and parse the app parameters
+        // If an APK-file was set for new app then make the file available in Files area
+        // and parse the app parameters
         // from it (package ID, version)
         final AtomicReference<String> appPkg = new AtomicReference<>();
 
@@ -885,11 +934,14 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
                 final String fileName = movedFile.getAbsolutePath();
                 final APKFileDetails apkFileDetails = this.apkFileAnalyzer.analyzeFile(fileName);
 
-                // If URL is not specified explicitly for new app then set the application URL to reference to that
+                // If URL is not specified explicitly for new app then set the application URL
+                // to reference to that
                 // file
-                if ((applicationVersion.getUrl() == null || applicationVersion.getUrl().trim().isEmpty())) {
+                if ((applicationVersion.getUrl() == null
+                        || applicationVersion.getUrl().trim().isEmpty())) {
                     String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), movedFile.getName());
-                    // Here we check applicationVersion.getArch() because the admin may wish to override
+                    // Here we check applicationVersion.getArch() because the admin may wish to
+                    // override
                     // the automatic selection
                     if (StringUtil.isEmpty(applicationVersion.getArch())) {
                         applicationVersion.setSplit(false);
@@ -912,25 +964,27 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
         final Application existingApplication = findById(applicationVersion.getApplicationId());
         if (existingApplication == null) {
-            throw new DAOException("The requested application does not exist: #" + applicationVersion.getApplicationId());
+            throw new DAOException(
+                    "The requested application does not exist: #" + applicationVersion.getApplicationId());
         }
 
         if (existingApplication.isCommonApplication()) {
             if (!SecurityContext.get().isSuperAdmin()) {
                 throw new CommonAppAccessException(
-                        existingApplication.getPkg(), SecurityContext.get().getCurrentCustomerId().get()
-                );
+                        existingApplication.getPkg(),
+                        SecurityContext.get().getCurrentCustomerId().get());
             }
         }
 
-        // Check the version package id against application's package id - they must be the same
+        // Check the version package id against application's package id - they must be
+        // the same
         if (appPkg.get() != null) {
             if (!existingApplication.getPkg().equals(appPkg.get())) {
                 throw new ApplicationVersionPackageMismatchException(appPkg.get(), existingApplication.getPkg());
             }
         }
 
-//        guardDowngradeAppVersion(existingApplication, applicationVersion);
+        // guardDowngradeAppVersion(existingApplication, applicationVersion);
 
         // The user may wish to add the same application and version when he moves
         // the application from h-mdm.com to his own server
@@ -953,7 +1007,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
             this.mapper.recalculateLatestVersion(existingApplication.getId());
         }
 
-        // Auto update the configurations if the created application version becomes the latest version for application
+        // Auto update the configurations if the created application version becomes the
+        // latest version for application
         final Application refreshedExistingApplication = findById(applicationVersion.getApplicationId());
         final Integer latestVersionId = refreshedExistingApplication.getLatestVersion();
         if (latestVersionId != null && latestVersionId.equals(applicationVersion.getId())) {
@@ -963,11 +1018,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         return applicationVersion.getId();
     }
 
-    private String translateAppVersionUrl(ApplicationVersion appVersion,
-                                          Customer appCustomer,
-                                          Customer newAppCustomer,
-                                          Map<File, File> fileToCopyCollector) {
-        // Update application URL and link it to new customer and copy application file to master
+    private String translateAppVersionUrl(
+            ApplicationVersion appVersion,
+            Customer appCustomer,
+            Customer newAppCustomer,
+            Map<File, File> fileToCopyCollector) {
+        // Update application URL and link it to new customer and copy application file
+        // to master
         // customer
         final String currentApplicationUrl = appVersion.getUrl();
         if (currentApplicationUrl != null) {
@@ -987,7 +1044,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
 
                 return this.baseUrl + "/files/" + newAppCustomer.getFilesDir() + "/" + relativeFilePath;
             } else {
-                log.warn("Invalid application URL does not contain the base directory for customer files: {}" ,
+                log.warn(
+                        "Invalid application URL does not contain the base directory for customer files: {}",
                         currentApplicationUrl);
             }
         }
@@ -1002,16 +1060,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      *
      * @param newApplicationVersion a new application version to update the configuration references to.
      */
-    private void doAutoUpdateToApplicationVersion( ApplicationVersion newApplicationVersion) {
-        int autoUpdatedConfigAppsCount  = this.mapper.autoUpdateConfigurationsApplication(
-                newApplicationVersion.getApplicationId(), newApplicationVersion.getId()
-        );
+    private void doAutoUpdateToApplicationVersion(ApplicationVersion newApplicationVersion) {
+        int autoUpdatedConfigAppsCount = this.mapper.autoUpdateConfigurationsApplication(
+                newApplicationVersion.getApplicationId(), newApplicationVersion.getId());
         int autoUpdatedMainAppsCount = this.mapper.autoUpdateConfigurationsMainApplication(
-                newApplicationVersion.getApplicationId(), newApplicationVersion.getId()
-        );
+                newApplicationVersion.getApplicationId(), newApplicationVersion.getId());
         int autoUpdatedContentAppsCount = this.mapper.autoUpdateConfigurationsContentApplication(
-                newApplicationVersion.getApplicationId(), newApplicationVersion.getId()
-        );
+                newApplicationVersion.getApplicationId(), newApplicationVersion.getId());
 
         log.debug("Auto-updated {} application links for configurations", autoUpdatedConfigAppsCount);
         log.debug("Auto-updated main application for {} configurations", autoUpdatedMainAppsCount);
@@ -1023,11 +1078,13 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      *
      * @param filter a filter to be used for filtering the records.
      * @param resultsCount a maximum number of items to be included to list.
+     *
      * @return a response with list of applications matching the specified filter.
      */
     public List<LookupItem> getApplicationPkgLookup(String filter, int resultsCount) {
         String searchFilter = '%' + filter.trim() + '%';
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> this.mapper.findMatchingApplicationPackages(u.getCustomerId(), searchFilter, resultsCount))
                 .orElse(new ArrayList<>());
     }
@@ -1036,12 +1093,12 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Locates the applications other than specified one which have the same package ID.</p>
      *
      * @param application an application to be validated.
+     *
      * @return a list of existing applications with same package ID as set for validated one.
      */
     public List<Application> getApplicationsForPackageID(Application application) {
         if (application.getPkg() != null) {
-            final List<Application> dbApps = findByPackageId(application.getPkg())
-                    .stream()
+            final List<Application> dbApps = findByPackageId(application.getPkg()).stream()
                     .filter(dbApp -> !dbApp.getId().equals(application.getId()))
                     .collect(Collectors.toList());
             return dbApps;
@@ -1054,12 +1111,12 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
      * <p>Locates the applications other than specified one which have the same name.</p>
      *
      * @param application an application to be validated.
+     *
      * @return a list of existing applications with same name as set for validated one.
      */
     public List<Application> getApplicationsForName(Application application) {
         if (application.getName() != null) {
-            final List<Application> dbApps = findByName(application.getName())
-                    .stream()
+            final List<Application> dbApps = findByName(application.getName()).stream()
                     .filter(dbApp -> !dbApp.getId().equals(application.getId()))
                     .collect(Collectors.toList());
             return dbApps;
@@ -1073,7 +1130,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         if (fileDirPath == null || fileDirPath.trim().isEmpty()) {
             appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileName);
         } else {
-            appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileDirPath.replace('\\', '/') + fileName);
+            appFileUrl = FileUtil.createFileUrl(
+                    this.baseUrl, customer.getFilesDir(), fileDirPath.replace('\\', '/') + fileName);
         }
 
         final boolean used = this.mapper.countAllApplicationsByUrl(customer.getId(), appFileUrl) > 0;
@@ -1086,7 +1144,8 @@ public class ApplicationDAO extends AbstractLinkedDAO<Application, ApplicationCo
         if (fileDirPath == null || fileDirPath.trim().isEmpty()) {
             appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileName);
         } else {
-            appFileUrl = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), fileDirPath.replace('\\', '/') + fileName);
+            appFileUrl = FileUtil.createFileUrl(
+                    this.baseUrl, customer.getFilesDir(), fileDirPath.replace('\\', '/') + fileName);
         }
 
         return this.mapper.getUsingApps(customer.getId(), appFileUrl);

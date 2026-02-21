@@ -21,9 +21,9 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -31,6 +31,8 @@ import java.io.PrintWriter;
 /**
  * <p>A wrapper around the {@link HttpServletResponse} object whose main purpose is to capture the status and content of
  * the response for audit logging purposes.</p>
+ *
+ * <p>Updated for Jakarta Servlet 6.0 compatibility - removed setStatus(int, String) which was deprecated.</p>
  *
  * @author isv
  */
@@ -84,12 +86,9 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
         super.setStatus(sc);
     }
 
-    // Intercepted method.
-    @Override
-    public void setStatus(int sc, String sm) {
-        this.status = sc;
-        super.setStatus(sc, sm);
-    }
+    // Note: setStatus(int, String) method was removed in Jakarta Servlet 6.0
+    // It was deprecated since Servlet 2.1 and has been removed.
+    // Use sendError(int, String) instead for error responses.
 
     // Intercepted method.
     @Override
@@ -115,7 +114,8 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
 
         if (writer == null) {
             copier = new ServletOutputStreamWrapper(getResponse().getOutputStream());
-            writer = new PrintWriter(new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
+            writer =
+                    new PrintWriter(new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
         }
 
         return writer;
@@ -143,7 +143,6 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
             return new byte[0];
         }
     }
-
 
     /**
      * <p>Gets the status set for the response.</p>

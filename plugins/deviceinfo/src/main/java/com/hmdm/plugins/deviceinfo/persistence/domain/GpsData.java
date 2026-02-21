@@ -22,12 +22,11 @@
 package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the device parameters related to GPS.</p>
+ * <p>A domain object representing the device parameters related to GPS.</p>
  *
  * @author isv
  */
@@ -35,33 +34,32 @@ import java.io.Serializable;
 public class GpsData implements Serializable {
 
     private static final long serialVersionUID = 3701846866813916864L;
-    
-    @ApiModelProperty("An ID of GPS data record")
+
+    @Schema(description = "An ID of GPS data record")
     private Integer id;
 
-    @ApiModelProperty("A connection status")
+    @Schema(description = "A connection status")
     private String state;
 
-    @ApiModelProperty("A latitude coordinate")
+    @Schema(description = "A latitude coordinate")
     private Double lat;
 
-    @ApiModelProperty("A longitude coordinate")
+    @Schema(description = "A longitude coordinate")
     private Double lon;
 
-    @ApiModelProperty("An altitude coordinate")
+    @Schema(description = "An altitude coordinate")
     private Double alt;
 
-    @ApiModelProperty("A speed in km/h")
+    @Schema(description = "A speed in km/h")
     private Double speed;
 
-    @ApiModelProperty("A course direction in degrees")
+    @Schema(description = "A course direction in degrees")
     private Double course;
 
     /**
      * <p>Constructs new <code>GpsData</code> instance. This implementation does nothing.</p>
      */
-    public GpsData() {
-    }
+    public GpsData() {}
 
     public Integer getId() {
         return id;
@@ -121,14 +119,7 @@ public class GpsData implements Serializable {
 
     @Override
     public String toString() {
-        return "GpsData{" +
-                "id=" + id +
-                ", state='" + state + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                ", alt=" + alt +
-                ", speed=" + speed +
-                ", course=" + course +
-                '}';
+        return "GpsData{" + "id=" + id + ", state='" + state + '\'' + ", lat=" + lat + ", lon=" + lon + ", alt=" + alt
+                + ", speed=" + speed + ", course=" + course + '}';
     }
 }

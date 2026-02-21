@@ -1,18 +1,38 @@
+/*
+ *
+ * Headwind MDM: Open Source Android MDM Software
+ * https://h-mdm.com
+ *
+ * Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.hmdm.service;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.RESTUtil;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
-import java.util.List;
 
 @Singleton
 public class MailchimpService {
@@ -24,9 +44,10 @@ public class MailchimpService {
     private String listId;
 
     @Inject
-    public MailchimpService(@Named("base.url") String baseUrl,
-                            @Named("mailchimp.url") String mailchimpUrl,
-                            @Named("mailchimp.key") String apiKey) {
+    public MailchimpService(
+            @Named("base.url") String baseUrl,
+            @Named("mailchimp.url") String mailchimpUrl,
+            @Named("mailchimp.key") String apiKey) {
         this.baseUrl = baseUrl;
         this.mailchimpUrl = mailchimpUrl;
         this.apiKey = apiKey;
@@ -157,8 +178,8 @@ public class MailchimpService {
             String location = baseLocation + hash + "/tags";
             String tag = generateTag(customer);
             if (tag == null) {
-                logger.debug("Customer " + customer.getName() + " status " + customer.getCustomerStatus() +
-                        ": shouldn't be reported to Mailchimp");
+                logger.debug("Customer " + customer.getName() + " status " + customer.getCustomerStatus()
+                        + ": shouldn't be reported to Mailchimp");
                 continue;
             }
             StringBuilder requestBody = new StringBuilder();
@@ -203,5 +224,4 @@ public class MailchimpService {
         }
         return tag.toString();
     }
-
 }

@@ -22,12 +22,11 @@
 package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 
 import com.hmdm.guice.module.AbstractPersistenceModule;
-
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
- * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the
- * persistence layer of the <code>Device Log</code> plugin backed by <code>Postgres</code> database.</p>
+ * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the persistence
+ * layer of the <code>Device Log</code> plugin backed by <code>Postgres</code> database.</p>
  *
  * @author isv
  */
@@ -61,6 +60,4 @@ public class DeviceLogPostgresPersistenceModule extends AbstractPersistenceModul
     protected String getDomainObjectsPackageName() {
         return "com.hmdm.plugins.devicelog.persistence.postgres.dao.domain";
     }
-
-
 }

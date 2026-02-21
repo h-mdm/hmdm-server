@@ -21,31 +21,27 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.Response;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * <p>A resource for tracking the status of hints shown to users.</p>
  *
  * @author isv
  */
-@Api(tags = {"Hint"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Hint")
 @Singleton
 @Path("/private/hints")
 public class HintResource {
@@ -57,8 +53,7 @@ public class HintResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public HintResource() {
-    }
+    public HintResource() {}
 
     /**
      * <p>Constructs new <code>HintResource</code> instance. This implementation does nothing.</p>
@@ -69,18 +64,15 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get shown hints",
-            notes = "Gets the list of identifiers for the hints already presented to current user",
-            response = String.class,
-            responseContainer = "List"
-    )
+    @Operation(
+            summary = "Get shown hints",
+            description = "Gets the list of identifiers for the hints already presented to current user")
     @GET
     @Path("/history")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getShownHints() {
         try {
-            List<String> shownHints  = this.userDAO.getShownHints();
+            List<String> shownHints = this.userDAO.getShownHints();
             return Response.OK(shownHints);
         } catch (Exception e) {
             logger.error("Unexpected error while getting the list of hints shown to user", e);
@@ -89,11 +81,7 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Enable hints",
-            notes = "Enables the hints to be presented to current user",
-            response = Response.class
-    )
+    @Operation(summary = "Enable hints", description = "Enables the hints to be presented to current user")
     @POST
     @Path("/enable")
     @Produces(MediaType.APPLICATION_JSON)
@@ -108,11 +96,7 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Disable hints",
-            notes = "Disables the hints from to be presented to current user",
-            response = Response.class
-    )
+    @Operation(summary = "Disable hints", description = "Disables the hints from to be presented to current user")
     @POST
     @Path("/disable")
     @Produces(MediaType.APPLICATION_JSON)
@@ -127,11 +111,7 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "On hint shown",
-            notes = "Marks the hint as shown to current user",
-            response = Response.class
-    )
+    @Operation(summary = "On hint shown", description = "Marks the hint as shown to current user")
     @POST
     @Path("/history")
     @Produces(MediaType.APPLICATION_JSON)

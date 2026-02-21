@@ -25,9 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.rest.json.DeviceConfigurationFile;
 import com.hmdm.rest.json.DeviceInfo;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +33,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * <p>A wrapper around the {@link DeviceInfo} object providing the view suitable for the <code>Device List</code> view
- * of server application.</p>
+ * <p>A wrapper around the {@link DeviceInfo} object providing the view suitable for the <code>Device List</code> view of
+ * server application.</p>
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"deviceInfo", "deviceApplications"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"deviceInfo", "deviceApplications"},
+        ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "The details related to a single device. Such details are sent from the MDM mobile application " +
-        "to MDM server")
+@Schema(
+        description = "The details related to a single device. Such details are sent from the MDM mobile application "
+                + "to MDM server")
 public class DeviceInfoView implements Serializable {
 
     /**
@@ -69,68 +70,69 @@ public class DeviceInfoView implements Serializable {
         this.files = Optional.ofNullable(deviceInfo.getFiles()).orElse(new ArrayList<>());
     }
 
-    @ApiModelProperty("A name of the device model")
+    @Schema(description = "A name of the device model")
     public String getModel() {
         return deviceInfo.getModel();
     }
 
-    @ApiModelProperty(value = "A list of permissions set for device. Contains exactly three elements " +
-            "(each either 0 or 1).")
+    @Schema(
+            description =
+                    "A list of permissions set for device. Contains exactly three elements " + "(each either 0 or 1).")
     public List<Integer> getPermissions() {
         return deviceInfo.getPermissions();
     }
 
-    @ApiModelProperty("A list of applications installed on device")
+    @Schema(description = "A list of applications installed on device")
     public List<DeviceApplicationView> getApplications() {
         return this.deviceApplications;
     }
 
-    @ApiModelProperty("A textual identifier of device within MDM server (e.g. device number)")
+    @Schema(description = "A textual identifier of device within MDM server (e.g. device number)")
     public String getDeviceId() {
         return deviceInfo.getDeviceId();
     }
 
-    @ApiModelProperty("An IMEI identifier for device")
+    @Schema(description = "An IMEI identifier for device")
     public String getImei() {
         return deviceInfo.getImei();
     }
 
-    @ApiModelProperty("A phone number for device")
+    @Schema(description = "A phone number for device")
     public String getPhone() {
         return deviceInfo.getPhone();
     }
 
-    @ApiModelProperty(value = "A battery level in percents", allowableValues = "range[0, 100]")
+    @Schema(description = "A battery level in percents", allowableValues = "range[0, 100]")
     public Integer getBatteryLevel() {
         return deviceInfo.getBatteryLevel();
     }
 
-    @ApiModelProperty("A flag indicating if MDM mode is activated on the device")
+    @Schema(description = "A flag indicating if MDM mode is activated on the device")
     public Boolean getMdmMode() {
         return deviceInfo.getMdmMode();
     }
 
-    @ApiModelProperty("A flag indicating if kiosk mode is activated on the device")
+    @Schema(description = "A flag indicating if kiosk mode is activated on the device")
     public Boolean getKioskMode() {
         return deviceInfo.getKioskMode();
     }
 
-    @ApiModelProperty("Version of Android OS on the device")
+    @Schema(description = "Version of Android OS on the device")
     public String getAndroidVersion() {
         return deviceInfo.getAndroidVersion();
     }
 
-    @ApiModelProperty("Serial number of the device")
+    @Schema(description = "Serial number of the device")
     public String getSerial() {
         return deviceInfo.getSerial();
     }
 
-    @ApiModelProperty("A flag showing if Headwind MDM is set as default launcher on a device")
+    @Schema(description = "A flag showing if Headwind MDM is set as default launcher on a device")
     public Boolean getDefaultLauncher() {
         return deviceInfo.getDefaultLauncher();
     }
 
-    @ApiModelProperty("A list of configuration files installed on device")
+    @Schema(description = "A list of configuration files installed on device")
     public List<DeviceConfigurationFile> getFiles() {
         return files;
     }

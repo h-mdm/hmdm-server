@@ -22,8 +22,8 @@
 package com.hmdm.persistence;
 
 /**
- * <p>An exception to be thrown in case there is an attempt to delete the application while there are active references
- * to it found.</p>
+ * <p>An exception to be thrown in case there is an attempt to delete the application while there are active references to
+ * it found.</p>
  *
  * @author isv
  */
@@ -35,5 +35,4 @@ public class ApplicationReferenceExistsException extends RuntimeException {
     public ApplicationReferenceExistsException(Integer applicationId, String refType) {
         super(String.format("An application %s is still referenced by %s.", applicationId, refType));
     }
-
 }

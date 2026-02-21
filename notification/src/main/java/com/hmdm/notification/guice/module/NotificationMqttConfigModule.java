@@ -2,13 +2,13 @@ package com.hmdm.notification.guice.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import org.apache.activemq.broker.BrokerService;
+import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
-
 public class NotificationMqttConfigModule extends AbstractModule {
+
+    private static final Logger log = LoggerFactory.getLogger(NotificationMqttConfigModule.class);
 
     /**
      * <p>A context for module execution.</p>
@@ -45,9 +45,9 @@ public class NotificationMqttConfigModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named("mqtt.client.tag")).to(mqttClientTag);
 
         String mqttAuthTag = this.context.getInitParameter("mqtt.auth");
-        this.bindConstant().annotatedWith(Names.named("mqtt.auth")).to(
-                mqttAuthTag != null && (mqttAuthTag.equals("1") || mqttAuthTag.equalsIgnoreCase("true"))
-        );
+        this.bindConstant()
+                .annotatedWith(Names.named("mqtt.auth"))
+                .to(mqttAuthTag != null && (mqttAuthTag.equals("1") || mqttAuthTag.equalsIgnoreCase("true")));
 
         String mqttAdminPassword = context.getInitParameter("mqtt.admin.password");
         if (mqttAdminPassword == null) {
@@ -62,7 +62,7 @@ public class NotificationMqttConfigModule extends AbstractModule {
                 mqttDelay = Long.parseLong(mqttDelayTag);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            log.warn("Invalid mqtt.message.delay value: " + mqttDelayTag, e);
         }
         this.bindConstant().annotatedWith(Names.named("mqtt.message.delay")).to(mqttDelay);
 
@@ -73,9 +73,8 @@ public class NotificationMqttConfigModule extends AbstractModule {
                 pollTimeout = Long.parseLong(pollTimeoutTag);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            log.warn("Invalid polling.timeout value: " + pollTimeoutTag, e);
         }
         this.bindConstant().annotatedWith(Names.named("polling.timeout")).to(pollTimeout);
-
     }
 }

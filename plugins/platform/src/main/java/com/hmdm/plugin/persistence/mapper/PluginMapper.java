@@ -22,12 +22,11 @@
 package com.hmdm.plugin.persistence.mapper;
 
 import com.hmdm.plugin.persistence.domain.DisabledPlugin;
+import com.hmdm.plugin.persistence.domain.Plugin;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import com.hmdm.plugin.persistence.domain.Plugin;
-
-import java.util.List;
 
 /**
  * <p>An ORM mapper for {@link Plugin} domain object.</p>
@@ -36,12 +35,12 @@ import java.util.List;
  */
 public interface PluginMapper {
 
-    @Select({"SELECT plugins.* " +
-            "FROM plugins " +
-            "WHERE disabled = FALSE " +
-            "AND NOT EXISTS (SELECT 1 FROM pluginsDisabled " +
-            "                WHERE pluginsDisabled.customerId=#{customerId} " +
-            "                AND pluginsDisabled.pluginId=plugins.id)"})
+    @Select({
+        "SELECT plugins.* " + "FROM plugins " + "WHERE disabled = FALSE "
+                + "AND NOT EXISTS (SELECT 1 FROM pluginsDisabled "
+                + "                WHERE pluginsDisabled.customerId=#{customerId} "
+                + "                AND pluginsDisabled.pluginId=plugins.id)"
+    })
     List<Plugin> findAvailablePluginsByCustomerId(@Param("customerId") int customerId);
 
     @Select("SELECT plugins.* FROM plugins WHERE disabled = FALSE ORDER BY plugins.identifier")
@@ -58,6 +57,7 @@ public interface PluginMapper {
     @Select("SELECT customerId, pluginId FROM pluginsDisabled ORDER BY customerId, pluginId")
     List<DisabledPlugin> getDisabledPluginsForAllCustomers();
 
-    @Select("SELECT customerId, pluginId FROM pluginsDisabled WHERE customerId = #{customerId} ORDER BY customerId, pluginId")
+    @Select(
+            "SELECT customerId, pluginId FROM pluginsDisabled WHERE customerId = #{customerId} ORDER BY customerId, pluginId")
     List<DisabledPlugin> getDisabledPluginsForCustomer(@Param("customerId") int customerId);
 }

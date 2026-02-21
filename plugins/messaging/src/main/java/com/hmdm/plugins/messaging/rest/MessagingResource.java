@@ -36,29 +36,27 @@ import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.LinkedList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
- * <p>A resource to be used for managing the <code>Messaging</code> plugin data for customer account associated
- * with current user.</p>
+ * <p>A resource to be used for managing the <code>Messaging</code> plugin data for customer account associated with
+ * current user.</p>
  *
  * @author isv
  */
 @Singleton
 @Path("/plugins/messaging")
-@Api(tags = {"Messaging plugin"})
+@Tag(name = "Messaging plugin")
 public class MessagingResource {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagingResource.class);
@@ -88,18 +86,18 @@ public class MessagingResource {
     /**
      * <p>A constructor required by swagger.</p>
      */
-    public MessagingResource() {
-    }
+    public MessagingResource() {}
 
     /**
      * <p>Constructs new <code>MessagingResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public MessagingResource(MessagingDAO messagingDAO,
-                             UnsecureDAO unsecureDAO,
-                             DeviceDAO deviceDAO,
-                             PushService pushService,
-                             PluginStatusCache pluginStatusCache) {
+    public MessagingResource(
+            MessagingDAO messagingDAO,
+            UnsecureDAO unsecureDAO,
+            DeviceDAO deviceDAO,
+            PushService pushService,
+            PluginStatusCache pluginStatusCache) {
         this.messagingDAO = messagingDAO;
         this.unsecureDAO = unsecureDAO;
         this.deviceDAO = deviceDAO;
@@ -113,14 +111,12 @@ public class MessagingResource {
      * <p>Gets the list of device log records matching the specified filter.</p>
      *
      * @param filter a filter to be used for filtering the records.
+     *
      * @return a response with list of device log records matching the specified filter.
      */
-    @ApiOperation(
-            value = "Search messages",
-            notes = "Gets the list of message records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
-    )
+    @Operation(
+            summary = "Search messages",
+            description = "Gets the list of message records matching the specified filter")
     @POST
     @Path("/private/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -137,11 +133,7 @@ public class MessagingResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Send new message",
-            notes = "Sends a new message to a specified device.",
-            authorizations = {@Authorization("Bearer Token")}
-    )
+    @Operation(summary = "Send new message", description = "Sends a new message to a specified device.")
     @POST
     @Path("/private/send")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -151,7 +143,8 @@ public class MessagingResource {
             final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_messaging_send");
 
             if (!canSendMessages) {
-                logger.error("Unauthorized attempt to send a message",
+                logger.error(
+                        "Unauthorized attempt to send a message",
                         SecurityException.onCustomerDataAccessViolation(0, "message"));
                 return Response.PERMISSION_DENIED();
             }
@@ -164,7 +157,8 @@ public class MessagingResource {
                     Message message = new Message();
                     Device device = deviceDAO.getDeviceByNumber(sendRequest.getDeviceNumber());
                     if (device == null) {
-                        String error = "Attempt to send message to wrong device number " + sendRequest.getDeviceNumber();
+                        String error =
+                                "Attempt to send message to wrong device number " + sendRequest.getDeviceNumber();
                         logger.error(error);
                         return Response.ERROR(error);
                     }
@@ -187,15 +181,13 @@ public class MessagingResource {
                         return Response.ERROR(error);
                     }
                     dsr.setGroupId(sendRequest.getGroupId());
-                }
-                else if (sendRequest.getScope().equals("configuration")) {
+                } else if (sendRequest.getScope().equals("configuration")) {
                     if (sendRequest.getConfigurationId() == null || sendRequest.getConfigurationId() == 0) {
                         String error = "Empty configuration id while trying to send a message to configuration!";
                         logger.error(error);
                         return Response.ERROR(error);
                     }
                     dsr.setConfigurationId(sendRequest.getConfigurationId());
-
                 }
 
                 List<Device> devices = deviceDAO.getAllDevices(dsr).getItems();
@@ -220,37 +212,36 @@ public class MessagingResource {
     }
 
     private boolean sendSingleMessage(Message message) {
-         try {
-             this.messagingDAO.insertMessage(message);
+        try {
+            this.messagingDAO.insertMessage(message);
 
-             PushMessage pushMessage = new PushMessage();
-             pushMessage.setDeviceId(message.getDeviceId());
-             pushMessage.setPayload("{id:" + message.getId() + ",text:\"" + message.getMessage().trim().replace("\"", "\\\"") + "\"}");
-             pushMessage.setMessageType("textMessage");
+            PushMessage pushMessage = new PushMessage();
+            pushMessage.setDeviceId(message.getDeviceId());
+            pushMessage.setPayload("{id:" + message.getId() + ",text:\""
+                    + message.getMessage().trim().replace("\"", "\\\"") + "\"}");
+            pushMessage.setMessageType("textMessage");
 
-             this.pushService.send(pushMessage);
+            this.pushService.send(pushMessage);
 
-             return true;
+            return true;
 
-         } catch (Exception e) {
-             logger.error("Unexpected error when sending a message to " + message.getDeviceId(), e);
-             return false;
-         }
+        } catch (Exception e) {
+            logger.error("Unexpected error when sending a message to " + message.getDeviceId(), e);
+            return false;
+        }
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete message",
-            notes = "Delete an existing message"
-    )
+    @Operation(summary = "Delete message", description = "Delete an existing message")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeDevice(@PathParam("id") @ApiParam("Message ID") Integer id) {
+    public Response removeDevice(@PathParam("id") @Parameter(description = "Message ID") Integer id) {
         final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_messaging_delete");
 
         if (!(canSendMessages)) {
-            logger.error("Unauthorized attempt to delete message",
+            logger.error(
+                    "Unauthorized attempt to delete message",
                     SecurityException.onCustomerDataAccessViolation(id, "message"));
             return Response.PERMISSION_DENIED();
         }
@@ -259,13 +250,10 @@ public class MessagingResource {
         return Response.OK();
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Purge old messages",
-            notes = "Deletes all messages older than a specified number of days.",
-            authorizations = {@Authorization("Bearer Token")}
-    )
+    @Operation(
+            summary = "Purge old messages",
+            description = "Deletes all messages older than a specified number of days.")
     @GET
     @Path("/private/purge/{days}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -274,7 +262,8 @@ public class MessagingResource {
             final boolean canPurgeMessages = SecurityContext.get().hasPermission("plugin_messaging_delete");
 
             if (!canPurgeMessages) {
-                logger.error("Unauthorized attempt to purge old messages",
+                logger.error(
+                        "Unauthorized attempt to purge old messages",
                         SecurityException.onCustomerDataAccessViolation(0, "message"));
                 return Response.PERMISSION_DENIED();
             }
@@ -289,10 +278,7 @@ public class MessagingResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Sets the message status",
-            notes = "Marks message as delivered or read."
-    )
+    @Operation(summary = "Sets the message status", description = "Marks message as delivered or read.")
     @GET
     @Path("/public/status/{id}/{status}")
     @Produces(MediaType.APPLICATION_JSON)

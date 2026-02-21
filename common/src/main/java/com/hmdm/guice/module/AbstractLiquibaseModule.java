@@ -22,6 +22,11 @@
 package com.hmdm.guice.module;
 
 import com.google.inject.AbstractModule;
+import jakarta.servlet.ServletContext;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -30,11 +35,6 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * <p>An abstract module used for initializing or modifying the database based on the provided Liquibase change log.</p>
@@ -68,11 +68,12 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
      */
     protected final void configure() {
         try (Connection connection = this.getConnection()) {
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Database database =
+                    DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase(getChangeLogResourcePath(), getResourceAccessor(), database);
             String usageScenario = this.context.getInitParameter("usage.scenario");
             String contexts = getContexts(usageScenario);
-            liquibase.update(contexts);
+            liquibase.update(new Contexts(contexts));
         } catch (LiquibaseException | SQLException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -82,7 +83,8 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
     /**
      * <p>Gets the list of <code>Liquibaase</code> contexts to be applied based on specified usage scenario.</p>
      *
-     * @param usageScenario  usage scenario.
+     * @param usageScenario usage scenario.
+     *
      * @return a comma-separated list of <code>Liquibase</code> contexts to be applied.
      */
     protected String getContexts(String usageScenario) {
@@ -106,7 +108,7 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
     protected abstract String getChangeLogResourcePath();
 
     /**
-     * <p>Gets the resource accessor to be uused for loading the change log file.</p>
+     * <p>Gets the resource accessor to be used for loading the change log file.</p>
      *
      * @return a resource accessor for change log file.
      */
@@ -123,8 +125,7 @@ public abstract class AbstractLiquibaseModule extends AbstractModule {
             return DriverManager.getConnection(
                     this.context.getInitParameter("JDBC.url"),
                     this.context.getInitParameter("JDBC.username"),
-                    this.context.getInitParameter("JDBC.password")
-            );
+                    this.context.getInitParameter("JDBC.password"));
         } catch (Exception e) {
             log.error("Error during open JDBC connection", e);
             throw new RuntimeException(e);

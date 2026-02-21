@@ -26,13 +26,13 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>server</artifactId>
     <packaging>war</packaging>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>MDM Server</name>
 
     <parent>
         <groupId>com.hmdm</groupId>
         <artifactId>root</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
     </parent>
 
     <repositories>
@@ -53,13 +53,13 @@
         <dependency>
             <groupId>com.hmdm</groupId>
             <artifactId>common</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.hmdm</groupId>
             <artifactId>notification</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
         <dependency>
@@ -76,29 +76,29 @@
 
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceinfo</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
-        <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>messaging</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceinfo</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>xtra</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>messaging</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
+        <!-- The formatting of this line must be kept as is - a single line -->
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>xtra</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
 
         <dependency>
             <groupId>com.hmdm.plugin</groupId>
             <artifactId>platform</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>push</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>push</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
     </dependencies>
 
     <build>
@@ -108,7 +108,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.6.1</version>
+                <version>3.3.2</version>
                 <configuration>
                     <filesets>
                         <fileset><directory>target</directory></fileset>
@@ -119,7 +119,7 @@
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -180,21 +180,13 @@
             </plugin>
 
 
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <path>/</path>
-                    <port>9090</port>
-                    <contextFile>target/context.xml</contextFile>
-                </configuration>
-            </plugin>
+            <!-- tomcat7-maven-plugin removed: not compatible with Jakarta EE 9+ / Tomcat 10+.
+                 Use external Tomcat 10.1+ deployment or the Cargo plugin instead. -->
 
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.7.6</version>
+                <version>1.15.1</version>
 
                 <configuration>
                     <workingDirectory>webtarget</workingDirectory>

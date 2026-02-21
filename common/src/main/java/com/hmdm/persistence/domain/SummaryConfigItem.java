@@ -22,24 +22,22 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hmdm.service.DeviceApplicationsStatus;
-import com.hmdm.service.DeviceConfigFilesStatus;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "Response for inquiry summary data by configuration")
+@Schema(description = "Response for inquiry summary data by configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SummaryConfigItem implements Serializable {
 
     private static final long serialVersionUID = -8435796711101696938L;
 
-    @ApiModelProperty("Count of items")
+    @Schema(description = "Count of items")
     private int counter;
-    @ApiModelProperty("Configuration ID")
+
+    @Schema(description = "Configuration ID")
     private int id;
-    @ApiModelProperty("Configuration name")
+
+    @Schema(description = "Configuration name")
     private String name;
 
     public int getCounter() {

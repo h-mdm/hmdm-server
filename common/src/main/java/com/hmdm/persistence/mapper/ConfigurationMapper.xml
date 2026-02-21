@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~
-  ~ Headwind MDM: Open Source Android MDM Software
-  ~ https://h-mdm.com
-  ~
-  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
-  -->
+	~
+	~ Headwind MDM: Open Source Android MDM Software
+	~ https://h-mdm.com
+	~
+	~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+	~
+	~ Licensed under the Apache License, Version 2.0 (the "License");
+	~ you may not use this file except in compliance with the License.
+	~ You may obtain a copy of the License at
+	~
+	~       http://www.apache.org/licenses/LICENSE-2.0
+	~
+	~ Unless required by applicable law or agreed to in writing, software
+	~ distributed under the License is distributed on an "AS IS" BASIS,
+	~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	~ See the License for the specific language governing permissions and
+	~ limitations under the License.
+	~
+-->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hmdm.persistence.mapper.ConfigurationMapper">
 
-    <insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+	<insert id="insertConfiguration" parameterType="Configuration" useGeneratedKeys="true" keyColumn="id"
+		keyProperty="id">
         INSERT INTO configurations (name, description, type, password, backgroundColor, textColor, backgroundImageUrl,
                                     iconSize, desktopHeader, desktopHeaderTemplate, displayStatus, useDefaultDesignSettings, customerId,
                                     gps, bluetooth, wifi, mobileData, usbStorage, requestUpdates, disableLocation, appPermissions,
@@ -48,36 +49,33 @@
                 #{scheduleAppUpdate}, #{appUpdateFrom}, #{appUpdateTo}, #{downloadUpdates}, #{defaultFilePath})
     </insert>
 
-    <insert id="insertConfigurationApplications">
+	<insert id="insertConfigurationApplications">
         INSERT INTO configurationApplications(configurationId, applicationId, applicationVersionId, remove, showIcon,
         action, screenOrder, keyCode, bottom, longTap)
         VALUES
-        <foreach item="item" index="index" collection="apps"
-                 open="" separator="," close="">
+        <foreach item="item" index="index" collection="apps" open="" separator="," close="">
             (#{id}, #{item.id}, COALESCE(#{item.usedVersionId}, #{item.latestVersion}), #{item.remove}, #{item.showIcon},
             #{item.action}, #{item.screenOrder}, #{item.keyCode}, #{item.bottom}, #{item.longTap})
         </foreach>
-    </insert>
+	</insert>
 
-    <insert id="insertConfigurationApplicationSettings">
+	<insert id="insertConfigurationApplicationSettings">
         INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate)
         VALUES
-        <foreach item="item" index="index" collection="appSettings"
-                 open="" separator="," close="">
+        <foreach item="item" index="index" collection="appSettings" open="" separator="," close="">
             (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})
         </foreach>
-    </insert>
+	</insert>
 
-    <insert id="insertConfigurationFiles">
+	<insert id="insertConfigurationFiles">
         INSERT INTO configurationFiles (configurationId, fileId, lastUpdate, remove)
         VALUES
-        <foreach item="item" index="index" collection="files"
-                 open="" separator="," close="">
+        <foreach item="item" index="index" collection="files" open="" separator="," close="">
             (${id}, #{item.fileId}, 0, #{item.remove})
         </foreach>
-    </insert>
+	</insert>
 
-    <insert id="saveConfigurationApplicationUsageParameters">
+	<insert id="saveConfigurationApplicationUsageParameters">
         INSERT INTO configurationApplicationParameters (configurationId, applicationId, skipVersionCheck)
         VALUES
         <foreach item="item" index="index" collection="appUsageParameters" open="" separator="," close="">
@@ -87,7 +85,7 @@
             UPDATE SET skipVersionCheck = EXCLUDED.skipVersionCheck
     </insert>
 
-    <select id="getConfigurationApplications" resultType="Application">
+	<select id="getConfigurationApplications" resultType="Application">
         CREATE TEMP TABLE ${tempTable} ON COMMIT DROP AS SELECT * FROM configurationApplications WHERE configurationApplications.configurationId = #{id};
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId,
@@ -132,7 +130,7 @@
           AND (configurationApplications.id IS NULL AND applicationversions.id=applications.latestversion OR NOT configurationApplications.id IS NULL)
     </select>
 
-    <select id="getPlainConfigurationApplications" resultType="Application">
+	<select id="getPlainConfigurationApplications" resultType="Application">
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId, uploadedFiles.filepath AS icon,
                applicationVersions.version, applicationVersions.versionCode, applicationVersions.url,
@@ -176,7 +174,7 @@
                 )
     </select>
 
-    <select id="getPlainConfigurationAppsOptimized" resultType="Application">
+	<select id="getPlainConfigurationAppsOptimized" resultType="Application">
         SELECT applications.id, applications.name, applications.pkg, applications.runAfterInstall, applications.runAtBoot,
                applications.type, applications.iconText, applications.iconId,
                applicationVersions.version, applicationVersions.url,

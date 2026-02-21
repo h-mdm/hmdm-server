@@ -21,7 +21,6 @@
 
 package com.hmdm.plugin.guice.module;
 
-import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.plugin.rest.PluginResource;
 import com.hmdm.rest.filter.AuthFilter;
@@ -38,8 +37,7 @@ public class PluginRestModule extends ServletModule {
     /**
      * <p>Constructs new <code>PluginRestModule</code> instance. This implementation does nothing.</p>
      */
-    public PluginRestModule() {
-    }
+    public PluginRestModule() {}
 
     /**
      * <p>Configures the resources for <code>Plugin Platform</code>.</p>
@@ -50,5 +48,4 @@ public class PluginRestModule extends ServletModule {
         this.filter("/rest/plugin/main/public/*").through(PublicIPFilter.class);
         this.bind(PluginResource.class);
     }
-
 }

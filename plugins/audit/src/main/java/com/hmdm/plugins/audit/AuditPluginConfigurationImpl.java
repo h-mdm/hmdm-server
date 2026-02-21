@@ -27,8 +27,7 @@ import com.hmdm.plugins.audit.guice.module.AuditConfigureModule;
 import com.hmdm.plugins.audit.guice.module.AuditLiquibaseModule;
 import com.hmdm.plugins.audit.guice.module.AuditPersistenceModule;
 import com.hmdm.plugins.audit.guice.module.AuditRestModule;
-
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,12 +43,11 @@ public class AuditPluginConfigurationImpl implements PluginConfiguration {
     /**
      * <p>Constructs new <code>AuditPluginConfigurationImpl</code> instance. This implementation does nothing.</p>
      */
-    public AuditPluginConfigurationImpl() {
-    }
+    public AuditPluginConfigurationImpl() {}
 
     /**
-     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely
-     * by <code>Plugin Platform</code>.</p>
+     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely by
+     * <code>Plugin Platform</code>.</p>
      *
      * @return a plugin identifier.
      */
@@ -72,6 +70,7 @@ public class AuditPluginConfigurationImpl implements PluginConfiguration {
      * <p>Gets the list of modules to be used for initializing the plugin.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return a list of modules to be used for plugin initialization.
      */
     @Override
@@ -85,5 +84,4 @@ public class AuditPluginConfigurationImpl implements PluginConfiguration {
 
         return modules;
     }
-
 }

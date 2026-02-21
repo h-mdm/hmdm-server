@@ -21,11 +21,10 @@
 
 package com.hmdm.plugins.devicelog.persistence.postgres.guice.module;
 
-import com.google.inject.Inject;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.PostgresDeviceLogDAO;
 import com.hmdm.util.BackgroundTaskRunnerService;
-
+import jakarta.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,8 +54,7 @@ public class DeviceLogPostgresTaskModule implements PluginTaskModule {
     }
 
     /**
-     * <p>Initializes this module. Schedules the task for purging the outdated device log records from DB on a daily
-     * basis.</p>
+     * <p>Initializes this module. Schedules the task for purging the outdated device log records from DB on a daily basis.</p>
      */
     @Override
     public void init() {

@@ -9,11 +9,7 @@ import com.hmdm.notification.PushSenderPolling;
 public class NotificationEngineSelectorModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(PushSender.class)
-                .annotatedWith(Names.named("Polling"))
-                .to(PushSenderPolling.class);
-        bind(PushSender.class)
-                .annotatedWith(Names.named("MQTT"))
-                .to(PushSenderMqtt.class);
+        bind(PushSender.class).annotatedWith(Names.named("Polling")).to(PushSenderPolling.class);
+        bind(PushSender.class).annotatedWith(Names.named("MQTT")).to(PushSenderMqtt.class);
     }
 }

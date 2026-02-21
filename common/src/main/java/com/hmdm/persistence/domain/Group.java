@@ -21,29 +21,26 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A group of devices")
+@Schema(description = "A group of devices")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Group implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 3971700195035939411L;
 
-    @ApiModelProperty("A group ID")
+    @Schema(description = "A group ID")
     private Integer id;
 
-    @ApiModelProperty("A group name")
+    @Schema(description = "A group name")
     private String name;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
-    public Group() {
-    }
+    public Group() {}
 
     public Integer getId() {
         return this.id;

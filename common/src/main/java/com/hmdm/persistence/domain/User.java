@@ -21,78 +21,95 @@
 
 package com.hmdm.persistence.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.rest.json.LookupItem;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel(description = "A user account within MDM web application")
+@Schema(description = "A user account within MDM web application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements CustomerData, Serializable {
 
     private static final long serialVersionUID = -5231237331183323703L;
 
-    @ApiModelProperty("An ID of a user")
+    @Schema(description = "An ID of a user")
     private Integer id;
-    @ApiModelProperty("A username of a user")
-    private String login;
-    @ApiModelProperty("An email address of a user")
-    private String email;
-    @ApiModelProperty("A name of a user")
-    private String name;
-    @ApiModelProperty("A password of a user (Salted SHA1 hash)")
-    private transient String password;
-    @ApiModelProperty(hidden = true)
-    private int customerId;
-    @ApiModelProperty("A role assigned to user")
-    private UserRole userRole;
-    @ApiModelProperty("Are all devices available to user")
-    private boolean allDevicesAvailable = true;
-    @ApiModelProperty("Are all configs available to user")
-    private boolean allConfigAvailable = true;
-    @ApiModelProperty("Is password reset required")
-    private boolean passwordReset = false;
-    @ApiModelProperty("Authentication token")
-    private String authToken;
-    @ApiModelProperty("Password reset token")
-    private String passwordResetToken;
-    @ApiModelProperty("Third party authentication data")
-    private String authData;
-    @ApiModelProperty("Two-factor authentication secret")
-    private String twoFactorSecret;
-    @ApiModelProperty("Is two factor authentication accepted by the user")
-    private boolean twoFactorAccepted;
-    @ApiModelProperty("Is two factor authentication needed (a transient parameter, no db entry)")
-    private boolean twoFactor = false;
-    @ApiModelProperty("Timeout in seconds for logging out while idle (0 - no logout)")
-    private Integer idleLogout;
-    @ApiModelProperty("Last time for failed login (to avoid bruteforce attacks)")
-    private long lastLoginFail;
 
+    @Schema(description = "A username of a user")
+    private String login;
+
+    @Schema(description = "An email address of a user")
+    private String email;
+
+    @Schema(description = "A name of a user")
+    private String name;
+
+    @Schema(description = "A password of a user (Salted SHA1 hash)")
+    private transient String password;
+
+    @Schema(hidden = true)
+    private int customerId;
+
+    @Schema(description = "A role assigned to user")
+    private UserRole userRole;
+
+    @Schema(description = "Are all devices available to user")
+    private boolean allDevicesAvailable = true;
+
+    @Schema(description = "Are all configs available to user")
+    private boolean allConfigAvailable = true;
+
+    @Schema(description = "Is password reset required")
+    private boolean passwordReset = false;
+
+    @Schema(description = "Authentication token")
+    private String authToken;
+
+    @Schema(description = "Password reset token")
+    private String passwordResetToken;
+
+    @Schema(description = "Third party authentication data")
+    private String authData;
+
+    @Schema(description = "Two-factor authentication secret")
+    private String twoFactorSecret;
+
+    @Schema(description = "Is two factor authentication accepted by the user")
+    private boolean twoFactorAccepted;
+
+    @Schema(description = "Is two factor authentication needed (a transient parameter, no db entry)")
+    private boolean twoFactor = false;
+
+    @Schema(description = "Timeout in seconds for logging out while idle (0 - no logout)")
+    private Integer idleLogout;
+
+    @Schema(description = "Last time for failed login (to avoid bruteforce attacks)")
+    private long lastLoginFail;
 
     // Many-to-many relations
     private List<LookupItem> groups;
     private List<LookupItem> configurations;
 
     // Helper fields which are not mapped directly to DB and are not persisted with user object
-    @ApiModelProperty("An old password for user to be used for verification when changing the password")
+    @Schema(description = "An old password for user to be used for verification when changing the password")
     private String oldPassword;
-    @ApiModelProperty("A new password to be set for user")
+
+    @Schema(description = "A new password to be set for user")
     private String newPassword;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private boolean masterCustomer;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private boolean editable = false;
-    @ApiModelProperty(hidden = true)
+
+    @Schema(hidden = true)
     private boolean singleCustomer = false;
 
-    public User() {
-    }
+    public User() {}
 
     public Integer getId() {
         return this.id;
@@ -311,6 +328,4 @@ public class User implements CustomerData, Serializable {
         }
         return builder.toString();
     }
-
-
 }

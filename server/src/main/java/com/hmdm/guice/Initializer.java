@@ -26,17 +26,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.LinkedList;
-import java.util.List;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-
 import com.hmdm.guice.module.*;
 import com.hmdm.notification.guice.module.*;
 import com.hmdm.plugin.PluginList;
@@ -45,13 +34,22 @@ import com.hmdm.plugin.guice.module.PluginLiquibaseModule;
 import com.hmdm.plugin.guice.module.PluginPersistenceModule;
 import com.hmdm.plugin.guice.module.PluginPlatformTaskModule;
 import com.hmdm.plugin.guice.module.PluginRestModule;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class Initializer extends GuiceServletContextListener {
     private ServletContext context;
     private Injector injector;
 
-    public Initializer() {
-    }
+    public Initializer() {}
 
     protected Injector getInjector() {
         boolean success = false;
@@ -61,7 +59,7 @@ public final class Initializer extends GuiceServletContextListener {
         try {
             this.injector = Guice.createInjector(Stage.PRODUCTION, this.getModules());
             success = true;
-        } catch (Exception e){
+        } catch (Exception e) {
             System.err.println("[HMDM-INITIALIZER]: Unexpected error during injector initialization: " + e);
             e.printStackTrace();
             e.printStackTrace(errorWriter);
@@ -83,10 +81,10 @@ public final class Initializer extends GuiceServletContextListener {
 
         final String signalFilePath = this.context.getInitParameter("initialization.completion.signal.file");
         if (signalFilePath != null && !signalFilePath.trim().isEmpty()) {
-            File signalFile  = new File(signalFilePath);
+            File signalFile = new File(signalFilePath);
             if (!signalFile.exists()) {
                 try {
-                    FileWriter fw = new FileWriter(signalFile);
+                    FileWriter fw = new FileWriter(signalFile, StandardCharsets.UTF_8);
                     PrintWriter pw = new PrintWriter(fw);
                     if (errorOut == null) {
                         pw.print("OK");
@@ -95,19 +93,19 @@ public final class Initializer extends GuiceServletContextListener {
                     }
                     pw.close();
                     fw.close();
-                    System.out.println("[HMDM-INITIALIZER]: Created a signal file for application " +
-                            "initialization completion: " + signalFile.getAbsolutePath());
+                    System.out.println("[HMDM-INITIALIZER]: Created a signal file for application "
+                            + "initialization completion: " + signalFile.getAbsolutePath());
                 } catch (IOException e) {
-                    System.err.println("[HMDM-INITIALIZER]: Failed to create and write to signal file '" + signalFile.getAbsolutePath()
-                            + "' for application initialization completion" + e);
+                    System.err.println("[HMDM-INITIALIZER]: Failed to create and write to signal file '"
+                            + signalFile.getAbsolutePath() + "' for application initialization completion" + e);
                 }
             } else {
-                System.out.println("[HMDM-INITIALIZER]: The signal file for application initialization completion " +
-                        "already exists: " + signalFile.getAbsolutePath());
+                System.out.println("[HMDM-INITIALIZER]: The signal file for application initialization completion "
+                        + "already exists: " + signalFile.getAbsolutePath());
             }
         } else {
-            System.out.println("Could not find 'initialization.completion.signal.file' parameter in context. " +
-                    "Signaling on application initialization completion will be skipped.");
+            System.out.println("Could not find 'initialization.completion.signal.file' parameter in context. "
+                    + "Signaling on application initialization completion will be skipped.");
         }
     }
 
@@ -126,6 +124,20 @@ public final class Initializer extends GuiceServletContextListener {
         super.contextInitialized(servletContextEvent);
 
         initTasks();
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        if (this.injector != null) {
+            try {
+                final NotificationMqttTaskModule mqttModule =
+                        this.injector.getInstance(NotificationMqttTaskModule.class);
+                mqttModule.shutdown();
+            } catch (Exception e) {
+                System.err.println("[HMDM-INITIALIZER]: Error shutting down MQTT broker: " + e);
+            }
+        }
+        super.contextDestroyed(servletContextEvent);
     }
 
     private List<Module> getModules() {
@@ -156,10 +168,12 @@ public final class Initializer extends GuiceServletContextListener {
         final NotificationTaskModule notificationTaskModule = this.injector.getInstance(NotificationTaskModule.class);
         notificationTaskModule.init();
 
-        final NotificationMqttTaskModule notificationMqttTaskModule = this.injector.getInstance(NotificationMqttTaskModule.class);
+        final NotificationMqttTaskModule notificationMqttTaskModule =
+                this.injector.getInstance(NotificationMqttTaskModule.class);
         notificationMqttTaskModule.init();
 
-        final PluginPlatformTaskModule pluginPlatformTaskModule = this.injector.getInstance(PluginPlatformTaskModule.class);
+        final PluginPlatformTaskModule pluginPlatformTaskModule =
+                this.injector.getInstance(PluginPlatformTaskModule.class);
         pluginPlatformTaskModule.init();
 
         final List<Class<? extends PluginTaskModule>> pluginTaskModules = PluginList.getPluginTaskModules();
@@ -169,8 +183,8 @@ public final class Initializer extends GuiceServletContextListener {
                     final PluginTaskModule pluginTaskModule = this.injector.getInstance(clazz);
                     pluginTaskModule.init();
                 } catch (Exception e) {
-                    System.err.println("Failed to instantiate and initialize plugin task module '"
-                            + clazz.getName() + "': " + e);
+                    System.err.println(
+                            "Failed to instantiate and initialize plugin task module '" + clazz.getName() + "': " + e);
                 }
             });
         }

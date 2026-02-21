@@ -23,28 +23,24 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.hmdm.persistence.domain.Application;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "Options applied when a device must be created on demand")
+@Schema(description = "Options applied when a device must be created on demand")
 public class DeviceCreateOptions implements Serializable {
 
     private static final long serialVersionUID = -3973746261808927824L;
 
-    @ApiModelProperty("Customer name")
+    @Schema(description = "Customer name")
     private String customer;
 
-    @ApiModelProperty("Configuration for the new device")
+    @Schema(description = "Configuration for the new device")
     private String configuration;
 
-    @ApiModelProperty("Groups for the new device")
+    @Schema(description = "Groups for the new device")
     private List<String> groups;
 
     public String getCustomer() {
@@ -73,10 +69,7 @@ public class DeviceCreateOptions implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceCreateOptions{" +
-                "customer='" + customer + '\'' +
-                ", configuration='" + configuration + '\'' +
-                ", groups=" + groups +
-                '}';
+        return "DeviceCreateOptions{" + "customer='" + customer + '\'' + ", configuration='" + configuration + '\''
+                + ", groups=" + groups + '}';
     }
 }

@@ -21,14 +21,13 @@
 
 package com.hmdm.notification.guice.module;
 
-import com.google.inject.Inject;
 import com.hmdm.notification.persistence.NotificationDAO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A module used for starting the runnable tasks for <code>Notification</code> sub-system.</p>
@@ -50,8 +49,7 @@ public class NotificationTaskModule {
     }
 
     public void init() {
-        messagePurgeService.scheduleWithFixedDelay(new MessagePurgeWorker(notificationDAO),
-                1, 1, TimeUnit.HOURS);
+        messagePurgeService.scheduleWithFixedDelay(new MessagePurgeWorker(notificationDAO), 1, 1, TimeUnit.HOURS);
 
         Runtime.getRuntime().addShutdownHook(new Thread(messagePurgeService::shutdown));
     }
@@ -60,7 +58,7 @@ public class NotificationTaskModule {
      * <p>A task to delete the push messages with lifespans longer than pre-defined limits.</p>
      */
     public static class MessagePurgeWorker implements Runnable {
-        private final static Logger log = LoggerFactory.getLogger(MessagePurgeWorker.class);
+        private static final Logger log = LoggerFactory.getLogger(MessagePurgeWorker.class);
         private final NotificationDAO notificationDAO;
 
         public MessagePurgeWorker(NotificationDAO notificationDAO) {
@@ -78,5 +76,4 @@ public class NotificationTaskModule {
             }
         }
     }
-
 }

@@ -22,10 +22,9 @@
 package com.hmdm.plugins.devicelog.guice.module;
 
 import com.hmdm.guice.module.AbstractLiquibaseModule;
-import com.hmdm.plugin.guice.module.PluginLiquibaseResourceAccessor;
+import jakarta.servlet.ServletContext;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
-
-import javax.servlet.ServletContext;
 
 /**
  * <p>A module used for registering the <code>Device Log</code> plugin to plugin platform.</p>
@@ -41,7 +40,6 @@ public class DeviceLogLiquibaseModule extends AbstractLiquibaseModule {
         super(context);
     }
 
-
     /**
      * <p>Gets the path to the DB change log to be used by this module.</p>
      *
@@ -51,11 +49,8 @@ public class DeviceLogLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected String getChangeLogResourcePath() {
-        String path = this.getClass().getResource("/liquibase/devicelog.changelog.xml").getPath();
-        if (!path.startsWith("jar:")) {
-            path = "jar:" + path;
-        }
-        return path;
+        // Use relative classpath path for Liquibase 4.x compatibility
+        return "liquibase/devicelog.changelog.xml";
     }
 
     /**
@@ -65,6 +60,6 @@ public class DeviceLogLiquibaseModule extends AbstractLiquibaseModule {
      */
     @Override
     protected ResourceAccessor getResourceAccessor() {
-        return new PluginLiquibaseResourceAccessor();
+        return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }
 }

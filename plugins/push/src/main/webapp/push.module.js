@@ -39,22 +39,22 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
     })
     .factory('pluginPushService', function ($resource) {
         return $resource('', {}, {
-            purgeOldMessages: {url: 'rest/plugins/push/private/purge/:days', method: 'GET'},
-            getMessages: {url: 'rest/plugins/push/private/search', method: 'POST'},
-            sendMessage: {url: 'rest/plugins/push/private/send', method: 'POST'},
-            deleteMessage: {url: 'rest/plugins/push/private/:id', method: 'DELETE'},
-            lookupDevices: {url: 'rest/private/devices/autocomplete', method: 'POST'},
-            getTasks: {url: 'rest/plugins/push/private/searchTasks', method: 'POST'},
-            saveTask: {url: 'rest/plugins/push/private/task', method: 'PUT'},
-            deleteTask: {url: 'rest/plugins/push/private/task/:id', method: 'DELETE'}
+            purgeOldMessages: { url: 'rest/plugins/push/private/purge/:days', method: 'GET' },
+            getMessages: { url: 'rest/plugins/push/private/search', method: 'POST' },
+            sendMessage: { url: 'rest/plugins/push/private/send', method: 'POST' },
+            deleteMessage: { url: 'rest/plugins/push/private/:id', method: 'DELETE' },
+            lookupDevices: { url: 'rest/private/devices/autocomplete', method: 'POST' },
+            getTasks: { url: 'rest/plugins/push/private/searchTasks', method: 'POST' },
+            saveTask: { url: 'rest/plugins/push/private/task', method: 'PUT' },
+            deleteTask: { url: 'rest/plugins/push/private/task/:id', method: 'DELETE' }
         });
     })
-    .factory('getDevicesService', ['pluginPushService', function(pluginPushService) {
-        var getDeviceInfo = function( device ) {
-            if ( device.info ) {
+    .factory('getDevicesService', ['pluginPushService', function (pluginPushService) {
+        var getDeviceInfo = function (device) {
+            if (device.info) {
                 try {
-                    return JSON.parse( device.info );
-                } catch ( e ) {}
+                    return JSON.parse(device.info);
+                } catch (e) { }
             }
 
             return undefined;
@@ -73,8 +73,8 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         };
 
         return {
-            getDevices: function(val) {
-                return pluginPushService.lookupDevices(val).$promise.then(function(response) {
+            getDevices: function (val) {
+                return pluginPushService.lookupDevices(val).$promise.then(function (response) {
                     if (response.status === 'OK') {
                         return response.data.map(function (device) {
                             var deviceInfo = getDeviceInfo(device);
@@ -89,7 +89,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
                     }
                 });
             },
-            deviceLookupFormatter: function(v) {
+            deviceLookupFormatter: function (v) {
                 if (v) {
                     var pos = v.indexOf('/');
                     if (pos > -1) {
@@ -101,8 +101,8 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         }
     }])
     .controller('PluginPushTabController', function ($scope, $rootScope, $window, $location, $modal, $timeout, $interval,
-                                                          pluginPushService, getDevicesService, confirmModal,
-                                                          authService, localization) {
+        pluginPushService, getDevicesService, confirmModal,
+        authService, localization) {
 
         $scope.hasPermission = authService.hasPermission;
 
@@ -120,7 +120,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             sortValue: 'createTime'
         };
 
-        $scope.$watch('paging.pageNum', function() {
+        $scope.$watch('paging.pageNum', function () {
             $window.scrollTo(0, 0);
         });
 
@@ -142,11 +142,11 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         $scope.getDevices = getDevicesService.getDevices;
         $scope.deviceLookupFormatter = getDevicesService.deviceLookupFormatter;
 
-        $scope.openDateCalendar = function( $event, isStartDate ) {
+        $scope.openDateCalendar = function ($event, isStartDate) {
             $event.preventDefault();
             $event.stopPropagation();
 
-            if ( isStartDate ) {
+            if (isStartDate) {
                 $scope.openDatePickers.dateFrom = true;
             } else {
                 $scope.openDatePickers.dateTo = true;
@@ -184,7 +184,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
 
             modalInstance.result.then(function () {
                 $scope.successMessage = localization.localize('plugin.push.send.success');
-                $timeout(function() { $scope.successMessage = undefined;}, 5000);
+                $timeout(function () { $scope.successMessage = undefined; }, 5000);
                 $scope.search();
             });
         };
@@ -192,7 +192,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         var loading = false;
         var loadData = function () {
             $scope.errorMessage = undefined;
-            
+
             if (loading) {
                 console.log("Skipping query for message list since a previous request is pending");
                 return;
@@ -226,7 +226,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         loadData();
     })
     .controller('PluginPushScheduleTabController', function ($scope, $rootScope, $window, $location, $modal, $timeout, $interval,
-                                                     pluginPushService, confirmModal, authService, localization) {
+        pluginPushService, confirmModal, authService, localization) {
 
         $scope.hasPermission = authService.hasPermission;
 
@@ -240,7 +240,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             messageFilter: ''
         };
 
-        $scope.$watch('paging.pageNum', function() {
+        $scope.$watch('paging.pageNum', function () {
             $window.scrollTo(0, 0);
         });
 
@@ -260,7 +260,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         $scope.removeTask = function (task) {
             localizedText = localization.localize('plugin.push.delete.task');
             confirmModal.getUserConfirmation(localizedText, function () {
-                pluginPushService.deleteTask({id: task.id}, function (response) {
+                pluginPushService.deleteTask({ id: task.id }, function (response) {
                     if (response.status === 'OK') {
                         loadData();
                     } else {
@@ -283,7 +283,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
 
             modalInstance.result.then(function () {
                 $scope.successMessage = localization.localize('plugin.push.schedule.success');
-                $timeout(function() { $scope.successMessage = undefined;}, 5000);
+                $timeout(function () { $scope.successMessage = undefined; }, 5000);
                 $scope.search();
             });
         };
@@ -323,7 +323,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         loadData();
     })
     .controller('PluginPushSettingsController', function ($scope, $rootScope, $modal,
-                                                               confirmModal, localization, pluginPushService) {
+        confirmModal, localization, pluginPushService) {
         $scope.successMessage = undefined;
         $scope.errorMessage = undefined;
 
@@ -342,7 +342,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
                 $scope.errorMessage = localization.localize('plugin.push.settings.enter.number');
             }
 
-            pluginPushService.purgeOldMessages({"days": $scope.settings.pushPurgePeriod}, function (response) {
+            pluginPushService.purgeOldMessages({ "days": $scope.settings.pushPurgePeriod }, function (response) {
                 if (response.status === 'OK') {
                     $scope.successMessage = localization.localize('plugin.push.settings.message.purge.success');
                 } else {
@@ -352,7 +352,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         };
     })
     .controller('NewPushMessageController', function ($scope, $rootScope, $modalInstance, configurationService, groupService,
-                                                  confirmModal, localization, pluginPushService, getDevicesService) {
+        confirmModal, localization, pluginPushService, getDevicesService) {
 
         $scope.sending = false;
 
@@ -396,7 +396,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             "(custom)": ""
         };
 
-        $scope.typeChanged = function() {
+        $scope.typeChanged = function () {
             $scope.message.payload = samplePayloads[$scope.message.messageType];
         };
 
@@ -430,7 +430,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
                 $scope.message.messageType = $scope.message.customMessageType;
             }
 
-            pluginPushService.sendMessage($scope.message).$promise.then(function(response) {
+            pluginPushService.sendMessage($scope.message).$promise.then(function (response) {
                 $scope.sending = false;
                 if (response.status === 'OK') {
                     $modalInstance.close();
@@ -448,7 +448,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
         };
     })
     .controller('NewPushScheduleController', function ($scope, $rootScope, $modalInstance, configurationService, groupService,
-                                                      confirmModal, localization, pluginPushService, getDevicesService, task) {
+        confirmModal, localization, pluginPushService, getDevicesService, task) {
 
         var taskCopy = {};
         for (var p in task) {
@@ -526,7 +526,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             "(custom)": ""
         };
 
-        $scope.typeChanged = function() {
+        $scope.typeChanged = function () {
             $scope.task.payload = samplePayloads[$scope.task.messageType];
         };
 
@@ -560,7 +560,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
                 $scope.task.messageType = $scope.task.customMessageType;
             }
 
-            pluginPushService.saveTask($scope.task).$promise.then(function(response) {
+            pluginPushService.saveTask($scope.task).$promise.then(function (response) {
                 $scope.saving = false;
                 if (response.status === 'OK') {
                     $modalInstance.close();

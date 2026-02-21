@@ -21,8 +21,6 @@
 
 package com.hmdm.plugin.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.persistence.domain.DisabledPlugin;
 import com.hmdm.plugin.persistence.domain.Plugin;
@@ -30,11 +28,12 @@ import com.hmdm.plugin.persistence.mapper.PluginMapper;
 import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import org.mybatis.guice.transactional.Transactional;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
 
 /**
  * <p>A DAO for {@link Plugin} domain objects.</p>
@@ -65,11 +64,9 @@ public class PluginDAO {
     public List<Plugin> findAvailablePlugins() {
         return SecurityContext.get()
                 .getCurrentUser()
-                .map(u -> this.pluginMapper.findAvailablePluginsByCustomerId(u.getCustomerId())
-                        .stream()
+                .map(u -> this.pluginMapper.findAvailablePluginsByCustomerId(u.getCustomerId()).stream()
                         .filter(p -> PluginList.isPluginEnabled(p.getIdentifier()))
-                        .collect(Collectors.toList())
-                )
+                        .collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
     }
 
@@ -79,21 +76,19 @@ public class PluginDAO {
      * @return a list of registered plugins.
      */
     public List<Plugin> findRegisteredPlugins() {
-        return this.pluginMapper.findRegisteredPlugins()
-                .stream()
+        return this.pluginMapper.findRegisteredPlugins().stream()
                 .filter(p -> PluginList.isPluginEnabled(p.getIdentifier()))
                 .collect(Collectors.toList());
     }
 
     /**
-     * <p>Gets the list of active plugins, e.g. those plugins which are installed in the application and are not marked
-     * as disabled.</p>
+     * <p>Gets the list of active plugins, e.g. those plugins which are installed in the application and are not marked as
+     * disabled.</p>
      *
      * @return a list of active plugins.
      */
     public List<Plugin> findActivePlugins() {
-        return this.pluginMapper.findActivePlugins()
-                .stream()
+        return this.pluginMapper.findActivePlugins().stream()
                 .filter(p -> PluginList.isPluginEnabled(p.getIdentifier()))
                 .collect(Collectors.toList());
     }
@@ -105,7 +100,8 @@ public class PluginDAO {
      */
     @Transactional
     public void saveDisabledPlugins(Integer[] pluginIds) {
-        SecurityContext.get().getCurrentUser()
+        SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     this.pluginMapper.cleanUpDisabledPlugins(user.getCustomerId());
                     if (pluginIds.length > 0) {

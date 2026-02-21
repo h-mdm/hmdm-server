@@ -21,7 +21,6 @@
 
 package com.hmdm.plugins.devicelog.guice.module;
 
-import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.plugin.rest.PluginAccessFilter;
 import com.hmdm.plugins.devicelog.rest.resource.DeviceLogPluginSettingsResource;
@@ -30,7 +29,6 @@ import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.filter.PrivateIPFilter;
 import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.security.jwt.JWTFilter;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,22 +44,18 @@ public class DeviceLogRestModule extends ServletModule {
     private static final List<String> protectedResources = Arrays.asList(
             "/rest/plugins/devicelog/devicelog-plugin-settings/private",
             "/rest/plugins/devicelog/devicelog-plugin-settings/private/*",
-            "/rest/plugins/devicelog/log/private/*"
-    );
+            "/rest/plugins/devicelog/log/private/*");
 
     /**
-     * <p> A list of patterns for URIs for plugin resources available to devices</p>
+     * <p>A list of patterns for URIs for plugin resources available to devices</p>
      */
-    private static final List<String> publicResources = Arrays.asList(
-            "/rest/plugins/devicelog/log/list/*",
-            "/rest/plugins/devicelog/log/rules/*"
-    );
+    private static final List<String> publicResources =
+            Arrays.asList("/rest/plugins/devicelog/log/list/*", "/rest/plugins/devicelog/log/rules/*");
 
     /**
      * <p>Constructs new <code>DeviceLogRestModule</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogRestModule() {
-    }
+    public DeviceLogRestModule() {}
 
     /**
      * <p>Configures the <code>Photo Plugin</code> REST resources.</p>
@@ -75,5 +69,4 @@ public class DeviceLogRestModule extends ServletModule {
         this.bind(DeviceLogPluginSettingsResource.class);
         this.bind(DeviceLogResource.class);
     }
-
 }

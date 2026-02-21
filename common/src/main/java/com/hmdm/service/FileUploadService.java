@@ -21,7 +21,7 @@
 
 package com.hmdm.service;
 
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * <p>A service to use for file uploading process.</p>
@@ -34,7 +34,5 @@ public class FileUploadService {
     /**
      * <p>Constructs new <code>FileUploadService</code> instance. This implementation does nothing.</p>
      */
-    public FileUploadService() {
-    }
-
+    public FileUploadService() {}
 }

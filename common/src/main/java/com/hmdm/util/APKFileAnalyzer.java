@@ -21,19 +21,13 @@
 
 package com.hmdm.util;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.rest.json.APKFileDetails;
-import net.dongliu.apk.parser.ApkFile;
-import net.dongliu.apk.parser.bean.ApkMeta;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -41,6 +35,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import net.dongliu.apk.parser.ApkFile;
+import net.dongliu.apk.parser.bean.ApkMeta;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>An analyzer for uploaded APK-files.</p>
@@ -53,7 +52,7 @@ public class APKFileAnalyzer {
     /**
      * <p>A logger for the encountered events.</p>
      */
-    private static final Logger log = LoggerFactory.getLogger(ApplicationDAO.class);
+    private static final Logger log = LoggerFactory.getLogger(APKFileAnalyzer.class);
 
     /**
      * <p>A command line string to call the <code>aapt</code> command.</p>
@@ -77,8 +76,8 @@ public class APKFileAnalyzer {
      * <p>Analyzes the specified file (APK or XAPK).</p>
      *
      * @param filePath an absolute path to an file to be analyzed.
-     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
-     *         error.
+     *
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an error.
      */
     public APKFileDetails analyzeFile(String filePath) {
         String realFileName = filePath.endsWith(".temp") ? FileUtil.getNameFromTmpPath(filePath) : filePath;
@@ -93,8 +92,8 @@ public class APKFileAnalyzer {
      * <p>Analyzes the specified APK file using the aapt utility.</p>
      *
      * @param filePath an absolute path to an APK-file to be analyzed.
-     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
-     *         error.
+     *
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an error.
      */
     private APKFileDetails analyzeApkFile(String filePath) {
         try (ApkFile apkFile = new ApkFile(new File(filePath))) {
@@ -115,8 +114,8 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * Detect native-code ABIs by scanning lib/<abi>/
-     * Returns null for universal APK, or arch label for a single-arch APK
+     * Detect native-code ABIs by scanning lib/<abi>/ Returns null for universal APK, or arch label for a single-arch
+     * APK
      */
     private String getArchByApkLibs(String filePath) {
         Set<String> abis = new TreeSet<>();
@@ -156,12 +155,11 @@ public class APKFileAnalyzer {
     }
 
     /**
-     * <p>Analyzes the specified APK file using the aapt utility.
-     * DEPRECATED AND NOT USED ANY MORE</p>
+     * <p>Analyzes the specified APK file using the aapt utility. DEPRECATED AND NOT USED ANY MORE</p>
      *
      * @param filePath an absolute path to an APK-file to be analyzed.
-     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an
-     *         error.
+     *
+     * @throws APKFileAnalyzerException if an unexpected error occurs or external <code>aapt</code> command reported an error.
      */
     private APKFileDetails analyzeApkFileByAapt(String filePath) {
         try {
@@ -176,7 +174,8 @@ public class APKFileAnalyzer {
             final AtomicReference<String> appArch = new AtomicReference<>();
             final List<String> errorLines = new ArrayList<>();
 
-            // Process the error stream by collecting all the error lines for further logging
+            // Process the error stream by collecting all the error lines for further
+            // logging
             StreamGobbler errorGobbler = new StreamGobbler(exec.getErrorStream(), "ERROR", errorLines::add);
 
             // Process the output by analyzing the line starting with "package:"
@@ -206,8 +205,12 @@ public class APKFileAnalyzer {
             errorGobbler.join();
 
             if (exitCode == 0) {
-                log.debug("Parsed application name and version from APK-file {}: {} {} {}",
-                        filePath, appPkg, appVersion, appVersionCode);
+                log.debug(
+                        "Parsed application name and version from APK-file {}: {} {} {}",
+                        filePath,
+                        appPkg,
+                        appVersion,
+                        appVersionCode);
                 APKFileDetails result = new APKFileDetails();
 
                 result.setPkg(appPkg.get());
@@ -219,8 +222,11 @@ public class APKFileAnalyzer {
 
                 return result;
             } else {
-                log.error("Could not analyze the .apk-file {}. The system process returned: {}. " +
-                        "The error message follows:", filePath, exitCode);
+                log.error(
+                        "Could not analyze the .apk-file {}. The system process returned: {}. "
+                                + "The error message follows:",
+                        filePath,
+                        exitCode);
                 errorLines.forEach(log::error);
                 throw new APKFileAnalyzerException("Could not analyze the .apk-file");
             }
@@ -230,13 +236,16 @@ public class APKFileAnalyzer {
         }
     }
 
-    // This function deals with an issue when the version name contains a space or even an apostrophe
+    // This function deals with an issue when the version name contains a space or
+    // even an apostrophe
     // It presumes the following format of the line:
-    // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx' compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
-    private void parseInfoLine(final String line,
-                               final AtomicReference<String> appPkg,
-                               final AtomicReference<String> appVersion,
-                               final AtomicReference<Integer> appVersionCode) {
+    // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx'
+    // compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
+    private void parseInfoLine(
+            final String line,
+            final AtomicReference<String> appPkg,
+            final AtomicReference<String> appVersion,
+            final AtomicReference<Integer> appVersionCode) {
 
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
@@ -253,34 +262,33 @@ public class APKFileAnalyzer {
         }
     }
 
-    private void parseInfoLineLegacy(final String line,
-                                     final AtomicReference<String> appPkg,
-                                     final AtomicReference<String> appVersion,
-                                     final AtomicReference<Integer> appVersionCode) {
-        Scanner scanner = new Scanner(line).useDelimiter(" ");
-        while (scanner.hasNext()) {
-            final String token = scanner.next();
-            if (token.startsWith("name=")) {
-                String appPkgLocal = token.substring("name=".length());
-                if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
-                    appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
-                }
-                appPkg.set(appPkgLocal);
-            } else if (token.startsWith("versionCode=")) {
-                String appVersionCodeLocal = token.substring("versionCode=".length());
-                if (appVersionCodeLocal.startsWith("'") && appVersionCodeLocal.endsWith("'")) {
-                    appVersionCodeLocal = appVersionCodeLocal.substring(1, appVersionCodeLocal.length() - 1);
-                }
-                try {
+    private void parseInfoLineLegacy(
+            final String line,
+            final AtomicReference<String> appPkg,
+            final AtomicReference<String> appVersion,
+            final AtomicReference<Integer> appVersionCode) {
+        try (Scanner scanner = new Scanner(line).useDelimiter(" ")) {
+            while (scanner.hasNext()) {
+                final String token = scanner.next();
+                if (token.startsWith("name=")) {
+                    String appPkgLocal = token.substring("name=".length());
+                    if (appPkgLocal.startsWith("'") && appPkgLocal.endsWith("'")) {
+                        appPkgLocal = appPkgLocal.substring(1, appPkgLocal.length() - 1);
+                    }
+                    appPkg.set(appPkgLocal);
+                } else if (token.startsWith("versionCode=")) {
+                    String appVersionCodeLocal = token.substring("versionCode=".length());
+                    if (appVersionCodeLocal.startsWith("'") && appVersionCodeLocal.endsWith("'")) {
+                        appVersionCodeLocal = appVersionCodeLocal.substring(1, appVersionCodeLocal.length() - 1);
+                    }
                     appVersionCode.set(Integer.parseInt(appVersionCodeLocal));
-                } catch (NumberFormatException e) {
+                } else if (token.startsWith("versionName=")) {
+                    String appVersionLocal = token.substring("versionName=".length());
+                    if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
+                        appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
+                    }
+                    appVersion.set(appVersionLocal);
                 }
-            } else if (token.startsWith("versionName=")) {
-                String appVersionLocal = token.substring("versionName=".length());
-                if (appVersionLocal.startsWith("'") && appVersionLocal.endsWith("'")) {
-                    appVersionLocal = appVersionLocal.substring(1, appVersionLocal.length() - 1);
-                }
-                appVersion.set(appVersionLocal);
             }
         }
     }
@@ -342,7 +350,7 @@ public class APKFileAnalyzer {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    log.debug(type + "> " + line);
+                    log.debug("{} > {}", type, line);
                     this.lineConsumer.accept(line);
                 }
             } catch (Exception e) {
@@ -355,32 +363,31 @@ public class APKFileAnalyzer {
      * <p>Analyzes the specified XAPK file.</p>
      *
      * @param filePath an absolute path to an XAPK-file to be analyzed.
+     *
      * @throws APKFileAnalyzerException if an unexpected error occurs
      */
     private APKFileDetails analyzeXapkFile(String filePath) {
-        try {
-            ZipFile zipFile = new ZipFile(filePath);
+        try (ZipFile zipFile = new ZipFile(filePath)) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-            while(entries.hasMoreElements()) {
+            while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 if (entry.getName().equalsIgnoreCase("manifest.json")) {
                     InputStream stream = zipFile.getInputStream(entry);
-                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+                    BufferedReader streamReader =
+                            new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
                     StringBuilder responseStrBuilder = new StringBuilder();
                     String inputStr;
                     while ((inputStr = streamReader.readLine()) != null) {
                         responseStrBuilder.append(inputStr);
                     }
                     stream.close();
-                    zipFile.close();
                     return analyzeXapkManifest(responseStrBuilder.toString());
                 }
-
             }
-            zipFile.close();
             throw new APKFileAnalyzerException("Missing manifest in XAPK-file", new Exception());
-
+        } catch (APKFileAnalyzerException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error while analyzing XAPK-file: {}", filePath, e);
             throw new APKFileAnalyzerException("Unexpected error while analyzing XAPK-file", e);

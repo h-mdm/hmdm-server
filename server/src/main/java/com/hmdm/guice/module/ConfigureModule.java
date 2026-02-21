@@ -26,8 +26,8 @@ import com.google.inject.name.Names;
 import com.hmdm.auth.HmdmAuthInterface;
 import com.hmdm.auth.LocalAuth;
 import com.hmdm.persistence.domain.Application;
-
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
+import org.slf4j.LoggerFactory;
 
 public class ConfigureModule extends AbstractModule {
     private final String baseDirectoryParameter = "base.directory";
@@ -98,6 +98,8 @@ public class ConfigureModule extends AbstractModule {
     private final String jwtSecretKey = "jwt.secretkey";
     private final String jwtValidity = "jwt.validity";
     private final String jwtValidityForRememberMe = "jwt.validityrememberme";
+    private final String sslKeystorePassword = "ssl.keystore.password";
+    private final String sslKeystorePath = "ssl.keystore.path";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -105,27 +107,41 @@ public class ConfigureModule extends AbstractModule {
     }
 
     protected void configure() {
-        this.bindConstant().annotatedWith(Names.named(filesDirectoryParameter)).to(this.context.getInitParameter(filesDirectoryParameter));
-        this.bindConstant().annotatedWith(Names.named(baseUrlParameter)).to(this.context.getInitParameter(baseUrlParameter));
-        this.bindConstant().annotatedWith(Names.named(pluginFilesDirectoryParameter)).to(this.context.getInitParameter(pluginFilesDirectoryParameter));
-        this.bindConstant().annotatedWith(Names.named(usageScenarioParameter)).to(this.context.getInitParameter(usageScenarioParameter));
+        this.bindConstant()
+                .annotatedWith(Names.named(filesDirectoryParameter))
+                .to(this.context.getInitParameter(filesDirectoryParameter));
+        this.bindConstant()
+                .annotatedWith(Names.named(baseUrlParameter))
+                .to(this.context.getInitParameter(baseUrlParameter));
+        this.bindConstant()
+                .annotatedWith(Names.named(pluginFilesDirectoryParameter))
+                .to(this.context.getInitParameter(pluginFilesDirectoryParameter));
+        this.bindConstant()
+                .annotatedWith(Names.named(usageScenarioParameter))
+                .to(this.context.getInitParameter(usageScenarioParameter));
         String secureEnrollment = this.context.getInitParameter(secureEnrollmentParameter);
-        this.bindConstant().annotatedWith(Names.named(secureEnrollmentParameter)).to(
-                secureEnrollment != null && (secureEnrollment.equals("1") || secureEnrollment.equalsIgnoreCase("true"))
-        );
-        this.bindConstant().annotatedWith(Names.named(hashSecretParameter)).to(this.context.getInitParameter(hashSecretParameter));
+        this.bindConstant()
+                .annotatedWith(Names.named(secureEnrollmentParameter))
+                .to(secureEnrollment != null
+                        && (secureEnrollment.equals("1") || secureEnrollment.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(hashSecretParameter))
+                .to(this.context.getInitParameter(hashSecretParameter));
         String hsts = this.context.getInitParameter(hstsParameter);
-        this.bindConstant().annotatedWith(Names.named(hstsParameter)).to(
-                hsts != null && (hsts.equals("1") || hsts.equalsIgnoreCase("true"))
-        );
+        this.bindConstant()
+                .annotatedWith(Names.named(hstsParameter))
+                .to(hsts != null && (hsts.equals("1") || hsts.equalsIgnoreCase("true")));
         String preventDuplicate = this.context.getInitParameter(preventDuplicateParameter);
-        this.bindConstant().annotatedWith(Names.named(preventDuplicateParameter)).to(
-                preventDuplicate != null && (preventDuplicate.equals("1") || preventDuplicate.equalsIgnoreCase("true"))
-        );
-        this.bindConstant().annotatedWith(Names.named(aaptCommandParameter)).to(this.context.getInitParameter(aaptCommandParameter));
-        this.bindConstant().annotatedWith(Names.named(roleOrgadminIdParameter)).to(
-                Integer.parseInt(this.context.getInitParameter(roleOrgadminIdParameter))
-        );
+        this.bindConstant()
+                .annotatedWith(Names.named(preventDuplicateParameter))
+                .to(preventDuplicate != null
+                        && (preventDuplicate.equals("1") || preventDuplicate.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(aaptCommandParameter))
+                .to(this.context.getInitParameter(aaptCommandParameter));
+        this.bindConstant()
+                .annotatedWith(Names.named(roleOrgadminIdParameter))
+                .to(Integer.parseInt(this.context.getInitParameter(roleOrgadminIdParameter)));
         String launcherPackage = this.context.getInitParameter(launcherPackageParameter);
         if (launcherPackage == null) {
             launcherPackage = Application.DEFAULT_LAUNCHER_PACKAGE;
@@ -138,46 +154,67 @@ public class ConfigureModule extends AbstractModule {
         opt = this.context.getInitParameter(baseDirectoryParameter);
         this.bindConstant().annotatedWith(Names.named(baseDirectoryParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(transmitPasswordParameter);
-        this.bindConstant().annotatedWith(Names.named(transmitPasswordParameter)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(transmitPasswordParameter))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(authClassParameter);
         try {
-            Class authImpl = opt != null ? Class.forName("com.hmdm.auth." + opt + "Auth") : LocalAuth.class;
-            this.bind(HmdmAuthInterface.class).annotatedWith(Names.named(authClassParameter))
+            @SuppressWarnings("unchecked")
+            Class<? extends HmdmAuthInterface> authImpl = opt != null
+                    ? (Class<? extends HmdmAuthInterface>) Class.forName("com.hmdm.auth." + opt + "Auth")
+                    : LocalAuth.class;
+            this.bind(HmdmAuthInterface.class)
+                    .annotatedWith(Names.named(authClassParameter))
                     .to(authImpl);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerFactory.getLogger(ConfigureModule.class).error("Failed to load auth class: {}", opt, e);
         }
 
         // Rebranding
         opt = this.context.getInitParameter(rebrandingNameParameter);
         this.bindConstant().annotatedWith(Names.named(rebrandingNameParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingVendorParameter);
-        this.bindConstant().annotatedWith(Names.named(rebrandingVendorParameter)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(rebrandingVendorParameter))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingVendorLinkParameter);
-        this.bindConstant().annotatedWith(Names.named(rebrandingVendorLinkParameter)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(rebrandingVendorLinkParameter))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingLogoParameter);
         this.bindConstant().annotatedWith(Names.named(rebrandingLogoParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingMobileNameParameter);
-        this.bindConstant().annotatedWith(Names.named(rebrandingMobileNameParameter)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(rebrandingMobileNameParameter))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingSignupLinkParameter);
-        this.bindConstant().annotatedWith(Names.named(rebrandingSignupLinkParameter)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(rebrandingSignupLinkParameter))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(rebrandingTermsLinkParameter);
-        this.bindConstant().annotatedWith(Names.named(rebrandingTermsLinkParameter)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(rebrandingTermsLinkParameter))
+                .to(opt != null ? opt : "");
 
         // SMTP
         opt = this.context.getInitParameter(smtpHostParameter);
         this.bindConstant().annotatedWith(Names.named(smtpHostParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(smtpPortParameter);
-        this.bindConstant().annotatedWith(Names.named(smtpPortParameter)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 25);
+        this.bindConstant()
+                .annotatedWith(Names.named(smtpPortParameter))
+                .to(opt != null && !opt.equals("") ? Integer.parseInt(opt) : 25);
         opt = this.context.getInitParameter(smtpSslParameter);
-        this.bindConstant().annotatedWith(Names.named(smtpSslParameter)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(smtpSslParameter))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(smtpStartTlsParameter);
-        this.bindConstant().annotatedWith(Names.named(smtpStartTlsParameter)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(smtpStartTlsParameter))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(smtpSslProtocolsParameter);
-        this.bindConstant().annotatedWith(Names.named(smtpSslProtocolsParameter)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(smtpSslProtocolsParameter))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(smtpSslTrustParameter);
         this.bindConstant().annotatedWith(Names.named(smtpSslTrustParameter)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(smtpUsernameParameter);
@@ -189,7 +226,9 @@ public class ConfigureModule extends AbstractModule {
 
         // Other
         opt = this.context.getInitParameter(deviceFastSearchCharsParameter);
-        this.bindConstant().annotatedWith(Names.named(deviceFastSearchCharsParameter)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 5);
+        this.bindConstant()
+                .annotatedWith(Names.named(deviceFastSearchCharsParameter))
+                .to(opt != null && !opt.equals("") ? Integer.parseInt(opt) : 5);
         opt = this.context.getInitParameter(sqlInitScriptPath);
         this.bindConstant().annotatedWith(Names.named(sqlInitScriptPath)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(proxyAddresses);
@@ -197,8 +236,9 @@ public class ConfigureModule extends AbstractModule {
         opt = this.context.getInitParameter(proxyIpHeader);
         this.bindConstant().annotatedWith(Names.named(proxyIpHeader)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerAutoStatus);
-        this.bindConstant().annotatedWith(Names.named(customerAutoStatus)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(customerAutoStatus))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(adminEmail);
         this.bindConstant().annotatedWith(Names.named(adminEmail)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(mailchimpUrl);
@@ -206,25 +246,33 @@ public class ConfigureModule extends AbstractModule {
         opt = this.context.getInitParameter(mailchimpKey);
         this.bindConstant().annotatedWith(Names.named(mailchimpKey)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerSignup);
-        this.bindConstant().annotatedWith(Names.named(customerSignup)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(customerSignup))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(customerSignupCopySettings);
-        this.bindConstant().annotatedWith(Names.named(customerSignupCopySettings)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(customerSignupCopySettings))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(customerSignupConfigurations);
-        this.bindConstant().annotatedWith(Names.named(customerSignupConfigurations)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(customerSignupConfigurations))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerSignupSupportEmail);
-        this.bindConstant().annotatedWith(Names.named(customerSignupSupportEmail)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(customerSignupSupportEmail))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerSignupDeviceLimit);
-        // I have absolutely no idea why int can't be bound here but it can't!!!
-        // Let's proceed as an Indian and send String to SignupResource instead of int :-/
-        this.bindConstant().annotatedWith(Names.named(customerSignupDeviceLimit)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(customerSignupDeviceLimit))
+                .to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerSignupSizeLimit);
         this.bindConstant().annotatedWith(Names.named(customerSignupSizeLimit)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerSignupExpiryDays);
         this.bindConstant().annotatedWith(Names.named(customerSignupExpiryDays)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(customerSignupDeviceConfig);
-        this.bindConstant().annotatedWith(Names.named(customerSignupDeviceConfig)).to(opt != null ? opt : "");
+        this.bindConstant()
+                .annotatedWith(Names.named(customerSignupDeviceConfig))
+                .to(opt != null ? opt : "");
 
         opt = this.context.getInitParameter(emailRecoverySubj);
         this.bindConstant().annotatedWith(Names.named(emailRecoverySubj)).to(opt != null ? opt : "");
@@ -240,12 +288,15 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(emailSignupCompleteBody)).to(opt != null ? opt : "");
 
         opt = this.context.getInitParameter(ldapAdminBind);
-        this.bindConstant().annotatedWith(Names.named(ldapAdminBind)).to(
-                opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
+        this.bindConstant()
+                .annotatedWith(Names.named(ldapAdminBind))
+                .to(opt != null && (opt.equals("1") || opt.equalsIgnoreCase("true")));
         opt = this.context.getInitParameter(ldapHost);
         this.bindConstant().annotatedWith(Names.named(ldapHost)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(ldapPort);
-        this.bindConstant().annotatedWith(Names.named(ldapPort)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 389);
+        this.bindConstant()
+                .annotatedWith(Names.named(ldapPort))
+                .to(opt != null && !opt.equals("") ? Integer.parseInt(opt) : 389);
         opt = this.context.getInitParameter(ldapBaseDn);
         this.bindConstant().annotatedWith(Names.named(ldapBaseDn)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(ldapAdminDn);
@@ -259,7 +310,9 @@ public class ConfigureModule extends AbstractModule {
         opt = this.context.getInitParameter(ldapDefaultRole);
         this.bindConstant().annotatedWith(Names.named(ldapDefaultRole)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(ldapCustomerId);
-        this.bindConstant().annotatedWith(Names.named(ldapCustomerId)).to(opt != null && !opt.equals("") ? Integer.parseInt(opt): 1);
+        this.bindConstant()
+                .annotatedWith(Names.named(ldapCustomerId))
+                .to(opt != null && !opt.equals("") ? Integer.parseInt(opt) : 1);
         opt = this.context.getInitParameter(deviceAllowedAddress);
         this.bindConstant().annotatedWith(Names.named(deviceAllowedAddress)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(uiAllowedAddress);
@@ -272,5 +325,9 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(jwtValidity)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(jwtValidityForRememberMe);
         this.bindConstant().annotatedWith(Names.named(jwtValidityForRememberMe)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(sslKeystorePassword);
+        this.bindConstant().annotatedWith(Names.named(sslKeystorePassword)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(sslKeystorePath);
+        this.bindConstant().annotatedWith(Names.named(sslKeystorePath)).to(opt != null ? opt : "");
     }
 }

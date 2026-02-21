@@ -23,14 +23,14 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * <p>A DTO carrying the data for name/vendor response for rebranding purposes</p>
  *
  * @author isv
  */
-@ApiModel(description = "Name and vendor for rebranding purposes")
+@Schema(description = "Name and vendor for rebranding purposes")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NameResponse {
@@ -44,8 +44,7 @@ public class NameResponse {
     /**
      * <p>Constructs new <code>NameResponse</code> instance. This implementation does nothing.</p>
      */
-    public NameResponse() {
-    }
+    public NameResponse() {}
 
     public String getAppName() {
         return appName;

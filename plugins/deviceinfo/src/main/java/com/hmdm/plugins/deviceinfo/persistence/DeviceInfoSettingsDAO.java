@@ -21,11 +21,11 @@
 
 package com.hmdm.plugins.deviceinfo.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.deviceinfo.persistence.domain.DeviceInfoPluginSettings;
 import com.hmdm.plugins.deviceinfo.persistence.mapper.DeviceInfoMapper;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 /**
  * <p>A DAO for {@link DeviceInfoPluginSettings} domain objects.</p>
@@ -76,8 +76,8 @@ public class DeviceInfoSettingsDAO extends AbstractDAO<DeviceInfoPluginSettings>
     }
 
     /**
-     * <p>Saves the specified plugin settings without checking the user.
-     * This function should not be used in REST methods, only in task methods.</p>
+     * <p>Saves the specified plugin settings without checking the user. This function should not be used in REST methods,
+     * only in task methods.</p>
      *
      * @param settings plugin settings to be saved.
      */

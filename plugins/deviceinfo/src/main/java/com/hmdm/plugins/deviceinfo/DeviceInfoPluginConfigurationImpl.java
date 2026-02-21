@@ -28,8 +28,7 @@ import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoLiquibaseModule;
 import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoPersistenceModule;
 import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoRestModule;
 import com.hmdm.plugins.deviceinfo.guice.module.DeviceInfoTaskModule;
-
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,12 +45,11 @@ public class DeviceInfoPluginConfigurationImpl implements PluginConfiguration {
     /**
      * <p>Constructs new <code>DeviceInfoPluginConfigurationImpl</code> instance. This implementation does nothing.</p>
      */
-    public DeviceInfoPluginConfigurationImpl() {
-    }
+    public DeviceInfoPluginConfigurationImpl() {}
 
     /**
-     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely
-     * by <code>Plugin Platform</code>.</p>
+     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely by
+     * <code>Plugin Platform</code>.</p>
      *
      * @return a plugin identifier.
      */
@@ -74,6 +72,7 @@ public class DeviceInfoPluginConfigurationImpl implements PluginConfiguration {
      * <p>Gets the list of modules to be used for initializing the plugin.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return a list of modules to be used for plugin initialization.
      */
     @Override
@@ -91,6 +90,7 @@ public class DeviceInfoPluginConfigurationImpl implements PluginConfiguration {
      * <p>Gets the list of task modules to be initialized upon application startup.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return an optional list of task modules for plugins.
      */
     @Override

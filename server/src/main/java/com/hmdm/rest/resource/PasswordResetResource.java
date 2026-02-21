@@ -23,38 +23,26 @@ package com.hmdm.rest.resource;
 
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.service.EmailService;
 import com.hmdm.util.PasswordUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-@Api(tags = {"Password-Reset"})
+@Tag(name = "Password-Reset")
 @Singleton
 @Path("/public/passwordReset")
 public class PasswordResetResource {
@@ -69,15 +57,17 @@ public class PasswordResetResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public PasswordResetResource() {
-    }
+    public PasswordResetResource() {}
 
     /**
      * <p>Constructs new <code>PasswordResetResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public PasswordResetResource(CommonDAO commonDAO, UnsecureDAO unsecureDAO, EmailService emailService,
-                                 @Named("base.url") String baseUrl) {
+    public PasswordResetResource(
+            CommonDAO commonDAO,
+            UnsecureDAO unsecureDAO,
+            EmailService emailService,
+            @Named("base.url") String baseUrl) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.emailService = emailService;
@@ -85,15 +75,11 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get settings by token",
-            notes = "Returns the user settings by password reset token.",
-            response = User.class
-    )
+    @Operation(summary = "Get settings by token", description = "Returns the user settings by password reset token.")
     @GET
     @Path("/settings/{token}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSettings(@PathParam("token") @ApiParam("Password reset token") String token) {
+    public Response getSettings(@PathParam("token") @Parameter(description = "Password reset token") String token) {
         try {
             User user = unsecureDAO.findByPasswordResetToken(token);
             if (user == null) {
@@ -101,7 +87,8 @@ public class PasswordResetResource {
             }
 
             SecurityContext.init(user);
-            Settings settings = Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
+            Settings settings =
+                    Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
             settings.setSingleCustomer(unsecureDAO.isSingleCustomer());
             if (!settings.isSingleCustomer()) {
                 this.commonDAO.loadCustomerSettings(settings);
@@ -116,10 +103,7 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Reset password",
-            notes = "Resets the user password"
-    )
+    @Operation(summary = "Reset password", description = "Resets the user password")
     @POST
     @Path("/reset")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -145,10 +129,7 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Password recovery feature",
-            notes = "Checks if the password can be recovered."
-    )
+    @Operation(summary = "Password recovery feature", description = "Checks if the password can be recovered.")
     @GET
     @Deprecated
     @Path("/canRecover")
@@ -162,14 +143,13 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Request password recovery",
-            notes = "Checks if the password can be recovered."
-    )
+    @Operation(summary = "Request password recovery", description = "Checks if the password can be recovered.")
     @GET
     @Path("/recover/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response recover(@PathParam("username") @ApiParam("Login of the user who wants to recover the password") String username) {
+    public Response recover(
+            @PathParam("username") @Parameter(description = "Login of the user who wants to recover the password")
+                    String username) {
         try {
             User user = unsecureDAO.findByLoginOrEmail(username);
             if (user == null) {
@@ -185,7 +165,8 @@ public class PasswordResetResource {
                 return Response.ERROR("error.email.not.found");
             }
 
-            if (user.getPasswordResetToken() == null || user.getPasswordResetToken().equals("")) {
+            if (user.getPasswordResetToken() == null
+                    || user.getPasswordResetToken().equals("")) {
                 user.setPasswordResetToken(PasswordUtil.generateToken());
                 user.setNewPassword(user.getPassword());
                 unsecureDAO.setUserNewPasswordUnsecure(user);
@@ -193,7 +174,9 @@ public class PasswordResetResource {
 
             Customer customer = unsecureDAO.getCustomerByIdUnsecure(user.getCustomerId());
             String language = customer == null ? "" : customer.getLanguage();
-            if (emailService.sendEmail(user.getEmail(), emailService.getRecoveryEmailSubj(language),
+            if (emailService.sendEmail(
+                    user.getEmail(),
+                    emailService.getRecoveryEmailSubj(language),
                     emailService.getRecoveryEmailBody(language, user.getPasswordResetToken()))) {
                 return Response.OK();
             } else {

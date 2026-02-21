@@ -21,12 +21,8 @@
 
 package com.hmdm.persistence.mapper;
 
-import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UsageStats;
-import com.hmdm.rest.json.CustomerSearchRequest;
 import org.apache.ibatis.annotations.*;
-
-import java.util.List;
 
 /**
  * <p>An ORM mapper for {@link UsageStats} domain object.</p>
@@ -35,11 +31,17 @@ import java.util.List;
  */
 public interface UsageStatsMapper {
 
-    @Insert({"INSERT INTO usageStats (instanceId, webVersion, community, devicesTotal, devicesOnline, " +
-             "cpuTotal, cpuUsed, ramTotal, ramUsed, scheme, arch, os) " +
-             "VALUES (#{instanceId}, #{webVersion}, #{community}, #{devicesTotal}, #{devicesOnline}, " +
-             "#{cpuTotal}, #{cpuUsed}, #{ramTotal}, #{ramUsed}, #{scheme}, #{arch}, #{os}) ON CONFLICT DO NOTHING"})
-    @SelectKey( statement = "SELECT currval('usagestats_id_seq')", keyColumn = "id",
-            keyProperty = "id", before = false, resultType = int.class )
+    @Insert({
+        "INSERT INTO usageStats (instanceId, webVersion, community, devicesTotal, devicesOnline, "
+                + "cpuTotal, cpuUsed, ramTotal, ramUsed, scheme, arch, os) "
+                + "VALUES (#{instanceId}, #{webVersion}, #{community}, #{devicesTotal}, #{devicesOnline}, "
+                + "#{cpuTotal}, #{cpuUsed}, #{ramTotal}, #{ramUsed}, #{scheme}, #{arch}, #{os}) ON CONFLICT DO NOTHING"
+    })
+    @SelectKey(
+            statement = "SELECT currval('usagestats_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insert(UsageStats usageStats);
 }

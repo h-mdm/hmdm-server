@@ -21,14 +21,13 @@
 
 package com.hmdm.plugins.devicelog.guice.module;
 
-import com.google.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Customer;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.devicelog.persistence.CustomerCreatedEventListener;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPluginSettingsDAO;
+import jakarta.inject.Inject;
 
 /**
  * <p>A module used for initializing the tasks to be executed in background.</p>
@@ -46,6 +45,7 @@ public class DeviceLogTaskModule implements PluginTaskModule {
      * <p>An interface to the persistence layer.</p>
      */
     private final DeviceLogPluginSettingsDAO settingsDAO;
+
     private final CustomerDAO customerDAO;
     private final UnsecureDAO unsecureDAO;
 
@@ -53,10 +53,11 @@ public class DeviceLogTaskModule implements PluginTaskModule {
      * <p>Constructs new <code>DeviceLogTaskModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceLogTaskModule(EventService eventService,
-                               DeviceLogPluginSettingsDAO settingsDAO,
-                               CustomerDAO customerDAO,
-                               UnsecureDAO unsecureDAO) {
+    public DeviceLogTaskModule(
+            EventService eventService,
+            DeviceLogPluginSettingsDAO settingsDAO,
+            CustomerDAO customerDAO,
+            UnsecureDAO unsecureDAO) {
         this.eventService = eventService;
         this.settingsDAO = settingsDAO;
         this.customerDAO = customerDAO;
@@ -68,7 +69,7 @@ public class DeviceLogTaskModule implements PluginTaskModule {
      */
     @Override
     public void init() {
-        this.eventService.addEventListener(new CustomerCreatedEventListener(this.settingsDAO, this.customerDAO, this.unsecureDAO));
+        this.eventService.addEventListener(
+                new CustomerCreatedEventListener(this.settingsDAO, this.customerDAO, this.unsecureDAO));
     }
-
 }

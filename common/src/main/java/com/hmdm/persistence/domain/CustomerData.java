@@ -21,7 +21,7 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * <p>An interface for domain objects linked to some customer record.</p>
@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author isv
  */
 public interface CustomerData {
-    
+
     /**
      * <p>Gets the ID of this object.</p>
      *
@@ -56,7 +56,7 @@ public interface CustomerData {
      *
      * @return <code>true</code> if this record is accessible to all customers; <code>false</code> otherwise.
      */
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     default boolean isCommon() {
         return false;
     }

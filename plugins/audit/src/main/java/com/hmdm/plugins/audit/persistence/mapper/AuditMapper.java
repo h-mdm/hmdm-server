@@ -23,9 +23,8 @@ package com.hmdm.plugins.audit.persistence.mapper;
 
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.rest.json.AuditLogFilter;
-import org.apache.ibatis.annotations.Insert;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Insert;
 
 /**
  * <p>An ORM mapper for {@link com.hmdm.plugins.audit.persistence.domain.AuditLogRecord} domain object.</p>
@@ -34,26 +33,12 @@ import java.util.List;
  */
 public interface AuditMapper {
 
-    @Insert({"INSERT INTO plugin_audit_log (" +
-            "    createTime," +
-            "    customerId," +
-            "    userId," +
-            "    login," +
-            "    action," +
-            "    payload," +
-            "    ipAddress," +
-            "    errorCode" +
-            ") " +
-            "VALUES (" +
-            "    #{createTime}," +
-            "    #{customerId}," +
-            "    #{userId}," +
-            "    #{login}," +
-            "    #{action}," +
-            "    #{payload}," +
-            "    #{ipAddress}," +
-            "    #{errorCode}" +
-            ")"})
+    @Insert({
+        "INSERT INTO plugin_audit_log (" + "    createTime," + "    customerId," + "    userId," + "    login,"
+                + "    action," + "    payload," + "    ipAddress," + "    errorCode" + ") " + "VALUES ("
+                + "    #{createTime}," + "    #{customerId}," + "    #{userId}," + "    #{login}," + "    #{action},"
+                + "    #{payload}," + "    #{ipAddress}," + "    #{errorCode}" + ")"
+    })
     int insertAuditLogRecord(AuditLogRecord logRecord);
 
     List<AuditLogRecord> findAllLogRecordsByCustomerId(AuditLogFilter filter);

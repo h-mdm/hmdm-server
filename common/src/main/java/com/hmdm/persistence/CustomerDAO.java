@@ -21,28 +21,22 @@
 
 package com.hmdm.persistence;
 
-import com.google.inject.Inject;
-import javax.inject.Named;
-
-import com.google.inject.Singleton;
 import com.hmdm.event.CustomerCreatedEvent;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.ApplicationMapper;
+import com.hmdm.persistence.mapper.ConfigurationMapper;
+import com.hmdm.persistence.mapper.CustomerMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.rest.json.CustomerSearchRequest;
 import com.hmdm.rest.json.PaginatedData;
-import com.hmdm.util.PasswordUtil;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.mapper.ConfigurationMapper;
-import com.hmdm.persistence.mapper.CustomerMapper;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import com.hmdm.util.CryptoUtil;
-
+import com.hmdm.util.PasswordUtil;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,6 +49,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>$END$</p>
@@ -78,16 +75,17 @@ public class CustomerDAO {
     private final EventService eventService;
 
     @Inject
-    public CustomerDAO(CustomerMapper mapper,
-                       ConfigurationMapper configurationMapper,
-                       ApplicationMapper applicationMapper,
-                       DeviceMapper deviceMapper,
-                       UserDAO userDAO,
-                       CommonDAO settingDAO,
-                       ApplicationSettingDAO applicationSettingDAO,
-                       @Named("files.directory") String filesDirectory,
-                       @Named("role.orgadmin.id") int orgAdminRoleId,
-                       EventService eventService) {
+    public CustomerDAO(
+            CustomerMapper mapper,
+            ConfigurationMapper configurationMapper,
+            ApplicationMapper applicationMapper,
+            DeviceMapper deviceMapper,
+            UserDAO userDAO,
+            CommonDAO settingDAO,
+            ApplicationSettingDAO applicationSettingDAO,
+            @Named("files.directory") String filesDirectory,
+            @Named("role.orgadmin.id") int orgAdminRoleId,
+            EventService eventService) {
         this.mapper = mapper;
         this.configurationMapper = configurationMapper;
         this.applicationMapper = applicationMapper;
@@ -112,18 +110,21 @@ public class CustomerDAO {
                 if (customerFilesDir.exists()) {
                     Path rootPath = Paths.get(customerFilesDir.getAbsolutePath());
                     try (Stream<Path> walk = Files.walk(rootPath)) {
-                        walk
-                                .sorted(Comparator.reverseOrder())
+                        walk.sorted(Comparator.reverseOrder())
                                 .map(Path::toFile)
                                 .peek(System.out::println)
                                 .forEach(File::delete);
                     } catch (IOException e) {
-                        log.error("Failed to delete the customer's files directory {} due to unexpected error",
-                                customer.getFilesDir(), e);
+                        log.error(
+                                "Failed to delete the customer's files directory {} due to unexpected error",
+                                customer.getFilesDir(),
+                                e);
                     }
                 }
             } else {
-                log.warn("Skipping to delete the customer's files due to invalid files directory name: {}", customer.getFilesDir());
+                log.warn(
+                        "Skipping to delete the customer's files due to invalid files directory name: {}",
+                        customer.getFilesDir());
             }
             this.mapper.delete(id);
             log.info("Deleted customer account {}", customer);
@@ -172,7 +173,7 @@ public class CustomerDAO {
         if (!SecurityContext.get().isSuperAdmin()) {
             throw SecurityException.onAdminDataAccessViolation("create new customer account");
         }
-        
+
         log.debug("Creating customer account: {}", customer);
 
         File customerFilesDir;
@@ -187,7 +188,8 @@ public class CustomerDAO {
             final Settings masterSettings = this.settingDAO.getSettings();
 
             // Create a customer admin record
-            String password = PasswordUtil.generatePassword(masterSettings.getPasswordLength(), masterSettings.getPasswordStrength());
+            String password = PasswordUtil.generatePassword(
+                    masterSettings.getPasswordLength(), masterSettings.getPasswordStrength());
 
             UserRole orgAdminRole = new UserRole();
             orgAdminRole.setId(this.orgAdminRoleId);
@@ -227,9 +229,11 @@ public class CustomerDAO {
             // Copy configurations if required
             Map<Integer, Integer> configIdsMapping = new HashMap<>();
             if (customer.getConfigurationIds() != null && customer.getConfigurationIds().length > 0) {
-                for (Integer configurationId: customer.getConfigurationIds()) {
-                    final Integer copyId = copyConfigurationForCustomer(customer,
-                            SecurityContext.get().getCurrentUser().get().getCustomerId(), configurationId);
+                for (Integer configurationId : customer.getConfigurationIds()) {
+                    final Integer copyId = copyConfigurationForCustomer(
+                            customer,
+                            SecurityContext.get().getCurrentUser().get().getCustomerId(),
+                            configurationId);
                     configIdsMapping.put(configurationId, copyId);
                 }
             }
@@ -265,27 +269,30 @@ public class CustomerDAO {
      * <p>Creates the copy of specified master-customer configuration for specified customer account.</p>
      * <p>Notice: it is made public because it is used for signing up a customer in UnsecureDAO</p>
      * <p>Notice: UNSECURE! The permissions should be checked prior to calling this function</p>
+     *
      * @param customer a customer account to create configuration for.
      * @param configurationId an ID of a configuration to copy.
+     *
      * @return an ID of configuration copy.
      */
     public Integer copyConfigurationForCustomer(Customer customer, int masterCustomerId, Integer configurationId) {
         Configuration configurationTemplate = this.configurationMapper.getConfigurationById(configurationId);
         List<Application> configApplications = this.configurationMapper.getPlainConfigurationApplications(
                 masterCustomerId, "configurationApplications", configurationId);
-        configApplications = configApplications
-                .stream()
-                .filter(Application::isCommon)
-                .collect(Collectors.toList());
+        configApplications =
+                configApplications.stream().filter(Application::isCommon).collect(Collectors.toList());
 
         Configuration newConfiguration = configurationTemplate.newCopy();
         newConfiguration.setCustomerId(customer.getId());
-        final List<ApplicationSetting> appSettings = this.applicationSettingDAO.getApplicationSettingsByConfigurationId(configurationId);
+        final List<ApplicationSetting> appSettings =
+                this.applicationSettingDAO.getApplicationSettingsByConfigurationId(configurationId);
         newConfiguration.setApplicationSettings(appSettings);
 
         configurationMapper.insertConfiguration(newConfiguration);
-        if (newConfiguration.getApplicationSettings() != null && !newConfiguration.getApplicationSettings().isEmpty()) {
-            this.configurationMapper.insertConfigurationApplicationSettings(newConfiguration.getId(), newConfiguration.getApplicationSettings());
+        if (newConfiguration.getApplicationSettings() != null
+                && !newConfiguration.getApplicationSettings().isEmpty()) {
+            this.configurationMapper.insertConfigurationApplicationSettings(
+                    newConfiguration.getId(), newConfiguration.getApplicationSettings());
         }
         if (!configApplications.isEmpty()) {
             configurationMapper.insertConfigurationApplications(newConfiguration.getId(), configApplications);
@@ -315,41 +322,110 @@ public class CustomerDAO {
             char c = s.charAt(i);
 
             switch (c) {
-                case('а'): b.append('a');break;
-                case('б'): b.append('b');break;
-                case('в'): b.append('v');break;
-                case('г'): b.append('g');break;
-                case('д'): b.append('d');break;
-                case('е'): b.append('e');break;
-                case('ё'): b.append('e');break;
-                case('ж'): b.append("zh");break;
-                case('з'): b.append('z');break;
-                case('и'): b.append('i');break;
-                case('й'): b.append('i');break;
-                case('к'): b.append('k');break;
-                case('л'): b.append('l');break;
-                case('м'): b.append('m');break;
-                case('н'): b.append('n');break;
-                case('о'): b.append('o');break;
-                case('п'): b.append('p');break;
-                case('р'): b.append('r');break;
-                case('с'): b.append('s');break;
-                case('т'): b.append('t');break;
-                case('у'): b.append('u');break;
-                case('ф'): b.append('f');break;
-                case('х'): b.append("kh");break;
-                case('ц'): b.append("ts");break;
-                case('ч'): b.append("ch");break;
-                case('ш'): b.append("sh");break;
-                case('щ'): b.append("shch");break;
-                case('ъ'): b.append("ie");break;
-                case('ы'): b.append('y');break;
-                case('ь'): b.append('-');break;
-                case('э'): b.append('e');break;
-                case('ю'): b.append("yu");break;
-                case('я'): b.append("ya");break;
-                case(' '): b.append("_");break;
-                default: b.append(c);
+                case ('а'):
+                    b.append('a');
+                    break;
+                case ('б'):
+                    b.append('b');
+                    break;
+                case ('в'):
+                    b.append('v');
+                    break;
+                case ('г'):
+                    b.append('g');
+                    break;
+                case ('д'):
+                    b.append('d');
+                    break;
+                case ('е'):
+                    b.append('e');
+                    break;
+                case ('ё'):
+                    b.append('e');
+                    break;
+                case ('ж'):
+                    b.append("zh");
+                    break;
+                case ('з'):
+                    b.append('z');
+                    break;
+                case ('и'):
+                    b.append('i');
+                    break;
+                case ('й'):
+                    b.append('i');
+                    break;
+                case ('к'):
+                    b.append('k');
+                    break;
+                case ('л'):
+                    b.append('l');
+                    break;
+                case ('м'):
+                    b.append('m');
+                    break;
+                case ('н'):
+                    b.append('n');
+                    break;
+                case ('о'):
+                    b.append('o');
+                    break;
+                case ('п'):
+                    b.append('p');
+                    break;
+                case ('р'):
+                    b.append('r');
+                    break;
+                case ('с'):
+                    b.append('s');
+                    break;
+                case ('т'):
+                    b.append('t');
+                    break;
+                case ('у'):
+                    b.append('u');
+                    break;
+                case ('ф'):
+                    b.append('f');
+                    break;
+                case ('х'):
+                    b.append("kh");
+                    break;
+                case ('ц'):
+                    b.append("ts");
+                    break;
+                case ('ч'):
+                    b.append("ch");
+                    break;
+                case ('ш'):
+                    b.append("sh");
+                    break;
+                case ('щ'):
+                    b.append("shch");
+                    break;
+                case ('ъ'):
+                    b.append("ie");
+                    break;
+                case ('ы'):
+                    b.append('y');
+                    break;
+                case ('ь'):
+                    b.append('-');
+                    break;
+                case ('э'):
+                    b.append('e');
+                    break;
+                case ('ю'):
+                    b.append("yu");
+                    break;
+                case ('я'):
+                    b.append("ya");
+                    break;
+                case (' '):
+                    b.append("_");
+                    break;
+                default:
+                    b.append(c);
             }
         }
 
@@ -387,6 +463,7 @@ public class CustomerDAO {
      * <p>Searches for the customer accounts matching the specified criteria.</p>
      *
      * @param request the parameters for customers search.
+     *
      * @return a list of customer accounts matching the search parameters.
      */
     public PaginatedData<Customer> searchCustomers(CustomerSearchRequest request) {
@@ -401,5 +478,4 @@ public class CustomerDAO {
     public Customer getSingleCustomer() {
         return mapper.findCustomerById(1);
     }
-
 }

@@ -21,11 +21,9 @@
 
 package com.hmdm.plugins.devicelog.model;
 
-import com.hmdm.rest.json.LookupItem;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.hmdm.rest.json.LookupItem;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,48 +33,48 @@ import java.util.List;
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel(description = "A single rule for device log")
+@Schema(description = "A single rule for device log")
 public abstract class DeviceLogRule implements Serializable {
 
     private static final long serialVersionUID = -6168623766690469626L;
-    @ApiModelProperty(value = "A name of the rule", required = true)
+
+    @Schema(description = "A name of the rule", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @ApiModelProperty(value = "A flag indicating if rule is active", required = true)
+    @Schema(description = "A flag indicating if rule is active", requiredMode = Schema.RequiredMode.REQUIRED)
     private boolean active;
 
-    @ApiModelProperty(value = "An ID referencing the application", required = true)
+    @Schema(description = "An ID referencing the application", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer applicationId;
 
-    @ApiModelProperty("A severity level")
+    @Schema(description = "A severity level")
     private LogLevel severity;
 
-    @ApiModelProperty("A filter for log rule")
+    @Schema(description = "A filter for log rule")
     private String filter;
 
-    @ApiModelProperty(value = "An ID referencing the device group", required = true)
+    @Schema(description = "An ID referencing the device group", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer groupId;
 
-    @ApiModelProperty(value = "An ID referencing the configuration", required = true)
+    @Schema(description = "An ID referencing the configuration", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer configurationId;
 
-    @ApiModelProperty("A package ID for application")
+    @Schema(description = "A package ID for application")
     private String applicationPkg;
 
-    @ApiModelProperty("A name of the device group")
+    @Schema(description = "A name of the device group")
     private String groupName;
 
-    @ApiModelProperty("A name of the configuration")
+    @Schema(description = "A name of the configuration")
     private String configurationName;
 
-    @ApiModelProperty("A list of devices related to rules")
+    @Schema(description = "A list of devices related to rules")
     private List<LookupItem> devices;
 
     /**
      * <p>Constructs new <code>DeviceLogRule</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogRule() {
-    }
+    public DeviceLogRule() {}
 
     public String getName() {
         return name;
@@ -175,18 +173,10 @@ public abstract class DeviceLogRule implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceLogRule{" +
-                "name='" + name + '\'' +
-                ", active=" + active +
-                ", applicationId=" + applicationId +
-                ", severity=" + severity +
-                ", filter='" + filter + '\'' +
-                ", groupId=" + groupId +
-                ", configurationId=" + configurationId +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                ", groupName='" + groupName + '\'' +
-                ", configurationName='" + configurationName + '\'' +
-                ", devices=" + devices +
-                '}';
+        return "DeviceLogRule{" + "name='" + name + '\'' + ", active=" + active + ", applicationId=" + applicationId
+                + ", severity=" + severity + ", filter='" + filter + '\'' + ", groupId=" + groupId
+                + ", configurationId=" + configurationId + ", applicationPkg='" + applicationPkg + '\''
+                + ", groupName='" + groupName + '\'' + ", configurationName='" + configurationName + '\'' + ", devices="
+                + devices + '}';
     }
 }

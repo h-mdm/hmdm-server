@@ -21,70 +21,68 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A specification of a single application version installed and used on mobile device")
+@Schema(description = "A specification of a single application version installed and used on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationVersion implements Serializable {
 
     private static final long serialVersionUID = 3429103100994111887L;
-    @ApiModelProperty("An application version ID")
+
+    @Schema(description = "An application version ID")
     private Integer id;
 
-    @ApiModelProperty("An application ID")
+    @Schema(description = "An application ID")
     private Integer applicationId;
 
-    @ApiModelProperty("A version of application")
+    @Schema(description = "A version of application")
     private String version;
 
-    @ApiModelProperty("Version code")
+    @Schema(description = "Version code")
     private int versionCode;
 
-    @ApiModelProperty("An URL for application package")
+    @Schema(description = "An URL for application package")
     private String url;
 
-    @ApiModelProperty("Has the APK native code, i.e. is split into two APKs")
+    @Schema(description = "Has the APK native code, i.e. is split into two APKs")
     private boolean split;
 
-    @ApiModelProperty("An URL for armeabi APK")
+    @Schema(description = "An URL for armeabi APK")
     private String urlArmeabi;
 
-    @ApiModelProperty("An URL for arm64 APK")
+    @Schema(description = "An URL for arm64 APK")
     private String urlArm64;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean deletionProhibited;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean commonApplication;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private boolean system;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private ApplicationType type;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String apkHash;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String arch;
 
     /**
      * <p>A path to uploaded file to link this application to when adding an application.</p>
      */
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String filePath;
 
     /**
      * <p>Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing.</p>
      */
-    public ApplicationVersion() {
-    }
+    public ApplicationVersion() {}
 
     /**
      * <p>Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing.</p>
@@ -227,19 +225,10 @@ public class ApplicationVersion implements Serializable {
 
     @Override
     public String toString() {
-        return "ApplicationVersion{" +
-                "id=" + id +
-                ", applicationId=" + applicationId +
-                ", version='" + version + '\'' +
-                ", versionCode=" + versionCode +
-                ", system='" + system + '\'' +
-                ", url='" + url + '\'' +
-                ", apkHash='" + apkHash + '\'' +
-                ", deletionProhibited='" + deletionProhibited + '\'' +
-                ", commonApplication='" + commonApplication + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", type='" + type + '\'' +
-                ", arch='" + arch + '\'' +
-                '}';
+        return "ApplicationVersion{" + "id=" + id + ", applicationId=" + applicationId + ", version='" + version + '\''
+                + ", versionCode=" + versionCode + ", system='" + system + '\'' + ", url='" + url + '\'' + ", apkHash='"
+                + apkHash + '\'' + ", deletionProhibited='" + deletionProhibited + '\'' + ", commonApplication='"
+                + commonApplication + '\'' + ", filePath='" + filePath + '\'' + ", type='" + type + '\'' + ", arch='"
+                + arch + '\'' + '}';
     }
 }

@@ -22,12 +22,11 @@
 package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the general device parameters.</p>
+ * <p>A domain object representing the general device parameters.</p>
  *
  * @author isv
  */
@@ -35,51 +34,50 @@ import java.io.Serializable;
 public class DeviceData implements Serializable {
 
     private static final long serialVersionUID = 8593556673514494478L;
-    
-    @ApiModelProperty("An ID of device data record")
+
+    @Schema(description = "An ID of device data record")
     private Integer id;
 
-    @ApiModelProperty(value = "A battery level in percents", allowableValues = "range[0, 100]")
+    @Schema(description = "A battery level in percents", allowableValues = "range[0, 100]")
     private Integer batteryLevel;
 
-    @ApiModelProperty(value = "A battery charge type", allowableValues = "usb,ac", allowEmptyValue = true)
+    @Schema(description = "A battery charge type", allowableValues = "usb,ac")
     private String batteryCharging;
 
-    @ApiModelProperty(value = "A used IP-address")
+    @Schema(description = "A used IP-address")
     private String ip;
 
-    @ApiModelProperty(value = "A flag indicating if keyguard is on")
+    @Schema(description = "A flag indicating if keyguard is on")
     private Boolean keyguard;
 
-    @ApiModelProperty(value = "A ring volume level")
+    @Schema(description = "A ring volume level")
     private Integer ringVolume;
 
-    @ApiModelProperty(value = "A flag indicating if Wi-FI is on")
+    @Schema(description = "A flag indicating if Wi-FI is on")
     private Boolean wifi;
 
-    @ApiModelProperty(value = "A flag indicating if Mobile Data is on")
+    @Schema(description = "A flag indicating if Mobile Data is on")
     private Boolean mobileData;
 
-    @ApiModelProperty(value = "A flag indicating if GPS is on")
+    @Schema(description = "A flag indicating if GPS is on")
     private Boolean gps;
 
-    @ApiModelProperty(value = "A flag indicating if Bluetooth is on")
+    @Schema(description = "A flag indicating if Bluetooth is on")
     private Boolean bluetooth;
 
-    @ApiModelProperty(value = "A flag indicating if USB storage is on")
+    @Schema(description = "A flag indicating if USB storage is on")
     private Boolean usbStorage;
 
-    @ApiModelProperty(value = "Total memory in Mb")
+    @Schema(description = "Total memory in Mb")
     private Integer memoryTotal;
 
-    @ApiModelProperty(value = "Available memory in Mb")
+    @Schema(description = "Available memory in Mb")
     private Integer memoryAvailable;
 
     /**
      * <p>Constructs new <code>DeviceData</code> instance. This implementation does nothing.</p>
      */
-    public DeviceData() {
-    }
+    public DeviceData() {}
 
     public Integer getId() {
         return id;
@@ -187,20 +185,9 @@ public class DeviceData implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceData{" +
-                "id=" + id +
-                ", batteryLevel=" + batteryLevel +
-                ", batteryCharging='" + batteryCharging + '\'' +
-                ", ip='" + ip + '\'' +
-                ", keyguard=" + keyguard +
-                ", ringVolume=" + ringVolume +
-                ", wifi=" + wifi +
-                ", mobileData=" + mobileData +
-                ", gps=" + gps +
-                ", bluetooth=" + bluetooth +
-                ", usbStorage=" + usbStorage +
-                ", memoryTotal=" + memoryTotal +
-                ", memoryAvailable=" + memoryAvailable +
-                '}';
+        return "DeviceData{" + "id=" + id + ", batteryLevel=" + batteryLevel + ", batteryCharging='" + batteryCharging
+                + '\'' + ", ip='" + ip + '\'' + ", keyguard=" + keyguard + ", ringVolume=" + ringVolume + ", wifi="
+                + wifi + ", mobileData=" + mobileData + ", gps=" + gps + ", bluetooth=" + bluetooth + ", usbStorage="
+                + usbStorage + ", memoryTotal=" + memoryTotal + ", memoryAvailable=" + memoryAvailable + '}';
     }
 }

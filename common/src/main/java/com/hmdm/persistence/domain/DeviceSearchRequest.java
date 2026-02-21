@@ -21,136 +21,174 @@
 
 package com.hmdm.persistence.domain;
 
-import com.hmdm.service.DeviceApplicationsStatus;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.hmdm.service.DeviceApplicationsStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(description = "A request for searching the devices")
-@JsonIgnoreProperties(value = {"customerId", "userId"}, ignoreUnknown = true)
+@Schema(description = "A request for searching the devices")
+@JsonIgnoreProperties(
+        value = {"customerId", "userId"},
+        ignoreUnknown = true)
 public class DeviceSearchRequest implements Serializable {
 
     private static final long serialVersionUID = -8435796711101758494L;
-    @ApiModelProperty("A filter to search devices")
+
+    @Schema(description = "A filter to search devices")
     private String value;
 
-    @ApiModelProperty("An ID of a group to search devices for")
+    @Schema(description = "An ID of a group to search devices for")
     private Integer groupId;
 
-    @ApiModelProperty("An ID of a configuration to search devices for")
+    @Schema(description = "An ID of a configuration to search devices for")
     private Integer configurationId;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int customerId;
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int userId;
 
     /**
-     * <p>A number of records per single page of data to be retrieved.</p>
+     * <p>
+     * A number of records per single page of data to be retrieved.
+     * </p>
      */
-    @ApiModelProperty("A number of records per single page of data to be retrieved")
+    @Schema(description = "A number of records per single page of data to be retrieved")
     private int pageSize = 50;
 
     /**
-     * <p>A number of page of data to be retrieved.</p>
+     * <p>
+     * A number of page of data to be retrieved.
+     * </p>
      */
-    @ApiModelProperty("A number of page of data to be retrieved (1-based)")
+    @Schema(description = "A number of page of data to be retrieved (1-based)")
     private int pageNum = 1;
 
     /**
-     * <p>A column to sort results by.</p>
+     * <p>
+     * A column to sort results by.
+     * </p>
      */
-    @ApiModelProperty("A column to sort devices list by")
+    @Schema(description = "A column to sort devices list by")
     private DeviceListSortBy sortBy;
 
     /**
-     * <p>A direction to sort results by.</p>
+     * <p>
+     * A direction to sort results by.
+     * </p>
      */
-    @ApiModelProperty("A direction to sort devices list by")
+    @Schema(description = "A direction to sort devices list by")
     private String sortDir = "ASC";
 
     /**
-     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by last online dates.</p>
+     * <p>
+     * A timestamp for <code>FROM</code> boundary for filtering the data records by
+     * last online dates.
+     * </p>
      */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by last online dates")
+    @Schema(description = "A timestamp for FROM boundary for filtering the data records by last online dates")
     private Date dateFrom;
 
     /**
-     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by last online dates.</p>
+     * <p>
+     * A timestamp for <code>TO</code> boundary for filtering the data records by
+     * last online dates.
+     * </p>
      */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by last online dates")
+    @Schema(description = "A timestamp for TO boundary for filtering the data records by last online dates")
     private Date dateTo;
 
     /**
-     * <p>Age in milliseconds for selection of devices being online earlier</p>
+     * <p>
+     * Age in milliseconds for selection of devices being online earlier
+     * </p>
      */
     private Long onlineEarlierMillis;
 
     /**
-     * <p>Age in milliseconds for selection of devices being online later</p>
+     * <p>
+     * Age in milliseconds for selection of devices being online later
+     * </p>
      */
     private Long onlineLaterMillis;
 
     /**
-     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by enrollment dates.</p>
+     * <p>
+     * A timestamp for <code>FROM</code> boundary for filtering the data records by
+     * enrollment dates.
+     * </p>
      */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by enrollment dates")
+    @Schema(description = "A timestamp for FROM boundary for filtering the data records by enrollment dates")
     private Date enrollmentDateFrom;
 
     /**
-     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by enrollment dates.</p>
+     * <p>
+     * A timestamp for <code>TO</code> boundary for filtering the data records by
+     * enrollment dates.
+     * </p>
      */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by enrollment dates")
+    @Schema(description = "A timestamp for TO boundary for filtering the data records by enrollment dates")
     private Date enrollmentDateTo;
 
     /**
-     * <p>A condition for filtering the data records by mdm mode.</p>
+     * <p>
+     * A condition for filtering the data records by mdm mode.
+     * </p>
      */
-    @ApiModelProperty("A condition for filtering the data records by mdm mode")
+    @Schema(description = "A condition for filtering the data records by mdm mode")
     private Boolean mdmMode;
 
     /**
-     * <p>A condition for filtering the data records by kiosk mode.</p>
+     * <p>
+     * A condition for filtering the data records by kiosk mode.
+     * </p>
      */
-    @ApiModelProperty("A condition for filtering the data records by kiosk mode")
+    @Schema(description = "A condition for filtering the data records by kiosk mode")
     private Boolean kioskMode;
 
     /**
-     * <p>A filter for Android version.</p>
+     * <p>
+     * A filter for Android version.
+     * </p>
      */
-    @ApiModelProperty("A filter for Android version")
+    @Schema(description = "A filter for Android version")
     private String androidVersion;
 
     /**
-     * <p>A filter for launcher version.</p>
+     * <p>
+     * A filter for launcher version.
+     * </p>
      */
-    @ApiModelProperty("A filter for launcher version")
+    @Schema(description = "A filter for launcher version")
     private String launcherVersion;
 
     /**
-     * <p>A filter for launcher version.</p>
+     * <p>
+     * A filter for launcher version.
+     * </p>
      */
-    @ApiModelProperty("A filter for application installation status")
+    @Schema(description = "A filter for application installation status")
     private DeviceApplicationsStatus installationStatus;
 
     /**
-     * <p>A filter for recent IMEI change.</p>
+     * <p>
+     * A filter for recent IMEI change.
+     * </p>
      */
-    @ApiModelProperty("A filter for recent IMEI change")
+    @Schema(description = "A filter for recent IMEI change")
     private boolean imeiChanged;
 
     /**
-     * <p>A flag of fast searching by device number.</p>
+     * <p>
+     * A flag of fast searching by device number.
+     * </p>
      */
-    @ApiModelProperty("Flag of fast searching by device number")
+    @Schema(description = "Flag of fast searching by device number")
     private boolean fastSearch;
 
-    public DeviceSearchRequest() {
-    }
+    public DeviceSearchRequest() {}
 
     public String getValue() {
         String v = this.value != null && !this.value.trim().isEmpty() ? this.value : null;
@@ -367,27 +405,13 @@ public class DeviceSearchRequest implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceSearchRequest{" +
-                "value='" + value + '\'' +
-                ", groupId=" + groupId +
-                ", configurationId=" + configurationId +
-                ", customerId=" + customerId +
-                ", userId=" + userId +
-                ", pageSize=" + pageSize +
-                ", pageNum=" + pageNum +
-                ", sortBy=" + sortBy +
-                ", sortDir=" + sortDir +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                ", launcherVersion=" + launcherVersion +
-                ", enrollmentDateFrom=" + enrollmentDateFrom +
-                ", enrollmentDateTo=" + enrollmentDateTo +
-                ", onlineEarlierMillis=" + onlineEarlierMillis +
-                ", onlineLaterMillis=" + onlineLaterMillis +
-                ", mdmMode=" + mdmMode +
-                ", kioskMode=" + kioskMode +
-                ", androidVersion=" + androidVersion +
-                ", installationStatus=" + installationStatus +
-                '}';
+        return "DeviceSearchRequest{" + "value='" + value + '\'' + ", groupId=" + groupId + ", configurationId="
+                + configurationId + ", customerId=" + customerId + ", userId=" + userId + ", pageSize=" + pageSize
+                + ", pageNum=" + pageNum + ", sortBy=" + sortBy + ", sortDir=" + sortDir + ", dateFrom=" + dateFrom
+                + ", dateTo=" + dateTo + ", launcherVersion=" + launcherVersion + ", enrollmentDateFrom="
+                + enrollmentDateFrom + ", enrollmentDateTo=" + enrollmentDateTo + ", onlineEarlierMillis="
+                + onlineEarlierMillis + ", onlineLaterMillis=" + onlineLaterMillis + ", mdmMode=" + mdmMode
+                + ", kioskMode=" + kioskMode + ", androidVersion=" + androidVersion + ", installationStatus="
+                + installationStatus + '}';
     }
 }

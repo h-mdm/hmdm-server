@@ -21,25 +21,24 @@
 
 package com.hmdm.security.jwt;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.security.SecurityContext;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * <p>Filters incoming requests and sets up a security context for the request processing if a header corresponding to
- * a valid user is found.</p>
+ * <p>Filters incoming requests and sets up a security context for the request processing if a header corresponding to a
+ * valid user is found.</p>
  *
  * @author isv
  */
@@ -52,8 +51,8 @@ public class JWTFilter implements Filter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
-     * <p>An authentication token provider used for validating and parsing the authentication tokens provided by
-     * incoming request.</p>
+     * <p>An authentication token provider used for validating and parsing the authentication tokens provided by incoming
+     * request.</p>
      */
     private final TokenProvider tokenProvider;
 
@@ -62,8 +61,7 @@ public class JWTFilter implements Filter {
     /**
      * <p>Constructs new <code>JWTFilter</code> instance using the specified authentication token provider.</p>
      *
-     * @param tokenProvider an authentication token provider used for validating and parsing the authentication tokens
-     *                      provided by incoming request.
+     * @param tokenProvider an authentication token provider used for validating and parsing the authentication tokens provided by incoming request.
      */
     @Inject
     public JWTFilter(TokenProvider tokenProvider, UnsecureDAO userDAO) {
@@ -75,15 +73,13 @@ public class JWTFilter implements Filter {
      * <p>Does nothing.</p>
      */
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
+    public void init(FilterConfig filterConfig) {}
 
     /**
      * <p>Does nothing.</p>
      */
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 
     /**
      * <p>Intercepts the specified request. If a valid authentication token is provided by the specified request then
@@ -92,20 +88,22 @@ public class JWTFilter implements Filter {
      * @param servletRequest an incoming request.
      * @param servletResponse an outgoing response.
      * @param filterChain a filter chain mapped to specified request.
+     *
      * @throws IOException if an I/O error occurs in filter chain.
      * @throws ServletException if an unexpected error occurs in filter chain.
      */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
         if (jwt != null && !jwt.trim().isEmpty() && this.tokenProvider.validateToken(jwt)) {
             User authUser = this.tokenProvider.getAuthentication(jwt);
             User dbUser = userDAO.findByLoginOrEmail(authUser.getLogin());
-            if (dbUser == null || dbUser.getAuthToken() == null ||
-                    !dbUser.getAuthToken().equals(authUser.getAuthToken())) {
-                ((HttpServletResponse)servletResponse).sendError(403);
+            if (dbUser == null
+                    || dbUser.getAuthToken() == null
+                    || !dbUser.getAuthToken().equals(authUser.getAuthToken())) {
+                ((HttpServletResponse) servletResponse).sendError(403);
                 return;
             }
 
@@ -119,7 +117,6 @@ public class JWTFilter implements Filter {
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
-        
     }
 
     /**
@@ -127,10 +124,9 @@ public class JWTFilter implements Filter {
      * request header.</p>
      *
      * @param request an incoming request.
-     * @return an authentication token provided by the specified request or <code>null</code> if there is no such token
-     *         provided.
+     * @return an authentication token provided by the specified request or <code>null</code> if there is no such token provided.
      */
-    private String resolveToken(HttpServletRequest request){
+    private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
