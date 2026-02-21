@@ -94,8 +94,7 @@ public class BaseIPFilter {
         return match(getRemoteAddr(request));
     }
 
-    // For tests only, don't use this directly
-    // because if a proxy is used, this will return false result
+    // For tests only, don't use this directly because if a proxy is used, this will return false result
     public boolean match(String ipStr) {
         if (allAllowed) {
             return true;

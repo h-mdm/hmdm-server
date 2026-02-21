@@ -125,9 +125,8 @@ public class Application implements CustomerData, Serializable {
     @Schema(description = "An intent")
     private String intent;
 
-    // A flag indicating that application is to be removed from the application
-    // This field is going to be removed as now action field is stored in DB and encodes the removed apps with
-    // value of 2
+    // A flag indicating that application is to be removed from the application This field is going to be removed as now
+    // action field is stored in DB and encodes the removed apps with value of 2
     @Schema(hidden = true)
     @Deprecated
     private boolean remove;

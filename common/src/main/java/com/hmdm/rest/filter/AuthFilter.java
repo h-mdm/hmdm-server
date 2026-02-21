@@ -92,8 +92,7 @@ public class AuthFilter implements Filter {
                         ((HttpServletResponse) servletResponse).sendError(403);
                         return;
                     }
-                    // 2FA methods receive the user information,
-                    // so we proceed with the authentication
+                    // 2FA methods receive the user information, so we proceed with the authentication
                 }
             }
         }

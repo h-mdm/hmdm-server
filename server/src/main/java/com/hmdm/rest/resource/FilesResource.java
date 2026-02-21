@@ -511,8 +511,8 @@ public class FilesResource {
             return Response.PERMISSION_DENIED();
         }
         try {
-            // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
-            // it to UTF_8 and enable non-ASCII characters
+            // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert it to
+            // UTF_8 and enable non-ASCII characters
             // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
             String fileName =
                     new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
@@ -688,13 +688,8 @@ public class FilesResource {
                 }
                 String url;
                 if (customerFilesBaseDir != null && !customerFilesBaseDir.isEmpty()) {
-                    path = path.substring((File.separator + customerFilesBaseDir + File.separator).length()); // Strip
-                    // off the
-                    // name of
-                    // directory
-                    // for
-                    // customer
-                    // files
+                    path = path.substring((File.separator + customerFilesBaseDir + File.separator)
+                            .length()); // Strip off the name of directory for customer files
                     url = String.format(
                             "%s/files/%s/%s",
                             this.baseUrl, customerFilesBaseDir, path.replace(File.separator, "/") + file.getName());

@@ -66,8 +66,7 @@ public class ConfigurationView implements Serializable {
         this.configuration = configuration;
         this.applications = Optional.ofNullable(configuration.getApplications())
                 .map(apps -> apps.stream()
-                        .filter(app -> app.getType().equals(ApplicationType.app)) // Check only real
-                        // apps
+                        .filter(app -> app.getType().equals(ApplicationType.app)) // Check only real apps
                         .map(ApplicationView::new)
                         .collect(Collectors.toList()))
                 .orElse(new ArrayList<>());

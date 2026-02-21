@@ -118,8 +118,7 @@ public class ConfigurationFileResource {
                                 customerFilesDirectory.mkdirs();
                             }
                             // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to
-                            // convert
-                            // it to UTF_8 and enable non-ASCII characters
+                            // convert it to UTF_8 and enable non-ASCII characters
                             // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
                             String fileName = new String(
                                     fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1),

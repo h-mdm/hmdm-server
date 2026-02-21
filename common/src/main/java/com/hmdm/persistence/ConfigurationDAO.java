@@ -135,10 +135,8 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
 
                     this.applicationMapper.recheckConfigurationMainApplication(configuration.getId());
                     this.applicationMapper.recheckConfigurationContentApplication(configuration.getId());
-                    // #6159: When updating the configuration via configuration editor page the
-                    // state of Kiosk Mode flag
-                    // is specified explicitly by the submitted form value, so there is no need to
-                    // re-check the state of
+                    // #6159: When updating the configuration via configuration editor page the state of Kiosk Mode flag
+                    // is specified explicitly by the submitted form value, so there is no need to re-check the state of
                     // that flag based on presence of content app in configuration
                     // this.applicationMapper.recheckConfigurationKioskModes(configuration.getCustomerId());
 
@@ -286,12 +284,10 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                 SecurityException::onConfigurationAccessViolation);
     }
 
-    // Moved baseUrl here from resources due to a weird Guice issue (bug?):
-    // the resource singleton initializes multiple times and (for DeviceResource)
-    // baseUrl is injected incorrectly (either an empty string or a wrong context
-    // parameter)
-    // This is apparently due to call the constructor from a background thread
-    // Nevermind, looks like injection of baseUrl in this DAO object works well!
+    // Moved baseUrl here from resources due to a weird Guice issue (bug?): the resource singleton initializes multiple
+    // times and (for DeviceResource) baseUrl is injected incorrectly (either an empty string or a wrong context
+    // parameter). This is apparently due to call the constructor from a background thread. Nevermind, looks like
+    // injection of baseUrl in this DAO object works well!
     public String getBaseUrl() {
         return baseUrl;
     }

@@ -101,8 +101,7 @@ public class DeviceStatusService {
                 this.configurationMapper.getPlainConfigurationAppsOptimized(dbDevice.getConfigurationId());
 
         configApplications.forEach(configApp -> {
-            // Do not test apps without URL (they are mostly system apps) as well as web
-            // pages
+            // Do not test apps without URL (they are mostly system apps) as well as web pages
             if ((configApp.getUrl() == null && configApp.getUrlArm64() == null && configApp.getUrlArmeabi() == null)
                     || configApp.getType() != ApplicationType.app) {
                 return;
@@ -223,15 +222,14 @@ public class DeviceStatusService {
                 } else if (n1 > n2) {
                     return 1;
                 }
-                // If major version numbers are equals, continue to compare minor version
-                // numbers
+                // If major version numbers are equals, continue to compare minor version numbers
             } catch (Exception e) {
                 return 0;
             }
         }
 
-        // Here we are if common parts are equal
-        // Now we decide that if a version has more parts, it is considered as greater
+        // Here we are if common parts are equal. Now we decide that if a version has more parts, it is considered as
+        // greater
         if (v1n.length < v2n.length) {
             return -1;
         } else if (v1n.length > v2n.length) {
