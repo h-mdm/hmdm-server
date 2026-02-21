@@ -60,12 +60,15 @@
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
             <version>1.3.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+
+        <!-- HiveMQ internally uses javax.inject.Provider (Dagger DI);
+             keep runtime-only so our code stays on jakarta.inject -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
