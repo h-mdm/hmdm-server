@@ -52,8 +52,7 @@ public abstract class AbstractLinkedDAO<T extends CustomerData, L extends Custom
      * @param recordId an ID of a record to get the linked records for.
      * @param findByIdLogic a logic to be used for finding the required record by ID.
      * @param listRetrievalLogic a logic to be used for records data retrieval.
-     * @param exceptionProvider
-     *            a provider for exception to be thrown in case the access to specified record is denied.
+     * @param exceptionProvider a provider for exception to be thrown in case the access to specified record is denied.
      *
      * @return a list of records.
      */
@@ -84,8 +83,7 @@ public abstract class AbstractLinkedDAO<T extends CustomerData, L extends Custom
      * @param recordId an ID of a record to update the linked records for.
      * @param findByIdLogic a logic to be used for finding the required record by ID.
      * @param linkedDataUpdateLogic a logic to be used for updating the linked data records.
-     * @param exceptionProvider
-     *            a provider for exception to be thrown in case the access to specified record is denied.
+     * @param exceptionProvider a provider for exception to be thrown in case the access to specified record is denied.
      */
     protected void updateLinkedData(
             int recordId,

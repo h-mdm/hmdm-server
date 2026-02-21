@@ -174,8 +174,7 @@ public class APKFileAnalyzer {
             final AtomicReference<String> appArch = new AtomicReference<>();
             final List<String> errorLines = new ArrayList<>();
 
-            // Process the error stream by collecting all the error lines for further
-            // logging
+            // Process the error stream by collecting all the error lines for further logging
             StreamGobbler errorGobbler = new StreamGobbler(exec.getErrorStream(), "ERROR", errorLines::add);
 
             // Process the output by analyzing the line starting with "package:"
@@ -236,8 +235,7 @@ public class APKFileAnalyzer {
         }
     }
 
-    // This function deals with an issue when the version name contains a space or
-    // even an apostrophe
+    // This function deals with an issue when the version name contains a space or even an apostrophe
     // It presumes the following format of the line:
     // package: name='xxxxx' versionCode='xxxxx' versionName='xxxxx'
     // compileSdkVersion='xxx' compileSdkVersionCodename='xxx'
@@ -293,8 +291,7 @@ public class APKFileAnalyzer {
         }
     }
 
-    // Parse a line containing the native code CPU architecture
-    // It presumes the following format of the line:
+    // Parse a line containing the native code CPU architecture It presumes the following format of the line:
     // native-code: 'xxxxx'
     private void parseNativeCodeLine(final String line, final AtomicReference<String> appArch) {
         if (line.indexOf("armeabi-v7a") != -1) {
@@ -402,8 +399,7 @@ public class APKFileAnalyzer {
         fileDetails.setVersionCode(jsonObject.optInt("version_code"));
         fileDetails.setName(jsonObject.optString("name"));
 
-        // XAPK manifest doesn't contain data about the native code
-        // So we try to guess it by searching the keywords
+        // XAPK manifest doesn't contain data about the native code, So we try to guess it by searching the keywords
         boolean hasArm64 = manifest.contains("arm64");
         boolean hasArmeabi = manifest.contains("armeabi");
         if (hasArm64 && !hasArmeabi) {

@@ -86,8 +86,7 @@ public class CryptoUtil {
             }
         }
 
-        // to calculate message digest of the input string
-        // returned as array of byte
+        // to calculate message digest of the input string returned as array of byte
         byte[] digest = md.digest();
 
         // Convert byte array into signum representation

@@ -46,8 +46,7 @@ public interface PostgresDeviceLogMapper {
 
     int insertDeviceLogRecords(@Param("logs") List<PostgresDeviceLogRecord> postgresLogs);
 
-    // ------------ devicelog plugin settings
-    // ------------------------------------------------------------------------------
+    // ------------ devicelog plugin settings ----------------------------------
     PostgresDeviceLogPluginSettings findPluginSettingsByCustomerId(@Param("customerId") Integer customerId);
 
     @Insert("INSERT INTO plugin_devicelog_settings (customerId, logsPreservePeriod) "

@@ -294,8 +294,7 @@ public class ApplicationResource {
         }
         try {
             if (applicationVersion.getId() == null) {
-                // Here only "url" is coming, we may need to change it to urlArmeabi or urlArm64
-                // if arch is set
+                // Here only "url" is coming, we may need to change it to urlArmeabi or urlArm64 if arch is set
                 this.applicationDAO.insertApplicationVersion(applicationVersion);
                 applicationVersion = this.applicationDAO.findApplicationVersionById(applicationVersion.getId());
                 return Response.OK(applicationVersion);
@@ -451,10 +450,8 @@ public class ApplicationResource {
             }
             // Avoid access to objects of another customer
             request.getConfigurations().removeIf(c -> {
-                // findById will raise a SecurityException if attempting to access an object of
-                // another customer
-                // So actually this code is a bit redundant, but it guards access to own objects
-                // anyway
+                // findById will raise a SecurityException if attempting to access an object of another customer
+                // So actually this code is a bit redundant, but it guards access to own objects anyway
                 Application application = applicationDAO.findById(c.getApplicationId());
                 Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
                 return application.getCustomerId() != user.getCustomerId()

@@ -44,8 +44,7 @@ public class PushSenderPolling implements PushSender {
     public void sendPending(int deviceId, List<PushMessage> messages) {
         DeviceEntry deviceEntry = deviceIdMap.get(deviceId);
         if (deviceEntry == null) {
-            // We shouldn't be here as this method is called from LongPollingServlet when a
-            // device is online
+            // We shouldn't be here as this method is called from LongPollingServlet when a device is online
             return;
         }
         synchronized (deviceEntry.messages) {

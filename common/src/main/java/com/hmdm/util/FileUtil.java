@@ -128,9 +128,8 @@ public final class FileUtil {
         if (success) {
             return file;
         } else {
-            // Try to copy and delete because rename can fail due to different file systems
-            // For example, on Tomcat 9 renaming from /tmp to /var/lib/tomcat9/work will fail due to sandbox
-            // restrictions
+            // Try to copy and delete because rename can fail due to different file systems. For example, on Tomcat 9
+            // renaming from /tmp to /var/lib/tomcat9/work will fail due to sandbox restrictions
             try {
                 FileInputStream inputStream = new FileInputStream(localFile);
                 writeToFile(inputStream, file.getAbsolutePath());

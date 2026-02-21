@@ -115,10 +115,8 @@ class ResourceAuditor {
     /**
      * <p>Executes the request/response chain and captures data necessary for auditing.</p>
      *
-     * @throws IOException
-     *             if an unexpected I/O error occurs.
-     * @throws ServletException
-     *             if an unexpected error occurs.
+     * @throws IOException if an unexpected I/O error occurs.
+     * @throws ServletException if an unexpected error occurs.
      */
     void doProcess() throws IOException, ServletException {
         chain.doFilter(this.request, this.response);
@@ -130,8 +128,7 @@ class ResourceAuditor {
      * @return an audit log record evaluated based on the request processing results or <code>null</code> if no such
      *         record is available.
      *
-     * @throws IOException
-     *             if an unexpected I/O error occurs.
+     * @throws IOException if an unexpected I/O error occurs.
      */
     AuditLogRecord getAuditLogRecord() throws IOException {
         final HttpServletRequest httpRequest = (HttpServletRequest) this.request;

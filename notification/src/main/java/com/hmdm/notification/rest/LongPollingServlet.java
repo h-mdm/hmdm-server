@@ -132,17 +132,11 @@ public class LongPollingServlet extends HttpServlet {
             return;
         }
 
-        // Unfortunately the output buffer can't be disabled or reduced (the minimal
-        // buffer size is 8192)
-        // Even setting in server.xml: <Connector ... socket.appWriteBufSize="1" />
-        // doesn't change anything!
-        // Therefore, when the client is disconnected, the response is still "sent" to
-        // him without an exception.
-        // This may cause message loss if a message is sent within a minute after the
-        // client's disconnection.
-        // A workaround would be to use a padding so the response would exceed 8192
-        // bytes, but this will increase
-        // the traffic.
+        // Unfortunately the output buffer can't be disabled or reduced (the minimal buffer size is 8192). Even setting
+        // in server.xml: <Connector ... socket.appWriteBufSize="1" /> doesn't change anything! Therefore, when the
+        // client is disconnected, the response is still "sent" to him without an exception. This may cause message loss
+        // if a message is sent within a minute after the client's disconnection. A workaround would be to use a padding
+        // so the response would exceed 8192 bytes, but this will increase the traffic.
         // resp.setBufferSize(0);
         req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
         final AsyncContext asyncContext = req.startAsync();

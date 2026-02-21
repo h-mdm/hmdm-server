@@ -360,8 +360,7 @@ public class HMDMLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param format the format string
      * @param arg1 the first argument
-     * @param arg2
-     *            the second argument
+     * @param arg2 the second argument
      */
     @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
@@ -372,12 +371,9 @@ public class HMDMLogger implements Logger {
      * This method is similar to {@link #debug(String, Object...)} method except that the marker data is also taken into
      * consideration.
      *
-     * @param marker
-     *            the marker data specific to this log statement
-     * @param format
-     *            the format string
-     * @param arguments
-     *            a list of 3 or more arguments
+     * @param marker the marker data specific to this log statement
+     * @param format the format string
+     * @param arguments a list of 3 or more arguments
      */
     @Override
     public void debug(Marker marker, String format, Object... arguments) {

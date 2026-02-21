@@ -174,8 +174,7 @@ public class UpdateResource {
         return Response.OK(request.getUpdates());
     }
 
-    // Download the web app (using the authentification!) and create the manifest
-    // file
+    // Download the web app (using the authentification!) and create the manifest file
     private boolean downloadWebApp(UpdateEntry app) {
         InputStream inputStream = null;
         HttpURLConnection conn = null;
@@ -311,8 +310,7 @@ public class UpdateResource {
     }
 
     private void processLauncherAppEntry(UpdateEntry entry) {
-        // We need to determine the currently installed launcher variant
-        // (os/master/system or custom)
+        // We need to determine the currently installed launcher variant (os/master/system or custom)
         List<Application> appList = applicationDAO.findByPackageId(entry.getPkg());
         if (appList.size() != 1) {
             // Not available for update

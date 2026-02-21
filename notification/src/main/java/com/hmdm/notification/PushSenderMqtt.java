@@ -150,8 +150,8 @@ public class PushSenderMqtt implements PushSender {
             }
         }
 
-        // Set throttled sender client before assigning the field so that
-        // concurrent send() calls see a fully initialized state
+        // Set throttled sender client before assigning the field so that concurrent send() calls see a fully
+        // initialized state
         if (mqttDelay > 0) {
             throttledSender.setClient(mqttClient);
             if (client == null) {

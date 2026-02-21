@@ -95,8 +95,7 @@ public class TokenProvider {
             defaultValidityForRememberMe = Long.parseLong(jwtValidityForRememberMe);
         }
 
-        // Derive a 64-byte key via SHA-512 to ensure sufficient length for HS512
-        // regardless of the input secret length
+        // Derive a 64-byte key via SHA-512 to ensure sufficient length for HS512 regardless of the input secret length
         byte[] keyBytes;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
