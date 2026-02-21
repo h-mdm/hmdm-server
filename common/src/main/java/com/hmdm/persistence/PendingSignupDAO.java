@@ -21,18 +21,10 @@
 
 package com.hmdm.persistence;
 
+import com.hmdm.persistence.domain.PendingSignup;
+import com.hmdm.persistence.mapper.PendingSignupMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import com.hmdm.persistence.domain.Group;
-import com.hmdm.persistence.domain.PendingSignup;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.mapper.DeviceMapper;
-import com.hmdm.persistence.mapper.PendingSignupMapper;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author seva

@@ -21,14 +21,13 @@
 
 package com.hmdm.plugins.deviceinfo.guice.module;
 
-import jakarta.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugins.deviceinfo.persistence.CustomerCreatedEventListener;
 import com.hmdm.plugins.deviceinfo.persistence.DeviceInfoDAO;
 import com.hmdm.plugins.deviceinfo.persistence.DeviceInfoSettingsDAO;
 import com.hmdm.util.BackgroundTaskRunnerService;
-
+import jakarta.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,10 +56,11 @@ public class DeviceInfoTaskModule implements PluginTaskModule {
      * <p>Constructs new <code>DeviceInfoTaskModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceInfoTaskModule(EventService eventService,
-                                DeviceInfoDAO deviceInfoDAO,
-                                DeviceInfoSettingsDAO settingsDAO,
-                                BackgroundTaskRunnerService taskRunner) {
+    public DeviceInfoTaskModule(
+            EventService eventService,
+            DeviceInfoDAO deviceInfoDAO,
+            DeviceInfoSettingsDAO settingsDAO,
+            BackgroundTaskRunnerService taskRunner) {
         this.eventService = eventService;
         this.deviceInfoDAO = deviceInfoDAO;
         this.settingsDAO = settingsDAO;
@@ -77,5 +77,4 @@ public class DeviceInfoTaskModule implements PluginTaskModule {
 
         this.eventService.addEventListener(new CustomerCreatedEventListener(this.settingsDAO));
     }
-
 }

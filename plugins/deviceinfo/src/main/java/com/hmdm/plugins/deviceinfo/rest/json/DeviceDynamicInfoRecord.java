@@ -35,145 +35,144 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeviceDynamicInfoRecord {
 
-    @Schema(description="A timestamp of most recent update of device info (in milliseconds since epoch time)")
+    @Schema(description = "A timestamp of most recent update of device info (in milliseconds since epoch time)")
     private Long latestUpdateTime;
 
-    @Schema(description="An interval passed from the most recent update of device info from current time")
+    @Schema(description = "An interval passed from the most recent update of device info from current time")
     private Long latestUpdateInterval;
 
-    @Schema(description="A type of interval passed from the most recent update of device info from current time",
+    @Schema(
+            description = "A type of interval passed from the most recent update of device info from current time",
             allowableValues = "min,hour,day")
     private String latestUpdateIntervalType;
 
-    @Schema(description="A battery level in percents", allowableValues = "range[0, 100]")
+    @Schema(description = "A battery level in percents", allowableValues = "range[0, 100]")
     private Integer deviceBatteryLevel;
 
-    @Schema(description="A battery charge type", allowableValues = "usb,ac")
+    @Schema(description = "A battery charge type", allowableValues = "usb,ac")
     private String deviceBatteryCharging;
 
-    @Schema(description="A used IP-address")
+    @Schema(description = "A used IP-address")
     private String deviceIpAddress;
 
-    @Schema(description="A flag indicating if keyguard is on")
+    @Schema(description = "A flag indicating if keyguard is on")
     private Boolean deviceKeyguard;
 
-    @Schema(description="A ring volume level")
+    @Schema(description = "A ring volume level")
     private Integer deviceRingVolume;
 
-    @Schema(description="A flag indicating if Wi-FI is on")
+    @Schema(description = "A flag indicating if Wi-FI is on")
     private Boolean deviceWifiEnabled;
 
-    @Schema(description="A flag indicating if Mobile Data is on")
+    @Schema(description = "A flag indicating if Mobile Data is on")
     private Boolean deviceMobileDataEnabled;
 
-    @Schema(description="A flag indicating if GPS is on")
+    @Schema(description = "A flag indicating if GPS is on")
     private Boolean deviceGpsEnabled;
 
-    @Schema(description="A flag indicating if Bluetooth is on")
+    @Schema(description = "A flag indicating if Bluetooth is on")
     private Boolean deviceBluetoothEnabled;
 
-    @Schema(description="A flag indicating if USB storage is on")
+    @Schema(description = "A flag indicating if USB storage is on")
     private Boolean deviceUsbEnabled;
 
-    @Schema(description="Total device memory in Mb")
+    @Schema(description = "Total device memory in Mb")
     private Integer deviceMemoryTotal;
 
-    @Schema(description="Available device memory in Mb")
+    @Schema(description = "Available device memory in Mb")
     private Integer deviceMemoryAvailable;
 
-    @Schema(description="A signal level")
+    @Schema(description = "A signal level")
     private Integer wifiRssi;
 
-    @Schema(description="A SSID")
+    @Schema(description = "A SSID")
     private String wifiSsid;
 
-    @Schema(description="A security status")
+    @Schema(description = "A security status")
     private String wifiSecurity;
 
-    @Schema(description="A connection status")
+    @Schema(description = "A connection status")
     private String wifiState;
 
-    @Schema(description="A used IP-address")
+    @Schema(description = "A used IP-address")
     private String wifiIpAddress;
 
-    @Schema(description="A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long wifiTx;
 
-    @Schema(description="A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long wifiRx;
 
-    @Schema(description="A connection status")
+    @Schema(description = "A connection status")
     private String gpsState;
 
-    @Schema(description="A latitude coordinate")
+    @Schema(description = "A latitude coordinate")
     private Double gpsLat;
 
-    @Schema(description="A longitude coordinate")
+    @Schema(description = "A longitude coordinate")
     private Double gpsLon;
 
-    @Schema(description="An altitude coordinate")
+    @Schema(description = "An altitude coordinate")
     private Double gpsAlt;
 
-    @Schema(description="A speed in km/h")
+    @Schema(description = "A speed in km/h")
     private Double gpsSpeed;
 
-    @Schema(description="A course direction in degrees")
+    @Schema(description = "A course direction in degrees")
     private Double gpsCourse;
 
-    @Schema(description="A signal level")
+    @Schema(description = "A signal level")
     private Integer mobile1Rssi;
 
-    @Schema(description="A carrier name")
+    @Schema(description = "A carrier name")
     private String mobile1Carrier;
 
-    @Schema(description="A flag indicating if data transmission is on")
+    @Schema(description = "A flag indicating if data transmission is on")
     private Boolean mobile1DataEnabled;
 
-    @Schema(description="A used IP-address")
+    @Schema(description = "A used IP-address")
     private String mobile1IpAddress;
 
-    @Schema(description="A connection status")
+    @Schema(description = "A connection status")
     private String mobile1State;
 
-    @Schema(description="A SIM-card status")
+    @Schema(description = "A SIM-card status")
     private String mobile1SimState;
 
-    @Schema(description="A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long mobile1Tx;
 
-    @Schema(description="A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long mobile1Rx;
 
-    @Schema(description="A signal level")
+    @Schema(description = "A signal level")
     private Integer mobile2Rssi;
 
-    @Schema(description="A carrier name")
+    @Schema(description = "A carrier name")
     private String mobile2Carrier;
 
-    @Schema(description="A flag indicating if data transmission is on")
+    @Schema(description = "A flag indicating if data transmission is on")
     private Boolean mobile2DataEnabled;
 
-    @Schema(description="A used IP-address")
+    @Schema(description = "A used IP-address")
     private String mobile2IpAddress;
 
-    @Schema(description="A connection status")
+    @Schema(description = "A connection status")
     private String mobile2State;
 
-    @Schema(description="A SIM-card status")
+    @Schema(description = "A SIM-card status")
     private String mobile2SimState;
 
-    @Schema(description="A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long mobile2Tx;
 
-    @Schema(description="A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long mobile2Rx;
-
 
     /**
      * <p>Constructs new <code>DeviceDynamicInfoRecord</code> instance. This implementation does nothing.</p>
      */
-    public DeviceDynamicInfoRecord() {
-    }
+    public DeviceDynamicInfoRecord() {}
 
     @JsonSetter
     public void setLatestUpdateTime(Long latestUpdateTime) {
@@ -548,8 +547,7 @@ public class DeviceDynamicInfoRecord {
                 || deviceBluetoothEnabled != null
                 || deviceUsbEnabled != null
                 || deviceMemoryTotal != null
-                || deviceMemoryAvailable != null
-                ;
+                || deviceMemoryAvailable != null;
     }
 
     public boolean isWifiDataIncluded() {
@@ -559,8 +557,7 @@ public class DeviceDynamicInfoRecord {
                 || wifiState != null
                 || wifiIpAddress != null
                 || wifiTx != null
-                || wifiRx != null
-                ;
+                || wifiRx != null;
     }
 
     public boolean isGpsDataIncluded() {
@@ -569,8 +566,7 @@ public class DeviceDynamicInfoRecord {
                 || gpsLon != null
                 || gpsAlt != null
                 || gpsSpeed != null
-                || gpsCourse != null
-                ;
+                || gpsCourse != null;
     }
 
     public boolean isMobile1DataIncluded() {
@@ -581,8 +577,7 @@ public class DeviceDynamicInfoRecord {
                 || mobile1State != null
                 || mobile1SimState != null
                 || mobile1Tx != null
-                || mobile1Rx != null
-                ;
+                || mobile1Rx != null;
     }
 
     public boolean isMobile2DataIncluded() {
@@ -593,7 +588,6 @@ public class DeviceDynamicInfoRecord {
                 || mobile2State != null
                 || mobile2SimState != null
                 || mobile2Tx != null
-                || mobile2Rx != null
-                ;
+                || mobile2Rx != null;
     }
 }

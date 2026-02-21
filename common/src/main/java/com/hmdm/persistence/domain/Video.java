@@ -30,8 +30,7 @@ public class Video {
     private String path;
     private String name;
 
-    public Video() {
-    }
+    public Video() {}
 
     public Integer getId() {
         return this.id;

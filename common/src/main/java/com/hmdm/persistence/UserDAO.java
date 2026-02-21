@@ -21,22 +21,20 @@
 
 package com.hmdm.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
-import jakarta.inject.Singleton;
-import org.mybatis.guice.transactional.Transactional;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.mapper.UserMapper;
 import com.hmdm.rest.json.LookupItem;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
 
 @Singleton
 public class UserDAO extends AbstractDAO<User> {
@@ -49,28 +47,29 @@ public class UserDAO extends AbstractDAO<User> {
         this.orgAdminRoleId = orgAdminRoleId;
     }
 
-    public User findByLoginOrEmail( String login ) {
-        return getSingleRecord(() -> {
-            User user = mapper.findByLogin(login);
-            if (user == null) {
-                user = mapper.findByEmail(login);
-            }
-            return user;
-        }, SecurityException::onUserAccessViolation);
+    public User findByLoginOrEmail(String login) {
+        return getSingleRecord(
+                () -> {
+                    User user = mapper.findByLogin(login);
+                    if (user == null) {
+                        user = mapper.findByEmail(login);
+                    }
+                    return user;
+                },
+                SecurityException::onUserAccessViolation);
     }
 
-    public User getUserDetails( int id ) {
-        return getSingleRecord(() -> mapper.findById( id ), SecurityException::onUserAccessViolation);
+    public User getUserDetails(int id) {
+        return getSingleRecord(() -> mapper.findById(id), SecurityException::onUserAccessViolation);
     }
-
 
     @Transactional
-    public void updatePassword(User user ) {
+    public void updatePassword(User user) {
         updateRecord(user, this.mapper::updatePassword, SecurityException::onUserAccessViolation);
     }
 
     @Transactional
-    public void updatePasswordBySuperAdmin(User user ) {
+    public void updatePasswordBySuperAdmin(User user) {
         if (SecurityContext.get().isSuperAdmin()) {
             this.mapper.setNewPassword(user);
         } else {
@@ -79,17 +78,18 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     /**
-     * UNSECURE! Should be called by super-admin or admin only!
-     * Make sure permissions are checked before calling this method
+     * UNSECURE! Should be called by super-admin or admin only! Make sure permissions are checked before calling this
+     * method
+     *
      * @param user
      */
-
     public void insert(User user) {
         this.mapper.insert(user);
         if (!user.isAllDevicesAvailable()) {
             List<LookupItem> groups = user.getGroups();
             if (groups != null && !groups.isEmpty()) {
-                this.mapper.insertUserDeviceGroupsAccess(user.getId(), groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                this.mapper.insertUserDeviceGroupsAccess(
+                        user.getId(), groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
             }
         }
     }
@@ -107,25 +107,32 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public void updateUserMainDetails(User user, boolean updateAccess) {
-        updateRecord(user, u -> {
-            this.mapper.updateUserMainDetails(u);
-            if (updateAccess) {
-                this.mapper.removeDeviceGroupsAccessByUserId(u.getCustomerId(), u.getId());
-                if (!u.isAllDevicesAvailable()) {
-                    List<LookupItem> groups = u.getGroups();
-                    if (groups != null && !groups.isEmpty()) {
-                        this.mapper.insertUserDeviceGroupsAccess(u.getId(), groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
+        updateRecord(
+                user,
+                u -> {
+                    this.mapper.updateUserMainDetails(u);
+                    if (updateAccess) {
+                        this.mapper.removeDeviceGroupsAccessByUserId(u.getCustomerId(), u.getId());
+                        if (!u.isAllDevicesAvailable()) {
+                            List<LookupItem> groups = u.getGroups();
+                            if (groups != null && !groups.isEmpty()) {
+                                this.mapper.insertUserDeviceGroupsAccess(
+                                        u.getId(),
+                                        groups.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                            }
+                        }
+                        this.mapper.removeConfigurationAccessByUserId(u.getCustomerId(), u.getId());
+                        if (!u.isAllConfigAvailable()) {
+                            List<LookupItem> configs = u.getConfigurations();
+                            if (configs != null && !configs.isEmpty()) {
+                                this.mapper.insertUserConfigurationAccess(
+                                        u.getId(),
+                                        configs.stream().map(LookupItem::getId).collect(Collectors.toList()));
+                            }
+                        }
                     }
-                }
-                this.mapper.removeConfigurationAccessByUserId(u.getCustomerId(), u.getId());
-                if (!u.isAllConfigAvailable()) {
-                    List<LookupItem> configs = u.getConfigurations();
-                    if (configs != null && !configs.isEmpty()) {
-                        this.mapper.insertUserConfigurationAccess(u.getId(), configs.stream().map(LookupItem::getId).collect(Collectors.toList()));
-                    }
-                }
-            }
-        }, SecurityException::onUserAccessViolation);
+                },
+                SecurityException::onUserAccessViolation);
     }
 
     public void deleteUser(int id) {
@@ -144,7 +151,10 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public User findOrgAdmin(Integer id) {
-        return mapper.findAll(id).stream().filter(u -> u.getUserRole().getId() == this.orgAdminRoleId).findFirst().orElse(null);
+        return mapper.findAll(id).stream()
+                .filter(u -> u.getUserRole().getId() == this.orgAdminRoleId)
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean isOrgAdmin(User user) {
@@ -152,7 +162,8 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public List<UserRole> findAllUserRoles() {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> mapper.findAllUserRoles(u.getUserRole().isSuperAdmin()))
                 .orElse(new ArrayList<>());
     }
@@ -171,7 +182,8 @@ public class UserDAO extends AbstractDAO<User> {
      * @return a list of shown hint identifiers.
      */
     public List<String> getShownHints() {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> this.mapper.getShownHints(user.getId()))
                 .orElseThrow(SecurityException::onAnonymousAccess);
     }
@@ -182,7 +194,8 @@ public class UserDAO extends AbstractDAO<User> {
      * @param hintKey an identifier of the hint.
      */
     public void onHintShown(String hintKey) {
-        SecurityContext.get().getCurrentUser()
+        SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> this.mapper.insertShownHint(user.getId(), hintKey))
                 .orElseThrow(SecurityException::onAnonymousAccess);
     }
@@ -191,7 +204,8 @@ public class UserDAO extends AbstractDAO<User> {
      * <p>Clears the list of identifiers for hints already show to current user.</p>
      */
     public void enableHints() {
-        SecurityContext.get().getCurrentUser()
+        SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> this.mapper.clearHintsHistory(user.getId()))
                 .orElseThrow(SecurityException::onAnonymousAccess);
     }
@@ -201,7 +215,8 @@ public class UserDAO extends AbstractDAO<User> {
      */
     @Transactional
     public void disableHints() {
-        SecurityContext.get().getCurrentUser()
+        SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     this.mapper.clearHintsHistory(user.getId());
                     this.mapper.insertHintsHistoryAll(user.getId());

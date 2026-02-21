@@ -1,14 +1,12 @@
 package com.hmdm.notification;
 
-import jakarta.inject.Inject;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
-import com.hivemq.client.mqtt.datatypes.MqttQos;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MqttThrottledSender implements Runnable {
 
@@ -19,8 +17,7 @@ public class MqttThrottledSender implements Runnable {
     private static final int MAX_PUBLISH_RETRIES = 3;
     private static final long RETRY_BACKOFF_MS = 2000;
 
-    public MqttThrottledSender() {
-    }
+    public MqttThrottledSender() {}
 
     @Inject
     public MqttThrottledSender(@Named("mqtt.message.delay") long mqttDelay) {
@@ -65,7 +62,8 @@ public class MqttThrottledSender implements Runnable {
     private void publishWithRetry(MqttEnvelope msg) throws InterruptedException {
         for (int attempt = 1; attempt <= MAX_PUBLISH_RETRIES; attempt++) {
             try {
-                mqttClient.publishWith()
+                mqttClient
+                        .publishWith()
                         .topic(msg.getAddress())
                         .payload(msg.getPayload())
                         .qos(msg.getQos())
@@ -74,12 +72,20 @@ public class MqttThrottledSender implements Runnable {
                 return;
             } catch (Exception e) {
                 if (attempt < MAX_PUBLISH_RETRIES) {
-                    log.warn("MQTT publish attempt {} failed for {}, retrying in {}ms: {}",
-                            attempt, msg.getAddress(), RETRY_BACKOFF_MS, e.getMessage());
+                    log.warn(
+                            "MQTT publish attempt {} failed for {}, retrying in {}ms: {}",
+                            attempt,
+                            msg.getAddress(),
+                            RETRY_BACKOFF_MS,
+                            e.getMessage());
                     Thread.sleep(RETRY_BACKOFF_MS);
                 } else {
-                    log.error("MQTT publish failed after {} attempts for {}: {}",
-                            MAX_PUBLISH_RETRIES, msg.getAddress(), e.getMessage(), e);
+                    log.error(
+                            "MQTT publish failed after {} attempts for {}: {}",
+                            MAX_PUBLISH_RETRIES,
+                            msg.getAddress(),
+                            e.getMessage(),
+                            e);
                 }
             }
         }

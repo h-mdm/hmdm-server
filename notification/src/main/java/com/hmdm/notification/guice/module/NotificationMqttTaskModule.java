@@ -1,9 +1,13 @@
 package com.hmdm.notification.guice.module;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import com.hmdm.notification.PushSender;
 import com.hmdm.util.CryptoUtil;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
 import org.apache.activemq.artemis.core.config.Configuration;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
@@ -17,14 +21,9 @@ import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
- * MQTT notification task module using ActiveMQ Artemis.
- * Provides embedded MQTT broker functionality for push notifications.
+ * MQTT notification task module using ActiveMQ Artemis. Provides embedded MQTT broker functionality for push
+ * notifications.
  */
 public class NotificationMqttTaskModule {
 
@@ -42,7 +41,8 @@ public class NotificationMqttTaskModule {
     public static final String MQTT_ADMIN_USERNAME = "admin";
 
     @Inject
-    public NotificationMqttTaskModule(@Named("mqtt.server.uri") String serverUri,
+    public NotificationMqttTaskModule(
+            @Named("mqtt.server.uri") String serverUri,
             @Named("mqtt.external") String mqttExternal,
             @Named("mqtt.auth") boolean mqttAuth,
             @Named("mqtt.admin.password") String mqttAdminPassword,
@@ -61,9 +61,7 @@ public class NotificationMqttTaskModule {
     }
 
     /**
-     * <p>
-     * Creates the broker service
-     * </p>
+     * <p>Creates the broker service</p>
      */
     public void init() {
         if (!initBrokerService()) {
@@ -85,8 +83,8 @@ public class NotificationMqttTaskModule {
         try {
             // Parse protocol, host and port using URI for IPv6 safety
             URI uri = parseServerUri(serverUri);
-            boolean useSSL = "ssl".equals(uri.getScheme()) || "mqtts".equals(uri.getScheme())
-                    || "wss".equals(uri.getScheme());
+            boolean useSSL =
+                    "ssl".equals(uri.getScheme()) || "mqtts".equals(uri.getScheme()) || "wss".equals(uri.getScheme());
             String domain = uri.getHost();
             int port = uri.getPort() > 0 ? uri.getPort() : (useSSL ? 8883 : 1883);
 
@@ -122,9 +120,7 @@ public class NotificationMqttTaskModule {
             }
 
             TransportConfiguration mqttAcceptor = new TransportConfiguration(
-                    NettyAcceptorFactory.class.getName(),
-                    acceptorParams,
-                    useSSL ? "mqtt-ssl" : "mqtt");
+                    NettyAcceptorFactory.class.getName(), acceptorParams, useSSL ? "mqtt-ssl" : "mqtt");
             config.addAcceptorConfiguration(mqttAcceptor);
 
             // Configure address settings for MQTT topics
@@ -155,8 +151,13 @@ public class NotificationMqttTaskModule {
                     }
 
                     @Override
-                    public String validateUserAndRole(String user, String password, Set<Role> roles,
-                            CheckType checkType, String address, RemotingConnection connection) {
+                    public String validateUserAndRole(
+                            String user,
+                            String password,
+                            Set<Role> roles,
+                            CheckType checkType,
+                            String address,
+                            RemotingConnection connection) {
                         // First validate user credentials
                         String validatedUser = validateUser(user, password, connection);
                         if (validatedUser == null) {
@@ -179,8 +180,8 @@ public class NotificationMqttTaskModule {
                     }
 
                     @Override
-                    public boolean validateUserAndRole(String user, String password, Set<Role> roles,
-                            CheckType checkType) {
+                    public boolean validateUserAndRole(
+                            String user, String password, Set<Role> roles, CheckType checkType) {
                         return validateUserAndRole(user, password, roles, checkType, null, null) != null;
                     }
                 });
@@ -197,8 +198,7 @@ public class NotificationMqttTaskModule {
     }
 
     /**
-     * Parses the server URI, handling IPv6 addresses safely.
-     * Normalizes URIs without a scheme by prepending "mqtt://".
+     * Parses the server URI, handling IPv6 addresses safely. Normalizes URIs without a scheme by prepending "mqtt://".
      */
     public static URI parseServerUri(String serverUri) {
         String normalized = serverUri;

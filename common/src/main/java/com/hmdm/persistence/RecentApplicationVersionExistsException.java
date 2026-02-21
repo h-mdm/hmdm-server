@@ -33,7 +33,8 @@ public class RecentApplicationVersionExistsException extends RuntimeException {
      * <p>Constructs new <code>RecentApplicationVersionExistsException</code> instance. This implementation does nothing.</p>
      */
     public RecentApplicationVersionExistsException(String pkg, String version, Integer customerId) {
-        super(String.format("An application version newer than %s v%s already exists. Customer account ID: %s", pkg, version, customerId));
+        super(String.format(
+                "An application version newer than %s v%s already exists. Customer account ID: %s",
+                pkg, version, customerId));
     }
-
 }

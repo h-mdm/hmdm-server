@@ -58,11 +58,11 @@ public enum ApplicationSettingType {
         return id;
     }
 
-
     /**
      * <p>Gets the app setting type mapped to specified ID.</p>
      *
      * @param id an ID of requested setting type.
+     *
      * @return an optional reference to setting type mapped to specified ID.
      */
     public static Optional<ApplicationSettingType> byId(int id) {

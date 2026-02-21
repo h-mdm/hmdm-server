@@ -24,8 +24,8 @@ package com.hmdm.guice.module;
 import jakarta.servlet.ServletContext;
 
 /**
- * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the
- * persistence layer of the application.</p>
+ * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the persistence
+ * layer of the application.</p>
  *
  * @author isv
  */

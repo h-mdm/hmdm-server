@@ -22,7 +22,6 @@
 package com.hmdm.event;
 
 import com.hmdm.rest.json.DeviceLocation;
-
 import java.io.Serializable;
 import java.util.List;
 

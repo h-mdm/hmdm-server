@@ -40,8 +40,7 @@ public class Setting {
     private Integer inactiveTime;
     private Integer updateServiceTime;
 
-    public Setting() {
-    }
+    public Setting() {}
 
     public Integer getId() {
         return this.id;

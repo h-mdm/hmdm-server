@@ -21,15 +21,14 @@
 
 package com.hmdm.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.ConfigurationFile;
 import com.hmdm.persistence.mapper.ConfigurationFileMapper;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 /**
@@ -51,9 +50,10 @@ public class ConfigurationFileDAO {
      * <p>Constructs new <code>ConfigurationFileDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public ConfigurationFileDAO(ConfigurationFileMapper configurationFileMapper,
-                                ConfigurationMapper configurationMapper,
-                                UploadedFileDAO uploadedFileDAO) {
+    public ConfigurationFileDAO(
+            ConfigurationFileMapper configurationFileMapper,
+            ConfigurationMapper configurationMapper,
+            UploadedFileDAO uploadedFileDAO) {
         this.configurationFileMapper = configurationFileMapper;
         this.configurationMapper = configurationMapper;
         this.uploadedFileDAO = uploadedFileDAO;
@@ -70,19 +70,19 @@ public class ConfigurationFileDAO {
 
     public void insertConfigurationFile(ConfigurationFile configurationFile) {
         // Check access to configuration prior to making changes
-        SecurityContext.get()
-                .getCurrentUser()
-                .ifPresent(u -> {
-                    Configuration configuration = configurationMapper.getConfigurationById(configurationFile.getConfigurationId());
-                    if (configuration == null) {
-                        throw new IllegalArgumentException("Configuration id " + configurationFile.getConfigurationId() + " does not exist");
-                    }
-                    if (u.isSuperAdmin() || u.getCustomerId() == configuration.getCustomerId()) {
-                        this.configurationFileMapper.insertConfigurationFile(configurationFile);
-                    } else {
-                        throw SecurityException.onConfigurationAccessViolation(configurationFile.getConfigurationId());
-                    }
-                });
+        SecurityContext.get().getCurrentUser().ifPresent(u -> {
+            Configuration configuration =
+                    configurationMapper.getConfigurationById(configurationFile.getConfigurationId());
+            if (configuration == null) {
+                throw new IllegalArgumentException(
+                        "Configuration id " + configurationFile.getConfigurationId() + " does not exist");
+            }
+            if (u.isSuperAdmin() || u.getCustomerId() == configuration.getCustomerId()) {
+                this.configurationFileMapper.insertConfigurationFile(configurationFile);
+            } else {
+                throw SecurityException.onConfigurationAccessViolation(configurationFile.getConfigurationId());
+            }
+        });
     }
 
     public boolean isFileUsed(Integer fileId) {
@@ -94,7 +94,7 @@ public class ConfigurationFileDAO {
     }
 
     // Deprecated and not used any more
-/*    public void removeFileFromDisk(Integer fileId) {
-        this.uploadedFileDAO.remove(fileId);
-    } */
+    /*
+     * public void removeFileFromDisk(Integer fileId) { this.uploadedFileDAO.remove(fileId); }
+     */
 }

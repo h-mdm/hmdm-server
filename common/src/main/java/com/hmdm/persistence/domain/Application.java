@@ -21,10 +21,9 @@
 
 package com.hmdm.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,64 +39,90 @@ public class Application implements CustomerData, Serializable {
     public static final String ARCH_ARMEABI = "armeabi";
     public static final String ARCH_ARM64 = "arm64";
 
-    @Schema(description="An application ID")
+    @Schema(description = "An application ID")
     private Integer id;
-    @Schema(description="A name of application")
+
+    @Schema(description = "A name of application")
     private String name;
-    @Schema(description="A package ID of application")
+
+    @Schema(description = "A package ID of application")
     private String pkg;
-    @Schema(description="A version of application")
+
+    @Schema(description = "A version of application")
     private String version;
-    @Schema(description="Version code")
+
+    @Schema(description = "Version code")
     private int versionCode;
-    @Schema(description="CPU architecture (for file transfer only)")
+
+    @Schema(description = "CPU architecture (for file transfer only)")
     private String arch;
-    @Schema(description="An URL for the latest version of the application package")
+
+    @Schema(description = "An URL for the latest version of the application package")
     private String url;
-    @Schema(description="Has the latest version native code, i.e. is split into two APKs")
+
+    @Schema(description = "Has the latest version native code, i.e. is split into two APKs")
     private boolean split;
-    @Schema(description="An URL for armeabi APK for the latest version")
+
+    @Schema(description = "An URL for armeabi APK for the latest version")
     private String urlArmeabi;
-    @Schema(description="An URL for arm64 APK for the latest version")
+
+    @Schema(description = "An URL for arm64 APK for the latest version")
     private String urlArm64;
-    @Schema(description="A flag indicating if icon is to be shown on mobile device")
+
+    @Schema(description = "A flag indicating if icon is to be shown on mobile device")
     private boolean showIcon;
-    @Schema(description="A flag indicating if the web application must run in Kiosk Browser")
+
+    @Schema(description = "A flag indicating if the web application must run in Kiosk Browser")
     private boolean useKiosk;
-    @Schema(description="A flag indicating if application is a system application")
+
+    @Schema(description = "A flag indicating if application is a system application")
     private boolean system;
-    @Schema(description="A list of configurations using the application")
+
+    @Schema(description = "A list of configurations using the application")
     private List<Configuration> configurations = new LinkedList<>();
-    @Schema(description="An ID of a most recent version for application")
+
+    @Schema(description = "An ID of a most recent version for application")
     private Integer latestVersion;
-    @Schema(description="A flag indicating if application must be run after installation")
+
+    @Schema(description = "A flag indicating if application must be run after installation")
     private boolean runAfterInstall;
-    @Schema(description="A flag indicating if application must be run at device boot")
+
+    @Schema(description = "A flag indicating if application must be run at device boot")
     private boolean runAtBoot;
-    @Schema(description="A flag indicating if version check must be skipped for application")
+
+    @Schema(description = "A flag indicating if version check must be skipped for application")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean skipVersion;
-    @Schema(description="A text for the application icon")
+
+    @Schema(description = "A text for the application icon")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String iconText;
-    @Schema(description="A type of the application icon", allowableValues = "app,web")
+
+    @Schema(description = "A type of the application icon", allowableValues = "app,web")
     private ApplicationType type;
-    @Schema(description="An ID of an icon to represent the application")
+
+    @Schema(description = "An ID of an icon to represent the application")
     private Integer iconId;
-    @Schema(description="An file name with the icon to represent the application")
+
+    @Schema(description = "An file name with the icon to represent the application")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String icon;
-    @Schema(description="Order of applications on the screen")
+
+    @Schema(description = "Order of applications on the screen")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer screenOrder;
-    @Schema(description="Key code for fast app start")
+
+    @Schema(description = "Key code for fast app start")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer keyCode;
-    @Schema(description="A flag indicating if application must be displayed at the bottom of the launcher")
+
+    @Schema(description = "A flag indicating if application must be displayed at the bottom of the launcher")
     private boolean bottom;
-    @Schema(description="A flag indicating if app settings could be opened by a long tap")
+
+    @Schema(description = "A flag indicating if app settings could be opened by a long tap")
     private boolean longTap;
-    @Schema(description="An intent")
+
+    @Schema(description = "An intent")
     private String intent;
 
     // A flag indicating that application is to be removed from the application
@@ -106,20 +131,28 @@ public class Application implements CustomerData, Serializable {
     @Schema(hidden = true)
     @Deprecated
     private boolean remove;
+
     @Schema(hidden = true)
     private boolean selected;
+
     @Schema(hidden = true)
     private int customerId;
+
     @Schema(hidden = true)
     private String customerName;
+
     @Schema(hidden = true)
     private boolean commonApplication;
+
     @Schema(hidden = true)
     private boolean deletionProhibited;
+
     @Schema(hidden = true)
     private boolean outdated;
+
     @Schema(hidden = true)
     private String latestVersionText;
+
     @Schema(hidden = true)
     private Integer usedVersionId;
 
@@ -145,8 +178,7 @@ public class Application implements CustomerData, Serializable {
     @Schema(description = "", allowableValues = "0,1,2")
     private int action;
 
-    public Application() {
-    }
+    public Application() {}
 
     public String getName() {
         return this.name;
@@ -452,35 +484,15 @@ public class Application implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "Application{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", pkg='" + pkg + '\'' +
-                ", version='" + version + '\'' +
-                ", versionCode=" + versionCode +
-                ", url='" + url + '\'' +
-                ", split=" + split +
-                ", urlArmeabi='" + urlArmeabi + '\'' +
-                ", urlArm64='" + urlArm64 + '\'' +
-                ", showIcon=" + showIcon +
-                ", useKiosk=" + useKiosk +
-                ", bottom=" + bottom +
-                ", longTap=" + longTap +
-                ", intent=" + intent +
-                ", iconText='" + iconText + '\'' +
-                ", iconId='" + iconId + '\'' +
-                ", runAfterInstall=" + runAfterInstall +
-                ", skipVersion=" + skipVersion +
-                ", system=" + system +
-                ", configurations=" + configurations +
-                ", customerId=" + customerId +
-                ", filePath='" + filePath + '\'' +
-                ", deletionProhibited='" + deletionProhibited + '\'' +
-                ", outdated='" + outdated + '\'' +
-                ", latestVersion='" + latestVersion + '\'' +
-                ", latestVersionText='" + latestVersionText + '\'' +
-                ", usedVersionId='" + usedVersionId + '\'' +
-                '}';
+        return "Application{" + "id=" + id + ", type='" + type + '\'' + ", name='" + name + '\'' + ", pkg='" + pkg
+                + '\'' + ", version='" + version + '\'' + ", versionCode=" + versionCode + ", url='" + url + '\''
+                + ", split=" + split + ", urlArmeabi='" + urlArmeabi + '\'' + ", urlArm64='" + urlArm64 + '\''
+                + ", showIcon=" + showIcon + ", useKiosk=" + useKiosk + ", bottom=" + bottom + ", longTap=" + longTap
+                + ", intent=" + intent + ", iconText='" + iconText + '\'' + ", iconId='" + iconId + '\''
+                + ", runAfterInstall=" + runAfterInstall + ", skipVersion=" + skipVersion + ", system=" + system
+                + ", configurations=" + configurations + ", customerId=" + customerId + ", filePath='" + filePath + '\''
+                + ", deletionProhibited='" + deletionProhibited + '\'' + ", outdated='" + outdated + '\''
+                + ", latestVersion='" + latestVersion + '\'' + ", latestVersionText='" + latestVersionText + '\''
+                + ", usedVersionId='" + usedVersionId + '\'' + '}';
     }
 }

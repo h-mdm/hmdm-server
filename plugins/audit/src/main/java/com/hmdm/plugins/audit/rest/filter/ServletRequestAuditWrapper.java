@@ -7,14 +7,9 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 
 /**
- * <p>
- * A wrapper around the {@link HttpServletRequest} object for capturing request
- * body.
- * </p>
+ * <p>A wrapper around the {@link HttpServletRequest} object for capturing request body.</p>
  *
- * <p>
- * Updated for Jakarta Servlet 6.0 compatibility.
- * </p>
+ * <p>Updated for Jakarta Servlet 6.0 compatibility.</p>
  */
 public class ServletRequestAuditWrapper extends HttpServletRequestWrapper {
     private final String body;

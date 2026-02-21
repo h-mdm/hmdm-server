@@ -25,28 +25,29 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.service.DeviceApplicationsStatus;
 import com.hmdm.service.DeviceConfigFilesStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Schema(description = "A request for getting the device summary")
-@JsonIgnoreProperties(value = {"customerId", "userId"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"customerId", "userId"},
+        ignoreUnknown = true)
 public class DeviceSummaryRequest implements Serializable {
 
     private static final long serialVersionUID = -8435796711101693827L;
 
     public DeviceSummaryRequest() {}
 
-    public DeviceSummaryRequest(int userId,
-                                 int customerId,
-                                 DeviceConfigFilesStatus fileStatus,
-                                 DeviceApplicationsStatus appStatus,
-                                 Long minEnrollTime,
-                                 Long maxEnrollTime,
-                                 Long minOnlineTime,
-                                 Long maxOnlineTime,
-                                 List<Integer> configIds) {
+    public DeviceSummaryRequest(
+            int userId,
+            int customerId,
+            DeviceConfigFilesStatus fileStatus,
+            DeviceApplicationsStatus appStatus,
+            Long minEnrollTime,
+            Long maxEnrollTime,
+            Long minOnlineTime,
+            Long maxOnlineTime,
+            List<Integer> configIds) {
         this.userId = userId;
         this.customerId = customerId;
         this.fileStatus = fileStatus;
@@ -58,22 +59,22 @@ public class DeviceSummaryRequest implements Serializable {
         this.configIds = configIds;
     }
 
-    @Schema(description="Filter by file status")
+    @Schema(description = "Filter by file status")
     private DeviceConfigFilesStatus fileStatus;
 
-    @Schema(description="Filter by app status")
+    @Schema(description = "Filter by app status")
     private DeviceApplicationsStatus appStatus;
 
-    @Schema(description="Filter by min enroll time")
+    @Schema(description = "Filter by min enroll time")
     private Long minEnrollTime;
 
-    @Schema(description="Filter by max enroll time")
+    @Schema(description = "Filter by max enroll time")
     private Long maxEnrollTime;
 
-    @Schema(description="Filter by min online time")
+    @Schema(description = "Filter by min online time")
     private Long minOnlineTime;
 
-    @Schema(description="Filter by max online time")
+    @Schema(description = "Filter by max online time")
     private Long maxOnlineTime;
 
     @Schema(hidden = true)
@@ -82,7 +83,7 @@ public class DeviceSummaryRequest implements Serializable {
     @Schema(hidden = true)
     private int userId;
 
-    @Schema(description="Filter by certain configurations only")
+    @Schema(description = "Filter by certain configurations only")
     private List<Integer> configIds;
 
     public DeviceConfigFilesStatus getFileStatus() {

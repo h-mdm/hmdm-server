@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
@@ -43,32 +42,31 @@ public class Message implements CustomerData, Serializable {
     public static final int STATUS_DELIVERED = 1;
     public static final int STATUS_READ = 2;
 
-    @Schema(description="ID of message record")
+    @Schema(description = "ID of message record")
     private Integer id;
 
-    @Schema(description="Customer ID")
+    @Schema(description = "Customer ID")
     private int customerId;
 
-    @Schema(description="Device ID")
+    @Schema(description = "Device ID")
     private int deviceId;
 
-    @Schema(description="Device Number")
+    @Schema(description = "Device Number")
     private String deviceNumber;
 
-    @Schema(description="Timestamp when the message has been sent (in milliseconds since epoch time)")
+    @Schema(description = "Timestamp when the message has been sent (in milliseconds since epoch time)")
     private long ts;
 
-    @Schema(description="Message text")
+    @Schema(description = "Message text")
     private String message;
 
-    @Schema(description="Message status")
+    @Schema(description = "Message status")
     private int status;
 
     /**
      * <p>Constructs new <code>Message</code> instance. This implementation does nothing.</p>
      */
-    public Message() {
-    }
+    public Message() {}
 
     public Integer getId() {
         return id;
@@ -130,12 +128,7 @@ public class Message implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", deviceId=" + deviceId +
-                ", ts=" + ts +
-                ", message=" + message +
-                ", status=" + status +
-                '}';
+        return "Message{" + "id=" + id + ", deviceId=" + deviceId + ", ts=" + ts + ", message=" + message + ", status="
+                + status + '}';
     }
 }

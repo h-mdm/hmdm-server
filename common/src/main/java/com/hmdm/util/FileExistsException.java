@@ -36,5 +36,4 @@ public class FileExistsException extends RuntimeException {
     FileExistsException(Customer customer, String fileName) {
         super(String.format("File %s already exists in customer's directory: %s", fileName, customer.getFilesDir()));
     }
-
 }

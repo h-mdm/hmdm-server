@@ -25,22 +25,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * <p>
- * A test suite for {@link ApplicationUtil} class.
- * </p>
+ * <p>A test suite for {@link ApplicationUtil} class.</p>
  *
  * @author isv
  */
 public class ApplicationUtilTests {
 
     /**
-     * <p>
-     * Constructs new <code>ApplicationUtilTests</code> instance. This
-     * implementation does nothing.
-     * </p>
+     * <p>Constructs new <code>ApplicationUtilTests</code> instance. This implementation does nothing.</p>
      */
-    public ApplicationUtilTests() {
-    }
+    public ApplicationUtilTests() {}
 
     @Test
     public void testEquality() {
@@ -80,11 +74,11 @@ public class ApplicationUtilTests {
 
     @Test
     public void testNormalization() {
-        Assertions.assertEquals("12.334.78", ApplicationUtil.normalizeVersion("a12.334tyz.78x"),
-                "Incorrect version normalization");
+        Assertions.assertEquals(
+                "12.334.78", ApplicationUtil.normalizeVersion("a12.334tyz.78x"), "Incorrect version normalization");
         Assertions.assertEquals("1.03", ApplicationUtil.normalizeVersion("1.03"), "Incorrect version normalization");
-        Assertions.assertEquals("1.03.011", ApplicationUtil.normalizeVersion("1.03.011"),
-                "Incorrect version normalization");
+        Assertions.assertEquals(
+                "1.03.011", ApplicationUtil.normalizeVersion("1.03.011"), "Incorrect version normalization");
         Assertions.assertEquals("1.03", ApplicationUtil.normalizeVersion("1.03-a"), "Incorrect version normalization");
         Assertions.assertEquals("1.03", ApplicationUtil.normalizeVersion("1.03a"), "Incorrect version normalization");
         Assertions.assertEquals("1.03", ApplicationUtil.normalizeVersion("v1.03"), "Incorrect version normalization");

@@ -9,7 +9,8 @@ public class PasswordUtil {
 
     private static final Random random = new Random();
 
-    private static final String PASS_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-.,!#$%()=+;*/";
+    private static final String PASS_CHARS =
+            "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-.,!#$%()=+;*/";
     private static int DIGIT_START = 0;
     private static int DIGIT_END = 9;
     private static int ALPHA_LOWER_START = 10;
@@ -124,5 +125,4 @@ public class PasswordUtil {
         }
         return b.toString();
     }
-
 }

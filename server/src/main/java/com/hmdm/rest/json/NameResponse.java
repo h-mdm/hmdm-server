@@ -44,8 +44,7 @@ public class NameResponse {
     /**
      * <p>Constructs new <code>NameResponse</code> instance. This implementation does nothing.</p>
      */
-    public NameResponse() {
-    }
+    public NameResponse() {}
 
     public String getAppName() {
         return appName;

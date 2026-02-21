@@ -34,7 +34,5 @@ public class FileUploadService {
     /**
      * <p>Constructs new <code>FileUploadService</code> instance. This implementation does nothing.</p>
      */
-    public FileUploadService() {
-    }
-
+    public FileUploadService() {}
 }

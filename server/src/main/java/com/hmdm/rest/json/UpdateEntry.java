@@ -1,9 +1,8 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.json.JSONObject;
-
 import java.io.Serializable;
+import org.json.JSONObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateEntry implements Serializable {

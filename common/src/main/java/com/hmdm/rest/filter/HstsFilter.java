@@ -22,9 +22,8 @@
 package com.hmdm.rest.filter;
 
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -34,19 +33,16 @@ public class HstsFilter implements Filter {
 
     private boolean hsts = false;
 
-    public HstsFilter() {
-    }
+    public HstsFilter() {}
 
     @Inject
     public HstsFilter(@Named("strict.transport.security") boolean hsts) {
         this.hsts = hsts;
     }
 
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
-    public void destroy() {
-    }
+    public void destroy() {}
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {

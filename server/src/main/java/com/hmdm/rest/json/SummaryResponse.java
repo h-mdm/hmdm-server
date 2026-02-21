@@ -20,7 +20,6 @@ public class SummaryResponse {
     private List<Integer> appMismatchByConfig;
     private List<Integer> appSuccessByConfig;
 
-
     public List<ChartItem> getStatusSummary() {
         return statusSummary;
     }

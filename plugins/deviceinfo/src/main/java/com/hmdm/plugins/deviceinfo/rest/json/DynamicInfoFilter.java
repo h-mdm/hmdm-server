@@ -23,7 +23,6 @@ package com.hmdm.plugins.deviceinfo.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -33,54 +32,56 @@ import java.util.Date;
  * @author isv
  */
 @Schema(description = "A request for searching the dynamic info records for device")
-@JsonIgnoreProperties(value = {"deviceId"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"deviceId"},
+        ignoreUnknown = true)
 public class DynamicInfoFilter implements Serializable {
 
     private static final long serialVersionUID = 1321492463446573290L;
+
     @Schema(hidden = true)
     private int deviceId;
 
     /**
      * <p>A device identifier.</p>
      */
-    @Schema(description="A device identifier")
+    @Schema(description = "A device identifier")
     private String deviceNumber;
 
     /**
      * <p>A number of records per single page of data to be retrieved.</p>
      */
-    @Schema(description="A number of records per single page of data to be retrieved")
+    @Schema(description = "A number of records per single page of data to be retrieved")
     private int pageSize = 50;
 
     /**
      * <p>A number of page of data to be retrieved.</p>
      */
-    @Schema(description="A number of page of data to be retrieved (1-based)")
+    @Schema(description = "A number of page of data to be retrieved (1-based)")
     private int pageNum = 1;
 
     /**
      * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
      */
-    @Schema(description="A timestamp for FROM boundary for filtering the data records by dates")
+    @Schema(description = "A timestamp for FROM boundary for filtering the data records by dates")
     private Date dateFrom;
 
     /**
      * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
      */
-    @Schema(description="A timestamp for TO boundary for filtering the data records by dates")
+    @Schema(description = "A timestamp for TO boundary for filtering the data records by dates")
     private Date dateTo;
 
-    @Schema(description="A fixed interval is to be used for searching the records (in seconds)")
+    @Schema(description = "A fixed interval is to be used for searching the records (in seconds)")
     private Integer fixedInterval = 24 * 3600;
 
-    @Schema(description="A flag indicating if a fixed interval is to be used for searching the records")
+    @Schema(description = "A flag indicating if a fixed interval is to be used for searching the records")
     private boolean useFixedInterval = true;
 
     /**
      * <p>Constructs new <code>DynamicInfoFilter</code> instance. This implementation does nothing.</p>
      */
-    public DynamicInfoFilter() {
-    }
+    public DynamicInfoFilter() {}
 
     public int getDeviceId() {
         return deviceId;

@@ -21,10 +21,7 @@
 
 package com.hmdm.plugins.devicelog.persistence.postgres.dao;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
-import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.Device;
@@ -40,16 +37,17 @@ import com.hmdm.plugins.devicelog.rest.json.AppliedDeviceLogRule;
 import com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter;
 import com.hmdm.plugins.devicelog.rest.json.UploadedDeviceLogRecord;
 import com.hmdm.security.SecurityContext;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A DAO for device log records backed by the <code>Postgres</code> database.</p>
@@ -74,9 +72,10 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      * <p>Constructs new <code>PostgresDeviceLogDAO</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public PostgresDeviceLogDAO(PostgresDeviceLogMapper deviceLogMapper,
-                                DeviceLogPluginSettingsDAO deviceLogPluginSettingsDAO,
-                                UnsecureDAO unsecureDAO) {
+    public PostgresDeviceLogDAO(
+            PostgresDeviceLogMapper deviceLogMapper,
+            DeviceLogPluginSettingsDAO deviceLogPluginSettingsDAO,
+            UnsecureDAO unsecureDAO) {
         this.deviceLogMapper = deviceLogMapper;
         this.unsecureDAO = unsecureDAO;
         this.deviceLogPluginSettingsDAO = deviceLogPluginSettingsDAO;
@@ -86,6 +85,7 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      * <p>Finds the log records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a list of log records matching the specified filter.
      */
     @Override
@@ -106,12 +106,14 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      * <p>Counts the log records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a number of log records matching the specified filter.
      */
     @Override
     public long countAll(DeviceLogFilter filter) {
         prepareFilter(filter);
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     filter.setCustomerId(user.getCustomerId());
                     return this.deviceLogMapper.countAll(filter);
@@ -123,8 +125,9 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      * <p>Inserts the specified log records uploaded by the specified device into underlying persistent data store.</p>
      *
      * @param deviceNumber an identifier of a device.
-     * @param ipAddress    an IP-address of a device.
-     * @param logs         a list of log records to be inserted.
+     * @param ipAddress an IP-address of a device.
+     * @param logs a list of log records to be inserted.
+     *
      * @return a number of log records inserted into underlying persistent store.
      */
     @Override
@@ -132,28 +135,35 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
         final Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
         if (dbDevice != null) {
             // Build the cache of applications
-            final Set<String> appPackages
-                    = logs.stream().map(UploadedDeviceLogRecord::getPackageId).collect(Collectors.toSet());
-            final Map<String, Integer> appCache
-                    = this.unsecureDAO.buildPackageIdMapping(dbDevice.getCustomerId(), appPackages);
-            
-            final List<PostgresDeviceLogRecord> postgresLogs = logs.stream().map(log -> {
-                try {
-                    PostgresDeviceLogRecord postgresRecord = new PostgresDeviceLogRecord();
-                    postgresRecord.setCustomerId(dbDevice.getCustomerId());
-                    postgresRecord.setApplicationId(appCache.get(log.getPackageId()));
-                    postgresRecord.setCreateTime(log.getTimestamp());
-                    postgresRecord.setDeviceId(dbDevice.getId());
-                    postgresRecord.setMessage(log.getMessage());
-                    postgresRecord.setSeverity(LogLevel.byId(log.getLogLevel()).orElse(LogLevel.NONE));
-                    postgresRecord.setIpAddress(ipAddress);
+            final Set<String> appPackages =
+                    logs.stream().map(UploadedDeviceLogRecord::getPackageId).collect(Collectors.toSet());
+            final Map<String, Integer> appCache =
+                    this.unsecureDAO.buildPackageIdMapping(dbDevice.getCustomerId(), appPackages);
 
-                    return postgresRecord;
-                } catch (Exception e) {
-                    logger.error("Unexpected error when converting log record {}. This record will be skipped. ", log, e);
-                    return null;
-                }
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            final List<PostgresDeviceLogRecord> postgresLogs = logs.stream()
+                    .map(log -> {
+                        try {
+                            PostgresDeviceLogRecord postgresRecord = new PostgresDeviceLogRecord();
+                            postgresRecord.setCustomerId(dbDevice.getCustomerId());
+                            postgresRecord.setApplicationId(appCache.get(log.getPackageId()));
+                            postgresRecord.setCreateTime(log.getTimestamp());
+                            postgresRecord.setDeviceId(dbDevice.getId());
+                            postgresRecord.setMessage(log.getMessage());
+                            postgresRecord.setSeverity(
+                                    LogLevel.byId(log.getLogLevel()).orElse(LogLevel.NONE));
+                            postgresRecord.setIpAddress(ipAddress);
+
+                            return postgresRecord;
+                        } catch (Exception e) {
+                            logger.error(
+                                    "Unexpected error when converting log record {}. This record will be skipped. ",
+                                    log,
+                                    e);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
 
             if (!postgresLogs.isEmpty()) {
                 int insertCount = this.deviceLogMapper.insertDeviceLogRecords(postgresLogs);
@@ -169,14 +179,15 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      * <p>Gets the list of log rules applicable to specified device.</p>
      *
      * @param deviceNumber an identifier of device.
+     *
      * @return a list of applicable log rules for device.
      */
     @Override
     public List<AppliedDeviceLogRule> getDeviceLogRules(String deviceNumber) {
         final Device dbDevice = this.unsecureDAO.getDeviceByNumber(deviceNumber);
         if (dbDevice != null) {
-            final DeviceLogPluginSettings deviceLogSettings
-                    = this.deviceLogPluginSettingsDAO.getPluginSettings(dbDevice.getCustomerId());
+            final DeviceLogPluginSettings deviceLogSettings =
+                    this.deviceLogPluginSettingsDAO.getPluginSettings(dbDevice.getCustomerId());
             if (deviceLogSettings != null) {
                 List<DeviceLogRule> rules = deviceLogSettings.getRules();
                 if (rules != null && !rules.isEmpty()) {
@@ -188,7 +199,8 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
                     final List<DeviceLogRule> defaultRules = rules.stream()
                             .filter(r -> r.getConfigurationId() == null)
                             .filter(r -> r.getGroupId() == null)
-                            .filter(r -> r.getDevices() == null || r.getDevices().isEmpty())
+                            .filter(r ->
+                                    r.getDevices() == null || r.getDevices().isEmpty())
                             .collect(Collectors.toList());
 
                     List<DeviceLogRule> resultingRules = defaultRules;
@@ -219,9 +231,9 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
 
                     resultingRules = combineDeviceLogRules(resultingRules, deviceRules);
 
-
-                    final List<AppliedDeviceLogRule> result
-                            = resultingRules.stream().map(AppliedDeviceLogRule::new).collect(Collectors.toList());
+                    final List<AppliedDeviceLogRule> result = resultingRules.stream()
+                            .map(AppliedDeviceLogRule::new)
+                            .collect(Collectors.toList());
 
                     return result;
                 }
@@ -250,7 +262,6 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
             logger.error("Unexpected error when purging the device log records", e);
         }
     }
-
 
     /**
      * <p>Prepares the filter for usage by mapper.</p>
@@ -286,11 +297,13 @@ public class PostgresDeviceLogDAO extends AbstractDAO<PostgresDeviceLogRecord> i
      *
      * @param lessPreferred a list of less preferred rules.
      * @param morePreferred a list of more preferred rules.
+     *
      * @return a resulting list of rules.
      */
-    private static List<DeviceLogRule> combineDeviceLogRules(List<DeviceLogRule> lessPreferred, List<DeviceLogRule> morePreferred) {
-        final Map<String, DeviceLogRule> moreMapping
-                = morePreferred.stream().collect(Collectors.toMap(DeviceLogRule::getApplicationPkg, r -> r, (r1, r2) -> r1));
+    private static List<DeviceLogRule> combineDeviceLogRules(
+            List<DeviceLogRule> lessPreferred, List<DeviceLogRule> morePreferred) {
+        final Map<String, DeviceLogRule> moreMapping = morePreferred.stream()
+                .collect(Collectors.toMap(DeviceLogRule::getApplicationPkg, r -> r, (r1, r2) -> r1));
 
         List<DeviceLogRule> result = new ArrayList<>();
 

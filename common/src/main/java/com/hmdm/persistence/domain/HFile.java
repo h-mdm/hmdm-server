@@ -21,9 +21,8 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.List;
 
@@ -32,22 +31,24 @@ import java.util.List;
 public class HFile implements Comparable<HFile>, Serializable {
 
     private static final long serialVersionUID = 7570897379289300175L;
-    
-    @Schema(description="A path to a file")
+
+    @Schema(description = "A path to a file")
     private String path;
-    @Schema(description="A name of file")
+
+    @Schema(description = "A name of file")
     private String name;
-    @Schema(description="An URL of file")
+
+    @Schema(description = "An URL of file")
     private String url;
-    @Schema(description="File size in bytes")
+
+    @Schema(description = "File size in bytes")
     private long size;
 
     private List<String> usedByApps;
     private List<String> usedByIcons;
     private List<String> usedByConfigurations;
 
-    public HFile() {
-    }
+    public HFile() {}
 
     public HFile(String path, String name, String url, long size) {
         this.path = path;
@@ -131,7 +132,8 @@ public class HFile implements Comparable<HFile>, Serializable {
 
             final int pathComparisonResult = thisPath.compareTo(otherPath);
             if (pathComparisonResult == 0) {
-                final String thisName = this.getName() == null ? "" : this.getName().toLowerCase();
+                final String thisName =
+                        this.getName() == null ? "" : this.getName().toLowerCase();
                 final String otherName = o.getName() == null ? "" : o.getName().toLowerCase();
 
                 return thisName.compareTo(otherName);

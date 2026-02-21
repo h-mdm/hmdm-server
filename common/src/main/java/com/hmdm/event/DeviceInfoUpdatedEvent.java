@@ -21,11 +21,10 @@
 
 package com.hmdm.event;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * <p>An event fired when info for device was updated.</p>
@@ -36,7 +35,7 @@ import java.io.Serializable;
 public class DeviceInfoUpdatedEvent implements Event, Serializable {
 
     private static final long serialVersionUID = 482433207404662000L;
-    
+
     /**
      * <p>An unique identifier of the device.</p>
      */

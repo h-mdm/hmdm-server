@@ -27,15 +27,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
 import com.hmdm.persistence.domain.ApplicationType;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import jakarta.validation.constraints.NotNull;
 
 /**
- * <p>
- * A DTO carrying the data for a single application included into response to
- * request from device for configuration
- * synchronization.
- * </p>
+ * <p>A DTO carrying the data for a single application included into response to request from device for configuration
+ * synchronization.</p>
  *
  * @author isv
  */
@@ -48,10 +44,7 @@ public class SyncApplication implements SyncApplicationInt {
     private final Application wrapped;
 
     /**
-     * <p>
-     * Constructs new <code>SyncApplication</code> instance. This implementation
-     * does nothing.
-     * </p>
+     * <p>Constructs new <code>SyncApplication</code> instance. This implementation does nothing.</p>
      */
     public SyncApplication(@NotNull Application wrapped) {
         this.wrapped = wrapped;

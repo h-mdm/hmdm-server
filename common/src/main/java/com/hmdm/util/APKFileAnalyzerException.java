@@ -41,5 +41,4 @@ public class APKFileAnalyzerException extends RuntimeException {
     public APKFileAnalyzerException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

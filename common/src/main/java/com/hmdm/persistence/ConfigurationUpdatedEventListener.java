@@ -27,10 +27,9 @@ import com.hmdm.event.EventType;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.service.DeviceStatusService;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * <p>A listener for {@link EventType#CONFIGURATION_UPDATED} events.</p>
@@ -57,7 +56,8 @@ public class ConfigurationUpdatedEventListener implements EventListener<Configur
      */
     @Override
     public void onEvent(ConfigurationUpdatedEvent event) {
-        final List<Device> configurationDevices = this.deviceMapper.getDeviceIdsBySoleConfigurationId(event.getConfigurationId());
+        final List<Device> configurationDevices =
+                this.deviceMapper.getDeviceIdsBySoleConfigurationId(event.getConfigurationId());
         configurationDevices.forEach(device -> {
             try {
                 this.deviceStatusService.recalcDeviceStatuses(device.getId());

@@ -21,17 +21,14 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.plugins.audit.AuditPluginConfigurationImpl;
 import com.hmdm.plugins.audit.persistence.AuditDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.util.BackgroundTaskRunnerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -41,6 +38,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Intercepts incoming requests and logs the audit records for users activities.</p>
@@ -89,10 +88,12 @@ public class AuditFilter implements Filter {
      * <p>Constructs new <code>AuditFilter</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public AuditFilter(AuditDAO auditDAO, BackgroundTaskRunnerService backgroundTaskRunnerService,
-                       PluginStatusCache pluginStatusCache,
-                       @Named("proxy.addresses") String proxyIps,
-                       @Named("proxy.ip.header") String ipHeader) {
+    public AuditFilter(
+            AuditDAO auditDAO,
+            BackgroundTaskRunnerService backgroundTaskRunnerService,
+            PluginStatusCache pluginStatusCache,
+            @Named("proxy.addresses") String proxyIps,
+            @Named("proxy.ip.header") String ipHeader) {
         this.auditDAO = auditDAO;
         this.backgroundTaskRunnerService = backgroundTaskRunnerService;
         this.pluginStatusCache = pluginStatusCache;
@@ -109,27 +110,28 @@ public class AuditFilter implements Filter {
      * <p>Does nothing.</p>
      */
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
+    public void init(FilterConfig filterConfig) {}
 
     /**
-     * <p>Intercepts the specified request/response chain and records the audit data if auditing for specified request
-     * is supported.</p>
+     * <p>Intercepts the specified request/response chain and records the audit data if auditing for specified request is
+     * supported.</p>
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         final String requestURI = httpRequest.getRequestURI();
         final String context = httpRequest.getContextPath();
 
-        if (pluginStatusCache.isPluginDisabled(AuditPluginConfigurationImpl.PLUGIN_ID) ||
-            httpRequest.getMethod().equalsIgnoreCase("GET")) {
+        if (pluginStatusCache.isPluginDisabled(AuditPluginConfigurationImpl.PLUGIN_ID)
+                || httpRequest.getMethod().equalsIgnoreCase("GET")) {
             // GET requests are not recorded
             chain.doFilter(request, response);
             return;
         }
 
-        final Optional<ResourceAuditInfo> auditInfo = ResourceAuditInfo.findAuditInfo(httpRequest.getMethod(), requestURI.substring(context.length()));
+        final Optional<ResourceAuditInfo> auditInfo =
+                ResourceAuditInfo.findAuditInfo(httpRequest.getMethod(), requestURI.substring(context.length()));
         boolean needAudit = auditInfo.isPresent();
 
         ResourceAuditor resourceAuditor = null;
@@ -153,7 +155,6 @@ public class AuditFilter implements Filter {
                     auditLogger.info(logRecord.toLogString());
                     this.backgroundTaskRunnerService.submitTask(new Task(logRecord));
                 }
-
             }
         }
     }
@@ -162,9 +163,7 @@ public class AuditFilter implements Filter {
      * <p>Does nothing.</p>
      */
     @Override
-    public void destroy() {
-
-    }
+    public void destroy() {}
 
     /**
      * <p>A task to be used for inserting the audit log record into database in the background.</p>

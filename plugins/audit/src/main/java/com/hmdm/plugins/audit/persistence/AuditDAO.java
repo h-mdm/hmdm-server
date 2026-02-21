@@ -21,17 +21,16 @@
 
 package com.hmdm.plugins.audit.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.persistence.mapper.AuditMapper;
 import com.hmdm.plugins.audit.rest.json.AuditLogFilter;
 import com.hmdm.security.SecurityContext;
-import org.mybatis.guice.transactional.Transactional;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import org.mybatis.guice.transactional.Transactional;
 
 /**
  * <p>A DAO for {@link AuditLogRecord} domain objects.</p>
@@ -67,6 +66,7 @@ public class AuditDAO extends AbstractDAO<AuditLogRecord> {
      * <p>Finds the audit log records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a list of audit log records matching the specified filter.
      */
     @Transactional
@@ -86,11 +86,13 @@ public class AuditDAO extends AbstractDAO<AuditLogRecord> {
      * <p>Counts the audit log records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a number of audit log records matching the specified filter.
      */
     public long countAll(AuditLogFilter filter) {
         prepareFilter(filter);
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     filter.setCustomerId(user.getCustomerId());
                     return this.mapper.countAll(filter);

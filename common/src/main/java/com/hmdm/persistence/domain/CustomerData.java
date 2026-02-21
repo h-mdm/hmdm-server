@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author isv
  */
 public interface CustomerData {
-    
+
     /**
      * <p>Gets the ID of this object.</p>
      *

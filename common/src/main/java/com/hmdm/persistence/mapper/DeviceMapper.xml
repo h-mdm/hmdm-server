@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~
-  ~ Headwind MDM: Open Source Android MDM Software
-  ~ https://h-mdm.com
-  ~
-  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
-  -->
+	~
+	~ Headwind MDM: Open Source Android MDM Software
+	~ https://h-mdm.com
+	~
+	~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+	~
+	~ Licensed under the Apache License, Version 2.0 (the "License");
+	~ you may not use this file except in compliance with the License.
+	~ You may obtain a copy of the License at
+	~
+	~       http://www.apache.org/licenses/LICENSE-2.0
+	~
+	~ Unless required by applicable law or agreed to in writing, software
+	~ distributed under the License is distributed on an "AS IS" BASIS,
+	~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	~ See the License for the specific language governing permissions and
+	~ limitations under the License.
+	~
+-->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hmdm.persistence.mapper.DeviceMapper">
 
-    <sql id="deviceWithGroupsSelect">
+	<sql id="deviceWithGroupsSelect">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
                devices.custom1, devices.custom2, devices.custom3, devices.oldNumber,
@@ -34,54 +34,54 @@
                  LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
                  LEFT JOIN groups ON deviceGroups.groupId = groups.id
     </sql>
-    
-    <resultMap id="deviceResult" type="Device">
-        <result property="id" column="deviceId"/>
-        <result property="number" column="number"/>
-        <result property="description" column="description"/>
-        <result property="lastUpdate" column="lastUpdate"/>
-        <result property="configurationId" column="configurationId"/>
-        <result property="info" column="info"/>
-        <result property="imei" column="imei"/>
-        <result property="phone" column="phone"/>
-        <result property="customerId" column="customerId"/>
-        <result property="configName" column="configName"/>
-        <result property="launcherPkg" column="launcherPkg"/>
-        <result property="launcherVersion" column="launcherVersion"/>
-        <result property="mdmMode" column="mdmMode"/>
-        <result property="kioskMode" column="kioskMode"/>
-        <result property="androidVersion" column="androidVersion"/>
-        <result property="enrollTime" column="enrollTime"/>
-        <result property="serial" column="serial"/>
-        <result property="statusCode" column="statusCode"/>
-        <result property="publicIp" column="publicIp"/>
-        <result property="custom1" column="custom1"/>
-        <result property="custom2" column="custom2"/>
-        <result property="custom3" column="custom3"/>
-        <result property="oldNumber" column="oldNumber"/>
-        <result property="fastSearch" column="fastSearch"/>
 
-        <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
-            <result property="id" column="groupId"/>
-            <result property="name" column="groupName"/>
-        </collection>
-    </resultMap>
+	<resultMap id="deviceResult" type="Device">
+		<result property="id" column="deviceId" />
+		<result property="number" column="number" />
+		<result property="description" column="description" />
+		<result property="lastUpdate" column="lastUpdate" />
+		<result property="configurationId" column="configurationId" />
+		<result property="info" column="info" />
+		<result property="imei" column="imei" />
+		<result property="phone" column="phone" />
+		<result property="customerId" column="customerId" />
+		<result property="configName" column="configName" />
+		<result property="launcherPkg" column="launcherPkg" />
+		<result property="launcherVersion" column="launcherVersion" />
+		<result property="mdmMode" column="mdmMode" />
+		<result property="kioskMode" column="kioskMode" />
+		<result property="androidVersion" column="androidVersion" />
+		<result property="enrollTime" column="enrollTime" />
+		<result property="serial" column="serial" />
+		<result property="statusCode" column="statusCode" />
+		<result property="publicIp" column="publicIp" />
+		<result property="custom1" column="custom1" />
+		<result property="custom2" column="custom2" />
+		<result property="custom3" column="custom3" />
+		<result property="oldNumber" column="oldNumber" />
+		<result property="fastSearch" column="fastSearch" />
 
-    <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		<collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
+			<result property="id" column="groupId" />
+			<result property="name" column="groupName" />
+		</collection>
+	</resultMap>
+
+	<insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO devices(number, description, lastUpdate, configurationId,
             imei, phone, customerId, custom1, custom2, custom3, oldNumber, fastSearch)
         VALUES (#{number}, #{description}, #{lastUpdate}, #{configurationId},
             #{imei}, #{phone}, #{customerId}, #{custom1}, #{custom2}, #{custom3}, #{oldNumber}, #{fastSearch});
     </insert>
 
-    <update id="updateDevice" parameterType="Device">
+	<update id="updateDevice" parameterType="Device">
         UPDATE devices SET number = #{number}, description = #{description},
                            configurationId = #{configurationId}, imei = #{imei}, phone = #{phone},
                            custom1=#{custom1}, custom2=#{custom2}, custom3=#{custom3},
                            oldNumber=#{oldNumber}, fastSearch=#{fastSearch} WHERE id = #{id}
     </update>
 
-    <sql id="allowedDevicesSelect">
+	<sql id="allowedDevicesSelect">
         SELECT DISTINCT deviceId AS deviceId, LOWER(deviceNumber) AS deviceNumber, searchPriority, sortingValue
         FROM
         (
@@ -96,7 +96,7 @@
             COALESCE(CASE WHEN devices.description ILIKE #{value} THEN 2 END, 0)
             )
         </if>
-        <if test="value == null || fastSearch">0</if>
+		<if test="value == null || fastSearch">0</if>
         AS searchPriority,
         (
             CASE
@@ -162,76 +162,76 @@
             OR groups.name ILIKE #{value}
             )
         </if>
-        <if test="value != null &amp;&amp; fastSearch">
+		<if test="value != null &amp;&amp; fastSearch">
             AND (
             devices.number = #{value}
             OR devices.fastSearch = #{value}
             )
         </if>
-        <if test="imeiChanged">
+		<if test="imeiChanged">
             AND devices.imeiUpdateTs / 1000 > extract(epoch from (now() - interval '1 hour'))
         </if>
-        <if test="groupId != null &amp;&amp; groupId > 0">
+		<if test="groupId != null &amp;&amp; groupId > 0">
             AND (
             groups.id = #{groupId}
             )
         </if>
-        <if test="configurationId != null &amp;&amp; configurationId > 0">
+		<if test="configurationId != null &amp;&amp; configurationId > 0">
             AND (
             configurations.id = #{configurationId}
             )
         </if>
-        <if test="dateFrom != null">
+		<if test="dateFrom != null">
             AND (
             devices.lastUpdate &gt;= #{dateFromMillis}
             )
         </if>
-        <if test="dateTo != null">
+		<if test="dateTo != null">
             AND (
             devices.lastUpdate &lt;= #{dateToMillis}
             )
         </if>
-        <if test="onlineEarlierMillis != null">
+		<if test="onlineEarlierMillis != null">
             AND (
             devices.lastUpdate &lt;= extract(epoch from now()) * 1000 - #{onlineEarlierMillis}
             )
         </if>
-        <if test="onlineLaterMillis != null">
+		<if test="onlineLaterMillis != null">
             AND (
             devices.lastUpdate >= extract(epoch from now()) * 1000 - #{onlineLaterMillis}
             )
         </if>
-        <if test="enrollmentDateFrom != null">
+		<if test="enrollmentDateFrom != null">
             AND (
             devices.enrollTime &gt;= #{enrollmentDateFromMillis}
             )
         </if>
-        <if test="enrollmentDateTo != null">
+		<if test="enrollmentDateTo != null">
             AND (
             devices.enrollTime &lt;= #{enrollmentDateToMillis}
             )
         </if>
-        <if test="mdmMode != null">
+		<if test="mdmMode != null">
             AND (
             (devices.infojson -&gt;&gt; 'mdmMode')::BOOLEAN = #{mdmMode}
             )
         </if>
-        <if test="kioskMode != null">
+		<if test="kioskMode != null">
             AND (
             (devices.infojson -&gt;&gt; 'kioskMode')::BOOLEAN = #{kioskMode}
             )
         </if>
-        <if test="androidVersion != null">
+		<if test="androidVersion != null">
             AND (
             devices.infojson -&gt;&gt; 'androidVersion' = #{androidVersion}
             )
         </if>
-        <if test="launcherVersion != null">
+		<if test="launcherVersion != null">
             AND (
             mdm_device_launcher_version(applications.pkg, devices.info) = #{launcherVersion}
             )
         </if>
-        <if test="installationStatus != null">
+		<if test="installationStatus != null">
             AND (
             deviceStatuses.applicationsStatus = #{installationStatus}
             )
@@ -243,7 +243,7 @@
         LIMIT #{pageSize}
     </sql>
 
-    <select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
+	<select id="getAllDevices" parameterType="DeviceSearchRequest" resultMap="deviceResult">
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
                devices.enrollTime, devices.publicIp,
@@ -262,7 +262,7 @@
                    ELSE 'red'
                END AS statusCode
         FROM devices
-        INNER JOIN (<include refid="allowedDevicesSelect"/>) allowedDevices ON allowedDevices.deviceId = devices.id
+        INNER JOIN (<include refid="allowedDevicesSelect" />) allowedDevices ON allowedDevices.deviceId = devices.id
         LEFT JOIN configurations ON devices.configurationId = configurations.id
         LEFT JOIN deviceGroups ON devices.id = deviceGroups.deviceId
         LEFT JOIN groups ON deviceGroups.groupId = groups.id
@@ -272,7 +272,7 @@
                  allowedDevices.searchPriority DESC, LOWER(devices.number), LOWER(groups.name);
     </select>
 
-    <select id="countAllDevices" parameterType="DeviceSearchRequest" resultType="long">
+	<select id="countAllDevices" parameterType="DeviceSearchRequest" resultType="long">
         SELECT COUNT(DISTINCT devices.id) AS counter
         FROM devices
         INNER JOIN users ON users.id = #{userId}
@@ -304,83 +304,83 @@
             OR groups.name ILIKE #{value}
             )
         </if>
-        <if test="value != null &amp;&amp; fastSearch">
+		<if test="value != null &amp;&amp; fastSearch">
             AND (
             devices.number = #{value}
             OR devices.fastSearch = #{value}
             )
         </if>
-        <if test="imeiChanged">
+		<if test="imeiChanged">
             AND devices.imeiUpdateTs / 1000 > extract(epoch from (now() - interval '1 hour'))
         </if>
-        <if test="groupId != null &amp;&amp; groupId > 0">
+		<if test="groupId != null &amp;&amp; groupId > 0">
             AND (
             groups.id = #{groupId}
             )
         </if>
-        <if test="configurationId != null &amp;&amp; configurationId > 0">
+		<if test="configurationId != null &amp;&amp; configurationId > 0">
             AND (
             configurations.id = #{configurationId}
             )
         </if>
-        <if test="dateFrom != null">
+		<if test="dateFrom != null">
             AND (
             devices.lastUpdate &gt;= #{dateFromMillis}
             )
         </if>
-        <if test="dateTo != null">
+		<if test="dateTo != null">
             AND (
             devices.lastUpdate &lt;= #{dateToMillis}
             )
         </if>
-        <if test="onlineEarlierMillis != null">
+		<if test="onlineEarlierMillis != null">
             AND (
             devices.lastUpdate &lt;= extract(epoch from now()) * 1000 - #{onlineEarlierMillis}
             )
         </if>
-        <if test="onlineLaterMillis != null">
+		<if test="onlineLaterMillis != null">
             AND (
             devices.lastUpdate >= extract(epoch from now()) * 1000 - #{onlineLaterMillis}
             )
         </if>
-        <if test="enrollmentDateFrom != null">
+		<if test="enrollmentDateFrom != null">
             AND (
             devices.enrollTime &gt;= #{enrollmentDateFromMillis}
             )
         </if>
-        <if test="enrollmentDateTo != null">
+		<if test="enrollmentDateTo != null">
             AND (
             devices.enrollTime &lt;= #{enrollmentDateToMillis}
             )
         </if>
-        <if test="mdmMode != null">
+		<if test="mdmMode != null">
             AND (
             (devices.infojson -&gt;&gt; 'mdmMode')::BOOLEAN = #{mdmMode}
             )
         </if>
-        <if test="kioskMode != null">
+		<if test="kioskMode != null">
             AND (
             (devices.infojson -&gt;&gt; 'kioskMode')::BOOLEAN = #{kioskMode}
             )
         </if>
-        <if test="androidVersion != null">
+		<if test="androidVersion != null">
             AND (
             devices.infojson -&gt;&gt; 'androidVersion' = #{androidVersion}
             )
         </if>
-        <if test="launcherVersion != null">
+		<if test="launcherVersion != null">
             AND (
             mdm_device_launcher_version(applications.pkg, devices.info) = #{launcherVersion}
             )
         </if>
-        <if test="installationStatus != null">
+		<if test="installationStatus != null">
             AND (
             deviceStatuses.applicationsStatus = #{installationStatus}
             )
         </if>
-    </select>
+	</select>
 
-    <select id="countAllDevicesForSummary" parameterType="DeviceSummaryRequest" resultType="long">
+	<select id="countAllDevicesForSummary" parameterType="DeviceSummaryRequest" resultType="long">
         SELECT COUNT(DISTINCT devices.id) AS counter
         FROM devices
         INNER JOIN users ON users.id = #{userId}
@@ -392,25 +392,25 @@
         <if test="fileStatus != null">
             AND deviceStatuses.configFilesStatus = #{fileStatus}
         </if>
-        <if test="appStatus != null">
+		<if test="appStatus != null">
             AND deviceStatuses.applicationsStatus = #{appStatus}
         </if>
-        <if test="minEnrollTime != null">
+		<if test="minEnrollTime != null">
             AND devices.enrollTime &gt; #{minEnrollTime}
         </if>
-        <if test="maxEnrollTime != null">
+		<if test="maxEnrollTime != null">
             AND devices.enrollTime &lt; #{maxEnrollTime}
         </if>
-        <if test="minOnlineTime != null">
+		<if test="minOnlineTime != null">
             AND devices.lastUpdate &gt; #{minOnlineTime}
         </if>
-        <if test="maxOnlineTime != null">
+		<if test="maxOnlineTime != null">
             AND devices.lastUpdate &lt; #{maxOnlineTime}
         </if>
         AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL);
     </select>
 
-    <select id="countDevicesByConfig" parameterType="DeviceSummaryRequest" resultType="SummaryConfigItem">
+	<select id="countDevicesByConfig" parameterType="DeviceSummaryRequest" resultType="SummaryConfigItem">
         SELECT COUNT(DISTINCT devices.id) AS counter, configurations.id, configurations.name
         FROM devices
         INNER JOIN users ON users.id = #{userId}
@@ -423,22 +423,22 @@
         <if test="fileStatus != null">
             AND deviceStatuses.configFilesStatus = #{fileStatus}
         </if>
-        <if test="appStatus != null">
+		<if test="appStatus != null">
             AND deviceStatuses.applicationsStatus = #{appStatus}
         </if>
-        <if test="minEnrollTime != null">
+		<if test="minEnrollTime != null">
             AND devices.enrollTime &gt; #{minEnrollTime}
         </if>
-        <if test="maxEnrollTime != null">
+		<if test="maxEnrollTime != null">
             AND devices.enrollTime &lt; #{maxEnrollTime}
         </if>
-        <if test="minOnlineTime != null">
+		<if test="minOnlineTime != null">
             AND devices.lastUpdate &gt; #{minOnlineTime}
         </if>
-        <if test="maxOnlineTime != null">
+		<if test="maxOnlineTime != null">
             AND devices.lastUpdate &lt; #{maxOnlineTime}
         </if>
-        <if test="configIds != null">
+		<if test="configIds != null">
             AND configurations.id IN (#{configIds})
         </if>
         AND (users.allDevicesAvailable = TRUE OR NOT access.id IS NULL)
@@ -448,32 +448,32 @@
     </select>
 
 
-    <select id="getDeviceByNumber" resultMap="deviceResult">
-        <include refid="deviceWithGroupsSelect"/>
+	<select id="getDeviceByNumber" resultMap="deviceResult">
+		<include refid="deviceWithGroupsSelect" />
         WHERE devices.number = #{number}
     </select>
 
-    <select id="getDeviceByOldNumber" resultMap="deviceResult">
-        <include refid="deviceWithGroupsSelect"/>
+	<select id="getDeviceByOldNumber" resultMap="deviceResult">
+		<include refid="deviceWithGroupsSelect" />
         WHERE devices.oldNumber = #{number}
     </select>
 
-    <select id="getDeviceByNumberIgnoreCase" resultMap="deviceResult">
-        <include refid="deviceWithGroupsSelect"/>
+	<select id="getDeviceByNumberIgnoreCase" resultMap="deviceResult">
+		<include refid="deviceWithGroupsSelect" />
         WHERE LOWER(devices.number) = LOWER(#{number})
     </select>
 
-    <select id="getDeviceByImeiOrSerial" resultMap="deviceResult">
-        <include refid="deviceWithGroupsSelect"/>
+	<select id="getDeviceByImeiOrSerial" resultMap="deviceResult">
+		<include refid="deviceWithGroupsSelect" />
         WHERE devices.imei = #{number} OR devices.infojson -&gt;&gt; 'imei' = #{number} OR devices.infojson -&gt;&gt; 'serial' = #{number}
     </select>
 
-    <select id="getDeviceById" resultMap="deviceResult">
-        <include refid="deviceWithGroupsSelect"/>
+	<select id="getDeviceById" resultMap="deviceResult">
+		<include refid="deviceWithGroupsSelect" />
         WHERE devices.id = #{id}
     </select>
 
-    <select id="lookupDevices" resultType="com.hmdm.rest.json.DeviceLookupItem">
+	<select id="lookupDevices" resultType="com.hmdm.rest.json.DeviceLookupItem">
         SELECT searchRsults.*
         FROM (
                  SELECT devices.id     AS id,
@@ -510,15 +510,14 @@
         LIMIT #{limit};
     </select>
 
-    <insert id="insertDeviceGroups">
+	<insert id="insertDeviceGroups">
         INSERT INTO deviceGroups (deviceId, groupId) VALUES
-        <foreach item="groupId" index="index" collection="groups"
-                 open="" separator="," close="">
+        <foreach item="groupId" index="index" collection="groups" open="" separator="," close="">
             (#{id}, #{groupId})
         </foreach>
-    </insert>
+	</insert>
 
-    <select id="getAllGroups" resultType="Group">
+	<select id="getAllGroups" resultType="Group">
         SELECT groups.*
         FROM groups
         INNER JOIN users ON users.id = #{userId}
@@ -528,7 +527,7 @@
         ORDER BY name
     </select>
 
-    <select id="getAllGroupsByValue" resultType="Group">
+	<select id="getAllGroupsByValue" resultType="Group">
         SELECT groups.*
         FROM groups
         INNER JOIN users ON users.id = #{userId}
@@ -539,14 +538,13 @@
         ORDER BY name
     </select>
 
-    <insert id="insertDeviceApplicationSettings">
+	<insert id="insertDeviceApplicationSettings">
         INSERT INTO deviceApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate)
         VALUES
-        <foreach item="item" index="index" collection="appSettings"
-                 open="" separator="," close="">
+        <foreach item="item" index="index" collection="appSettings" open="" separator="," close="">
             (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})
         </foreach>
-    </insert>
+	</insert>
 
 
 </mapper>

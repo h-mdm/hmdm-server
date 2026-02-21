@@ -34,5 +34,4 @@ public class DeviceInfoExportServiceException extends RuntimeException {
     public DeviceInfoExportServiceException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

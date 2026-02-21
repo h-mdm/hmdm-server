@@ -21,9 +21,8 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 @Schema(description = "The credentials to be used for authenticating the user to application")
@@ -31,19 +30,18 @@ import java.io.Serializable;
 public class UserCredentials implements Serializable {
 
     private static final long serialVersionUID = 7107010132749776504L;
-    
-    @Schema(description="A username to be used for authentication")
+
+    @Schema(description = "A username to be used for authentication")
     private String login;
 
-    @Schema(description="A password to be used for authentication (MD5-hash)")
+    @Schema(description = "A password to be used for authentication (MD5-hash)")
     private String password;
 
     @Schema(hidden = true)
     @Deprecated
     private String email;
 
-    public UserCredentials() {
-    }
+    public UserCredentials() {}
 
     public String getLogin() {
         return this.login;

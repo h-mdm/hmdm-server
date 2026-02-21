@@ -25,14 +25,13 @@ import com.hmdm.plugins.devicelog.persistence.postgres.dao.domain.PostgresDevice
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.domain.PostgresDeviceLogRecord;
 import com.hmdm.plugins.devicelog.persistence.postgres.dao.domain.PostgresDeviceLogRule;
 import com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
-
-import java.util.List;
 
 /**
  * <p>An ORM mapper for {@link PostgresDeviceLogRecord} domain object.</p>
@@ -47,63 +46,47 @@ public interface PostgresDeviceLogMapper {
 
     int insertDeviceLogRecords(@Param("logs") List<PostgresDeviceLogRecord> postgresLogs);
 
-    // ------------ devicelog plugin settings ------------------------------------------------------------------------------
+    // ------------ devicelog plugin settings
+    // ------------------------------------------------------------------------------
     PostgresDeviceLogPluginSettings findPluginSettingsByCustomerId(@Param("customerId") Integer customerId);
 
-
-    @Insert("INSERT INTO plugin_devicelog_settings (customerId, logsPreservePeriod) " +
-            "VALUES (#{customerId}, #{logsPreservePeriod})")
-    @SelectKey( statement = "SELECT currval('plugin_devicelog_settings_id_seq')",
-            keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert("INSERT INTO plugin_devicelog_settings (customerId, logsPreservePeriod) "
+            + "VALUES (#{customerId}, #{logsPreservePeriod})")
+    @SelectKey(
+            statement = "SELECT currval('plugin_devicelog_settings_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insertPluginSettings(PostgresDeviceLogPluginSettings postgresDeviceLogPluginSettings);
 
     @Update("UPDATE plugin_devicelog_settings SET logsPreservePeriod = #{logsPreservePeriod} WHERE id = #{id}")
     void updatePluginSettings(PostgresDeviceLogPluginSettings postgresDeviceLogPluginSettings);
 
-
-    @Insert("INSERT INTO plugin_devicelog_settings_rules (" +
-            "  settingId, " +
-            "  name, " +
-            "  active, " +
-            "  applicationId, " +
-            "  severity, " +
-            "  filter, " +
-            "  groupId, " +
-            "  configurationId " +
-            ") " +
-            "VALUES (" +
-            "  #{settingId}, " +
-            "  #{name}, " +
-            "  #{active}, " +
-            "  #{applicationId}, " +
-            "  #{severity}, " +
-            "  #{filter}, " +
-            "  #{groupId}, " +
-            "  #{configurationId} " +
-            ")")
-    @SelectKey( statement = "SELECT currval('plugin_devicelog_settings_rules_id_seq')",
-            keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert("INSERT INTO plugin_devicelog_settings_rules (" + "  settingId, " + "  name, " + "  active, "
+            + "  applicationId, " + "  severity, " + "  filter, " + "  groupId, " + "  configurationId " + ") "
+            + "VALUES (" + "  #{settingId}, " + "  #{name}, " + "  #{active}, " + "  #{applicationId}, "
+            + "  #{severity}, " + "  #{filter}, " + "  #{groupId}, " + "  #{configurationId} " + ")")
+    @SelectKey(
+            statement = "SELECT currval('plugin_devicelog_settings_rules_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insertPluginSettingsRule(PostgresDeviceLogRule rule);
 
-    @Update("UPDATE plugin_devicelog_settings_rules SET " +
-            " settingId = #{settingId}, " +
-            " name = #{name}, " +
-            " active = #{active}, " +
-            " applicationId = #{applicationId}, " +
-            " severity = #{severity}, " +
-            " filter = #{filter}, " +
-            " groupId = #{groupId}, " +
-            " configurationId = #{configurationId} " +
-            "WHERE id = #{id}")
+    @Update("UPDATE plugin_devicelog_settings_rules SET " + " settingId = #{settingId}, " + " name = #{name}, "
+            + " active = #{active}, " + " applicationId = #{applicationId}, " + " severity = #{severity}, "
+            + " filter = #{filter}, " + " groupId = #{groupId}, " + " configurationId = #{configurationId} "
+            + "WHERE id = #{id}")
     void updatePluginSettingsRule(PostgresDeviceLogRule rule);
 
     @Delete("DELETE FROM plugin_devicelog_settings_rules WHERE id = #{id}")
     void deletePluginSettingRule(@Param("id") int id);
 
-    @Select("SELECT settings.id, settings.customerId " +
-            "FROM plugin_devicelog_settings_rules rules " +
-            "INNER JOIN plugin_devicelog_settings settings ON settings.id = rules.settingId " +
-            "WHERE rules.id = #{id}")
+    @Select("SELECT settings.id, settings.customerId " + "FROM plugin_devicelog_settings_rules rules "
+            + "INNER JOIN plugin_devicelog_settings settings ON settings.id = rules.settingId "
+            + "WHERE rules.id = #{id}")
     PostgresDeviceLogPluginSettings getPluginSettingsByRuleIdForAuthorization(@Param("id") int id);
 
     @Select("SELECT * FROM plugin_devicelog_settings_rules WHERE id = #{id}")
@@ -119,9 +102,9 @@ public interface PostgresDeviceLogMapper {
      *
      * @return a number of deleted records.
      */
-    @Delete("DELETE FROM plugin_devicelog_log " +
-            "WHERE createTime < (SELECT EXTRACT(EPOCH FROM DATE_TRUNC('day', NOW() - (pds.logsPreservePeriod || ' day')::INTERVAL)) * 1000 " +
-            "                    FROM plugin_devicelog_settings pds " +
-            "                    WHERE pds.customerId = #{customerId})")
+    @Delete("DELETE FROM plugin_devicelog_log "
+            + "WHERE createTime < (SELECT EXTRACT(EPOCH FROM DATE_TRUNC('day', NOW() - (pds.logsPreservePeriod || ' day')::INTERVAL)) * 1000 "
+            + "                    FROM plugin_devicelog_settings pds "
+            + "                    WHERE pds.customerId = #{customerId})")
     int purgeLogRecords(@Param("customerId") int customerId);
 }

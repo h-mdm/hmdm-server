@@ -21,8 +21,8 @@
 
 package com.hmdm.plugins.devicelog.rest.resource;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import static com.hmdm.plugins.devicelog.DeviceLogPluginConfigurationImpl.PLUGIN_ID;
+
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.plugin.service.PluginStatusCache;
@@ -35,15 +35,10 @@ import com.hmdm.plugins.devicelog.task.InsertDeviceLogRecordsTask;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.headers.Header;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -62,14 +57,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.hmdm.plugins.devicelog.DeviceLogPluginConfigurationImpl.PLUGIN_ID;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * A resource to be used for accessing the data for <code>Device Log</code>
- * records.
- * </p>
+ * <p>A resource to be used for accessing the data for <code>Device Log</code> records.</p>
  *
  * @author isv
  */
@@ -85,53 +78,40 @@ public class DeviceLogResource {
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     /**
-     * <p>
-     * An interface to device log records persistence layer.
-     * </p>
+     * <p>An interface to device log records persistence layer.</p>
      */
     private DeviceLogDAO deviceLogDAO;
 
     private PluginStatusCache pluginStatusCache;
 
     /**
-     * <p>
-     * An interface to persistence without security checks.
-     * </p>
+     * <p>An interface to persistence without security checks.</p>
      */
     private UnsecureDAO unsecureDAO;
 
     /**
-     * <p>
-     * A constructor required by Swagger.
-     * </p>
+     * <p>A constructor required by Swagger.</p>
      */
     public DeviceLogResource() {
         // Empty
     }
 
     /**
-     * <p>
-     * Constructs new <code>DeviceLogResource</code> instance. This implementation
-     * does nothing.
-     * </p>
+     * <p>Constructs new <code>DeviceLogResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceLogResource(DeviceLogDAO deviceLogDAO,
-            PluginStatusCache pluginStatusCache,
-            UnsecureDAO unsecureDAO) {
+    public DeviceLogResource(DeviceLogDAO deviceLogDAO, PluginStatusCache pluginStatusCache, UnsecureDAO unsecureDAO) {
         this.deviceLogDAO = deviceLogDAO;
         this.pluginStatusCache = pluginStatusCache;
         this.unsecureDAO = unsecureDAO;
     }
 
     /**
-     * <p>
-     * Gets the list of device log records matching the specified filter.
-     * </p>
+     * <p>Gets the list of device log records matching the specified filter.</p>
      *
      * @param filter a filter to be used for filtering the records.
-     * @return a response with list of device log records matching the specified
-     *         filter.
+     *
+     * @return a response with list of device log records matching the specified filter.
      */
     @Operation(summary = "Search logs", description = "Gets the list of log records matching the specified filter")
     @POST
@@ -139,7 +119,8 @@ public class DeviceLogResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLogs(DeviceLogFilter filter) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            logger.error("Unauthorized attempt to get device logs by user {}",
+            logger.error(
+                    "Unauthorized attempt to get device logs by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -160,7 +141,8 @@ public class DeviceLogResource {
     @Produces(MediaType.APPLICATION_JSON)
     public jakarta.ws.rs.core.Response exportLogs(DeviceLogFilter filter) {
         if (!SecurityContext.get().hasPermission("plugin_devicelog_access")) {
-            logger.error("Unauthorized attempt to get device logs by user {}",
+            logger.error(
+                    "Unauthorized attempt to get device logs by user {}",
                     SecurityContext.get().getCurrentUserName());
             return jakarta.ws.rs.core.Response.serverError().status(403).build();
         }
@@ -168,53 +150,59 @@ public class DeviceLogResource {
         filter.setPageNum(1);
         filter.setExport(true);
 
-        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName("logs.csv")
-                .creationDate(new Date()).build();
+        ContentDisposition contentDisposition = ContentDisposition.type("attachment")
+                .fileName("logs.csv")
+                .creationDate(new Date())
+                .build();
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
 
         AtomicBoolean stop = new AtomicBoolean(false);
 
         return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
-            try {
-                List<DeviceLogRecord> records = this.deviceLogDAO.findAll(filter);
-                while (!stop.get() && !records.isEmpty()) {
-                    records.forEach(log -> {
-                        StringBuilder b = new StringBuilder();
-                        b.append(log.getDeviceNumber());
-                        b.append(",");
-                        b.append(dateFormat.format(new Date(log.getCreateTime())));
-                        b.append(",");
-                        b.append(log.getApplicationPkg());
-                        b.append(",");
-                        b.append(log.getSeverity());
-                        b.append(",");
-                        b.append(log.getMessage());
-                        b.append('\n');
+                    try {
+                        List<DeviceLogRecord> records = this.deviceLogDAO.findAll(filter);
+                        while (!stop.get() && !records.isEmpty()) {
+                            records.forEach(log -> {
+                                StringBuilder b = new StringBuilder();
+                                b.append(log.getDeviceNumber());
+                                b.append(",");
+                                b.append(dateFormat.format(new Date(log.getCreateTime())));
+                                b.append(",");
+                                b.append(log.getApplicationPkg());
+                                b.append(",");
+                                b.append(log.getSeverity());
+                                b.append(",");
+                                b.append(log.getMessage());
+                                b.append('\n');
 
-                        try {
-                            output.write(b.toString().getBytes());
-                        } catch (IOException e) {
-                            logger.error(
-                                    "Failed to write log record {} to output stream. Stopping to export further log records.",
-                                    log, e);
-                            stop.set(true);
+                                try {
+                                    output.write(b.toString().getBytes());
+                                } catch (IOException e) {
+                                    logger.error(
+                                            "Failed to write log record {} to output stream. Stopping to export further log records.",
+                                            log,
+                                            e);
+                                    stop.set(true);
+                                }
+                            });
+
+                            output.flush();
+
+                            if (!stop.get()) {
+                                filter.setPageNum(filter.getPageNum() + 1);
+                                records = this.deviceLogDAO.findAll(filter);
+                            }
                         }
-                    });
 
-                    output.flush();
-
-                    if (!stop.get()) {
-                        filter.setPageNum(filter.getPageNum() + 1);
-                        records = this.deviceLogDAO.findAll(filter);
+                        output.flush();
+                    } catch (Exception e) {
+                        logger.error(
+                                "Failed to export the device log records due to unexpected error. Filter: {}",
+                                filter,
+                                e);
                     }
-                }
-
-                output.flush();
-            } catch (Exception e) {
-                logger.error("Failed to export the device log records due to unexpected error. Filter: {}", filter, e);
-            }
-        })
+                })
                 .header("Cache-Control", "no-cache")
                 .header("Content-Type", "text/plain")
                 .header("Content-Disposition", contentDisposition)
@@ -226,7 +214,8 @@ public class DeviceLogResource {
     @Path("/list/{deviceNumber}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response uploadLogs(@PathParam("deviceNumber") String deviceNumber,
+    public Response uploadLogs(
+            @PathParam("deviceNumber") String deviceNumber,
             List<UploadedDeviceLogRecord> logs,
             @Context HttpServletRequest httpRequest) {
         logger.debug("#uploadLogs: {} => {}", deviceNumber, logs);
@@ -244,9 +233,8 @@ public class DeviceLogResource {
                     return Response.PLUGIN_DISABLED();
                 }
 
-                this.executor.submit(
-                        new InsertDeviceLogRecordsTask(deviceNumber, httpRequest.getRemoteAddr(), logs,
-                                this.deviceLogDAO));
+                this.executor.submit(new InsertDeviceLogRecordsTask(
+                        deviceNumber, httpRequest.getRemoteAddr(), logs, this.deviceLogDAO));
                 return Response.OK();
             } finally {
                 SecurityContext.release();
@@ -288,5 +276,4 @@ public class DeviceLogResource {
             return Response.INTERNAL_ERROR();
         }
     }
-
 }

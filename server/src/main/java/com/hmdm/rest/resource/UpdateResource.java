@@ -29,10 +29,6 @@ import com.hmdm.persistence.domain.ApplicationVersion;
 import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.util.*;
-import org.json.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -47,6 +43,9 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @Path("/private/update")
@@ -63,11 +62,11 @@ public class UpdateResource {
     private static final Logger logger = LoggerFactory.getLogger(UpdateResource.class);
     private static final String WEB_MANIFEST_FILE_NAME = "hmdm_web_update_manifest.txt";
 
-    public UpdateResource() {
-    }
+    public UpdateResource() {}
 
     @Inject
-    public UpdateResource(@Named("files.directory") String filesDirectory,
+    public UpdateResource(
+            @Named("files.directory") String filesDirectory,
             @Named("base.url") String baseUrl,
             ApplicationDAO applicationDAO,
             UnsecureDAO unsecureDAO,
@@ -87,7 +86,6 @@ public class UpdateResource {
             // We shouldn't be here!
             e.printStackTrace();
         }
-
     }
 
     @GET
@@ -101,7 +99,8 @@ public class UpdateResource {
                 throw new SecurityException("Only superadmin can check for updates");
             }
 
-            URL url = URI.create(UpdateSettings.MANIFEST_URL.replace("CUSTOMER_DOMAIN", customerDomain)).toURL();
+            URL url = URI.create(UpdateSettings.MANIFEST_URL.replace("CUSTOMER_DOMAIN", customerDomain))
+                    .toURL();
             logger.info("Checking for update: " + url.toString());
             manifestStr = FileUtil.downloadTextFile(url);
 
@@ -191,8 +190,8 @@ public class UpdateResource {
 
             if (UpdateSettings.WEB_UPDATE_USERNAME != null && UpdateSettings.WEB_UPDATE_PASSWORD != null) {
                 String userCredentials = UpdateSettings.WEB_UPDATE_USERNAME + ":" + UpdateSettings.WEB_UPDATE_PASSWORD;
-                String basicAuth = "Basic "
-                        + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
+                String basicAuth =
+                        "Basic " + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
                 conn.setRequestProperty("Authorization", basicAuth);
             }
 
@@ -275,20 +274,21 @@ public class UpdateResource {
     // Update installedVersion to version in all configs
     // Record which configurations are affected to notify them via Push notification
     private void updateAppInConfig(UpdateEntry app) {
-        ApplicationVersion currentVersion = applicationDAO.findApplicationVersion(app.getPkg(),
-                app.getCurrentVersion());
+        ApplicationVersion currentVersion =
+                applicationDAO.findApplicationVersion(app.getPkg(), app.getCurrentVersion());
         ApplicationVersion newVersion = applicationDAO.findApplicationVersion(app.getPkg(), app.getVersion());
 
         LinkConfigurationsToAppVersionRequest request = new LinkConfigurationsToAppVersionRequest();
         request.setApplicationVersionId(newVersion.getId());
-        List<ApplicationVersionConfigurationLink> linkList = applicationDAO
-                .getApplicationVersionConfigurations(currentVersion.getId());
+        List<ApplicationVersionConfigurationLink> linkList =
+                applicationDAO.getApplicationVersionConfigurations(currentVersion.getId());
         for (ApplicationVersionConfigurationLink link : linkList) {
             link.setApplicationVersionId(newVersion.getId());
         }
         request.setConfigurations(linkList);
         logger.info("Application versions updated by the superadmin through 'Check for updates'");
-        applicationDAO.updateApplicationVersionConfigurations(request, SecurityContext.get().getCurrentUser().get());
+        applicationDAO.updateApplicationVersionConfigurations(
+                request, SecurityContext.get().getCurrentUser().get());
     }
 
     private void processWebAppEntry(UpdateEntry entry) {
@@ -328,7 +328,8 @@ public class UpdateResource {
         }
 
         entry.setName(appList.get(0).getName());
-        List<ApplicationVersion> versions = applicationDAO.getApplicationVersions(appList.get(0).getId());
+        List<ApplicationVersion> versions =
+                applicationDAO.getApplicationVersions(appList.get(0).getId());
         if (versions.size() == 0) {
             // We shouldn't be here!
             entry.setUpdateDisabled(true);
@@ -388,7 +389,8 @@ public class UpdateResource {
             return false;
         }
 
-        List<ApplicationVersion> versions = applicationDAO.getApplicationVersions(appList.get(0).getId());
+        List<ApplicationVersion> versions =
+                applicationDAO.getApplicationVersions(appList.get(0).getId());
         if (versions.size() == 0) {
             // We shouldn't be here!
             return false;

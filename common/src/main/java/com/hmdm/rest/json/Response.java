@@ -23,26 +23,26 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Schema(description = "A response from the application to request from client. The actual type of 'data' is specific to request.")
+@Schema(
+        description =
+                "A response from the application to request from client. The actual type of 'data' is specific to request.")
 public class Response implements Serializable {
 
     private static final long serialVersionUID = 3268801711912541479L;
-    
-    @Schema(description="A status of the server response.")
+
+    @Schema(description = "A status of the server response.")
     private Response.ResponseStatus status;
 
-    @Schema(description="An optional message related to status.")
+    @Schema(description = "An optional message related to status.")
     private String message;
 
-    @Schema(description="A data requested by client.")
+    @Schema(description = "A data requested by client.")
     private Object data;
 
-    public Response() {
-    }
+    public Response() {}
 
     private Response(Response.ResponseStatus status, String message, Object data) {
         this.status = status;
@@ -187,7 +187,6 @@ public class Response implements Serializable {
         WARNING,
         ERROR;
 
-        ResponseStatus() {
-        }
+        ResponseStatus() {}
     }
 }

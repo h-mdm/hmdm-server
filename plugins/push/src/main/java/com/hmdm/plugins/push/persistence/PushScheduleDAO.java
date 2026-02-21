@@ -21,25 +21,19 @@
 
 package com.hmdm.plugins.push.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
-import com.hmdm.plugins.push.persistence.domain.PluginPushMessage;
 import com.hmdm.plugins.push.persistence.domain.PluginPushSchedule;
-import com.hmdm.plugins.push.persistence.mapper.PushMessageMapper;
 import com.hmdm.plugins.push.persistence.mapper.PushScheduleMapper;
-import com.hmdm.plugins.push.rest.json.PushMessageFilter;
 import com.hmdm.plugins.push.rest.json.PushScheduleFilter;
 import com.hmdm.security.SecurityContext;
-import org.apache.ibatis.annotations.Param;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * <p>A DAO for {@link PluginPushSchedule} domain objects.</p>
@@ -64,11 +58,11 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
         this.pushScheduleMapper = pushScheduleMapper;
     }
 
-
     /**
      * <p>Finds the scheduled messages matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a list of message records matching the specified filter.
      */
     @Transactional
@@ -87,11 +81,13 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
      * <p>Counts the message records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a number of message records matching the specified filter.
      */
     public long countAll(PushScheduleFilter filter) {
         prepareFilter(filter);
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     filter.setCustomerId(user.getCustomerId());
                     return this.pushScheduleMapper.countAll(filter);
@@ -147,8 +143,7 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
                 parseScheduleMask("" + c.get(Calendar.HOUR_OF_DAY), 24, false, "hour"),
                 parseScheduleMask("" + c.get(Calendar.DAY_OF_MONTH), 31, true, "day"),
                 parseScheduleMask("" + c.get(Calendar.DAY_OF_WEEK), 7, true, "weekday"),
-                parseScheduleMask("" + c.get(Calendar.MONTH), 12, false, "month")
-        );
+                parseScheduleMask("" + c.get(Calendar.MONTH), 12, false, "month"));
     }
 
     /**
@@ -201,7 +196,7 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
     }
 
     private static String parseScheduleMask(String rawMask, int length, boolean startFromOne, String scope) {
-        String mask = rawMask.replaceAll("\\s+","");
+        String mask = rawMask.replaceAll("\\s+", "");
         StringBuilder res = new StringBuilder(length);
         if (mask.equals("*")) {
             for (int i = 0; i < length; i++) {
@@ -211,7 +206,7 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
             String ns = mask.substring(2);
             int n;
             try {
-                 n = Integer.parseInt(ns);
+                n = Integer.parseInt(ns);
             } catch (NumberFormatException e) {
                 logger.error("Failed to parse schedule mask for " + scope + ": " + mask);
                 return null;
@@ -244,5 +239,4 @@ public class PushScheduleDAO extends AbstractDAO<PluginPushSchedule> {
         }
         return res.toString();
     }
-
 }

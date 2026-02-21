@@ -25,8 +25,7 @@ public class RegistrationRequest {
     private String number;
     private String description;
 
-    public RegistrationRequest() {
-    }
+    public RegistrationRequest() {}
 
     public String getNumber() {
         return this.number;

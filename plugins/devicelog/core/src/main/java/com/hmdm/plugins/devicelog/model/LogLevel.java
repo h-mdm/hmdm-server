@@ -38,7 +38,6 @@ public enum LogLevel {
     DEBUG(4),
     VERBOSE(5);
 
-
     /**
      * <p>A map used for faster lookup of enum items by ID.</p>
      */
@@ -74,11 +73,11 @@ public enum LogLevel {
         return id;
     }
 
-
     /**
      * <p>Gets the log level mapped to specified ID.</p>
      *
      * @param id an ID of requested log level.
+     *
      * @return an optional reference to log level mapped to specified ID.
      */
     public static Optional<LogLevel> byId(int id) {

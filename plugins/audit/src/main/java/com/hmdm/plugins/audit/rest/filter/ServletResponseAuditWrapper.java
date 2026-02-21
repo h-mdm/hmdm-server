@@ -29,55 +29,37 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 /**
- * <p>
- * A wrapper around the {@link HttpServletResponse} object whose main purpose is
- * to capture the status and content of
- * the response for audit logging purposes.
- * </p>
+ * <p>A wrapper around the {@link HttpServletResponse} object whose main purpose is to capture the status and content of
+ * the response for audit logging purposes.</p>
  *
- * <p>
- * Updated for Jakarta Servlet 6.0 compatibility - removed setStatus(int,
- * String) which was deprecated.
- * </p>
+ * <p>Updated for Jakarta Servlet 6.0 compatibility - removed setStatus(int, String) which was deprecated.</p>
  *
  * @author isv
  */
 public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
 
     /**
-     * <p>
-     * A status set for the response.
-     * </p>
+     * <p>A status set for the response.</p>
      */
     private int status;
 
     /**
-     * <p>
-     * An original response output stream.
-     * </p>
+     * <p>An original response output stream.</p>
      */
     private ServletOutputStream outputStream;
 
     /**
-     * <p>
-     * An original response writer.
-     * </p>
+     * <p>An original response writer.</p>
      */
     private PrintWriter writer;
 
     /**
-     * <p>
-     * A wrapper around the response stream/writer used for captruing the content of
-     * the response.
-     * </p>
+     * <p>A wrapper around the response stream/writer used for captruing the content of the response.</p>
      */
     private ServletOutputStreamWrapper copier;
 
     /**
-     * <p>
-     * Constructs new <code>ServletResponseAuditWrapper</code> instance. This
-     * implementation does nothing.
-     * </p>
+     * <p>Constructs new <code>ServletResponseAuditWrapper</code> instance. This implementation does nothing.</p>
      */
     public ServletResponseAuditWrapper(HttpServletResponse original) {
         super(original);
@@ -132,7 +114,8 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
 
         if (writer == null) {
             copier = new ServletOutputStreamWrapper(getResponse().getOutputStream());
-            writer = new PrintWriter(new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
+            writer =
+                    new PrintWriter(new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
         }
 
         return writer;
@@ -149,9 +132,7 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * <p>
-     * Gets the content of the response.
-     * </p>
+     * <p>Gets the content of the response.</p>
      *
      * @return a response content.
      */
@@ -164,9 +145,7 @@ public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * <p>
-     * Gets the status set for the response.
-     * </p>
+     * <p>Gets the status set for the response.</p>
      *
      * @return a status set for the response.
      */

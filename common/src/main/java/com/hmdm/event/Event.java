@@ -34,5 +34,4 @@ public interface Event {
      * @return a type of the event.
      */
     EventType getType();
-
 }

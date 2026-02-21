@@ -28,8 +28,7 @@ import com.hmdm.rest.resource.*;
 import com.hmdm.security.jwt.rest.JWTAuthResource;
 
 public class PublicRestModule extends ServletModule {
-    public PublicRestModule() {
-    }
+    public PublicRestModule() {}
 
     protected void configureServlets() {
         this.filter("*").through(HstsFilter.class);

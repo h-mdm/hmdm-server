@@ -23,7 +23,6 @@ package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 @Schema(description = "Record for the customer self-signup flow")
@@ -32,7 +31,7 @@ public class PendingSignup implements Serializable {
 
     private static final long serialVersionUID = 3971700195069436679L;
 
-    @Schema(description="ID")
+    @Schema(description = "ID")
     private Integer id;
 
     /**
@@ -40,17 +39,16 @@ public class PendingSignup implements Serializable {
      */
     private Long signupTime;
 
-    @Schema(description="Customer email")
+    @Schema(description = "Customer email")
     private String email;
 
-    @Schema(description="Customer language (two small letters)")
+    @Schema(description = "Customer language (two small letters)")
     private String language;
 
-    @Schema(description="Customer signup token")
+    @Schema(description = "Customer signup token")
     private String token;
 
-    public PendingSignup() {
-    }
+    public PendingSignup() {}
 
     public Integer getId() {
         return this.id;

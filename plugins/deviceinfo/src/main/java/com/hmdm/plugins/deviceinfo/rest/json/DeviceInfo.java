@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.hmdm.rest.json.LookupItem;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,112 +39,112 @@ import java.util.List;
 public class DeviceInfo implements Serializable {
 
     private static final long serialVersionUID = 1063145760140357201L;
-    
-    @Schema(description="A device ID")
+
+    @Schema(description = "A device ID")
     private int id;
 
-    @Schema(description="An unique device number")
+    @Schema(description = "An unique device number")
     private String deviceNumber;
 
-    @Schema(description="A device description")
+    @Schema(description = "A device description")
     private String description;
 
-    @Schema(description="A required IMEI for device")
+    @Schema(description = "A required IMEI for device")
     private String imeiRequired;
 
-    @Schema(description="An actual IMEI for device")
+    @Schema(description = "An actual IMEI for device")
     private String imeiActual;
 
-    @Schema(description="A required phone number for device")
+    @Schema(description = "A required phone number for device")
     private String phoneNumberRequired;
 
-    @Schema(description="An actual phone number for device")
+    @Schema(description = "An actual phone number for device")
     private String phoneNumberActual;
 
-    @Schema(description="A device model")
+    @Schema(description = "A device model")
     private String model;
 
-    @Schema(description="An OS version installed on device")
+    @Schema(description = "An OS version installed on device")
     private String osVersion;
 
-    @Schema(description="A battery level for device (in percents)")
+    @Schema(description = "A battery level for device (in percents)")
     private Integer batteryLevel;
 
-    @Schema(description="A timestamp of most recent update of device info (in milliseconds since epoch time)")
+    @Schema(description = "A timestamp of most recent update of device info (in milliseconds since epoch time)")
     private Long latestUpdateTime;
 
-    @Schema(description="An interval passed from the most recent update of device info from current time")
+    @Schema(description = "An interval passed from the most recent update of device info from current time")
     private Long latestUpdateInterval;
 
-    @Schema(description="A type of interval passed from the most recent update of device info from current time",
+    @Schema(
+            description = "A type of interval passed from the most recent update of device info from current time",
             allowableValues = "min,hour,day")
     private String latestUpdateIntervalType;
 
-    @Schema(description="A list of groups assigned to device")
+    @Schema(description = "A list of groups assigned to device")
     private List<LookupItem> groups;
 
-    @Schema(description="A flag indicating if admin permission is set on device")
+    @Schema(description = "A flag indicating if admin permission is set on device")
     private Boolean adminPermission;
 
-    @Schema(description="A flag indicating if overlap permission is set on device")
+    @Schema(description = "A flag indicating if overlap permission is set on device")
     private Boolean overlapPermission;
 
-    @Schema(description="A flag indicating if history permission is set on device")
+    @Schema(description = "A flag indicating if history permission is set on device")
     private Boolean historyPermission;
 
-    @Schema(description="A flag indicating if accessibility permission is set on device")
+    @Schema(description = "A flag indicating if accessibility permission is set on device")
     private Boolean accessibilityPermission;
 
-    @Schema(description="The most recent view of dynamic data for device")
+    @Schema(description = "The most recent view of dynamic data for device")
     private DeviceDynamicInfoRecord latestDynamicData;
 
-    @Schema(description="A list of applications which already are installed or required to be installed on device")
+    @Schema(description = "A list of applications which already are installed or required to be installed on device")
     private List<DeviceInfoApplication> applications;
 
-    @Schema(description="A flag indicating if MDM mode is ON or not")
+    @Schema(description = "A flag indicating if MDM mode is ON or not")
     private Boolean mdmMode;
 
-    @Schema(description="A flag indicating if kiosk mode is ON or not")
+    @Schema(description = "A flag indicating if kiosk mode is ON or not")
     private Boolean kioskMode;
 
-    @Schema(description="Headwind MDM launcher build variant")
+    @Schema(description = "Headwind MDM launcher build variant")
     private String launcherType;
 
-    @Schema(description="Package of default launcher on the device")
+    @Schema(description = "Package of default launcher on the device")
     private String launcherPackage;
 
-    @Schema(description="Is Headwind MDM a default launcher")
+    @Schema(description = "Is Headwind MDM a default launcher")
     private Boolean defaultLauncher;
 
-    @Schema(description="ICC ID")
+    @Schema(description = "ICC ID")
     private String iccid;
 
-    @Schema(description="an IMSI identifier")
+    @Schema(description = "an IMSI identifier")
     private String imsi;
 
-    @Schema(description="An IMEI identifier for 2nd SIM slot")
+    @Schema(description = "An IMEI identifier for 2nd SIM slot")
     private String imei2;
 
-    @Schema(description="A phone number for 2nd SIM slot")
+    @Schema(description = "A phone number for 2nd SIM slot")
     private String phone2;
 
-    @Schema(description="ICC ID for 2nd SIM slot")
+    @Schema(description = "ICC ID for 2nd SIM slot")
     private String iccid2;
 
-    @Schema(description="an IMSI identifier for 2nd SIM slot")
+    @Schema(description = "an IMSI identifier for 2nd SIM slot")
     private String imsi2;
 
-    @Schema(description="A device serial number")
+    @Schema(description = "A device serial number")
     private String serial;
 
-    @Schema(description="CPU architecture")
+    @Schema(description = "CPU architecture")
     private String cpu;
 
     /**
      * <p>Constructs new <code>DeviceInfo</code> instance. This implementation does nothing.</p>
      */
-    public DeviceInfo() {
-    }
+    public DeviceInfo() {}
 
     public void setId(int id) {
         this.id = id;

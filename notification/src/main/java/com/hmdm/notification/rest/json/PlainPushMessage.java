@@ -23,7 +23,6 @@ package com.hmdm.notification.rest.json;
 
 import com.hmdm.notification.persistence.domain.PushMessage;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
@@ -35,9 +34,11 @@ import java.io.Serializable;
 public class PlainPushMessage implements Serializable {
 
     private static final long serialVersionUID = 5860815657249909466L;
-    @Schema(description="A type of the message")
+
+    @Schema(description = "A type of the message")
     private String messageType;
-    @Schema(description="A payload for the message")
+
+    @Schema(description = "A payload for the message")
     private String payload;
 
     /**
@@ -56,7 +57,6 @@ public class PlainPushMessage implements Serializable {
         this.messageType = messageType;
     }
 
-
     public String getPayload() {
         return payload;
     }
@@ -67,9 +67,6 @@ public class PlainPushMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "PlainPushMessage{" +
-                "messageType='" + messageType + '\'' +
-                ", payload='" + payload + '\'' +
-                '}';
+        return "PlainPushMessage{" + "messageType='" + messageType + '\'' + ", payload='" + payload + '\'' + '}';
     }
 }

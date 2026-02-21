@@ -42,8 +42,7 @@ public class AuthOptionsResponse {
     /**
      * <p>Constructs new <code>AuthOptionsResponse</code> instance. This implementation does nothing.</p>
      */
-    public AuthOptionsResponse() {
-    }
+    public AuthOptionsResponse() {}
 
     public boolean isRecover() {
         return recover;

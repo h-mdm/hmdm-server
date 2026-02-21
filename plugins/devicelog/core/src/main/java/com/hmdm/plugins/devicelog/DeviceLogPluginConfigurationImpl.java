@@ -28,16 +28,13 @@ import com.hmdm.plugins.devicelog.guice.module.DeviceLogLiquibaseModule;
 import com.hmdm.plugins.devicelog.guice.module.DeviceLogRestModule;
 import com.hmdm.plugins.devicelog.guice.module.DeviceLogTaskModule;
 import com.hmdm.plugins.devicelog.persistence.DeviceLogPersistenceConfiguration;
-
 import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * <p>
- * A configuration for <code>Device Log</code> plugin.
- * </p>
+ * <p>A configuration for <code>Device Log</code> plugin.</p>
  *
  * @author isv
  */
@@ -46,20 +43,13 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
     public static final String PLUGIN_ID = "devicelog";
 
     /**
-     * <p>
-     * Constructs new <code>DeviceLogPluginConfigurationImpl</code> instance. This
-     * implementation does nothing.
-     * </p>
+     * <p>Constructs new <code>DeviceLogPluginConfigurationImpl</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogPluginConfigurationImpl() {
-    }
+    public DeviceLogPluginConfigurationImpl() {}
 
     /**
-     * <p>
-     * Gets the unique identifier for this plugin. This is a sort of logical name
-     * for the plugin which is used widely
-     * by <code>Plugin Platform</code>.
-     * </p>
+     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely by
+     * <code>Plugin Platform</code>.</p>
      *
      * @return a plugin identifier.
      */
@@ -69,9 +59,7 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
     }
 
     /**
-     * <p>
-     * Gets the root package for the classes comprising the plugin.
-     * </p>
+     * <p>Gets the root package for the classes comprising the plugin.</p>
      *
      * @return a fully-qualified name of the root package for plugin code.
      */
@@ -81,11 +69,10 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
     }
 
     /**
-     * <p>
-     * Gets the list of modules to be used for initializing the plugin.
-     * </p>
+     * <p>Gets the list of modules to be used for initializing the plugin.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return a list of modules to be used for plugin initialization.
      */
     @Override
@@ -97,8 +84,8 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
 
             final String configClass = context.getInitParameter("plugin.devicelog.persistence.config.class");
             if (configClass != null && !configClass.trim().isEmpty()) {
-                DeviceLogPersistenceConfiguration config = (DeviceLogPersistenceConfiguration) Class
-                        .forName(configClass).getDeclaredConstructor().newInstance();
+                DeviceLogPersistenceConfiguration config = (DeviceLogPersistenceConfiguration)
+                        Class.forName(configClass).getDeclaredConstructor().newInstance();
                 modules.addAll(config.getPersistenceModules(context));
             }
 
@@ -109,13 +96,10 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
         } catch (ReflectiveOperationException e) {
             throw new IllegalArgumentException("Could not initialize persistence layer for Device Log plugin", e);
         }
-
     }
 
     /**
-     * <p>
-     * Gets the list of task modules to be initialized upon application startup.
-     * </p>
+     * <p>Gets the list of task modules to be initialized upon application startup.</p>
      *
      * @return an optional list of task modules for plugins.
      */
@@ -128,8 +112,8 @@ public class DeviceLogPluginConfigurationImpl implements PluginConfiguration {
 
             final String configClass = context.getInitParameter("plugin.devicelog.persistence.config.class");
             if (configClass != null && !configClass.trim().isEmpty()) {
-                DeviceLogPersistenceConfiguration config = (DeviceLogPersistenceConfiguration) Class
-                        .forName(configClass).getDeclaredConstructor().newInstance();
+                DeviceLogPersistenceConfiguration config = (DeviceLogPersistenceConfiguration)
+                        Class.forName(configClass).getDeclaredConstructor().newInstance();
                 config.getTaskModules(context).ifPresent(modules::addAll);
             }
 

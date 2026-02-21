@@ -25,24 +25,23 @@ import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource providing interface to icon management functionality.</p>
  *
  * @author isv
  */
-@Tag(name="Icons")
+@Tag(name = "Icons")
 @Path("/private/icons")
 @Singleton
 public class IconResource {
@@ -51,8 +50,7 @@ public class IconResource {
 
     private IconDAO iconDAO;
 
-    public IconResource() {
-    }
+    public IconResource() {}
 
     /**
      * <p>Constructs new <code>IconResource</code> instance. This implementation does nothing.</p>
@@ -67,6 +65,7 @@ public class IconResource {
      * <p>Creates new icon record on server.</p>
      *
      * @param icon the data for new icon.
+     *
      * @return a response to client containing the created icon.
      */
     @PUT
@@ -74,9 +73,7 @@ public class IconResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createIcon(Icon icon) {
         try {
-            final Icon newIcon = icon.getId() == null ?
-                        iconDAO.insertIcon(icon) :
-                        iconDAO.updateIcon(icon);
+            final Icon newIcon = icon.getId() == null ? iconDAO.insertIcon(icon) : iconDAO.updateIcon(icon);
             return Response.OK(newIcon);
         } catch (Exception e) {
             return Response.INTERNAL_ERROR();
@@ -112,16 +109,14 @@ public class IconResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Delete an icon",
-            description = "Delete an existing icon"
-    )
+    @Operation(summary = "Delete an icon", description = "Delete an existing icon")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeIcon(@PathParam("id") @Parameter(description = "Icon ID") Integer id) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            logger.error("Unauthorized attempt to update icons by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to update icons by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         this.iconDAO.removeById(id);

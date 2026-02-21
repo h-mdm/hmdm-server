@@ -24,9 +24,6 @@ package com.hmdm.plugins.devicelog.persistence;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p>A DAO for {@link com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings} domain objects.</p>
@@ -60,5 +57,4 @@ public interface DeviceLogPluginSettingsDAO {
     DeviceLogRule getPluginSettingsRuleById(int id);
 
     void deletePluginSettingRule(int id);
-
 }

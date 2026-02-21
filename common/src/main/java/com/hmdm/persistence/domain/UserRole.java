@@ -22,7 +22,6 @@
 package com.hmdm.persistence.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -31,20 +30,23 @@ import java.util.Objects;
 public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 5723531788626059664L;
-    
-    @Schema(description="A user role ID")
+
+    @Schema(description = "A user role ID")
     private Integer id;
-    @Schema(description="A user role name")
+
+    @Schema(description = "A user role name")
     private String name;
-    @Schema(description="A user role description")
+
+    @Schema(description = "A user role description")
     private String description;
+
     @Schema(hidden = true)
     private boolean superAdmin;
-    @Schema(description="A list of permissions granted to user role")
+
+    @Schema(description = "A list of permissions granted to user role")
     private List<UserRolePermission> permissions;
 
-    public UserRole() {
-    }
+    public UserRole() {}
 
     public Integer getId() {
         return id;
@@ -101,10 +103,6 @@ public class UserRole implements Serializable {
 
     @Override
     public String toString() {
-        return "UserRole{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", superAdmin=" + superAdmin +
-                '}';
+        return "UserRole{" + "id=" + id + ", name='" + name + '\'' + ", superAdmin=" + superAdmin + '}';
     }
 }

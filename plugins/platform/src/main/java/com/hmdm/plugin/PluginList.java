@@ -25,20 +25,17 @@ import com.google.inject.Module;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * A static list maintaining the list of plugins enabled for current build.
- * </p>
+ * <p>A static list maintaining the list of plugins enabled for current build.</p>
  *
  * @author isv
  */
@@ -47,30 +44,22 @@ public final class PluginList {
     private static final Logger log = LoggerFactory.getLogger(PluginList.class);
 
     /**
-     * <p>
-     * A collection of identifiers for plugins which have been enabled for the
-     * current build.
-     * </p>
+     * <p>A collection of identifiers for plugins which have been enabled for the current build.</p>
      */
     private static final Set<String> enabledPlugins = new ConcurrentSkipListSet<>();
 
     /**
-     * <p>
-     * Constructs new <code>PluginList</code> instance. This implementation does
-     * nothing.
-     * </p>
+     * <p>Constructs new <code>PluginList</code> instance. This implementation does nothing.</p>
      */
-    private PluginList() {
-    }
+    private PluginList() {}
 
     /**
-     * <p>
-     * Checks if specified plugin is enabled for the current build.
-     * </p>
+     * <p>Checks if specified plugin is enabled for the current build.</p>
      *
      * @param pluginId an identifier of a plugin to check.
-     * @return <code>true</code> if specified plugin is enabled for current build;
-     *         <code>false</code> otherwise.
+     *
+     * @return <code>true</code> if specified plugin is enabled for current build; <code>false</code> otherwise.
+     *
      * @see PluginConfiguration#getPluginId()
      */
     public static boolean isPluginEnabled(String pluginId) {
@@ -85,7 +74,8 @@ public final class PluginList {
         if (initialized) {
             return;
         }
-        try (ScanResult scanResult = new ClassGraph().enableAllInfo().acceptPackages("com.hmdm").scan()) {
+        try (ScanResult scanResult =
+                new ClassGraph().enableAllInfo().acceptPackages("com.hmdm").scan()) {
             ClassInfoList pluginConfigClasses = scanResult.getClassesImplementing(PluginConfiguration.class.getName());
             List<String> plugins = pluginConfigClasses.getNames();
 
@@ -97,11 +87,14 @@ public final class PluginList {
                 pluginConfigClassName = pluginConfigClassName.trim();
                 try {
                     PluginConfiguration pluginConfiguration = (PluginConfiguration) Class.forName(pluginConfigClassName)
-                            .getDeclaredConstructor().newInstance();
+                            .getDeclaredConstructor()
+                            .newInstance();
                     String pluginId = pluginConfiguration.getPluginId().toLowerCase();
                     if (processedPlugins.contains(pluginId)) {
-                        log.warn("Duplicate plugin found: {}. Skipping initialization of {}",
-                                pluginId, pluginConfiguration.getClass().getName());
+                        log.warn(
+                                "Duplicate plugin found: {}. Skipping initialization of {}",
+                                pluginId,
+                                pluginConfiguration.getClass().getName());
                         continue;
                     }
                     processedPlugins.add(pluginId);

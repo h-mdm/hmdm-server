@@ -25,9 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.ConfigurationFile;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +33,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * <p>A wrapper around the {@link Configuration} object providing the view suitable for the <code>Device List</code>
- * view of server application.</p>
+ * <p>A wrapper around the {@link Configuration} object providing the view suitable for the <code>Device List</code> view
+ * of server application.</p>
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"configuration"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"configuration"},
+        ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "An MDM configuration used on mobile device")
 public class ConfigurationView implements Serializable {
 
     private static final long serialVersionUID = 3343804830704098674L;
-    
+
     /**
      * <p>A wrapped configuration object.</p>
      */
@@ -66,28 +66,27 @@ public class ConfigurationView implements Serializable {
         this.configuration = configuration;
         this.applications = Optional.ofNullable(configuration.getApplications())
                 .map(apps -> apps.stream()
-                        .filter(app -> app.getType().equals(ApplicationType.app))         // Check only real apps
+                        .filter(app -> app.getType().equals(ApplicationType.app)) // Check only real
+                        // apps
                         .map(ApplicationView::new)
                         .collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
         this.files = Optional.ofNullable(configuration.getFiles())
-                .map(apps -> apps.stream()
-                        .map(ConfigurationFileView::new)
-                        .collect(Collectors.toList()))
+                .map(apps -> apps.stream().map(ConfigurationFileView::new).collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
     }
 
-    @Schema(description="A configuration ID")
+    @Schema(description = "A configuration ID")
     public Integer getId() {
         return configuration.getId();
     }
 
-    @Schema(description="A unique name of configuration")
+    @Schema(description = "A unique name of configuration")
     public String getName() {
         return configuration.getName();
     }
 
-    @Schema(description="QR code to enroll the configuration")
+    @Schema(description = "QR code to enroll the configuration")
     public String getQrCodeKey() {
         return configuration.getQrCodeKey();
     }
@@ -97,12 +96,12 @@ public class ConfigurationView implements Serializable {
         return configuration.getBaseUrl();
     }
 
-    @Schema(description="A list of applications set and available for for configuration")
+    @Schema(description = "A list of applications set and available for for configuration")
     public List<ApplicationView> getApplications() {
         return this.applications;
     }
 
-    @Schema(description="A list of configrration files to be set on device")
+    @Schema(description = "A list of configrration files to be set on device")
     public List<ConfigurationFileView> getFiles() {
         return files;
     }

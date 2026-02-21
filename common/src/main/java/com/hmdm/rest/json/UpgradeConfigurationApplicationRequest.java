@@ -21,24 +21,23 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "A request to upgrade application for configuration up to recent version")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpgradeConfigurationApplicationRequest {
 
-    @Schema(description="An ID of a configuration to upgrade application for")
+    @Schema(description = "An ID of a configuration to upgrade application for")
     private Integer configurationId;
 
-    @Schema(description="An ID of an application to upgrade")
+    @Schema(description = "An ID of an application to upgrade")
     private Integer applicationId;
 
     /**
      * <p>Constructs new <code>UpgradeConfigurationApplicationRequest</code> instance. This implementation does nothing.</p>
      */
-    public UpgradeConfigurationApplicationRequest() {
-    }
+    public UpgradeConfigurationApplicationRequest() {}
 
     public Integer getConfigurationId() {
         return configurationId;
@@ -58,9 +57,7 @@ public class UpgradeConfigurationApplicationRequest {
 
     @Override
     public String toString() {
-        return "UpgradeConfigurationApplicationRequest{" +
-                "configurationId=" + configurationId +
-                ", applicationId=" + applicationId +
-                '}';
+        return "UpgradeConfigurationApplicationRequest{" + "configurationId=" + configurationId + ", applicationId="
+                + applicationId + '}';
     }
 }

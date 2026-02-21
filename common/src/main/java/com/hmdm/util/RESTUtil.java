@@ -35,8 +35,8 @@ public class RESTUtil {
                 }
             }
 
-            try (BufferedReader br = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+            try (BufferedReader br =
+                    new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
                 String responseLine = null;
                 while ((responseLine = br.readLine()) != null) {
@@ -55,5 +55,4 @@ public class RESTUtil {
             }
         }
     }
-
 }

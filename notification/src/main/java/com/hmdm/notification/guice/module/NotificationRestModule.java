@@ -21,7 +21,6 @@
 
 package com.hmdm.notification.guice.module;
 
-import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.notification.rest.LongPollingServlet;
 import com.hmdm.notification.rest.NotificationResource;
@@ -34,12 +33,10 @@ import com.hmdm.rest.filter.AuthFilter;
  */
 public class NotificationRestModule extends ServletModule {
 
-
     /**
      * <p>Constructs new <code>NotificationRestModule</code> instance. This implementation does nothing.</p>
      */
-    public NotificationRestModule() {
-    }
+    public NotificationRestModule() {}
 
     /**
      * <p>Configures the resources for <code>Plugin Platform</code>.</p>
@@ -49,5 +46,4 @@ public class NotificationRestModule extends ServletModule {
         this.serve(LongPollingServlet.BASE_PATH + "*").with(LongPollingServlet.class);
         this.bind(NotificationResource.class);
     }
-
 }

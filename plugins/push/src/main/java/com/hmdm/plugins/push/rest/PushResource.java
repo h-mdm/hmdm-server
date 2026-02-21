@@ -39,26 +39,21 @@ import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * A resource to be used for managing the <code>Push</code> plugin data for
- * customer account associated
- * with current user.
- * </p>
+ * <p>A resource to be used for managing the <code>Push</code> plugin data for customer account associated with current
+ * user.</p>
  *
  * @author isv
  */
@@ -70,58 +65,43 @@ public class PushResource {
     private static final Logger logger = LoggerFactory.getLogger(PushResource.class);
 
     /**
-     * <p>
-     * An interface to push message records persistence.
-     * </p>
+     * <p>An interface to push message records persistence.</p>
      */
     private PushDAO pushDAO;
 
     /**
-     * <p>
-     * An interface to scheduled task records persistence.
-     * </p>
+     * <p>An interface to scheduled task records persistence.</p>
      */
     private PushScheduleDAO pushScheduleDAO;
 
     /**
-     * <p>
-     * An interface to persistence without security checks.
-     * </p>
+     * <p>An interface to persistence without security checks.</p>
      */
     private UnsecureDAO unsecureDAO;
 
     /**
-     * <p>
-     * An interface to device records persistence.
-     * </p>
+     * <p>An interface to device records persistence.</p>
      */
     private DeviceDAO deviceDAO;
 
     /**
-     * <p>
-     * An interface to notification services.
-     * </p>
+     * <p>An interface to notification services.</p>
      */
     private PushService pushService;
 
     private PluginStatusCache pluginStatusCache;
 
     /**
-     * <p>
-     * A constructor required by swagger.
-     * </p>
+     * <p>A constructor required by swagger.</p>
      */
-    public PushResource() {
-    }
+    public PushResource() {}
 
     /**
-     * <p>
-     * Constructs new <code>PushResource</code> instance. This implementation does
-     * nothing.
-     * </p>
+     * <p>Constructs new <code>PushResource</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public PushResource(PushDAO pushDAO,
+    public PushResource(
+            PushDAO pushDAO,
             PushScheduleDAO pushScheduleDAO,
             UnsecureDAO unsecureDAO,
             DeviceDAO deviceDAO,
@@ -138,15 +118,15 @@ public class PushResource {
     // =================================================================================================================
 
     /**
-     * <p>
-     * Gets the list of push message records matching the specified filter.
-     * </p>
+     * <p>Gets the list of push message records matching the specified filter.</p>
      *
      * @param filter a filter to be used for filtering the records.
-     * @return a response with list of device log records matching the specified
-     *         filter.
+     *
+     * @return a response with list of device log records matching the specified filter.
      */
-    @Operation(summary = "Search Push messages", description = "Gets the list of message records matching the specified filter")
+    @Operation(
+            summary = "Search Push messages",
+            description = "Gets the list of message records matching the specified filter")
     @POST
     @Path("/private/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -173,7 +153,8 @@ public class PushResource {
             final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_send");
 
             if (!canSendMessages) {
-                logger.error("Unauthorized attempt to send a Push message",
+                logger.error(
+                        "Unauthorized attempt to send a Push message",
                         SecurityException.onCustomerDataAccessViolation(0, "push"));
                 return Response.PERMISSION_DENIED();
             }
@@ -186,8 +167,8 @@ public class PushResource {
                     PluginPushMessage message = new PluginPushMessage();
                     Device device = deviceDAO.getDeviceByNumber(sendRequest.getDeviceNumber());
                     if (device == null) {
-                        String error = "Attempt to send Push message to wrong device number "
-                                + sendRequest.getDeviceNumber();
+                        String error =
+                                "Attempt to send Push message to wrong device number " + sendRequest.getDeviceNumber();
                         logger.error(error);
                         return Response.ERROR(error);
                     }
@@ -217,7 +198,6 @@ public class PushResource {
                         return Response.ERROR(error);
                     }
                     dsr.setConfigurationId(sendRequest.getConfigurationId());
-
                 }
 
                 List<Device> devices = deviceDAO.getAllDevices(dsr).getItems();
@@ -230,7 +210,8 @@ public class PushResource {
 
             for (PluginPushMessage message : messages) {
                 message.setMessageType(sendRequest.getMessageType());
-                if (sendRequest.getPayload() != null && !sendRequest.getPayload().trim().equals("")) {
+                if (sendRequest.getPayload() != null
+                        && !sendRequest.getPayload().trim().equals("")) {
                     message.setPayload(sendRequest.getPayload());
                 }
                 message.setTs(System.currentTimeMillis());
@@ -272,7 +253,8 @@ public class PushResource {
         final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_delete");
 
         if (!(canSendMessages)) {
-            logger.error("Unauthorized attempt to delete Push message",
+            logger.error(
+                    "Unauthorized attempt to delete Push message",
                     SecurityException.onCustomerDataAccessViolation(id, "push"));
             return Response.PERMISSION_DENIED();
         }
@@ -282,7 +264,9 @@ public class PushResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Purge old Push messages", description = "Deletes all Push messages older than a specified number of days.")
+    @Operation(
+            summary = "Purge old Push messages",
+            description = "Deletes all Push messages older than a specified number of days.")
     @GET
     @Path("/private/purge/{days}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -291,7 +275,8 @@ public class PushResource {
             final boolean canPurgeMessages = SecurityContext.get().hasPermission("plugin_push_delete");
 
             if (!canPurgeMessages) {
-                logger.error("Unauthorized attempt to purge old Push messages",
+                logger.error(
+                        "Unauthorized attempt to purge old Push messages",
                         SecurityException.onCustomerDataAccessViolation(0, "push"));
                 return Response.PERMISSION_DENIED();
             }
@@ -308,15 +293,15 @@ public class PushResource {
     // =================================================================================================================
 
     /**
-     * <p>
-     * Gets the list of scheduled task records matching the specified filter.
-     * </p>
+     * <p>Gets the list of scheduled task records matching the specified filter.</p>
      *
      * @param filter a filter to be used for filtering the records.
-     * @return a response with list of scheduled task records matching the specified
-     *         filter.
+     *
+     * @return a response with list of scheduled task records matching the specified filter.
      */
-    @Operation(summary = "Search scheduled tasks", description = "Gets the list of scheduled task records matching the specified filter")
+    @Operation(
+            summary = "Search scheduled tasks",
+            description = "Gets the list of scheduled task records matching the specified filter")
     @POST
     @Path("/private/searchTasks")
     @Produces(MediaType.APPLICATION_JSON)
@@ -333,14 +318,18 @@ public class PushResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update a scheduled task", description = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise")
+    @Operation(
+            summary = "Create or update a scheduled task",
+            description =
+                    "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise")
     @PUT
     @Path("/private/task")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveTask(PluginPushSchedule task) {
         if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
-            logger.error("Unauthorized attempt to save scheduled task by user {}",
+            logger.error(
+                    "Unauthorized attempt to save scheduled task by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -374,7 +363,8 @@ public class PushResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeTask(@PathParam("id") @Parameter(description = "Task ID") Integer id) {
         if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
-            logger.error("Unauthorized attempt to delete a scheduled task by user {}",
+            logger.error(
+                    "Unauthorized attempt to delete a scheduled task by user {}",
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
@@ -389,5 +379,4 @@ public class PushResource {
             return Response.INTERNAL_ERROR();
         }
     }
-
 }

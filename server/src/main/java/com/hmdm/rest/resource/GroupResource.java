@@ -21,27 +21,24 @@
 
 package com.hmdm.rest.resource;
 
+import com.hmdm.persistence.GroupDAO;
+import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.Group;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.rest.json.LookupItem;
+import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.rest.json.LookupItem;
-import com.hmdm.security.SecurityContext;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import com.hmdm.persistence.GroupDAO;
-import com.hmdm.persistence.domain.Group;
-import com.hmdm.rest.json.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag(name = "Device Group")
 @Singleton
@@ -58,20 +55,16 @@ public class GroupResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public GroupResource() {
-    }
+    public GroupResource() {}
 
     @Inject
-    public GroupResource(GroupDAO groupDAO,
-                         UserDAO userDAO) {
+    public GroupResource(GroupDAO groupDAO, UserDAO userDAO) {
         this.groupDAO = groupDAO;
         this.userDAO = userDAO;
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get all device groups",
-            description = "Gets the list of all available device groups"
-    )
+    @Operation(summary = "Get all device groups", description = "Gets the list of all available device groups")
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,9 +73,9 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Search device groups",
-            description = "Search device groups meeting the specified filter value"
-    )
+    @Operation(
+            summary = "Search device groups",
+            description = "Search device groups meeting the specified filter value")
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -90,12 +83,12 @@ public class GroupResource {
         return Response.OK(this.groupDAO.getAllGroupsByValue(value));
     }
 
-
     // =================================================================================================================
     /**
      * <p>Gets the list of group id/names matching the specified filter for autocompletion.</p>
      *
      * @param filter a filter to be used for filtering the records.
+     *
      * @return a response with list of groups matching the specified filter.
      */
     @Operation(summary = "Get group ids/names for autocomplete")
@@ -104,8 +97,7 @@ public class GroupResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGroupsForAutocomplete(String filter) {
         try {
-            List<LookupItem> groups = this.groupDAO.getAllGroupsByValue(filter)
-                    .stream()
+            List<LookupItem> groups = this.groupDAO.getAllGroupsByValue(filter).stream()
                     .map(group -> new LookupItem(group.getId(), group.getName()))
                     .collect(Collectors.toList());
             return Response.OK(groups);
@@ -116,16 +108,16 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update device group",
-            description = "Create a new device group (if id is not provided) or update existing one otherwise."
-    )
+    @Operation(
+            summary = "Create or update device group",
+            description = "Create a new device group (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateGroup(Group group) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update groups by user " +
-                    SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update groups by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         Group dbGroup = this.groupDAO.getGroupByName(group.getName());
@@ -149,16 +141,14 @@ public class GroupResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Delete device group",
-            description = "Delete an existing device group"
-    )
+    @Operation(summary = "Delete device group", description = "Delete an existing device group")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeGroup(@PathParam("id") @Parameter(description = "Device group ID") Integer id) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update groups by user " +
-                    SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update groups by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         Long count = this.groupDAO.countDevicesByGroupId(id);

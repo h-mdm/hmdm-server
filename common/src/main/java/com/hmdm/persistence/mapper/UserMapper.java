@@ -21,16 +21,15 @@
 
 package com.hmdm.persistence.mapper;
 
+import com.hmdm.persistence.domain.User;
+import com.hmdm.persistence.domain.UserRole;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.domain.UserRole;
-
-import java.util.List;
 
 public interface UserMapper {
 
@@ -50,31 +49,41 @@ public interface UserMapper {
 
     List<User> findAllWithOldPassword();
 
-    @Insert({"INSERT INTO users (login, email, name, password, customerId, userRoleId, " +
-            "allDevicesAvailable, allConfigAvailable, passwordReset, authToken, " +
-            "passwordResetToken, authData, twoFactorSecret, twoFactorAccepted) " +
-            "VALUES (#{login}, #{email}, #{name}, #{password}, #{customerId}, #{userRole.id}, " +
-            "#{allDevicesAvailable}, #{allConfigAvailable}, #{passwordReset}, #{authToken}, " +
-            "#{passwordResetToken}, #{authData}, #{twoFactorSecret}, #{twoFactorAccepted})"})
-    @SelectKey( statement = "SELECT currval('users_id_seq')", keyColumn = "id", keyProperty = "id", before = false, resultType = int.class )
+    @Insert({
+        "INSERT INTO users (login, email, name, password, customerId, userRoleId, "
+                + "allDevicesAvailable, allConfigAvailable, passwordReset, authToken, "
+                + "passwordResetToken, authData, twoFactorSecret, twoFactorAccepted) "
+                + "VALUES (#{login}, #{email}, #{name}, #{password}, #{customerId}, #{userRole.id}, "
+                + "#{allDevicesAvailable}, #{allConfigAvailable}, #{passwordReset}, #{authToken}, "
+                + "#{passwordResetToken}, #{authData}, #{twoFactorSecret}, #{twoFactorAccepted})"
+    })
+    @SelectKey(
+            statement = "SELECT currval('users_id_seq')",
+            keyColumn = "id",
+            keyProperty = "id",
+            before = false,
+            resultType = int.class)
     void insert(User user);
 
-    @Update({"UPDATE users " +
-            "SET name = #{name}, login=#{login}, email=#{email}, userRoleId=#{userRole.id}, " +
-            "allDevicesAvailable=#{allDevicesAvailable}, allConfigAvailable=#{allConfigAvailable}, " +
-            "passwordReset=#{passwordReset}, authData=#{authData}, twoFactorSecret=#{twoFactorSecret}, " +
-            "twoFactorAccepted=#{twoFactorAccepted} " +
-            "WHERE id=#{id}"})
+    @Update({
+        "UPDATE users " + "SET name = #{name}, login=#{login}, email=#{email}, userRoleId=#{userRole.id}, "
+                + "allDevicesAvailable=#{allDevicesAvailable}, allConfigAvailable=#{allConfigAvailable}, "
+                + "passwordReset=#{passwordReset}, authData=#{authData}, twoFactorSecret=#{twoFactorSecret}, "
+                + "twoFactorAccepted=#{twoFactorAccepted} " + "WHERE id=#{id}"
+    })
     void updateUserMainDetails(User user);
 
-    @Update({"UPDATE users SET password=#{password}, passwordReset=#{passwordReset}, " +
-            "authToken=#{authToken}, passwordResetToken=#{passwordResetToken}, " +
-            "twoFactorSecret=#{twoFactorSecret}, twoFactorAccepted=#{twoFactorAccepted} " +
-            "WHERE id=#{id}"})
+    @Update({
+        "UPDATE users SET password=#{password}, passwordReset=#{passwordReset}, "
+                + "authToken=#{authToken}, passwordResetToken=#{passwordResetToken}, "
+                + "twoFactorSecret=#{twoFactorSecret}, twoFactorAccepted=#{twoFactorAccepted} " + "WHERE id=#{id}"
+    })
     void updatePassword(User user);
 
-    @Update({"UPDATE users SET password=#{newPassword}, passwordReset=#{passwordReset}, " +
-            "authToken=#{authToken}, passwordResetToken=#{passwordResetToken} WHERE id=#{id}"})
+    @Update({
+        "UPDATE users SET password=#{newPassword}, passwordReset=#{passwordReset}, "
+                + "authToken=#{authToken}, passwordResetToken=#{passwordResetToken} WHERE id=#{id}"
+    })
     void setNewPassword(User user);
 
     @Update({"UPDATE users SET lastLoginFail=#{lastLoginFail} WHERE id=#{id}"})
@@ -92,19 +101,22 @@ public interface UserMapper {
     @Select("SELECT * FROM userRoles WHERE name = #{name}")
     UserRole findUserRoleByName(@Param("name") String name);
 
-    @Delete({"DELETE FROM userDeviceGroupsAccess " +
-            "WHERE userId=#{id} " +
-            "AND groupId IN (SELECT groups.id FROM groups WHERE groups.customerId=#{customerId})"})
+    @Delete({
+        "DELETE FROM userDeviceGroupsAccess " + "WHERE userId=#{id} "
+                + "AND groupId IN (SELECT groups.id FROM groups WHERE groups.customerId=#{customerId})"
+    })
     void removeDeviceGroupsAccessByUserId(@Param("customerId") int customerId, @Param("id") Integer userId);
 
     void insertUserDeviceGroupsAccess(@Param("id") Integer userId, @Param("groups") List<Integer> groups);
 
-    @Delete({"DELETE FROM userConfigurationAccess " +
-            "WHERE userId=#{id} " +
-            "AND configurationId IN (SELECT configurations.id FROM configurations WHERE configurations.customerId=#{customerId})"})
+    @Delete({
+        "DELETE FROM userConfigurationAccess " + "WHERE userId=#{id} "
+                + "AND configurationId IN (SELECT configurations.id FROM configurations WHERE configurations.customerId=#{customerId})"
+    })
     void removeConfigurationAccessByUserId(@Param("customerId") int customerId, @Param("id") Integer userId);
 
-    void insertUserConfigurationAccess(@Param("id") Integer userId, @Param("configurations") List<Integer> configurations);
+    void insertUserConfigurationAccess(
+            @Param("id") Integer userId, @Param("configurations") List<Integer> configurations);
 
     @Select("SELECT hintKey FROM userHints WHERE userId = #{id}")
     List<String> getShownHints(@Param("id") Integer userId);

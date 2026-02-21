@@ -21,9 +21,8 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 @Schema(description = "A collection of parameters for linking the single application to single configuration")
@@ -32,23 +31,22 @@ public class ConfigurationApplicationParameters implements Serializable {
 
     private static final long serialVersionUID = 6239693672327794068L;
 
-    @Schema(description="A record ID")
+    @Schema(description = "A record ID")
     private Integer id;
 
-    @Schema(description="A configuration ID")
+    @Schema(description = "A configuration ID")
     private int configurationId;
 
-    @Schema(description="An application ID")
+    @Schema(description = "An application ID")
     private int applicationId;
 
-    @Schema(description="A flag indicating if version check must be skipped on device")
+    @Schema(description = "A flag indicating if version check must be skipped on device")
     private boolean skipVersionCheck;
 
     /**
      * <p>Constructs new <code>ConfigurationApplicationParameters</code> instance. This implementation does nothing.</p>
      */
-    public ConfigurationApplicationParameters() {
-    }
+    public ConfigurationApplicationParameters() {}
 
     public Integer getId() {
         return id;
@@ -84,11 +82,7 @@ public class ConfigurationApplicationParameters implements Serializable {
 
     @Override
     public String toString() {
-        return "ConfigurationApplicationParameters{" +
-                "id=" + id +
-                ", configurationId=" + configurationId +
-                ", applicationId=" + applicationId +
-                ", skipVersionCheck=" + skipVersionCheck +
-                '}';
+        return "ConfigurationApplicationParameters{" + "id=" + id + ", configurationId=" + configurationId
+                + ", applicationId=" + applicationId + ", skipVersionCheck=" + skipVersionCheck + '}';
     }
 }

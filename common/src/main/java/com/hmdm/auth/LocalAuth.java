@@ -1,12 +1,9 @@
 package com.hmdm.auth;
 
-import jakarta.inject.Inject;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.util.PasswordUtil;
-
-import jakarta.inject.Named;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton

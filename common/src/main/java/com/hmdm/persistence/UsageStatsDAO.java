@@ -21,18 +21,10 @@
 
 package com.hmdm.persistence;
 
+import com.hmdm.persistence.domain.UsageStats;
+import com.hmdm.persistence.mapper.UsageStatsMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.persistence.domain.UsageStats;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.mapper.CommonMapper;
-import com.hmdm.persistence.mapper.CustomerMapper;
-import com.hmdm.persistence.mapper.DeviceMapper;
-import com.hmdm.persistence.mapper.UsageStatsMapper;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
 
 @Singleton
 public class UsageStatsDAO {

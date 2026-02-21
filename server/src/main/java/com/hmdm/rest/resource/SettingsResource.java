@@ -21,6 +21,15 @@
 
 package com.hmdm.rest.resource;
 
+import com.hmdm.persistence.CommonDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.UserRoleSettingsDAO;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.persistence.domain.UserRoleSettings;
+import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -30,23 +39,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
-import com.hmdm.persistence.CustomerDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserRoleSettingsDAO;
-import com.hmdm.persistence.domain.UserRoleSettings;
-import com.hmdm.security.SecurityContext;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import com.hmdm.persistence.CommonDAO;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.rest.json.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag(name = "Settings")
 @Singleton
@@ -62,8 +58,7 @@ public class SettingsResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public SettingsResource() {
-    }
+    public SettingsResource() {}
 
     @Inject
     public SettingsResource(CommonDAO commonDAO, UserRoleSettingsDAO userRoleSettingsDAO, UnsecureDAO unsecureDAO) {
@@ -73,14 +68,13 @@ public class SettingsResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get settings",
-            description = "Gets the current settings"
-    )
+    @Operation(summary = "Get settings", description = "Gets the current settings")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings() {
         try {
-            Settings settings = Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
+            Settings settings =
+                    Optional.ofNullable(this.commonDAO.getSettings()).orElse(new Settings());
             settings.setSingleCustomer(unsecureDAO.isSingleCustomer());
             if (!settings.isSingleCustomer()) {
                 this.commonDAO.loadCustomerSettings(settings);
@@ -93,9 +87,9 @@ public class SettingsResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get user role settings",
-            description = "Gets the current settings for role of the current user"
-    )
+    @Operation(
+            summary = "Get user role settings",
+            description = "Gets the current settings for role of the current user")
     @GET
     @Path("/userRole/{roleId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -116,17 +110,17 @@ public class SettingsResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Save default design",
-            description = "Save the settings for Default Design for mobile application"
-    )
+    @Operation(
+            summary = "Save default design",
+            description = "Save the settings for Default Design for mobile application")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/design")
     public Response updateDefaultDesignSettings(Settings settings) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update settings by user " +
-                    SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update settings by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -139,17 +133,15 @@ public class SettingsResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Save user role common settings",
-            description = "Save the settings for user roles"
-    )
+    @Operation(summary = "Save user role common settings", description = "Save the settings for user roles")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/userRoles/common")
     public Response updateUserRoleCommonSettings(List<UserRoleSettings> settings) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update settings by user " +
-                    SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update settings by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -162,17 +154,15 @@ public class SettingsResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Save language settings",
-            description = "Save the language settings for MDM web application"
-    )
+    @Operation(summary = "Save language settings", description = "Save the language settings for MDM web application")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/lang")
     public Response updateLanguageSettings(Settings settings) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update settings by user " +
-                    SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update settings by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -185,17 +175,15 @@ public class SettingsResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Save misc settings",
-            description = "Save the misc settings for MDM web application"
-    )
+    @Operation(summary = "Save misc settings", description = "Save the misc settings for MDM web application")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/misc")
     public Response updateMiscSettings(Settings settings) {
         if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update settings by user " +
-                    SecurityContext.get().getCurrentUserName());
+            log.error("Unauthorized attempt to update settings by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {

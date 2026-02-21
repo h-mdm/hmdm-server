@@ -21,16 +21,7 @@
 
 package com.hmdm.security.jwt;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-
-import javax.crypto.SecretKey;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.StringUtil;
 import io.jsonwebtoken.Claims;
@@ -40,16 +31,20 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.domain.User;
-
-import jakarta.inject.Named;
 
 /**
- * <p>
- * A provider for JWT tokens.
- * </p>
+ * <p>A provider for JWT tokens.</p>
  *
  * @author isv
  */
@@ -57,43 +52,33 @@ import jakarta.inject.Named;
 public class TokenProvider {
 
     /**
-     * <p>
-     * A logger used for logging various events encountered during the lifecycle.
-     * </p>
+     * <p>A logger used for logging various events encountered during the lifecycle.</p>
      */
     private final Logger log = LoggerFactory.getLogger("JWTAuth");
 
     private static final String TOKEN_KEY = "token";
 
     /**
-     * <p>
-     * A secret key used for JWT tokens generation.
-     * </p>
+     * <p>A secret key used for JWT tokens generation.</p>
      */
     private final SecretKey signingKey;
 
     /**
-     * <p>
-     * A period validity of tokens.
-     * </p>
+     * <p>A period validity of tokens.</p>
      */
     private final long tokenValidityInMilliseconds;
 
     /**
-     * <p>
-     * A period validity of tokens with "Remember Me" option enabled..
-     * </p>
+     * <p>A period validity of tokens with "Remember Me" option enabled..</p>
      */
     private final long tokenValidityInMillisecondsForRememberMe;
 
     /**
-     * <p>
-     * Constructs new <code>TokenProvider</code> instance with specified
-     * configuration.
-     * </p>
+     * <p>Constructs new <code>TokenProvider</code> instance with specified configuration.</p>
      */
     @Inject
-    public TokenProvider(@Named("jwt.secretkey") String jwtSecretKey,
+    public TokenProvider(
+            @Named("jwt.secretkey") String jwtSecretKey,
             @Named("jwt.validity") String jwtValidity,
             @Named("jwt.validityrememberme") String jwtValidityForRememberMe) {
         long defaultValidity = 86400; // 24 hours
@@ -125,15 +110,12 @@ public class TokenProvider {
     }
 
     /**
-     * <p>
-     * Generates new JWT token for the specified authenticated principal.
-     * </p>
+     * <p>Generates new JWT token for the specified authenticated principal.</p>
      *
-     * @param user       a representation of authenticated principal.
-     * @param rememberMe an optional flag indicating if <code>Remember Me</code>
-     *                   option is enabled.
-     * @return a generated JWT token which can be used for further authentications
-     *         of the specified principal.
+     * @param user a representation of authenticated principal.
+     * @param rememberMe an optional flag indicating if <code>Remember Me</code> option is enabled.
+     *
+     * @return a generated JWT token which can be used for further authentications of the specified principal.
      */
     public String createToken(User user, Boolean rememberMe) throws IOException {
         long now = (new Date()).getTime();
@@ -153,13 +135,11 @@ public class TokenProvider {
     }
 
     /**
-     * <p>
-     * Parses the specified JWT token into authenticated principal.
-     * </p>
+     * <p>Parses the specified JWT token into authenticated principal.</p>
      *
      * @param jwtToken a JWT token to be parsed.
-     * @return an authenticated principal presentation constructed from the data
-     *         provided by specified token.
+     *
+     * @return an authenticated principal presentation constructed from the data provided by specified token.
      */
     User getAuthentication(String jwtToken) throws IOException {
         Claims claims = Jwts.parser()
@@ -178,13 +158,11 @@ public class TokenProvider {
     }
 
     /**
-     * <p>
-     * Validates the specified authentication token provided by the client.
-     * </p>
+     * <p>Validates the specified authentication token provided by the client.</p>
      *
      * @param jwtToken a JWT authentication token to be validated.
-     * @return <code>true</code> if specified token is valid; <code>false</code>
-     *         otherwise.
+     *
+     * @return <code>true</code> if specified token is valid; <code>false</code> otherwise.
      */
     boolean validateToken(String jwtToken) {
         try {

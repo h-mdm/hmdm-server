@@ -1,21 +1,20 @@
 package com.hmdm.notification;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hivemq.client.mqtt.MqttClient;
-import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
 import com.hmdm.notification.guice.module.NotificationMqttTaskModule;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Device;
 import com.hmdm.util.BackgroundTaskRunnerService;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Singleton;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PushSenderMqtt implements PushSender {
@@ -42,7 +41,8 @@ public class PushSenderMqtt implements PushSender {
     private boolean isExternal;
 
     @Inject
-    public PushSenderMqtt(@Named("mqtt.server.uri") String serverUri,
+    public PushSenderMqtt(
+            @Named("mqtt.server.uri") String serverUri,
             @Named("mqtt.client.tag") String clientTag,
             @Named("mqtt.external") String mqttExternal,
             @Named("mqtt.auth") boolean mqttAuth,
@@ -96,7 +96,8 @@ public class PushSenderMqtt implements PushSender {
         if (connectSSL) {
             if (!isExternal) {
                 // Embedded broker runs on localhost — skip hostname verification
-                clientBuilder.sslConfig()
+                clientBuilder
+                        .sslConfig()
                         .hostnameVerifier((hostname, session) -> true)
                         .applySslConfig();
             } else {
@@ -108,11 +109,11 @@ public class PushSenderMqtt implements PushSender {
     }
 
     private void connectClient(Mqtt3BlockingClient mqttClient) {
-        var connectBuilder = mqttClient.connectWith()
-                .cleanSession(true);
+        var connectBuilder = mqttClient.connectWith().cleanSession(true);
 
         if (mqttAuth) {
-            connectBuilder.simpleAuth()
+            connectBuilder
+                    .simpleAuth()
                     .username(NotificationMqttTaskModule.MQTT_ADMIN_USERNAME)
                     .password(mqttAdminPassword.getBytes(StandardCharsets.UTF_8))
                     .applySimpleAuth();
@@ -129,13 +130,19 @@ public class PushSenderMqtt implements PushSender {
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 connectClient(mqttClient);
-                log.info("MQTT client connected successfully to {}:{}{}", connectHost, connectPort,
+                log.info(
+                        "MQTT client connected successfully to {}:{}{}",
+                        connectHost,
+                        connectPort,
                         isExternal ? " (external)" : " (embedded)");
                 break;
             } catch (Exception e) {
                 if (attempt < maxRetries) {
-                    log.warn("MQTT connection attempt {} failed, retrying in {}ms: {}",
-                            attempt, RETRY_DELAY_MS, e.getMessage());
+                    log.warn(
+                            "MQTT connection attempt {} failed, retrying in {}ms: {}",
+                            attempt,
+                            RETRY_DELAY_MS,
+                            e.getMessage());
                     Thread.sleep(RETRY_DELAY_MS);
                 } else {
                     throw e;
@@ -156,10 +163,7 @@ public class PushSenderMqtt implements PushSender {
         client = mqttClient;
     }
 
-    /**
-     * Attempts to reconnect to the MQTT broker.
-     * Returns true if reconnection succeeded.
-     */
+    /** Attempts to reconnect to the MQTT broker. Returns true if reconnection succeeded. */
     private boolean reconnect() {
         try {
             log.info("Attempting MQTT reconnection to {}:{}", connectHost, connectPort);
@@ -176,39 +180,44 @@ public class PushSenderMqtt implements PushSender {
     }
 
     @Override
-    public synchronized int send(PushMessage message) {
-        if (client == null) {
-            // Not initialized
+    public int send(PushMessage message) {
+        // Volatile read — no lock needed to check initialisation state
+        Mqtt3BlockingClient localClient = this.client;
+        if (localClient == null) {
             return 0;
         }
-        // Since this method is used by scheduled task service which is impersonated,
-        // we use UnsecureDAO here (which doesn't check the signed user).
+
+        // DB call runs outside any lock — UnsecureDAO is thread-safe
         Device device = unsecureDAO.getDeviceById(message.getDeviceId());
         if (device == null) {
-            // We shouldn't be here!
             return 0;
         }
-        try {
-            String strMessage = "{\"messageType\": \"" + message.getMessageType() + "\"";
-            if (message.getPayload() != null) {
-                strMessage += ", \"payload\": " + message.getPayload();
-            }
-            strMessage += "}";
 
-            byte[] payload = strMessage.getBytes(StandardCharsets.UTF_8);
-            String number = device.getOldNumber() == null ? device.getNumber() : device.getOldNumber();
+        String strMessage = "{\"messageType\": \"" + message.getMessageType() + "\"";
+        if (message.getPayload() != null) {
+            strMessage += ", \"payload\": " + message.getPayload();
+        }
+        strMessage += "}";
+        byte[] payload = strMessage.getBytes(StandardCharsets.UTF_8);
+        String number = device.getOldNumber() == null ? device.getNumber() : device.getOldNumber();
+
+        try {
             if (mqttDelay == 0) {
-                client.publishWith()
-                        .topic(number)
-                        .payload(payload)
-                        .qos(MqttQos.EXACTLY_ONCE)
-                        .send();
+                // Direct publish — synchronize only this short critical section
+                synchronized (this) {
+                    localClient
+                            .publishWith()
+                            .topic(number)
+                            .payload(payload)
+                            .qos(MqttQos.EXACTLY_ONCE)
+                            .send();
+                }
             } else {
+                // BlockingQueue.put() is already thread-safe — no lock needed
                 throttledSender.send(new MqttEnvelope(number, payload, MqttQos.EXACTLY_ONCE));
             }
-
         } catch (Exception e) {
-            log.error("Failed to send MQTT message: " + e.getMessage(), e);
+            log.error("Failed to send MQTT message: {}", e.getMessage(), e);
             // Attempt reconnection on publish failure
             reconnect();
         }

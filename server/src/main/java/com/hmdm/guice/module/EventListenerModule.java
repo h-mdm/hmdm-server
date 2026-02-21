@@ -21,18 +21,17 @@
 
 package com.hmdm.guice.module;
 
-import jakarta.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.ConfigurationUpdatedEventListener;
 import com.hmdm.persistence.DeviceInfoUpdatedEventListener;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.service.DeviceStatusService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>$</p>
@@ -47,12 +46,12 @@ public class EventListenerModule {
 
     private static final Logger logger = LoggerFactory.getLogger(EventListenerModule.class);
 
-
     /**
      * <p>Constructs new <code>EventListenerModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public EventListenerModule(EventService eventService, DeviceMapper deviceMapper, DeviceStatusService deviceStatusService) {
+    public EventListenerModule(
+            EventService eventService, DeviceMapper deviceMapper, DeviceStatusService deviceStatusService) {
         this.eventService = eventService;
         this.deviceMapper = deviceMapper;
         this.deviceStatusService = deviceStatusService;
@@ -75,5 +74,4 @@ public class EventListenerModule {
 
         Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
     }
-
 }

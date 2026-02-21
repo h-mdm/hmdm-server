@@ -22,7 +22,6 @@
 package com.hmdm.rest.json;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
 
 /**
@@ -36,20 +35,19 @@ public class PaginatedData<T> {
     /**
      * <p>A list of collection items for a single page.</p>
      */
-    @Schema(description="A list of collection items for a single page")
+    @Schema(description = "A list of collection items for a single page")
     private List<T> items;
 
     /**
      * <p>A total number of items in collection.</p>
      */
-    @Schema(description="A total number of items in collection")
+    @Schema(description = "A total number of items in collection")
     private long totalItemsCount;
 
     /**
      * <p>Constructs new <code>PaginatedData</code> instance. This implementation does nothing.</p>
      */
-    public PaginatedData() {
-    }
+    public PaginatedData() {}
 
     public PaginatedData(List<T> items, long totalItemsCount) {
         this.items = items;

@@ -28,31 +28,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * <p>
- * A wrapper around the servlet response stream used for capturing the content
- * of the response.
- * </p>
+ * <p>A wrapper around the servlet response stream used for capturing the content of the response.</p>
  *
- * <p>
- * Updated for Jakarta Servlet 6.0 compatibility.
- * </p>
+ * <p>Updated for Jakarta Servlet 6.0 compatibility.</p>
  *
  * @author isv
  */
 public class ServletOutputStreamWrapper extends ServletOutputStream {
 
     /**
-     * <p>
-     * An original servlet response stream wrapped by this wrapper.
-     * </p>
+     * <p>An original servlet response stream wrapped by this wrapper.</p>
      */
     private OutputStream outputStream;
 
     /**
-     * <p>
-     * A copy of the response content collected while client code writes to response
-     * stream.
-     * </p>
+     * <p>A copy of the response content collected while client code writes to response stream.</p>
      */
     private ByteArrayOutputStream copy;
 
@@ -68,9 +58,7 @@ public class ServletOutputStreamWrapper extends ServletOutputStream {
     }
 
     /**
-     * <p>
-     * Gets the content of the response.
-     * </p>
+     * <p>Gets the content of the response.</p>
      *
      * @return a content of the response.
      */
@@ -79,10 +67,7 @@ public class ServletOutputStreamWrapper extends ServletOutputStream {
     }
 
     /**
-     * <p>
-     * Required by Jakarta Servlet 6.0 - checks if data can be written without
-     * blocking.
-     * </p>
+     * <p>Required by Jakarta Servlet 6.0 - checks if data can be written without blocking.</p>
      *
      * @return true since we're always ready to write (synchronous implementation)
      */
@@ -92,16 +77,12 @@ public class ServletOutputStreamWrapper extends ServletOutputStream {
     }
 
     /**
-     * <p>
-     * Required by Jakarta Servlet 6.0 - sets a write listener for async operations.
-     * </p>
+     * <p>Required by Jakarta Servlet 6.0 - sets a write listener for async operations.</p>
      *
-     * @param writeListener the write listener (not used in synchronous
-     *                      implementation)
+     * @param writeListener the write listener (not used in synchronous implementation)
      */
     @Override
     public void setWriteListener(WriteListener writeListener) {
         // Not used in this synchronous implementation
     }
-
 }

@@ -21,26 +21,20 @@
 
 package com.hmdm.rest.resource;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.util.PasswordUtil;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.hmdm.util.PasswordUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -55,10 +49,11 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag(name = "User")
 @Singleton
@@ -75,8 +70,7 @@ public class UserResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public UserResource() {
-    }
+    public UserResource() {}
 
     /**
      * <p>Constructs new <code>UserResource</code> instance. This implementation does nothing.</p>
@@ -89,9 +83,9 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get user details",
-            description = "Returns the details for the user account referenced by the specified ID."
-    )
+    @Operation(
+            summary = "Get user details",
+            description = "Returns the details for the user account referenced by the specified ID.")
     @GET
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -104,36 +98,35 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get current user details",
-            description = "Returns the details for the current user account"
-    )
+    @Operation(summary = "Get current user details", description = "Returns the details for the current user account")
     @GET
     @Path("/current")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCurrentUserDetails() {
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            User userDetails = userDAO.getUserDetails(u.getId());
-            userDetails.setPassword(null);
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    User userDetails = userDAO.getUserDetails(u.getId());
+                    userDetails.setPassword(null);
 
-            return Response.OK(userDetails);
-        }).orElse(Response.OK(null));
+                    return Response.OK(userDetails);
+                })
+                .orElse(Response.OK(null));
     }
 
     // =================================================================================================================
-    @Operation(summary = "List all users",
-            description = "Gets the list of all existing user accounts"
-    )
+    @Operation(summary = "List all users", description = "Gets the list of all existing user accounts")
     @GET
     @Path("/all")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers(@QueryParam("filter") String filter) {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(currentUser -> {
                     if (!SecurityContext.get().hasPermission("settings")) {
-                        logger.error("Unauthorized attempt to access user list by user " +
-                                currentUser.getLogin());
+                        logger.error("Unauthorized attempt to access user list by user " + currentUser.getLogin());
                         return Response.PERMISSION_DENIED();
                     }
                     List<User> userDetails;
@@ -153,84 +146,91 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Update password",
-            description = "Updates the password for current user"
-    )
+    @Operation(summary = "Update password", description = "Updates the password for current user")
     @PUT
     @Path("/current")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePassword(User user) {
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            if (!u.getId().equals(user.getId())) {
-                logger.warn("Failed to update password: u.getId()=" + u.getId() + ", user.getId()=" + user.getId());
-                return Response.PERMISSION_DENIED();
-            }
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    if (!u.getId().equals(user.getId())) {
+                        logger.warn(
+                                "Failed to update password: u.getId()=" + u.getId() + ", user.getId()=" + user.getId());
+                        return Response.PERMISSION_DENIED();
+                    }
 
-            User dbUser = userDAO.findByLoginOrEmail(user.getLogin());
-            return updatePassword(dbUser, user);
-
-        }).orElse(Response.PERMISSION_DENIED());
+                    User dbUser = userDAO.findByLoginOrEmail(user.getLogin());
+                    return updatePassword(dbUser, user);
+                })
+                .orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update user",
-            description = "Creates a new user account (if id is not provided) or update existing one otherwise."
-    )
+    @Operation(
+            summary = "Create or update user",
+            description = "Creates a new user account (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(User user) {
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
-                logger.warn("Failed to update user {}: must be org admin or superadmin", user.getLogin());
-                return Response.PERMISSION_DENIED();
-            }
-            try {
-                String userEmail = user.getEmail();
-                if (userEmail != null && !userEmail.equals("")) {
-                    User dbUser = unsecureDAO.findByEmail(userEmail);
-                    if (dbUser != null && !dbUser.getId().equals(user.getId())) {
-                        logger.warn("User with email {} already exists, id {}", userEmail, dbUser.getId());
-                        return Response.ERROR("error.duplicate.email");
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                        logger.warn("Failed to update user {}: must be org admin or superadmin", user.getLogin());
+                        return Response.PERMISSION_DENIED();
                     }
-                }
-                Settings settings = Optional.ofNullable(settingsDAO.getSettings()).orElse(new Settings());
-                if (user.getId() == null) {
-                    User dbUser = unsecureDAO.findByLogin(user.getLogin());
-                    if (dbUser != null) {
-                        logger.error("Failed to create user {}: duplicate login", user.getLogin());
-                        return Response.ERROR("error.duplicate.login");
-                    }
-                    // Password is required for new users only
-                    if (user.getNewPassword() == null) {
-                        logger.warn("Failed to create user {}: empty password", user.getLogin());
-                        return Response.ERROR("error.password.empty");
-                    }
-                    user.setCustomerId(SecurityContext.get().getCurrentUser().get().getCustomerId());
-                    updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
-                    this.userDAO.insert(user);
-                } else {
-                    User dbUser = unsecureDAO.findByLogin(user.getLogin());
-                    if (dbUser != null && !user.getId().equals(dbUser.getId())) {
-                        logger.error("Failed to create user {}: duplicate login", user.getLogin());
-                        return Response.ERROR("error.duplicate.login");
-                    }
-                    this.userDAO.updateUserMainDetails(user);
-                    // Update password only if it's specified
-                    if (user.getNewPassword() != null && !user.getNewPassword().isEmpty()) {
-                        updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
-                        this.userDAO.updatePassword(user);
-                    }
-                }
+                    try {
+                        String userEmail = user.getEmail();
+                        if (userEmail != null && !userEmail.equals("")) {
+                            User dbUser = unsecureDAO.findByEmail(userEmail);
+                            if (dbUser != null && !dbUser.getId().equals(user.getId())) {
+                                logger.warn("User with email {} already exists, id {}", userEmail, dbUser.getId());
+                                return Response.ERROR("error.duplicate.email");
+                            }
+                        }
+                        Settings settings =
+                                Optional.ofNullable(settingsDAO.getSettings()).orElse(new Settings());
+                        if (user.getId() == null) {
+                            User dbUser = unsecureDAO.findByLogin(user.getLogin());
+                            if (dbUser != null) {
+                                logger.error("Failed to create user {}: duplicate login", user.getLogin());
+                                return Response.ERROR("error.duplicate.login");
+                            }
+                            // Password is required for new users only
+                            if (user.getNewPassword() == null) {
+                                logger.warn("Failed to create user {}: empty password", user.getLogin());
+                                return Response.ERROR("error.password.empty");
+                            }
+                            user.setCustomerId(
+                                    SecurityContext.get().getCurrentUser().get().getCustomerId());
+                            updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
+                            this.userDAO.insert(user);
+                        } else {
+                            User dbUser = unsecureDAO.findByLogin(user.getLogin());
+                            if (dbUser != null && !user.getId().equals(dbUser.getId())) {
+                                logger.error("Failed to create user {}: duplicate login", user.getLogin());
+                                return Response.ERROR("error.duplicate.login");
+                            }
+                            this.userDAO.updateUserMainDetails(user);
+                            // Update password only if it's specified
+                            if (user.getNewPassword() != null
+                                    && !user.getNewPassword().isEmpty()) {
+                                updatePasswordWithReset(user, user.getNewPassword(), settings.isPasswordReset());
+                                this.userDAO.updatePassword(user);
+                            }
+                        }
 
-                return Response.OK();
-            } catch (Exception e) {
-                logger.error("Failed to create user {}: ", user.getLogin(), e);
-                e.printStackTrace();
-                return Response.ERROR("error.duplicate.login");
-            }
-        }).orElse(Response.PERMISSION_DENIED());
+                        return Response.OK();
+                    } catch (Exception e) {
+                        logger.error("Failed to create user {}: ", user.getLogin(), e);
+                        e.printStackTrace();
+                        return Response.ERROR("error.duplicate.login");
+                    }
+                })
+                .orElse(Response.PERMISSION_DENIED());
     }
 
     private User updatePasswordWithReset(User user, String password, boolean reset) {
@@ -249,70 +249,69 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Delete user",
-            description = "Deletes a user account referenced by the specified ID"
-    )
+    @Operation(summary = "Delete user", description = "Deletes a user account referenced by the specified ID")
     @DELETE
     @Path("/other/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") @Parameter(description = "User ID") int id) {
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
-                logger.warn("Failed to delete user {}: must be org admin or superadmin", id);
-                return Response.PERMISSION_DENIED();
-            }
-            try {
-                userDAO.deleteUser(id);
-                return Response.OK();
-            } catch (Exception e) {
-                logger.warn("Failed to delete user", e);
-                return Response.ERROR(e.getMessage());
-            }
-        }).orElse(Response.PERMISSION_DENIED());
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                        logger.warn("Failed to delete user {}: must be org admin or superadmin", id);
+                        return Response.PERMISSION_DENIED();
+                    }
+                    try {
+                        userDAO.deleteUser(id);
+                        return Response.OK();
+                    } catch (Exception e) {
+                        logger.warn("Failed to delete user", e);
+                        return Response.ERROR(e.getMessage());
+                    }
+                })
+                .orElse(Response.PERMISSION_DENIED());
     }
 
-
     // =================================================================================================================
-    @Operation(summary = "Update user's details",
-            description = "Update user's name and email."
-    )
+    @Operation(summary = "Update user's details", description = "Update user's name and email.")
     @PUT
     @Path("/details")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUserDetails(User user) {
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            User dbUser = userDAO.getUserDetails(user.getId());
-            if (dbUser == null) {
-                return Response.ERROR("error.user.not.found");
-            }
-            if (user.getEmail() == null || user.getEmail().trim().equals("")) {
-                dbUser.setEmail("");
-            } else if (!user.getEmail().equalsIgnoreCase(dbUser.getEmail())) {
-                // Email must be unique
-                User user2 = unsecureDAO.findByEmail(user.getEmail());
-                if (user2 != null) {
-                    logger.warn("User with email {} already exists, id {}", user.getEmail(), user2.getId());
-                    return Response.ERROR("error.duplicate.email");
-                }
-                dbUser.setEmail(user.getEmail());
-            }
-            dbUser.setName(user.getName());
-            try {
-                userDAO.updateUserMainDetails(dbUser);
-                return Response.OK("success.operation.completed", dbUser);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Response.INTERNAL_ERROR();
-            }
-        }).orElse(Response.PERMISSION_DENIED());
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    User dbUser = userDAO.getUserDetails(user.getId());
+                    if (dbUser == null) {
+                        return Response.ERROR("error.user.not.found");
+                    }
+                    if (user.getEmail() == null || user.getEmail().trim().equals("")) {
+                        dbUser.setEmail("");
+                    } else if (!user.getEmail().equalsIgnoreCase(dbUser.getEmail())) {
+                        // Email must be unique
+                        User user2 = unsecureDAO.findByEmail(user.getEmail());
+                        if (user2 != null) {
+                            logger.warn("User with email {} already exists, id {}", user.getEmail(), user2.getId());
+                            return Response.ERROR("error.duplicate.email");
+                        }
+                        dbUser.setEmail(user.getEmail());
+                    }
+                    dbUser.setName(user.getName());
+                    try {
+                        userDAO.updateUserMainDetails(dbUser);
+                        return Response.OK("success.operation.completed", dbUser);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return Response.INTERNAL_ERROR();
+                    }
+                })
+                .orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================
-    @Operation(summary = "List user roles",
-            description = "Gets the list of all available user roles"
-    )
+    @Operation(summary = "List user roles", description = "Gets the list of all available user roles")
     @GET
     @Path("/roles")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -334,8 +333,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomerUsersBySuperAdmin(@PathParam("customerId") Integer customerId) {
         if (SecurityContext.get().isSuperAdmin()) {
-            return Response.OK(userDAO.findAllCustomerUsers(customerId)
-                    .stream()
+            return Response.OK(userDAO.findAllCustomerUsers(customerId).stream()
                     .peek(user -> user.setPassword(null))
                     .collect(Collectors.toList()));
         } else {
@@ -362,44 +360,51 @@ public class UserResource {
     @GET
     @Path("/impersonate/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@PathParam("id") Integer id,
-                                        @Context HttpServletRequest req,
-                                        @Context HttpServletResponse res) throws IOException {
+    public Response login(
+            @PathParam("id") Integer id, @Context HttpServletRequest req, @Context HttpServletResponse res)
+            throws IOException {
 
-        return SecurityContext.get().getCurrentUser().map(u -> {
-            if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
-                logger.warn("Failed to impersonate as user {}: must be admin", id);
-                return Response.PERMISSION_DENIED();
-            }
+        return SecurityContext.get()
+                .getCurrentUser()
+                .map(u -> {
+                    if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
+                        logger.warn("Failed to impersonate as user {}: must be admin", id);
+                        return Response.PERMISSION_DENIED();
+                    }
 
-            User user = this.userDAO.getUserDetails(id);
-            if (user == null) {
-                logger.warn("Failed to impersonate as user {}: user not found", id);
-                return Response.INTERNAL_ERROR();
-            }
-            if (u.getCustomerId() != user.getCustomerId() && !u.getUserRole().isSuperAdmin()) {
-                logger.warn("Failed to impersonate as user {}: belongs to another customer {}", id, u.getCustomerId());
-                return Response.PERMISSION_DENIED();
-            }
+                    User user = this.userDAO.getUserDetails(id);
+                    if (user == null) {
+                        logger.warn("Failed to impersonate as user {}: user not found", id);
+                        return Response.INTERNAL_ERROR();
+                    }
+                    if (u.getCustomerId() != user.getCustomerId()
+                            && !u.getUserRole().isSuperAdmin()) {
+                        logger.warn(
+                                "Failed to impersonate as user {}: belongs to another customer {}",
+                                id,
+                                u.getCustomerId());
+                        return Response.PERMISSION_DENIED();
+                    }
 
-            HttpSession session = req.getSession( false );
-            if ( session != null ) {
-                session.invalidate();
-            }
+                    HttpSession session = req.getSession(false);
+                    if (session != null) {
+                        session.invalidate();
+                    }
 
-            user.setPassword(null);
+                    user.setPassword(null);
 
-            HttpSession userSession = req.getSession(true);
-            userSession.setAttribute( sessionCredentials, user );
+                    HttpSession userSession = req.getSession(true);
+                    userSession.setAttribute(sessionCredentials, user);
 
-            return Response.OK( user );
-
-        }).orElse(Response.PERMISSION_DENIED());
+                    return Response.OK(user);
+                })
+                .orElse(Response.PERMISSION_DENIED());
     }
 
     private Response updatePassword(User dbUser, User user) {
-        if (user.getNewPassword() == null || user.getOldPassword() == null ||
-                !PasswordUtil.passwordMatch(user.getOldPassword(), dbUser.getPassword())) {
+        if (user.getNewPassword() == null
+                || user.getOldPassword() == null
+                || !PasswordUtil.passwordMatch(user.getOldPassword(), dbUser.getPassword())) {
             logger.warn("Failed to update password for {}: current password not match", user.getLogin());
             return Response.ERROR("error.password.wrong");
         }
@@ -418,6 +423,4 @@ public class UserResource {
         logger.info("Password for {} is updated", user.getLogin());
         return Response.OK("success.operation.completed", dbUser);
     }
-
-
 }

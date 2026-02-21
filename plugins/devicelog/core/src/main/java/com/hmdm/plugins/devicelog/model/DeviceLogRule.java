@@ -21,10 +21,9 @@
 
 package com.hmdm.plugins.devicelog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.rest.json.LookupItem;
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -38,44 +37,44 @@ import java.util.List;
 public abstract class DeviceLogRule implements Serializable {
 
     private static final long serialVersionUID = -6168623766690469626L;
-    @Schema(description="A name of the rule", requiredMode = Schema.RequiredMode.REQUIRED)
+
+    @Schema(description = "A name of the rule", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @Schema(description="A flag indicating if rule is active", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "A flag indicating if rule is active", requiredMode = Schema.RequiredMode.REQUIRED)
     private boolean active;
 
-    @Schema(description="An ID referencing the application", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "An ID referencing the application", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer applicationId;
 
-    @Schema(description="A severity level")
+    @Schema(description = "A severity level")
     private LogLevel severity;
 
-    @Schema(description="A filter for log rule")
+    @Schema(description = "A filter for log rule")
     private String filter;
 
-    @Schema(description="An ID referencing the device group", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "An ID referencing the device group", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer groupId;
 
-    @Schema(description="An ID referencing the configuration", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "An ID referencing the configuration", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer configurationId;
 
-    @Schema(description="A package ID for application")
+    @Schema(description = "A package ID for application")
     private String applicationPkg;
 
-    @Schema(description="A name of the device group")
+    @Schema(description = "A name of the device group")
     private String groupName;
 
-    @Schema(description="A name of the configuration")
+    @Schema(description = "A name of the configuration")
     private String configurationName;
 
-    @Schema(description="A list of devices related to rules")
+    @Schema(description = "A list of devices related to rules")
     private List<LookupItem> devices;
 
     /**
      * <p>Constructs new <code>DeviceLogRule</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogRule() {
-    }
+    public DeviceLogRule() {}
 
     public String getName() {
         return name;
@@ -174,18 +173,10 @@ public abstract class DeviceLogRule implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceLogRule{" +
-                "name='" + name + '\'' +
-                ", active=" + active +
-                ", applicationId=" + applicationId +
-                ", severity=" + severity +
-                ", filter='" + filter + '\'' +
-                ", groupId=" + groupId +
-                ", configurationId=" + configurationId +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                ", groupName='" + groupName + '\'' +
-                ", configurationName='" + configurationName + '\'' +
-                ", devices=" + devices +
-                '}';
+        return "DeviceLogRule{" + "name='" + name + '\'' + ", active=" + active + ", applicationId=" + applicationId
+                + ", severity=" + severity + ", filter='" + filter + '\'' + ", groupId=" + groupId
+                + ", configurationId=" + configurationId + ", applicationPkg='" + applicationPkg + '\''
+                + ", groupName='" + groupName + '\'' + ", configurationName='" + configurationName + '\'' + ", devices="
+                + devices + '}';
     }
 }

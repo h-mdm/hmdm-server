@@ -21,9 +21,8 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 @Schema(description = "A request to search the customers account")
@@ -42,8 +41,7 @@ public class CustomerSearchRequest implements Serializable {
     /**
      * <p>Constructs new <code>CustomerSearchRequest</code> instance. This implementation does nothing.</p>
      */
-    public CustomerSearchRequest() {
-    }
+    public CustomerSearchRequest() {}
 
     public int getCurrentPage() {
         return currentPage;
@@ -103,16 +101,8 @@ public class CustomerSearchRequest implements Serializable {
 
     @Override
     public String toString() {
-        return "CustomerSearchRequest{" +
-                "currentPage=" + currentPage +
-                ", pageSize=" + pageSize +
-                ", searchValue='" + searchValue + '\'' +
-                ", sortValue='" + sortValue + '\'' +
-                ", sortDirection='" + sortDirection + '\'' +
-                ", accountType=" + accountType +
-                ", customerStatus='" + customerStatus + '\'' +
-                '}';
+        return "CustomerSearchRequest{" + "currentPage=" + currentPage + ", pageSize=" + pageSize + ", searchValue='"
+                + searchValue + '\'' + ", sortValue='" + sortValue + '\'' + ", sortDirection='" + sortDirection + '\''
+                + ", accountType=" + accountType + ", customerStatus='" + customerStatus + '\'' + '}';
     }
-
-    
 }

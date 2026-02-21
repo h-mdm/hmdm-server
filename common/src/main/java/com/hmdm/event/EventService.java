@@ -21,20 +21,19 @@
 
 package com.hmdm.event;
 
+import com.hmdm.util.BackgroundTaskRunnerService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import com.hmdm.util.BackgroundTaskRunnerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>A service to be used for establishing the communication </p>
+ * <p>A service to be used for establishing the communication</p>
  *
  * @author isv
  */
@@ -92,5 +91,4 @@ public class EventService {
             logger.error("Unexpected error when firing event: {}", event, e);
         }
     }
-
 }

@@ -21,20 +21,15 @@
 
 package com.hmdm.rest.resource;
 
-import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.UsageStatsDAO;
-import com.hmdm.persistence.domain.Icon;
 import com.hmdm.persistence.domain.UsageStats;
 import com.hmdm.rest.json.Response;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource providing interface to usage statistics collection functionality.</p>
@@ -49,8 +44,7 @@ public class StatsResource {
 
     private UsageStatsDAO usageStatsDAO;
 
-    public StatsResource() {
-    }
+    public StatsResource() {}
 
     /**
      * <p>Constructs new <code>StatsResource</code> instance. This implementation does nothing.</p>
@@ -67,5 +61,4 @@ public class StatsResource {
         usageStatsDAO.insertUsageStats(usageStats);
         return Response.OK();
     }
-
 }

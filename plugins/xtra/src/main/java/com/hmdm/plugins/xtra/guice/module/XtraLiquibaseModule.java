@@ -22,41 +22,28 @@
 package com.hmdm.plugins.xtra.guice.module;
 
 import com.hmdm.guice.module.AbstractLiquibaseModule;
+import jakarta.servlet.ServletContext;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
-import jakarta.servlet.ServletContext;
-
 /**
- * <p>
- * A module used for initializing and managing the state of the database tables
- * related to <code>Xtra</code>
- * plugin.
- * </p>
+ * <p>A module used for initializing and managing the state of the database tables related to <code>Xtra</code> plugin.</p>
  *
  * @author isv
  */
 public class XtraLiquibaseModule extends AbstractLiquibaseModule {
 
     /**
-     * <p>
-     * Constructs new <code>XtraLiquibaseModule</code> instance. This implementation
-     * does nothing.
-     * </p>
+     * <p>Constructs new <code>XtraLiquibaseModule</code> instance. This implementation does nothing.</p>
      */
     public XtraLiquibaseModule(ServletContext context) {
         super(context);
     }
 
     /**
-     * <p>
-     * Gets the path to the DB change log to be used by this module.
-     * </p>
+     * <p>Gets the path to the DB change log to be used by this module.</p>
      *
-     * <p>
-     * Plugins MUST override this method to provide the path to specific Db change
-     * log.
-     * </p>
+     * <p>Plugins MUST override this method to provide the path to specific Db change log.</p>
      *
      * @return a path to resource with Db change log.
      */
@@ -67,9 +54,7 @@ public class XtraLiquibaseModule extends AbstractLiquibaseModule {
     }
 
     /**
-     * <p>
-     * Gets the resource accessor to be used for loading the change log file.
-     * </p>
+     * <p>Gets the resource accessor to be used for loading the change log file.</p>
      *
      * @return a resource accessor for change log file.
      */

@@ -22,8 +22,6 @@
 package com.hmdm.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.ConfigurationFileMapper;
 import com.hmdm.persistence.mapper.ConfigurationMapper;
@@ -31,15 +29,15 @@ import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.rest.json.DeviceConfigurationFile;
 import com.hmdm.rest.json.DeviceInfo;
 import com.hmdm.util.ApplicationUtil;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
-
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>$</p>
@@ -48,6 +46,7 @@ import java.util.function.BiPredicate;
 public class DeviceStatusService {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceStatusService.class);
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private final DeviceMapper deviceMapper;
     private final ConfigurationMapper configurationMapper;
@@ -57,9 +56,10 @@ public class DeviceStatusService {
      * <p>Constructs new <code>DeviceStatusService</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public DeviceStatusService(DeviceMapper deviceMapper,
-                               ConfigurationMapper configurationMapper,
-                               ConfigurationFileMapper configurationFileMapper) {
+    public DeviceStatusService(
+            DeviceMapper deviceMapper,
+            ConfigurationMapper configurationMapper,
+            ConfigurationFileMapper configurationFileMapper) {
         this.deviceMapper = deviceMapper;
         this.configurationMapper = configurationMapper;
         this.configurationFileMapper = configurationFileMapper;
@@ -76,20 +76,19 @@ public class DeviceStatusService {
                 if (dbDevice.getInfo() != null) {
                     if (!dbDevice.getInfo().trim().isEmpty()) {
                         final String deviceInfoString = dbDevice.getInfo();
-                        ObjectMapper jsonMapper = new ObjectMapper();
-                        DeviceInfo info = jsonMapper.readValue(deviceInfoString, DeviceInfo.class);
+                        DeviceInfo info = JSON_MAPPER.readValue(deviceInfoString, DeviceInfo.class);
 
                         deviceConfigFilesStatus = evaluateDeviceConfigurationFilesStatus(dbDevice, info);
                         deviceApplicatiosStatus = evaluateDeviceApplicationsStatus(dbDevice, info);
                     }
                 }
 
-                this.deviceMapper.updateDeviceStatuses(dbDevice.getId(), deviceConfigFilesStatus, deviceApplicatiosStatus);
-                
+                this.deviceMapper.updateDeviceStatuses(
+                        dbDevice.getId(), deviceConfigFilesStatus, deviceApplicatiosStatus);
+
             } catch (IOException e) {
                 logger.error("Failed to parse JSON data from info property", e);
             }
-
         }
     }
 
@@ -98,10 +97,12 @@ public class DeviceStatusService {
         AtomicInteger notRemovedCount = new AtomicInteger();
         AtomicInteger notInstalledCount = new AtomicInteger();
 
-        final List<Application> configApplications = this.configurationMapper.getPlainConfigurationAppsOptimized(dbDevice.getConfigurationId());
+        final List<Application> configApplications =
+                this.configurationMapper.getPlainConfigurationAppsOptimized(dbDevice.getConfigurationId());
 
         configApplications.forEach(configApp -> {
-            // Do not test apps without URL (they are mostly system apps) as well as web pages
+            // Do not test apps without URL (they are mostly system apps) as well as web
+            // pages
             if ((configApp.getUrl() == null && configApp.getUrlArm64() == null && configApp.getUrlArmeabi() == null)
                     || configApp.getType() != ApplicationType.app) {
                 return;
@@ -144,8 +145,8 @@ public class DeviceStatusService {
     }
 
     private DeviceConfigFilesStatus evaluateDeviceConfigurationFilesStatus(Device dbDevice, DeviceInfo info) {
-        final List<ConfigurationFile> configurationFiles
-                = this.configurationFileMapper.getConfigurationFiles(dbDevice.getConfigurationId());
+        final List<ConfigurationFile> configurationFiles =
+                this.configurationFileMapper.getConfigurationFiles(dbDevice.getConfigurationId());
 
         AtomicInteger correctCount = new AtomicInteger();
         AtomicInteger notInstalledCount = new AtomicInteger();
@@ -184,7 +185,6 @@ public class DeviceStatusService {
         }
     }
 
-
     /**
      * <p>Checks if specified application versions are equal. Removes all non-digit characters from version numbers when
      * analyzing.</p>
@@ -193,11 +193,10 @@ public class DeviceStatusService {
         String v1d = ApplicationUtil.normalizeVersion(v1);
         String v2d = ApplicationUtil.normalizeVersion(v2);
         return v1d.equals(v2d);
-
     };
 
     /**
-     * <p>Checks if the installed version is up to date. </p>
+     * <p>Checks if the installed version is up to date.</p>
      */
     BiPredicate<String, String> isVersionUpToDate = (installed, required) -> {
         return compareVersions(installed, required) >= 0;
@@ -224,7 +223,8 @@ public class DeviceStatusService {
                 } else if (n1 > n2) {
                     return 1;
                 }
-                // If major version numbers are equals, continue to compare minor version numbers
+                // If major version numbers are equals, continue to compare minor version
+                // numbers
             } catch (Exception e) {
                 return 0;
             }
@@ -239,5 +239,4 @@ public class DeviceStatusService {
         }
         return 0;
     }
-
 }

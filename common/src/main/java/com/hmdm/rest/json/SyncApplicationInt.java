@@ -21,11 +21,7 @@
 
 package com.hmdm.rest.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationType;
-import com.hmdm.persistence.domain.Configuration;
-
-import java.util.List;
 
 /**
  * <p>An interface for the application records included into response sent to device in response to request for

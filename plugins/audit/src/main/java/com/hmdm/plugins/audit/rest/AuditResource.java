@@ -21,25 +21,23 @@
 
 package com.hmdm.plugins.audit.rest;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.plugins.audit.persistence.AuditDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.rest.json.AuditLogFilter;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource to be used for accessing the data for <code>Audit</code> log records.</p>
@@ -48,7 +46,7 @@ import java.util.List;
  */
 @Singleton
 @Path("/plugins/audit")
-@Tag(name="Audit")
+@Tag(name = "Audit")
 public class AuditResource {
 
     private static final Logger logger = LoggerFactory.getLogger(AuditResource.class);
@@ -58,8 +56,7 @@ public class AuditResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public AuditResource() {
-    }
+    public AuditResource() {}
 
     /**
      * <p>Constructs new <code>AuditResource</code> instance. This implementation does nothing.</p>
@@ -73,18 +70,19 @@ public class AuditResource {
      * <p>Gets the list of audit log records matching the specified filter.</p>
      *
      * @param filter a filter to be used for filtering the records.
+     *
      * @return a response with list of audit log records matching the specified filter.
      */
-    @Operation(summary = "Search logs",
-            description = "Gets the list of audit log records matching the specified filter"
-    )
+    @Operation(
+            summary = "Search logs",
+            description = "Gets the list of audit log records matching the specified filter")
     @POST
     @Path("/private/log/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLogs(AuditLogFilter filter) {
         if (!SecurityContext.get().hasPermission("plugin_audit_access")) {
-            logger.error("Unauthorized attempt to get the audit log by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to get the audit log by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -97,5 +95,4 @@ public class AuditResource {
             return Response.INTERNAL_ERROR();
         }
     }
-
 }

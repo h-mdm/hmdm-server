@@ -21,12 +21,11 @@
 
 package com.hmdm.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.persistence.mapper.IconMapper;
 import com.hmdm.security.SecurityException;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 /**
@@ -54,11 +53,13 @@ public class IconDAO extends AbstractDAO<Icon> {
      * <p>Inserts new record for the specified icon.</p>
      *
      * @param icon an icon to be inserted into DB.
+     *
      * @return a created icon.
      */
     public Icon insertIcon(Icon icon) {
         insertRecord(icon, this.iconMapper::insertIcon);
-        return getSingleRecord(() -> this.iconMapper.getIconById(icon.getId()), SecurityException::onIconAccessViolation);
+        return getSingleRecord(
+                () -> this.iconMapper.getIconById(icon.getId()), SecurityException::onIconAccessViolation);
     }
 
     public Icon updateIcon(Icon icon) {
@@ -76,11 +77,15 @@ public class IconDAO extends AbstractDAO<Icon> {
     }
 
     public List<Icon> getAllIconsByValue(String value) {
-        return getListWithCurrentUser(currentUser -> this.iconMapper.getAllIconsByValue(currentUser.getCustomerId(), "%" + value + "%"));
+        return getListWithCurrentUser(
+                currentUser -> this.iconMapper.getAllIconsByValue(currentUser.getCustomerId(), "%" + value + "%"));
     }
 
     public void removeById(Integer id) {
-        updateById(id, this.iconMapper::getById, icon -> this.iconMapper.removeById(icon.getId()),
+        updateById(
+                id,
+                this.iconMapper::getById,
+                icon -> this.iconMapper.removeById(icon.getId()),
                 SecurityException::onIconAccessViolation);
     }
 

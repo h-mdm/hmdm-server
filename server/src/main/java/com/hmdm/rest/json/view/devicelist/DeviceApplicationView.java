@@ -25,22 +25,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
- * <p>A wrapper around the {@link Application} object providing the view suitable for the <code>Device List</code> view
- * of server application. The wrapped application object represents an application installed on device.</p>
+ * <p>A wrapper around the {@link Application} object providing the view suitable for the <code>Device List</code> view of
+ * server application. The wrapped application object represents an application installed on device.</p>
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"application"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"application"},
+        ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "A specification of a single application installed and used on mobile device")
 public class DeviceApplicationView implements Serializable {
 
     private static final long serialVersionUID = 1086525298150378152L;
-    
+
     /**
      * <p>A wrapped application object.</p>
      */
@@ -53,12 +54,12 @@ public class DeviceApplicationView implements Serializable {
         this.application = application;
     }
 
-    @Schema(description="A package ID of application")
+    @Schema(description = "A package ID of application")
     public String getPkg() {
         return application.getPkg();
     }
 
-    @Schema(description="A version of application")
+    @Schema(description = "A version of application")
     public String getVersion() {
         return application.getVersion();
     }

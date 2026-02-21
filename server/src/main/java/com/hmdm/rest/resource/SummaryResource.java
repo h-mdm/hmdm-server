@@ -27,19 +27,16 @@ import com.hmdm.persistence.domain.SummaryConfigItem;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.SummaryResponse;
 import com.hmdm.service.DeviceApplicationsStatus;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag(name = "Summary")
 @Singleton
@@ -53,8 +50,7 @@ public class SummaryResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public SummaryResource() {
-    }
+    public SummaryResource() {}
 
     @Inject
     public SummaryResource(DeviceDAO deviceDAO) {
@@ -62,9 +58,7 @@ public class SummaryResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get device statistics",
-            description = "Get statistics of device enrollment"
-    )
+    @Operation(summary = "Get device statistics", description = "Get statistics of device enrollment")
     @GET
     @Path("/devices")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,8 +79,8 @@ public class SummaryResource {
 
         summaryResponse.setDevicesTotal(deviceDAO.getTotalDevicesCount());
         summaryResponse.setDevicesEnrolled(deviceDAO.countEnrolled(0l));
-        summaryResponse.setDevicesEnrolledLastMonth(deviceDAO.countEnrolled(
-                System.currentTimeMillis() - 30 * 86400 * 1000l));
+        summaryResponse.setDevicesEnrolledLastMonth(
+                deviceDAO.countEnrolled(System.currentTimeMillis() - 30 * 86400 * 1000l));
 
         // Top 5 configs by devices
         DeviceSummaryRequest condition = new DeviceSummaryRequest();
@@ -96,11 +90,12 @@ public class SummaryResource {
         summaryResponse.setTopConfigs(new LinkedList<>());
         for (SummaryConfigItem summaryConfigItem : topConfigs) {
             summaryResponse.getTopConfigs().add(summaryConfigItem.getName());
-        };
+        }
+        ;
 
         // Offline devices
         long now = System.currentTimeMillis();
-        condition.setMaxOnlineTime(now - 3600*1000l);
+        condition.setMaxOnlineTime(now - 3600 * 1000l);
         List<SummaryConfigItem> offline = deviceDAO.getSummaryByConfig(condition, topConfigs);
         summaryResponse.setStatusOfflineByConfig(new LinkedList<>());
         for (SummaryConfigItem item : offline) {
@@ -108,8 +103,8 @@ public class SummaryResource {
         }
 
         // Idle devices
-        condition.setMinOnlineTime(now - 3600*4000l);
-        condition.setMaxOnlineTime(now - 3600*1000l);
+        condition.setMinOnlineTime(now - 3600 * 4000l);
+        condition.setMaxOnlineTime(now - 3600 * 1000l);
         List<SummaryConfigItem> idle = deviceDAO.getSummaryByConfig(condition, topConfigs);
         summaryResponse.setStatusIdleByConfig(new LinkedList<>());
         for (SummaryConfigItem item : idle) {
@@ -117,7 +112,7 @@ public class SummaryResource {
         }
 
         // Online devices
-        condition.setMinOnlineTime(now - 3600*1000l);
+        condition.setMinOnlineTime(now - 3600 * 1000l);
         condition.setMaxOnlineTime(null);
         List<SummaryConfigItem> online = deviceDAO.getSummaryByConfig(condition, topConfigs);
         summaryResponse.setStatusOnlineByConfig(new LinkedList<>());
@@ -155,5 +150,4 @@ public class SummaryResource {
 
         return Response.OK(summaryResponse);
     }
-
 }

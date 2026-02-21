@@ -23,7 +23,6 @@ package com.hmdm.plugins.devicelog.persistence.postgres.dao.domain;
 
 import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
-
 import java.util.ArrayList;
 
 /**
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 public class PostgresDeviceLogPluginSettings extends DeviceLogPluginSettings implements CustomerData {
 
     private static final long serialVersionUID = -6329947142252659953L;
-    
+
     /**
      * <p>An ID of a setting record.</p>
      */
@@ -80,5 +79,4 @@ public class PostgresDeviceLogPluginSettings extends DeviceLogPluginSettings imp
     public String getIdentifier() {
         return getId() == null ? null : getId().toString();
     }
-
 }

@@ -22,7 +22,6 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -49,8 +48,7 @@ public class UsageStats implements Serializable {
     private String arch;
     private String os;
 
-    public UsageStats() {
-    }
+    public UsageStats() {}
 
     public Integer getId() {
         return id;
@@ -171,39 +169,17 @@ public class UsageStats implements Serializable {
 
     @Override
     public String toString() {
-        return "UsageStats{" +
-                "id=" + id +
-                ", ts=" + ts +
-                ", instanceId='" + instanceId + '\'' +
-                ", webVersion='" + webVersion + '\'' +
-                ", community=" + community +
-                ", devicesTotal=" + devicesTotal +
-                ", devicesOnline=" + devicesOnline +
-                ", cpuTotal=" + cpuTotal +
-                ", cpuUsed=" + cpuUsed +
-                ", ramTotal=" + ramTotal +
-                ", ramUsed=" + ramUsed +
-                ", scheme=" + scheme +
-                ", arch=" + arch +
-                ", os=" + os +
-                '}';
+        return "UsageStats{" + "id=" + id + ", ts=" + ts + ", instanceId='" + instanceId + '\'' + ", webVersion='"
+                + webVersion + '\'' + ", community=" + community + ", devicesTotal=" + devicesTotal + ", devicesOnline="
+                + devicesOnline + ", cpuTotal=" + cpuTotal + ", cpuUsed=" + cpuUsed + ", ramTotal=" + ramTotal
+                + ", ramUsed=" + ramUsed + ", scheme=" + scheme + ", arch=" + arch + ", os=" + os + '}';
     }
 
     public String toJsonString() {
-        return "{" +
-                "\"ts\":" + ts + "," +
-                "\"instanceId\":\"" + instanceId + "\"," +
-                "\"webVersion\":\"" + webVersion + "\"," +
-                "\"community\":" + community + "," +
-                "\"devicesTotal\":" + devicesTotal + "," +
-                "\"devicesOnline\":" + devicesOnline + "," +
-                "\"cpuTotal\":" + cpuTotal + "," +
-                "\"cpuUsed\":" + cpuUsed + "," +
-                "\"ramTotal\":" + ramTotal + "," +
-                "\"ramUsed\":" + ramUsed + "," +
-                "\"scheme\":\"" + scheme + "\"," +
-                "\"arch\":\"" + arch + "\"," +
-                "\"os\":\"" + os + "\"" +
-                "}";
+        return "{" + "\"ts\":" + ts + "," + "\"instanceId\":\"" + instanceId + "\"," + "\"webVersion\":\"" + webVersion
+                + "\"," + "\"community\":" + community + "," + "\"devicesTotal\":" + devicesTotal + ","
+                + "\"devicesOnline\":" + devicesOnline + "," + "\"cpuTotal\":" + cpuTotal + "," + "\"cpuUsed\":"
+                + cpuUsed + "," + "\"ramTotal\":" + ramTotal + "," + "\"ramUsed\":" + ramUsed + "," + "\"scheme\":\""
+                + scheme + "\"," + "\"arch\":\"" + arch + "\"," + "\"os\":\"" + os + "\"" + "}";
     }
 }

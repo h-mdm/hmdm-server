@@ -21,15 +21,14 @@
 
 package com.hmdm.notification.rest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.inject.Singleton;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Tomcat 9 bug evidence (?)</p>
@@ -41,11 +40,11 @@ public class TestClientDisconnectServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(TestClientDisconnectServlet.class);
 
-    public TestClientDisconnectServlet() {
-    }
+    public TestClientDisconnectServlet() {}
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
         log.info("Start generating the response");
         try {
             Thread.sleep(30000);

@@ -22,9 +22,9 @@
 package com.hmdm.rest.json;
 
 /**
- * <p>An interface for the hooks to be executed when a response to device configuration synchronization request is going
- * to be sent to device. The hooks may extend the response with additional properties or perform any other desired
- * actions based on provided response.</p>
+ * <p>An interface for the hooks to be executed when a response to device configuration synchronization request is going to
+ * be sent to device. The hooks may extend the response with additional properties or perform any other desired actions
+ * based on provided response.</p>
  *
  * @author isv
  */
@@ -35,6 +35,7 @@ public interface SyncResponseHook {
      *
      * @param deviceId an ID of a device.
      * @param original an original device configuration synchronization response to be handled by this hook.
+     *
      * @return a device configuration synchronization response to be used further in process.
      */
     SyncResponseInt handle(int deviceId, SyncResponseInt original);

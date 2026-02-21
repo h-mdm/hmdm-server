@@ -1,10 +1,9 @@
 package com.hmdm.notification;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.notification.persistence.NotificationDAO;
 import com.hmdm.notification.persistence.domain.PushMessage;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.servlet.AsyncContext;
 import java.util.*;
 
@@ -55,7 +54,6 @@ public class PushSenderPolling implements PushSender {
             }
         }
         deviceEntry.context.complete();
-
     }
 
     public List<PushMessage> getPendingMessages(AsyncContext asyncContext) {

@@ -21,106 +21,105 @@
 
 package com.hmdm.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hmdm.persistence.domain.Application;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hmdm.persistence.domain.Application;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Schema(description = "The details related to a single device. Such details are sent from the MDM mobile application " +
-        "to MDM server")
+@Schema(
+        description = "The details related to a single device. Such details are sent from the MDM mobile application "
+                + "to MDM server")
 public class DeviceInfo implements Serializable {
 
     private static final long serialVersionUID = -3973746261808927823L;
 
-    @Schema(description="A name of the device model")
+    @Schema(description = "A name of the device model")
     private String model;
 
-    @Schema(description="A list of permissions set for device")
+    @Schema(description = "A list of permissions set for device")
     private List<Integer> permissions = new LinkedList<>();
 
-    @Schema(description="A list of applications installed on device")
+    @Schema(description = "A list of applications installed on device")
     private List<Application> applications = new LinkedList<>();
 
-    @Schema(description="A list of configuraiton files installed on device")
+    @Schema(description = "A list of configuraiton files installed on device")
     private List<DeviceConfigurationFile> files = new LinkedList<>();
 
-    @Schema(description="An identifier of device within MDM server")
+    @Schema(description = "An identifier of device within MDM server")
     private String deviceId;
 
-    @Schema(description="An IMEI identifier")
+    @Schema(description = "An IMEI identifier")
     private String imei;
 
-    @Schema(description="A phone number")
+    @Schema(description = "A phone number")
     private String phone;
 
-    @Schema(description="A battery level in percents", allowableValues = "range[0, 100]")
+    @Schema(description = "A battery level in percents", allowableValues = "range[0, 100]")
     private Integer batteryLevel;
 
-    @Schema(description="A battery charge type", allowableValues = "usb,ac")
+    @Schema(description = "A battery charge type", allowableValues = "usb,ac")
     private String batteryCharging;
 
-    @Schema(description="Android OS version")
+    @Schema(description = "Android OS version")
     private String androidVersion;
 
-    @Schema(description="A flag indicating if MDM mode is ON or not")
+    @Schema(description = "A flag indicating if MDM mode is ON or not")
     private Boolean mdmMode;
 
-    @Schema(description="A flag indicating if kiosk mode is ON or not")
+    @Schema(description = "A flag indicating if kiosk mode is ON or not")
     private Boolean kioskMode;
 
-    @Schema(description="The details on device location")
+    @Schema(description = "The details on device location")
     private DeviceLocation location;
 
-    @Schema(description="Headwind MDM launcher build variant")
+    @Schema(description = "Headwind MDM launcher build variant")
     private String launcherType;
 
-    @Schema(description="Package of default launcher on the device")
+    @Schema(description = "Package of default launcher on the device")
     private String launcherPackage;
 
-    @Schema(description="Is Headwind MDM a default launcher")
+    @Schema(description = "Is Headwind MDM a default launcher")
     private Boolean defaultLauncher;
 
-    @Schema(description="ICC ID")
+    @Schema(description = "ICC ID")
     private String iccid;
 
-    @Schema(description="an IMSI identifier")
+    @Schema(description = "an IMSI identifier")
     private String imsi;
 
-    @Schema(description="An IMEI identifier for 2nd SIM slot")
+    @Schema(description = "An IMEI identifier for 2nd SIM slot")
     private String imei2;
 
-    @Schema(description="A phone number for 2nd SIM slot")
+    @Schema(description = "A phone number for 2nd SIM slot")
     private String phone2;
 
-    @Schema(description="ICC ID for 2nd SIM slot")
+    @Schema(description = "ICC ID for 2nd SIM slot")
     private String iccid2;
 
-    @Schema(description="an IMSI identifier for 2nd SIM slot")
+    @Schema(description = "an IMSI identifier for 2nd SIM slot")
     private String imsi2;
 
-    @Schema(description="A device serial number")
+    @Schema(description = "A device serial number")
     private String serial;
 
-    @Schema(description="CPU architecture")
+    @Schema(description = "CPU architecture")
     private String cpu;
 
-    @Schema(description="Custom property #1")
+    @Schema(description = "Custom property #1")
     private String custom1;
 
-    @Schema(description="Custom property #2")
+    @Schema(description = "Custom property #2")
     private String custom2;
 
-    @Schema(description="Custom property #3")
+    @Schema(description = "Custom property #3")
     private String custom3;
 
-    public DeviceInfo() {
-    }
+    public DeviceInfo() {}
 
     public String getModel() {
         return this.model;
@@ -340,33 +339,15 @@ public class DeviceInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceInfo{" +
-                "model='" + model + '\'' +
-                ", permissions=" + permissions +
-                ", applications=" + applications +
-                ", files=" + files +
-                ", deviceId='" + deviceId + '\'' +
-                ", imei='" + imei + '\'' +
-                ", phone='" + phone + '\'' +
-                ", batteryLevel=" + batteryLevel +
-                ", batteryCharging='" + batteryCharging + '\'' +
-                ", androidVersion='" + androidVersion + '\'' +
-                ", mdmMode='" + mdmMode + '\'' +
-                ", kioskMode='" + kioskMode + '\'' +
-                ", location='" + location + '\'' +
-                ", launcherType='" + launcherType + '\'' +
-                ", launcherPackage='" + launcherPackage + '\'' +
-                ", imei2='" + imei2 + '\'' +
-                ", phone2='" + phone2 + '\'' +
-                ", imsi='" + imsi + '\'' +
-                ", iccid='" + iccid + '\'' +
-                ", imsi2='" + imsi2 + '\'' +
-                ", iccid2='" + iccid2 + '\'' +
-                ", serial='" + serial + '\'' +
-                ", cpu='" + cpu + '\'' +
-                ", custom1='" + custom1 + '\'' +
-                ", custom2='" + custom2 + '\'' +
-                ", custom3='" + custom3 + '\'' +
-                '}';
+        return "DeviceInfo{" + "model='" + model + '\'' + ", permissions=" + permissions + ", applications="
+                + applications + ", files=" + files + ", deviceId='" + deviceId + '\'' + ", imei='" + imei + '\''
+                + ", phone='" + phone + '\'' + ", batteryLevel=" + batteryLevel + ", batteryCharging='"
+                + batteryCharging + '\'' + ", androidVersion='" + androidVersion + '\'' + ", mdmMode='" + mdmMode + '\''
+                + ", kioskMode='" + kioskMode + '\'' + ", location='" + location + '\'' + ", launcherType='"
+                + launcherType + '\'' + ", launcherPackage='" + launcherPackage + '\'' + ", imei2='" + imei2 + '\''
+                + ", phone2='" + phone2 + '\'' + ", imsi='" + imsi + '\'' + ", iccid='" + iccid + '\'' + ", imsi2='"
+                + imsi2 + '\'' + ", iccid2='" + iccid2 + '\'' + ", serial='" + serial + '\'' + ", cpu='" + cpu + '\''
+                + ", custom1='" + custom1 + '\'' + ", custom2='" + custom2 + '\'' + ", custom3='" + custom3 + '\''
+                + '}';
     }
 }

@@ -23,7 +23,6 @@ package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
@@ -36,22 +35,26 @@ import java.io.Serializable;
 public class Icon implements Serializable, CustomerData {
 
     private static final long serialVersionUID = -5082987201236988017L;
-    @Schema(description="An application ID")
+
+    @Schema(description = "An application ID")
     private Integer id;
+
     @Schema(hidden = true)
     private int customerId;
-    @Schema(description="A name of the icon")
+
+    @Schema(description = "A name of the icon")
     private String name;
-    @Schema(description="An ID of an uploaded file storing the content of the icon")
+
+    @Schema(description = "An ID of an uploaded file storing the content of the icon")
     private Integer fileId;
-    @Schema(description="The name of an uploaded file storing the content of the icon")
+
+    @Schema(description = "The name of an uploaded file storing the content of the icon")
     private String fileName;
 
     /**
      * <p>Constructs new <code>Icon</code> instance. This implementation does nothing.</p>
      */
-    public Icon() {
-    }
+    public Icon() {}
 
     @Override
     public Integer getId() {
@@ -98,12 +101,7 @@ public class Icon implements Serializable, CustomerData {
 
     @Override
     public String toString() {
-        return "Icon{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", name='" + name + '\'' +
-                ", fileId='" + fileId + '\'' +
-                ", fileName='" + fileName + '\'' +
-                '}';
+        return "Icon{" + "id=" + id + ", customerId=" + customerId + ", name='" + name + '\'' + ", fileId='" + fileId
+                + '\'' + ", fileName='" + fileName + '\'' + '}';
     }
 }

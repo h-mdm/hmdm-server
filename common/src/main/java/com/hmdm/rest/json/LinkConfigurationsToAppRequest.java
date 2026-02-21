@@ -21,25 +21,24 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(description = "A request to setup links between the single application and listed configurations")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToAppRequest {
 
-    @Schema(description="An ID of an application to link configurations to")
+    @Schema(description = "An ID of an application to link configurations to")
     private int applicationId;
-    @Schema(description="A list of configurations to link to application")
+
+    @Schema(description = "A list of configurations to link to application")
     private List<ApplicationConfigurationLink> configurations;
 
     /**
      * <p>Constructs new <code>LinkConfigurationsToAppRequest</code> instance. This implementation does nothing.</p>
      */
-    public LinkConfigurationsToAppRequest() {
-    }
+    public LinkConfigurationsToAppRequest() {}
 
     public int getApplicationId() {
         return applicationId;

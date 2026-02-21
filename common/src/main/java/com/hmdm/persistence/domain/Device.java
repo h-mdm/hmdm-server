@@ -21,12 +21,11 @@
 
 package com.hmdm.persistence.domain;
 
-import java.io.Serializable;
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.rest.json.LookupItem;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
+import java.util.List;
 
 @Schema(description = "A device registered to MDM server and running the MDM mobile application")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,77 +33,104 @@ public class Device implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 8429040669592571351L;
 
-    @Schema(description="An ID of device")
+    @Schema(description = "An ID of device")
     private Integer id;
-    @Schema(description="An unique textual identifier of device")
+
+    @Schema(description = "An unique textual identifier of device")
     private String number;
-    @Schema(description="A description of device")
+
+    @Schema(description = "A description of device")
     private String description;
-    @Schema(description="A date of last synchronization of device state")
+
+    @Schema(description = "A date of last synchronization of device state")
     private Long lastUpdate;
-    @Schema(description="An ID of configuration for device")
+
+    @Schema(description = "An ID of configuration for device")
     private Integer configurationId;
+
     @Schema(hidden = true)
     @Deprecated
     private Integer oldConfigurationId;
-    @Schema(description="An info on device state submitted by device to MDM server")
+
+    @Schema(description = "An info on device state submitted by device to MDM server")
     private String info;
-    @Schema(description="An IMEM of device")
+
+    @Schema(description = "An IMEM of device")
     private String imei;
-    @Schema(description="A phone number of device")
+
+    @Schema(description = "A phone number of device")
     private String phone;
+
     @Schema(hidden = true)
     private int customerId;
-    @Schema(description="A date of last IMEI change")
+
+    @Schema(description = "A date of last IMEI change")
     private Long imeiUpdateTs;
-    @Schema(description="Public IP address")
+
+    @Schema(description = "Public IP address")
     private String publicIp;
-    @Schema(description="Custom property #1")
+
+    @Schema(description = "Custom property #1")
     private String custom1;
-    @Schema(description="Custom property #2")
+
+    @Schema(description = "Custom property #2")
     private String custom2;
-    @Schema(description="Custom property #3")
+
+    @Schema(description = "Custom property #3")
     private String custom3;
 
     // Many-to-many relations
-    @Schema(description="A list of groups assigned to device")
+    @Schema(description = "A list of groups assigned to device")
     private List<LookupItem> groups;
 
     // Helper fields, not persisted
     @Schema(hidden = true)
     private List<Integer> ids;
+
     @Schema(hidden = true)
     private Configuration configuration;
+
     @Schema(hidden = true)
     private String configName;
+
     @Schema(hidden = true)
     @Deprecated
     private String oldConfigName;
+
     @Schema(hidden = true)
     private boolean applied;
+
     @Schema(hidden = true)
     private String launcherVersion;
+
     @Schema(hidden = true)
     private String launcherPkg;
+
     @Schema(hidden = true)
     private String statusCode;
-    @Schema(description="Old device number, used when the number is changed")
+
+    @Schema(description = "Old device number, used when the number is changed")
     private String oldNumber;
-    @Schema(description="Last characters of the device number used for fast search")
+
+    @Schema(description = "Last characters of the device number used for fast search")
     private String fastSearch;
+
     @Schema(hidden = true)
     private Boolean mdmMode;
+
     @Schema(hidden = true)
     private Boolean kioskMode;
+
     @Schema(hidden = true)
     private String androidVersion;
+
     @Schema(hidden = true)
     private Long enrollTime;
+
     @Schema(hidden = true)
     private String serial;
 
-    public Device() {
-    }
+    public Device() {}
 
     public Integer getId() {
         return this.id;
@@ -374,38 +400,16 @@ public class Device implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "Device{" +
-                "id=" + id +
-                ", number='" + number + '\'' +
-                ", description='" + description + '\'' +
-                ", lastUpdate=" + lastUpdate +
-                ", configurationId=" + configurationId +
-                ", oldConfigurationId=" + oldConfigurationId +
-                ", info='" + info + '\'' +
-                ", imei='" + imei + '\'' +
-                ", phone='" + phone + '\'' +
-                ", customerId=" + customerId +
-                ", imeiUpdateTs=" + imeiUpdateTs +
-                ", publicIp=" + publicIp +
-                ", custom1=" + custom1 +
-                ", custom2=" + custom2 +
-                ", custom3=" + custom3 +
-                ", groups=" + groups +
-                ", ids=" + ids +
-                ", configuration=" + configuration +
-                ", configName='" + configName + '\'' +
-                ", oldConfigName='" + oldConfigName + '\'' +
-                ", applied=" + applied +
-                ", launcherPkg='" + launcherPkg + '\'' +
-                ", launcherVersion='" + launcherVersion + '\'' +
-                ", mdmMode='" + mdmMode + '\'' +
-                ", kioskMode='" + kioskMode + '\'' +
-                ", androidVersion='" + androidVersion + '\'' +
-                ", enrollTime='" + enrollTime + '\'' +
-                ", serial='" + serial + '\'' +
-                ", statusCode='" + statusCode + '\'' +
-                ", oldNumber='" + oldNumber + '\'' +
-                ", fastSearch='" + fastSearch + '\'' +
-                '}';
+        return "Device{" + "id=" + id + ", number='" + number + '\'' + ", description='" + description + '\''
+                + ", lastUpdate=" + lastUpdate + ", configurationId=" + configurationId + ", oldConfigurationId="
+                + oldConfigurationId + ", info='" + info + '\'' + ", imei='" + imei + '\'' + ", phone='" + phone + '\''
+                + ", customerId=" + customerId + ", imeiUpdateTs=" + imeiUpdateTs + ", publicIp=" + publicIp
+                + ", custom1=" + custom1 + ", custom2=" + custom2 + ", custom3=" + custom3 + ", groups=" + groups
+                + ", ids=" + ids + ", configuration=" + configuration + ", configName='" + configName + '\''
+                + ", oldConfigName='" + oldConfigName + '\'' + ", applied=" + applied + ", launcherPkg='" + launcherPkg
+                + '\'' + ", launcherVersion='" + launcherVersion + '\'' + ", mdmMode='" + mdmMode + '\''
+                + ", kioskMode='" + kioskMode + '\'' + ", androidVersion='" + androidVersion + '\'' + ", enrollTime='"
+                + enrollTime + '\'' + ", serial='" + serial + '\'' + ", statusCode='" + statusCode + '\''
+                + ", oldNumber='" + oldNumber + '\'' + ", fastSearch='" + fastSearch + '\'' + '}';
     }
 }

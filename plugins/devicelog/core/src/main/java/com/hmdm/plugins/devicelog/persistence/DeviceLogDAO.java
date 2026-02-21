@@ -25,7 +25,6 @@ import com.hmdm.plugins.devicelog.model.DeviceLogRecord;
 import com.hmdm.plugins.devicelog.rest.json.AppliedDeviceLogRule;
 import com.hmdm.plugins.devicelog.rest.json.DeviceLogFilter;
 import com.hmdm.plugins.devicelog.rest.json.UploadedDeviceLogRecord;
-
 import java.util.List;
 
 /**
@@ -39,6 +38,7 @@ public interface DeviceLogDAO {
      * <p>Finds the log records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a list of log records matching the specified filter.
      */
     List<DeviceLogRecord> findAll(DeviceLogFilter filter);
@@ -47,6 +47,7 @@ public interface DeviceLogDAO {
      * <p>Counts the log records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a number of log records matching the specified filter.
      */
     long countAll(DeviceLogFilter filter);
@@ -55,8 +56,9 @@ public interface DeviceLogDAO {
      * <p>Inserts the specified log records uploaded by the specified device into underlying persistent data store.</p>
      *
      * @param deviceNumber an identifier of a device.
-     * @param ipAddress    an IP-address of a device.
+     * @param ipAddress an IP-address of a device.
      * @param logs a list of log records to be inserted.
+     *
      * @return a number of log records inserted into underlying persistent store.
      */
     int insertDeviceLogRecords(String deviceNumber, String ipAddress, List<UploadedDeviceLogRecord> logs);
@@ -65,6 +67,7 @@ public interface DeviceLogDAO {
      * <p>Gets the list of log rules applicable to specified device.</p>
      *
      * @param deviceNumber an identifier of device.
+     *
      * @return a list of applicable log rules for device.
      */
     List<AppliedDeviceLogRule> getDeviceLogRules(String deviceNumber);

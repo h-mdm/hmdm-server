@@ -21,7 +21,6 @@
 
 package com.hmdm.plugins.push.guice.module;
 
-import jakarta.inject.Inject;
 import com.hmdm.notification.PushService;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.UnsecureDAO;
@@ -32,17 +31,15 @@ import com.hmdm.plugins.push.persistence.PushScheduleDAO;
 import com.hmdm.plugins.push.persistence.domain.PluginPushMessage;
 import com.hmdm.plugins.push.persistence.domain.PluginPushSchedule;
 import com.hmdm.util.BackgroundTaskRunnerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * A module used for initializing the tasks to be executed in background.
- * </p>
+ * <p>A module used for initializing the tasks to be executed in background.</p>
  *
  * @author isv
  */
@@ -51,45 +48,32 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     private static final Logger logger = LoggerFactory.getLogger(PushScheduleTaskModule.class);
 
     /**
-     * <p>
-     * An interface to push message records persistence.
-     * </p>
+     * <p>An interface to push message records persistence.</p>
      */
     private PushDAO pushDAO;
 
     /**
-     * <p>
-     * An interface to persistence layer.
-     * </p>
+     * <p>An interface to persistence layer.</p>
      */
     private final UnsecureDAO unsecureDAO;
 
     /**
-     * <p>
-     * An interface to persistence layer.
-     * </p>
+     * <p>An interface to persistence layer.</p>
      */
     private final PushScheduleDAO pushScheduleDAO;
 
     /**
-     * <p>
-     * An interface to notification services.
-     * </p>
+     * <p>An interface to notification services.</p>
      */
     private PushService pushService;
 
     /**
-     * <p>
-     * A runner for the repeatable tasks.
-     * </p>
+     * <p>A runner for the repeatable tasks.</p>
      */
     private final BackgroundTaskRunnerService taskRunner;
 
     /**
-     * <p>
-     * Constructs new <code>DeviceInfoTaskModule</code> instance. This
-     * implementation does nothing.
-     * </p>
+     * <p>Constructs new <code>DeviceInfoTaskModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
     public PushScheduleTaskModule(
@@ -106,9 +90,7 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     }
 
     /**
-     * <p>
-     * Initializes this module. Schedules the task for sending scheduled messages.
-     * </p>
+     * <p>Initializes this module. Schedules the task for sending scheduled messages.</p>
      */
     @Override
     public void init() {
@@ -116,9 +98,7 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     }
 
     /**
-     * <p>
-     * Retrieves scheduled messages from the database and sends them.
-     * </p>
+     * <p>Retrieves scheduled messages from the database and sends them.</p>
      */
     public void sendScheduledMessages() {
         try {
@@ -132,9 +112,14 @@ public class PushScheduleTaskModule implements PluginTaskModule {
     public void sendScheduledMessage(PluginPushSchedule task) {
         List<PluginPushMessage> messages = new LinkedList<>();
         List<Device> devices = new LinkedList<>();
-        logger.info("Processing scheduled message: type {}, customer {}, scope {}, device {}, group {}, config {}",
-                task.getMessageType(), task.getCustomerId(), task.getScope(),
-                task.getDeviceId(), task.getGroupId(), task.getConfigurationId());
+        logger.info(
+                "Processing scheduled message: type {}, customer {}, scope {}, device {}, group {}, config {}",
+                task.getMessageType(),
+                task.getCustomerId(),
+                task.getScope(),
+                task.getDeviceId(),
+                task.getGroupId(),
+                task.getConfigurationId());
 
         if (task.getScope().equals("device")) {
             PluginPushMessage message = new PluginPushMessage();
@@ -163,7 +148,6 @@ public class PushScheduleTaskModule implements PluginTaskModule {
             message.setTs(System.currentTimeMillis());
             sendSingleMessage(message);
         }
-
     }
 
     private boolean sendSingleMessage(PluginPushMessage message) {

@@ -21,19 +21,18 @@
 
 package com.hmdm.plugins.messaging.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.messaging.persistence.domain.Message;
 import com.hmdm.plugins.messaging.persistence.mapper.MessageMapper;
 import com.hmdm.plugins.messaging.rest.json.MessageFilter;
 import com.hmdm.security.SecurityContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>A DAO for {@link Message} domain objects.</p>
@@ -58,11 +57,11 @@ public class MessagingDAO extends AbstractDAO<Message> {
         this.messageMapper = messageMapper;
     }
 
-
     /**
      * <p>Finds the message records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a list of message records matching the specified filter.
      */
     @Transactional
@@ -81,11 +80,13 @@ public class MessagingDAO extends AbstractDAO<Message> {
      * <p>Counts the message records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a number of message records matching the specified filter.
      */
     public long countAll(MessageFilter filter) {
         prepareFilter(filter);
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     filter.setCustomerId(user.getCustomerId());
                     return this.messageMapper.countAll(filter);
@@ -160,5 +161,4 @@ public class MessagingDAO extends AbstractDAO<Message> {
             }
         }
     }
-
 }

@@ -23,7 +23,6 @@ package com.hmdm.plugins.devicelog.persistence;
 
 import com.google.inject.Module;
 import com.hmdm.plugin.PluginTaskModule;
-
 import jakarta.servlet.ServletContext;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +39,7 @@ public interface DeviceLogPersistenceConfiguration {
      * <p>Gets the list of modules to be used for initializing the persistence layer.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return a list of modules to be used for persistence layer initialization.
      */
     List<Module> getPersistenceModules(ServletContext context);
@@ -48,6 +48,7 @@ public interface DeviceLogPersistenceConfiguration {
      * <p>Gets the list of task modules to be initialized upon application startup.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return an optional list of task modules for plugins.
      */
     default Optional<List<Class<? extends PluginTaskModule>>> getTaskModules(ServletContext context) {

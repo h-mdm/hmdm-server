@@ -23,11 +23,10 @@ package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the device parameters related to Mobile Data.</p>
+ * <p>A domain object representing the device parameters related to Mobile Data.</p>
  *
  * @author isv
  */
@@ -35,39 +34,38 @@ import java.io.Serializable;
 public class MobileData implements Serializable {
 
     private static final long serialVersionUID = -5223140937411419594L;
-    
-    @Schema(description="An ID of Mobile data record")
+
+    @Schema(description = "An ID of Mobile data record")
     private Integer id;
 
-    @Schema(description="A signal level")
+    @Schema(description = "A signal level")
     private Integer rssi;
 
-    @Schema(description="A carrier name")
+    @Schema(description = "A carrier name")
     private String carrier;
 
-    @Schema(description="A flag indicating if data transmission is on")
+    @Schema(description = "A flag indicating if data transmission is on")
     private Boolean data;
 
-    @Schema(description="A used IP-address")
+    @Schema(description = "A used IP-address")
     private String ip;
 
-    @Schema(description="A connection status")
+    @Schema(description = "A connection status")
     private String state;
 
-    @Schema(description="A SIM-card status")
+    @Schema(description = "A SIM-card status")
     private String simState;
 
-    @Schema(description="A number of transmitted bytes since previous data exhange")
+    @Schema(description = "A number of transmitted bytes since previous data exhange")
     private Long tx;
 
-    @Schema(description="A number of received bytes since previous data exhange")
+    @Schema(description = "A number of received bytes since previous data exhange")
     private Long rx;
 
     /**
      * <p>Constructs new <code>MobileData</code> instance. This implementation does nothing.</p>
      */
-    public MobileData() {
-    }
+    public MobileData() {}
 
     public Integer getId() {
         return id;
@@ -143,16 +141,8 @@ public class MobileData implements Serializable {
 
     @Override
     public String toString() {
-        return "MobileData{" +
-                "id=" + id +
-                ", rssi=" + rssi +
-                ", carrier='" + carrier + '\'' +
-                ", data=" + data +
-                ", ip='" + ip + '\'' +
-                ", state='" + state + '\'' +
-                ", simState='" + simState + '\'' +
-                ", tx=" + tx +
-                ", rx=" + rx +
-                '}';
+        return "MobileData{" + "id=" + id + ", rssi=" + rssi + ", carrier='" + carrier + '\'' + ", data=" + data
+                + ", ip='" + ip + '\'' + ", state='" + state + '\'' + ", simState='" + simState + '\'' + ", tx=" + tx
+                + ", rx=" + rx + '}';
     }
 }

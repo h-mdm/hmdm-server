@@ -22,7 +22,6 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -31,8 +30,7 @@ public class DeviceGroupBulkRequest {
     private String action;
     private List<LookupItem> groups;
 
-    public DeviceGroupBulkRequest() {
-    }
+    public DeviceGroupBulkRequest() {}
 
     public List<Integer> getIds() {
         return ids;

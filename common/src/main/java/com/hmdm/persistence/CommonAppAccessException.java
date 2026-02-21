@@ -24,8 +24,8 @@ package com.hmdm.persistence;
 import com.hmdm.security.SecurityException;
 
 /**
- * <p>An exception to be raised when there is an attempt to edit/delete data related to common application by
- * unauthorized client.</p>
+ * <p>An exception to be raised when there is an attempt to edit/delete data related to common application by unauthorized
+ * client.</p>
  *
  * @author isv
  */
@@ -35,7 +35,9 @@ public class CommonAppAccessException extends SecurityException {
      * <p>Constructs new <code>CommonAppAccessException</code> instance. This implementation does nothing.</p>
      */
     public CommonAppAccessException(String pkg, Integer customerId) {
-        super(String.format("An attempt to common application %s is prohibited. Customer account ID: %s", pkg, customerId), 403);
+        super(
+                String.format(
+                        "An attempt to common application %s is prohibited. Customer account ID: %s", pkg, customerId),
+                403);
     }
-
 }

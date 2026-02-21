@@ -41,8 +41,7 @@ public class LimitResponse {
     /**
      * <p>Constructs new <code>LimitResponse</code> instance. This implementation does nothing.</p>
      */
-    public LimitResponse() {
-    }
+    public LimitResponse() {}
 
     public int getSizeLimit() {
         return sizeLimit;

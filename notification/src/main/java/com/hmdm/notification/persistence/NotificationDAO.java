@@ -21,14 +21,13 @@
 
 package com.hmdm.notification.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.notification.persistence.mapper.NotificationMapper;
-import org.mybatis.guice.transactional.Transactional;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
 
 /**
  * <p>An interface to notification messages persistence.</p>
@@ -53,13 +52,15 @@ public class NotificationDAO {
      * delivered.</p>
      *
      * @param deviceNumber a device number identifying the device.
+     *
      * @return a list of messages to be delivered to device.
      */
     @Transactional
     public List<PushMessage> getPendingMessagesForDelivery(String deviceNumber) {
         final List<PushMessage> messages = this.notificationMapper.getPendingMessagesByNumber(deviceNumber);
         if (!messages.isEmpty()) {
-            final List<Integer> messageIds = messages.stream().map(PushMessage::getId).collect(Collectors.toList());
+            final List<Integer> messageIds =
+                    messages.stream().map(PushMessage::getId).collect(Collectors.toList());
             this.notificationMapper.markMessagesAsDelivered(messageIds);
         }
         return messages;
@@ -70,13 +71,15 @@ public class NotificationDAO {
      * delivered.</p>
      *
      * @param deviceId a device id in the database.
+     *
      * @return a list of messages to be delivered to device.
      */
     @Transactional
     public List<PushMessage> getPendingMessagesForDelivery(int deviceId) {
         final List<PushMessage> messages = this.notificationMapper.getPendingMessagesById(deviceId);
         if (!messages.isEmpty()) {
-            final List<Integer> messageIds = messages.stream().map(PushMessage::getId).collect(Collectors.toList());
+            final List<Integer> messageIds =
+                    messages.stream().map(PushMessage::getId).collect(Collectors.toList());
             this.notificationMapper.markMessagesAsDelivered(messageIds);
         }
         return messages;
@@ -86,6 +89,7 @@ public class NotificationDAO {
      * <p>Sends the specified notification message. This implementation puts it to queue to be retrieved by device later.</p>
      *
      * @param message a message to send.
+     *
      * @return an ID of a message.
      */
     @Transactional
@@ -99,6 +103,7 @@ public class NotificationDAO {
      * <p>Gets the current status of delivery for the specified message.</p>
      *
      * @param messageId an ID of a message to get status for.
+     *
      * @return a status of message delivery. 0 - not sent, 1 - sent to device; or <code>null</code> if specified message
      *         is not found.
      */

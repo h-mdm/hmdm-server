@@ -21,10 +21,9 @@
 
 package com.hmdm.plugins.audit.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 
 /**
@@ -38,39 +37,38 @@ public class AuditLogRecord implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 6693474050584082712L;
 
-    @Schema(description="An ID of the record")
+    @Schema(description = "An ID of the record")
     private Integer id;
 
     // An ID of a customer account which these settings correspond to
     @Schema(hidden = true)
     private Integer customerId;
 
-    @Schema(description="An ID of the user mapped to request.")
+    @Schema(description = "An ID of the user mapped to request.")
     private Integer userId;
 
-    @Schema(description="A timestamp of recording the audit data (in milliseconds since epoch time).")
+    @Schema(description = "A timestamp of recording the audit data (in milliseconds since epoch time).")
     private long createTime;
 
-    @Schema(description="A username of the user mapped to request.")
+    @Schema(description = "A username of the user mapped to request.")
     private String login;
 
-    @Schema(description="A key referencing the description of performed action in localization resource bundle")
+    @Schema(description = "A key referencing the description of performed action in localization resource bundle")
     private String action;
 
     @Schema(hidden = true)
     private String payload;
 
-    @Schema(description="An IP-address of the request sender")
+    @Schema(description = "An IP-address of the request sender")
     private String ipAddress;
 
-    @Schema(description="Error flag, 0 - no error")
+    @Schema(description = "Error flag, 0 - no error")
     private Integer errorCode;
 
     /**
      * <p>Constructs new <code>AuditLogRecord</code> instance. This implementation does nothing.</p>
      */
-    public AuditLogRecord() {
-    }
+    public AuditLogRecord() {}
 
     @Override
     public Integer getId() {
@@ -153,28 +151,14 @@ public class AuditLogRecord implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "AuditLogRecord{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", userId=" + userId +
-                ", createTime=" + createTime +
-                ", login='" + login + '\'' +
-                ", action='" + action + '\'' +
-                ", payload='" + payload + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", errorCode='" + errorCode + '\'' +
-                '}';
+        return "AuditLogRecord{" + "id=" + id + ", customerId=" + customerId + ", userId=" + userId + ", createTime="
+                + createTime + ", login='" + login + '\'' + ", action='" + action + '\'' + ", payload='" + payload
+                + '\'' + ", ipAddress='" + ipAddress + '\'' + ", errorCode='" + errorCode + '\'' + '}';
     }
 
     public String toLogString() {
-        return "" +
-                "createTime=" + createTime +
-                ", userId=" + userId +
-                ", login='" + login + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", action='" + action + '\'' +
-                ", payload='" + payload + '\'' +
-                ", errorCode='" + errorCode + '\''
-        ;
+        return "" + "createTime=" + createTime + ", userId=" + userId + ", login='" + login + '\'' + ", ipAddress='"
+                + ipAddress + '\'' + ", action='" + action + '\'' + ", payload='" + payload + '\'' + ", errorCode='"
+                + errorCode + '\'';
     }
 }

@@ -21,9 +21,8 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 /**
@@ -35,16 +34,16 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToAppVersionRequest {
 
-    @Schema(description="An ID of an application version to link configurations to")
+    @Schema(description = "An ID of an application version to link configurations to")
     private int applicationVersionId;
-    @Schema(description="A list of configurations to link to application version")
+
+    @Schema(description = "A list of configurations to link to application version")
     private List<ApplicationVersionConfigurationLink> configurations;
 
     /**
      * <p>Constructs new <code>LinkConfigurationsToAppVersionRequest</code> instance. This implementation does nothing.</p>
      */
-    public LinkConfigurationsToAppVersionRequest() {
-    }
+    public LinkConfigurationsToAppVersionRequest() {}
 
     public int getApplicationVersionId() {
         return applicationVersionId;

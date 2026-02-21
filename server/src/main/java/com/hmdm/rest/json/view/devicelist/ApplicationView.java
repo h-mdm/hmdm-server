@@ -25,22 +25,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
- * <p>A wrapper around the {@link Application} object providing the view suitable for the <code>Device List</code> view
- * of server application.</p>
+ * <p>A wrapper around the {@link Application} object providing the view suitable for the <code>Device List</code> view of
+ * server application.</p>
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"application"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"application"},
+        ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "A specification of a single application available for usage on mobile device")
 public class ApplicationView implements Serializable {
 
     private static final long serialVersionUID = 2154319093765210298L;
-    
+
     /**
      * <p>A wrapped application object.</p>
      */
@@ -53,17 +54,17 @@ public class ApplicationView implements Serializable {
         this.application = application;
     }
 
-    @Schema(description="A package ID of application")
+    @Schema(description = "A package ID of application")
     public String getPkg() {
         return this.application.getPkg();
     }
 
-    @Schema(description="A version of application")
+    @Schema(description = "A version of application")
     public String getVersion() {
         return this.application.getVersion();
     }
 
-    @Schema(description="An URL for application package")
+    @Schema(description = "An URL for application package")
     public String getUrl() {
         if (this.application.getUrl() != null) {
             return this.application.getUrl();
@@ -78,17 +79,17 @@ public class ApplicationView implements Serializable {
         }
     }
 
-    @Schema(description="An application ID")
+    @Schema(description = "An application ID")
     public Integer getId() {
         return this.application.getId();
     }
 
-    @Schema(description="A flag indicating if application is used in device configuration")
+    @Schema(description = "A flag indicating if application is used in device configuration")
     public boolean isSelected() {
         return this.application.isSelected();
     }
 
-    @Schema(description="A flag indicating if application version shouldnt be checked")
+    @Schema(description = "A flag indicating if application version shouldnt be checked")
     public boolean isSkipVersion() {
         return this.application.isSkipVersion();
     }
@@ -98,12 +99,12 @@ public class ApplicationView implements Serializable {
     // 0 - do not install and hide if installed
     // 1 - install
     // 2 - do not install and remove if installed
-    @Schema(description="The action required to be performed by mobile device", allowableValues = "0,1,2")
+    @Schema(description = "The action required to be performed by mobile device", allowableValues = "0,1,2")
     public int getAction() {
         return this.application.getAction();
     }
 
-    @Schema(description="A name of application")
+    @Schema(description = "A name of application")
     public String getName() {
         return this.application.getName();
     }

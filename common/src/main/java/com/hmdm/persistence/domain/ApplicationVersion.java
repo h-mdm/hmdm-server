@@ -21,9 +21,8 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 @Schema(description = "A specification of a single application version installed and used on mobile device")
@@ -31,28 +30,29 @@ import java.io.Serializable;
 public class ApplicationVersion implements Serializable {
 
     private static final long serialVersionUID = 3429103100994111887L;
-    @Schema(description="An application version ID")
+
+    @Schema(description = "An application version ID")
     private Integer id;
 
-    @Schema(description="An application ID")
+    @Schema(description = "An application ID")
     private Integer applicationId;
 
-    @Schema(description="A version of application")
+    @Schema(description = "A version of application")
     private String version;
 
-    @Schema(description="Version code")
+    @Schema(description = "Version code")
     private int versionCode;
 
-    @Schema(description="An URL for application package")
+    @Schema(description = "An URL for application package")
     private String url;
 
-    @Schema(description="Has the APK native code, i.e. is split into two APKs")
+    @Schema(description = "Has the APK native code, i.e. is split into two APKs")
     private boolean split;
 
-    @Schema(description="An URL for armeabi APK")
+    @Schema(description = "An URL for armeabi APK")
     private String urlArmeabi;
 
-    @Schema(description="An URL for arm64 APK")
+    @Schema(description = "An URL for arm64 APK")
     private String urlArm64;
 
     @Schema(hidden = true)
@@ -82,8 +82,7 @@ public class ApplicationVersion implements Serializable {
     /**
      * <p>Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing.</p>
      */
-    public ApplicationVersion() {
-    }
+    public ApplicationVersion() {}
 
     /**
      * <p>Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing.</p>
@@ -226,19 +225,10 @@ public class ApplicationVersion implements Serializable {
 
     @Override
     public String toString() {
-        return "ApplicationVersion{" +
-                "id=" + id +
-                ", applicationId=" + applicationId +
-                ", version='" + version + '\'' +
-                ", versionCode=" + versionCode +
-                ", system='" + system + '\'' +
-                ", url='" + url + '\'' +
-                ", apkHash='" + apkHash + '\'' +
-                ", deletionProhibited='" + deletionProhibited + '\'' +
-                ", commonApplication='" + commonApplication + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", type='" + type + '\'' +
-                ", arch='" + arch + '\'' +
-                '}';
+        return "ApplicationVersion{" + "id=" + id + ", applicationId=" + applicationId + ", version='" + version + '\''
+                + ", versionCode=" + versionCode + ", system='" + system + '\'' + ", url='" + url + '\'' + ", apkHash='"
+                + apkHash + '\'' + ", deletionProhibited='" + deletionProhibited + '\'' + ", commonApplication='"
+                + commonApplication + '\'' + ", filePath='" + filePath + '\'' + ", type='" + type + '\'' + ", arch='"
+                + arch + '\'' + '}';
     }
 }

@@ -1,6 +1,5 @@
 package com.hmdm.plugins.messaging.rest.json;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

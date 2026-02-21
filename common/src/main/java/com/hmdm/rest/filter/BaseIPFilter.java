@@ -1,13 +1,12 @@
 package com.hmdm.rest.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BaseIPFilter {
 
@@ -51,30 +50,22 @@ public class BaseIPFilter {
     }
 
     /**
-     * <p>
-     * Whitelist of allowed networks/addresses
-     * </p>
+     * <p>Whitelist of allowed networks/addresses</p>
      */
     private List<Net> whitelist;
 
     /**
-     * <p>
-     * Empty whitelist means all IPs are allowed
-     * </p>
+     * <p>Empty whitelist means all IPs are allowed</p>
      */
     private boolean allAllowed = false;
 
     /**
-     * <p>
-     * IP addresses of reverse proxies
-     * </p>
+     * <p>IP addresses of reverse proxies</p>
      */
     private String[] proxies;
 
     /**
-     * <p>
-     * Header containing real IP address when a proxy is used
-     * </p>
+     * <p>Header containing real IP address when a proxy is used</p>
      */
     private String ipHeader;
 

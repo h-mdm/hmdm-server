@@ -24,7 +24,6 @@ package com.hmdm.plugins.xtra;
 import com.google.inject.Module;
 import com.hmdm.plugin.PluginConfiguration;
 import com.hmdm.plugins.xtra.guice.module.XtraLiquibaseModule;
-
 import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +40,11 @@ public class XtraPluginConfigurationImpl implements PluginConfiguration {
     /**
      * <p>Constructs new <code>XtraPluginConfigurationImpl</code> instance. This implementation does nothing.</p>
      */
-    public XtraPluginConfigurationImpl() {
-    }
+    public XtraPluginConfigurationImpl() {}
 
     /**
-     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely
-     * by <code>Plugin Platform</code>.</p>
+     * <p>Gets the unique identifier for this plugin. This is a sort of logical name for the plugin which is used widely by
+     * <code>Plugin Platform</code>.</p>
      *
      * @return a plugin identifier.
      */
@@ -69,6 +67,7 @@ public class XtraPluginConfigurationImpl implements PluginConfiguration {
      * <p>Gets the list of modules to be used for initializing the plugin.</p>
      *
      * @param context a context for plugin usage.
+     *
      * @return a list of modules to be used for plugin initialization.
      */
     @Override

@@ -1,29 +1,20 @@
 package com.hmdm.task;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import com.hmdm.event.EventService;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UploadedFileDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
-import com.hmdm.service.EmailService;
-import com.hmdm.service.MailchimpService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileCheckTask implements Runnable {
     private final UnsecureDAO unsecureDAO;
@@ -32,8 +23,7 @@ public class FileCheckTask implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(FileCheckTask.class);
 
     @Inject
-    public FileCheckTask(UnsecureDAO unsecureDAO,
-                         @Named("files.directory") String filesDirectory) {
+    public FileCheckTask(UnsecureDAO unsecureDAO, @Named("files.directory") String filesDirectory) {
         this.unsecureDAO = unsecureDAO;
         this.filesDirectory = filesDirectory;
     }
@@ -78,7 +68,8 @@ public class FileCheckTask implements Runnable {
     }
 
     private void checkFile(Path file) {
-        if (file.getFileName().toString().endsWith(".apk") || file.getFileName().toString().endsWith(".xapk")) {
+        if (file.getFileName().toString().endsWith(".apk")
+                || file.getFileName().toString().endsWith(".xapk")) {
             // For simplicity, do not process APK files as we presume they're always added as applications
             return;
         }

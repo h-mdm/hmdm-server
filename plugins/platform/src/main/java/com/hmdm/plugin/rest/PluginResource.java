@@ -21,21 +21,20 @@
 
 package com.hmdm.plugin.rest;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.plugin.persistence.PluginDAO;
 import com.hmdm.plugin.service.PluginStatusCache;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource to be used for accessing the data for available plugins.</p>
@@ -58,8 +57,7 @@ public class PluginResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public PluginResource() {
-    }
+    public PluginResource() {}
 
     /**
      * <p>Constructs new <code>PluginResource</code> instance. This implementation does nothing.</p>
@@ -105,8 +103,8 @@ public class PluginResource {
     }
 
     /**
-     * <p>Gets the list of active plugins, e.g. those plugins which are installed in the application and are not marked
-     * as disabled.</p>
+     * <p>Gets the list of active plugins, e.g. those plugins which are installed in the application and are not marked as
+     * disabled.</p>
      *
      * @return a list of active plugins.
      */
@@ -126,6 +124,7 @@ public class PluginResource {
      * <p>Disables the specified plugins from usage for customer account associated with the current user.</p>
      *
      * @param pluginIds a list of IDs of plugins to be disabled.
+     *
      * @return empty response.
      */
     @POST
@@ -138,9 +137,10 @@ public class PluginResource {
                 logger.error("The user is not granted the 'plugins_customer_access_management' permission");
                 return Response.PERMISSION_DENIED();
             }
-            
+
             this.pluginDAO.saveDisabledPlugins(pluginIds);
-            this.pluginStatusCache.setCustomerDisabledPlugins(SecurityContext.get().getCurrentUser().get().getCustomerId(), pluginIds);
+            this.pluginStatusCache.setCustomerDisabledPlugins(
+                    SecurityContext.get().getCurrentUser().get().getCustomerId(), pluginIds);
             return Response.OK();
         } catch (Exception e) {
             logger.error("Unexpected error when disabling plugins", e);

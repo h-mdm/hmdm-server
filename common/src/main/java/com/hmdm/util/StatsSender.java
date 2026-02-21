@@ -1,12 +1,10 @@
 package com.hmdm.util;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.UsageStats;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.*;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -84,8 +82,8 @@ public class StatsSender {
                 os.write(input, 0, input.length);
             }
 
-            try (BufferedReader br = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+            try (BufferedReader br =
+                    new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
                 String responseLine = null;
                 while ((responseLine = br.readLine()) != null) {

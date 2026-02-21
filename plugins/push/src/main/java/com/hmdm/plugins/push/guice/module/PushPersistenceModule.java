@@ -22,12 +22,11 @@
 package com.hmdm.plugins.push.guice.module;
 
 import com.hmdm.guice.module.AbstractPersistenceModule;
-
 import jakarta.servlet.ServletContext;
 
 /**
- * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the
- * persistence layer of the plugin.</p>
+ * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the persistence
+ * layer of the plugin.</p>
  *
  * @author isv
  */
@@ -63,5 +62,4 @@ public class PushPersistenceModule extends AbstractPersistenceModule {
     protected String getDomainObjectsPackageName() {
         return "com.hmdm.plugins.push.persistence.domain";
     }
-
 }

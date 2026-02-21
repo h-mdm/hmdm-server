@@ -22,7 +22,6 @@
 package com.hmdm.persistence.mapper;
 
 import com.hmdm.persistence.domain.PendingSignup;
-import com.hmdm.persistence.domain.UsageStats;
 import org.apache.ibatis.annotations.*;
 
 /**
@@ -32,9 +31,11 @@ import org.apache.ibatis.annotations.*;
  */
 public interface PendingSignupMapper {
 
-    @Insert({"INSERT INTO pendingSignup (email, signupTime, language, token) " +
-             "VALUES ( #{email}, #{signupTime}, #{language}, #{token}) ON CONFLICT ON CONSTRAINT pendingSignup_email_key DO " +
-             "UPDATE SET signupTime = EXCLUDED.signupTime, language = EXCLUDED.language, token = EXCLUDED.token"})
+    @Insert({
+        "INSERT INTO pendingSignup (email, signupTime, language, token) "
+                + "VALUES ( #{email}, #{signupTime}, #{language}, #{token}) ON CONFLICT ON CONSTRAINT pendingSignup_email_key DO "
+                + "UPDATE SET signupTime = EXCLUDED.signupTime, language = EXCLUDED.language, token = EXCLUDED.token"
+    })
     void insert(PendingSignup data);
 
     @Select({"SELECT * FROM pendingSignup WHERE email=#{email}"})

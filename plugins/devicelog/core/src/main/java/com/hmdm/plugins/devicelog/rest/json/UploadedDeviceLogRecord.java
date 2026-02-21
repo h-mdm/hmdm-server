@@ -22,7 +22,6 @@
 package com.hmdm.plugins.devicelog.rest.json;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 /**
@@ -33,23 +32,23 @@ import java.io.Serializable;
 public class UploadedDeviceLogRecord implements Serializable {
 
     private static final long serialVersionUID = -5572542628689577966L;
-    @Schema(description="A timestamp of creation of log record (in milliseconds since epoch time")
+
+    @Schema(description = "A timestamp of creation of log record (in milliseconds since epoch time")
     private Long timestamp;
 
-    @Schema(description="A package ID of an application related to log record")
+    @Schema(description = "A package ID of an application related to log record")
     private String packageId;
 
-    @Schema(description="A severity for log record")
+    @Schema(description = "A severity for log record")
     private int logLevel;
 
-    @Schema(description="A message for log record")
+    @Schema(description = "A message for log record")
     private String message;
 
     /**
      * <p>Constructs new <code>UploadedDeviceLogRecord</code> instance. This implementation does nothing.</p>
      */
-    public UploadedDeviceLogRecord() {
-    }
+    public UploadedDeviceLogRecord() {}
 
     public Long getTimestamp() {
         return timestamp;
@@ -85,11 +84,7 @@ public class UploadedDeviceLogRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "UploadedDeviceLogRecord{" +
-                "timestamp=" + timestamp +
-                ", packageId='" + packageId + '\'' +
-                ", logLevel=" + logLevel +
-                ", message='" + message + '\'' +
-                '}';
+        return "UploadedDeviceLogRecord{" + "timestamp=" + timestamp + ", packageId='" + packageId + '\''
+                + ", logLevel=" + logLevel + ", message='" + message + '\'' + '}';
     }
 }

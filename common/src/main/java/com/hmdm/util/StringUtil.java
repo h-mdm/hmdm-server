@@ -31,14 +31,14 @@ public final class StringUtil {
     /**
      * <p>Constructs new <code>StringUtil</code> instance. This implementation does nothing.</p>
      */
-    private StringUtil() {
-    }
+    private StringUtil() {}
 
     /**
      * <p>Removes the specified string from trailing positions in specified text.</p>
      *
      * @param text a text to check.
      * @param st a string to be stripped off from the specified text.
+     *
      * @return an original text with specified string stripped off from the trailing places.
      */
     public static String stripOffTrailingCharacter(String text, String st) {

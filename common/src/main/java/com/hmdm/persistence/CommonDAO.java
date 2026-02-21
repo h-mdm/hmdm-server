@@ -21,18 +21,17 @@
 
 package com.hmdm.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.CommonMapper;
 import com.hmdm.persistence.mapper.CustomerMapper;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class CommonDAO extends AbstractDAO<Settings> {
-    
+
     private final CommonMapper mapper;
     private final CustomerMapper customerMapper;
     private final DeviceMapper deviceMapper;
@@ -49,9 +48,7 @@ public class CommonDAO extends AbstractDAO<Settings> {
     }
 
     public void loadCustomerSettings(Settings settings) {
-        User currentUser = SecurityContext.get()
-                .getCurrentUser()
-                .get();
+        User currentUser = SecurityContext.get().getCurrentUser().get();
         if (currentUser != null) {
             Customer customer = customerMapper.findCustomerById(currentUser.getCustomerId());
             if (!customer.isMaster()) {
@@ -86,17 +83,18 @@ public class CommonDAO extends AbstractDAO<Settings> {
     }
 
     /**
-     * This function doesn't check the security context because it's called when a customer is signed up
-     * There's a call of this method in UnsecureDAO.signupCustomerUnsecure()
-     * So the security context check should be performed in the calling function!!!
+     * This function doesn't check the security context because it's called when a customer is signed up There's a call
+     * of this method in UnsecureDAO.signupCustomerUnsecure() So the security context check should be performed in the
+     * calling function!!!
+     *
      * @param settings
      */
     public void saveDefaultDesignSettingsBySuperAdmin(Settings settings) {
-//        if (SecurityContext.get().getCurrentUser().get().isSuperAdmin()) {
-            this.mapper.saveDefaultDesignSettings(settings);
-//        } else {
-//            throw SecurityException.onAdminDataAccessViolation("save customer settings");
-//        }
+        // if (SecurityContext.get().getCurrentUser().get().isSuperAdmin()) {
+        this.mapper.saveDefaultDesignSettings(settings);
+        // } else {
+        // throw SecurityException.onAdminDataAccessViolation("save customer settings");
+        // }
     }
 
     public boolean isDatabaseInitialized() {

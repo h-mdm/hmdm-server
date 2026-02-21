@@ -22,9 +22,7 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -41,28 +39,30 @@ public class UploadedFile implements Serializable, CustomerData {
 
     private static final long serialVersionUID = 963786599631403403L;
 
-    @Schema(description="An application ID")
+    @Schema(description = "An application ID")
     private Integer id;
 
     @Schema(hidden = true)
     private int customerId;
 
-    @Schema(description="A path to a file relative to base directory for stored files, including the file name")
+    @Schema(description = "A path to a file relative to base directory for stored files, including the file name")
     private String filePath;
 
     /**
      * <p>A description of the file.</p>
      */
-    @Schema(description="A description of the file")
+    @Schema(description = "A description of the file")
     private String description;
 
-    @Schema(description="A timestamp of file uploading (in milliseconds since epoch time), should be equal to the timestamp in the file system")
+    @Schema(
+            description =
+                    "A timestamp of file uploading (in milliseconds since epoch time), should be equal to the timestamp in the file system")
     private long uploadTime;
 
     /**
      * DEPRECATED since v5.36.1 - checksum isn't used due to possible variable content, use lastUpdate instead
      */
-    @Schema(description="An optional checksum of the file content")
+    @Schema(description = "An optional checksum of the file content")
     @Deprecated
     private String checksum;
 
@@ -71,27 +71,26 @@ public class UploadedFile implements Serializable, CustomerData {
     /**
      * <p>A path to a file on device (including the name of the file).</p>
      */
-    @Schema(description="A path to a file on device (including the file name)")
+    @Schema(description = "A path to a file on device (including the file name)")
     private String devicePath;
 
     /**
-     * <p>A flag indicating whether the file is using the external URL instead of being uploaded.
-     * Notice: "external" is not a reserved keyword in PostgreSQL but reserved in other SQL dialects
-     * </p>
+     * <p>A flag indicating whether the file is using the external URL instead of being uploaded. Notice: "external" is not
+     * a reserved keyword in PostgreSQL but reserved in other SQL dialects</p>
      */
-    @Schema(description="A flag indicating whether the file is using the external URL instead of being uploaded.")
+    @Schema(description = "A flag indicating whether the file is using the external URL instead of being uploaded.")
     private boolean external;
 
     /**
      * <p>An URL referencing the content of the file available on external resource, if a file is marked as external</p>
      */
-    @Schema(description="An external URL referencing the content of the file")
+    @Schema(description = "An external URL referencing the content of the file")
     private String externalUrl;
 
     /**
      * <p>A flag indicating whether the file content must be updated by device-specific values.
      */
-    @Schema(description="A flag indicating whether the file content must be updated by device-specific values")
+    @Schema(description = "A flag indicating whether the file content must be updated by device-specific values")
     private boolean replaceVariables;
 
     private String tmpPath;
@@ -99,8 +98,7 @@ public class UploadedFile implements Serializable, CustomerData {
     /**
      * <p>Constructs new <code>UploadedFile</code> instance. This implementation does nothing.</p>
      */
-    public UploadedFile() {
-    }
+    public UploadedFile() {}
 
     @Override
     public Integer getId() {
@@ -236,7 +234,8 @@ public class UploadedFile implements Serializable, CustomerData {
         }
         final String customerFilesBaseDir = customer.getFilesDir();
         if (customerFilesBaseDir != null && !customerFilesBaseDir.isEmpty()) {
-            return String.format("%s/files/%s/%s", baseUrl, customerFilesBaseDir, this.filePath.replace(File.separator, "/"));
+            return String.format(
+                    "%s/files/%s/%s", baseUrl, customerFilesBaseDir, this.filePath.replace(File.separator, "/"));
         } else {
             return String.format("%s/files/%s", baseUrl, this.filePath.replace(File.separator, "/"));
         }
@@ -244,17 +243,9 @@ public class UploadedFile implements Serializable, CustomerData {
 
     @Override
     public String toString() {
-        return "UploadedFile{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", filePath='" + filePath + '\'' +
-                ", description='" + description + '\'' +
-                ", uploadTime=" + uploadTime +
-                ", devicePath='" + devicePath + '\'' +
-                ", external=" + external +
-                ", externalUrl='" + externalUrl + '\'' +
-                ", replaceVariables=" + replaceVariables +
-                ", url=" + url +
-                '}';
+        return "UploadedFile{" + "id=" + id + ", customerId=" + customerId + ", filePath='" + filePath + '\''
+                + ", description='" + description + '\'' + ", uploadTime=" + uploadTime + ", devicePath='" + devicePath
+                + '\'' + ", external=" + external + ", externalUrl='" + externalUrl + '\'' + ", replaceVariables="
+                + replaceVariables + ", url=" + url + '}';
     }
 }

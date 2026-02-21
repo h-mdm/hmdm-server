@@ -22,71 +22,63 @@
 package com.hmdm.persistence.mapper;
 
 import com.hmdm.persistence.domain.ApplicationSetting;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.List;
-
 public interface ApplicationSettingMapper {
 
-    @Select("SELECT appSettings.*, " +
-            "       applications.pkg AS applicationPkg, " +
-            "       applications.name AS applicationName " +
-            "FROM configurationApplicationSettings appSettings " +
-            "INNER JOIN applications ON applications.id = appSettings.applicationID " +
-            "WHERE appSettings.extRefId = #{id}")
+    @Select("SELECT appSettings.*, " + "       applications.pkg AS applicationPkg, "
+            + "       applications.name AS applicationName " + "FROM configurationApplicationSettings appSettings "
+            + "INNER JOIN applications ON applications.id = appSettings.applicationID "
+            + "WHERE appSettings.extRefId = #{id}")
     List<ApplicationSetting> getApplicationSettingsByConfigurationId(@Param("id") int configurationId);
 
-    @Select("SELECT appSettings.*, " +
-            "       applications.pkg AS applicationPkg, " +
-            "       applications.name AS applicationName " +
-            "FROM configurationApplicationSettings appSettings " +
-            "INNER JOIN applications ON applications.id = appSettings.applicationID " +
-            "WHERE appSettings.extRefId = #{id} " +
-            "AND applications.pkg = #{pkg} ")
+    @Select("SELECT appSettings.*, " + "       applications.pkg AS applicationPkg, "
+            + "       applications.name AS applicationName " + "FROM configurationApplicationSettings appSettings "
+            + "INNER JOIN applications ON applications.id = appSettings.applicationID "
+            + "WHERE appSettings.extRefId = #{id} " + "AND applications.pkg = #{pkg} ")
     List<ApplicationSetting> getConfigAppSettings(@Param("id") int configurationId, @Param("pkg") String pkg);
 
-    @Select("SELECT appSettings.*, " +
-            "       applications.pkg AS applicationPkg, " +
-            "       applications.name AS applicationName " +
-            "FROM deviceApplicationSettings appSettings " +
-            "INNER JOIN applications ON applications.id = appSettings.applicationID " +
-            "WHERE appSettings.extRefId = #{id}")
+    @Select("SELECT appSettings.*, " + "       applications.pkg AS applicationPkg, "
+            + "       applications.name AS applicationName " + "FROM deviceApplicationSettings appSettings "
+            + "INNER JOIN applications ON applications.id = appSettings.applicationID "
+            + "WHERE appSettings.extRefId = #{id}")
     List<ApplicationSetting> getApplicationSettingsByDeviceId(@Param("id") int deviceId);
 
-    @Select("SELECT appSettings.*, " +
-            "       applications.pkg AS applicationPkg, " +
-            "       applications.name AS applicationName " +
-            "FROM deviceApplicationSettings appSettings " +
-            "INNER JOIN applications ON applications.id = appSettings.applicationID " +
-            "WHERE appSettings.extRefId = #{id} " +
-            "AND applications.pkg = #{pkg} ")
+    @Select("SELECT appSettings.*, " + "       applications.pkg AS applicationPkg, "
+            + "       applications.name AS applicationName " + "FROM deviceApplicationSettings appSettings "
+            + "INNER JOIN applications ON applications.id = appSettings.applicationID "
+            + "WHERE appSettings.extRefId = #{id} " + "AND applications.pkg = #{pkg} ")
     List<ApplicationSetting> getDeviceAppSettings(@Param("id") int deviceId, @Param("pkg") String pkg);
 
-    @Select("SELECT appSettings.*, " +
-            "       applications.pkg AS applicationPkg, " +
-            "       applications.name AS applicationName " +
-            "FROM configurationApplicationSettings appSettings " +
-            "INNER JOIN applications ON applications.id = appSettings.applicationId " +
-            "WHERE appSettings.extRefId = #{configurationId} " +
-            "AND appSettings.name = #{name} " +
-            "AND applications.pkg = #{applicationPkg} LIMIT 1")
-    List<ApplicationSetting> getApplicationSetting(@Param("configurationId") int configurationId,
-                                                   @Param("applicationPkg") String applicationPkg,
-                                                   @Param("name") String name);
+    @Select("SELECT appSettings.*, " + "       applications.pkg AS applicationPkg, "
+            + "       applications.name AS applicationName " + "FROM configurationApplicationSettings appSettings "
+            + "INNER JOIN applications ON applications.id = appSettings.applicationId "
+            + "WHERE appSettings.extRefId = #{configurationId} " + "AND appSettings.name = #{name} "
+            + "AND applications.pkg = #{applicationPkg} LIMIT 1")
+    List<ApplicationSetting> getApplicationSetting(
+            @Param("configurationId") int configurationId,
+            @Param("applicationPkg") String applicationPkg,
+            @Param("name") String name);
 
-    @Delete("DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId} AND name=#{name}")
-    void deleteApplicationSettingByName(@Param("configurationId") int configurationId,
-                                        @Param("applicationId") int applicationId,
-                                        @Param("name") String name);
+    @Delete(
+            "DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId} AND name=#{name}")
+    void deleteApplicationSettingByName(
+            @Param("configurationId") int configurationId,
+            @Param("applicationId") int applicationId,
+            @Param("name") String name);
 
-    @Delete("DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId}")
-    void deleteApplicationSettingByApp(@Param("configurationId") int configurationId,
-                                        @Param("applicationId") int applicationId);
+    @Delete(
+            "DELETE FROM configurationApplicationSettings WHERE extRefId=#{configurationId} AND applicationId=#{applicationId}")
+    void deleteApplicationSettingByApp(
+            @Param("configurationId") int configurationId, @Param("applicationId") int applicationId);
 
-    @Insert("INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate) " +
-            "        VALUES (#{configurationId}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})")
-    void insertApplicationSetting(@Param("configurationId") int configurationId, @Param("item") ApplicationSetting setting);
+    @Insert(
+            "INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate) "
+                    + "        VALUES (#{configurationId}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})")
+    void insertApplicationSetting(
+            @Param("configurationId") int configurationId, @Param("item") ApplicationSetting setting);
 }

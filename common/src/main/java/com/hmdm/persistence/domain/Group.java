@@ -21,9 +21,8 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 @Schema(description = "A group of devices")
@@ -32,17 +31,16 @@ public class Group implements CustomerData, Serializable {
 
     private static final long serialVersionUID = 3971700195035939411L;
 
-    @Schema(description="A group ID")
+    @Schema(description = "A group ID")
     private Integer id;
 
-    @Schema(description="A group name")
+    @Schema(description = "A group name")
     private String name;
 
     @Schema(hidden = true)
     private int customerId;
 
-    public Group() {
-    }
+    public Group() {}
 
     public Integer getId() {
         return this.id;

@@ -22,25 +22,18 @@
 package com.hmdm.guice.module;
 
 import jakarta.servlet.ServletContext;
-
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 /**
- * <p>
- * A module used for initializing or modifying the database based on the
- * provided Liquibase change log.
- * </p>
+ * <p>A module used for initializing or modifying the database based on the provided Liquibase change log.</p>
  *
  * @author isv
  */
 public class LiquibaseModule extends AbstractLiquibaseModule {
 
     /**
-     * <p>
-     * Constructs new <code>LiquibaseModule</code> instance for use in specified
-     * context.
-     * </p>
+     * <p>Constructs new <code>LiquibaseModule</code> instance for use in specified context.</p>
      *
      * @param context a context for module usage.
      */
@@ -49,14 +42,9 @@ public class LiquibaseModule extends AbstractLiquibaseModule {
     }
 
     /**
-     * <p>
-     * Gets the path to the DB change log to be used by this module.
-     * </p>
+     * <p>Gets the path to the DB change log to be used by this module.</p>
      *
-     * <p>
-     * Plugins MUST override this method to provide the path to specific Db change
-     * log.
-     * </p>
+     * <p>Plugins MUST override this method to provide the path to specific Db change log.</p>
      *
      * @return a path to resource with Db change log.
      */
@@ -66,9 +54,7 @@ public class LiquibaseModule extends AbstractLiquibaseModule {
     }
 
     /**
-     * <p>
-     * Gets the resource accessor to be used for loading the change log file.
-     * </p>
+     * <p>Gets the resource accessor to be used for loading the change log file.</p>
      *
      * @return a resource accessor for change log file.
      */

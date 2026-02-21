@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~
-  ~ Headwind MDM: Open Source Android MDM Software
-  ~ https://h-mdm.com
-  ~
-  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
-  -->
+	~
+	~ Headwind MDM: Open Source Android MDM Software
+	~ https://h-mdm.com
+	~
+	~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+	~
+	~ Licensed under the Apache License, Version 2.0 (the "License");
+	~ you may not use this file except in compliance with the License.
+	~ You may obtain a copy of the License at
+	~
+	~       http://www.apache.org/licenses/LICENSE-2.0
+	~
+	~ Unless required by applicable law or agreed to in writing, software
+	~ distributed under the License is distributed on an "AS IS" BASIS,
+	~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	~ See the License for the specific language governing permissions and
+	~ limitations under the License.
+	~
+-->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hmdm.plugins.deviceinfo.persistence.mapper.DeviceInfoMapper">
 
-    <sql id="dynamicDataSelect">
+	<sql id="dynamicDataSelect">
         SELECT
             p.ts AS latestUpdateTime,
 
@@ -83,48 +83,49 @@
 
     </sql>
 
-    <sql id="dynamicDataConditions">
+	<sql id="dynamicDataConditions">
         WHERE p.deviceId = #{deviceId}
         <if test="useFixedInterval">
             AND (p.ts &gt;= (EXTRACT(EPOCH FROM NOW()) - #{fixedInterval}) * 1000)
         </if>
-        <if test="!useFixedInterval">
-            <if test="dateFrom != null">
+		<if test="!useFixedInterval">
+			<if test="dateFrom != null">
                 AND (p.ts &gt;= #{dateFromMillis} )
             </if>
-            <if test="dateTo != null">
+			<if test="dateTo != null">
                 AND (p.ts &lt;= #{dateToMillis} )
             </if>
-        </if>
-    </sql>
+		</if>
+	</sql>
 
-    <select id="searchDynamicData" parameterType="com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoFilter"
-            resultType="com.hmdm.plugins.deviceinfo.rest.json.DeviceDynamicInfoRecord">
+	<select id="searchDynamicData" parameterType="com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoFilter"
+		resultType="com.hmdm.plugins.deviceinfo.rest.json.DeviceDynamicInfoRecord">
 
-        <include refid="dynamicDataSelect"/>
+		<include refid="dynamicDataSelect" />
 
-        <include refid="dynamicDataConditions"/>
+		<include refid="dynamicDataConditions" />
 
         ORDER BY p.ts DESC
         OFFSET (#{pageNum} - 1) * #{pageSize}
         LIMIT #{pageSize}
     </select>
 
-    <select id="countAllDynamicData" parameterType="com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoFilter" resultType="long">
+	<select id="countAllDynamicData" parameterType="com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoFilter"
+		resultType="long">
         SELECT COUNT(*)
         FROM plugin_deviceinfo_deviceParams p
 
-        <include refid="dynamicDataConditions"/>
+        <include refid="dynamicDataConditions" />
 
-    </select>
+	</select>
 
-    <select id="searchDynamicDataForExport" parameterType="com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoExportFilter"
-            resultOrdered="true"
-            resultType="com.hmdm.plugins.deviceinfo.rest.json.DeviceDynamicInfoRecord">
+	<select id="searchDynamicDataForExport"
+		parameterType="com.hmdm.plugins.deviceinfo.rest.json.DynamicInfoExportFilter" resultOrdered="true"
+		resultType="com.hmdm.plugins.deviceinfo.rest.json.DeviceDynamicInfoRecord">
 
-        <include refid="dynamicDataSelect"/>
+		<include refid="dynamicDataSelect" />
 
-        <include refid="dynamicDataConditions"/>
+		<include refid="dynamicDataConditions" />
 
         ORDER BY p.ts DESC
     </select>

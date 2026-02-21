@@ -22,27 +22,16 @@
 package com.hmdm.plugins.devicelog.persistence;
 
 import com.hmdm.event.CustomerCreatedEvent;
-import com.hmdm.event.DeviceLocationUpdatedEvent;
 import com.hmdm.event.EventListener;
 import com.hmdm.event.EventType;
-import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Customer;
 import com.hmdm.plugins.devicelog.model.DeviceLogPluginSettings;
 import com.hmdm.plugins.devicelog.model.DeviceLogRule;
-import com.hmdm.plugins.devicelog.model.LogLevel;
-import com.hmdm.rest.json.DeviceLocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
- * <p>A listener for the events of {@link CustomerCreatedEvent} type. This listener is responsible for saving the
- * new customer settings to DB.</p>
+ * <p>A listener for the events of {@link CustomerCreatedEvent} type. This listener is responsible for saving the new
+ * customer settings to DB.</p>
  *
  * @author seva
  */
@@ -52,13 +41,15 @@ public class CustomerCreatedEventListener implements EventListener<CustomerCreat
      * <p>An interface to the persistence layer.</p>
      */
     private final DeviceLogPluginSettingsDAO settingsDAO;
+
     private final CustomerDAO customerDAO;
     private final UnsecureDAO unsecureDAO;
 
     /**
      * <p>Constructs new <code>CustomerCreatedEventListener</code> instance. This implementation does nothing.</p>
      */
-    public CustomerCreatedEventListener(DeviceLogPluginSettingsDAO settingsDAO, CustomerDAO customerDAO, UnsecureDAO unsecureDAO) {
+    public CustomerCreatedEventListener(
+            DeviceLogPluginSettingsDAO settingsDAO, CustomerDAO customerDAO, UnsecureDAO unsecureDAO) {
         this.settingsDAO = settingsDAO;
         this.customerDAO = customerDAO;
         this.unsecureDAO = unsecureDAO;

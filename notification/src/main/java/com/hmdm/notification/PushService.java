@@ -1,17 +1,15 @@
 package com.hmdm.notification;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import jakarta.inject.Named;
 import com.hmdm.notification.persistence.domain.PushMessage;
-import com.hmdm.notification.persistence.mapper.NotificationMapper;
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.Configuration;
 import com.hmdm.persistence.domain.Device;
-import org.mybatis.guice.transactional.Transactional;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.util.List;
+import org.mybatis.guice.transactional.Transactional;
 
 @Singleton
 public class PushService {
@@ -22,15 +20,19 @@ public class PushService {
     private final DeviceDAO deviceDAO;
 
     @Inject
-    public PushService(@Named("MQTT") PushSender pushSenderMqtt, @Named("Polling") PushSender pushSenderPolling,
-                       ConfigurationDAO configurationDAO, DeviceDAO deviceDAO) {
+    public PushService(
+            @Named("MQTT") PushSender pushSenderMqtt,
+            @Named("Polling") PushSender pushSenderPolling,
+            ConfigurationDAO configurationDAO,
+            DeviceDAO deviceDAO) {
         this.pushSenderMqtt = pushSenderMqtt;
         this.pushSenderPolling = pushSenderPolling;
         this.configurationDAO = configurationDAO;
         this.deviceDAO = deviceDAO;
     }
 
-    // Use both ways to send a message, because the decision how to receive messages is done on the device (configuration)
+    // Use both ways to send a message, because the decision how to receive messages is done on the device
+    // (configuration)
     public int send(PushMessage message) {
         pushSenderMqtt.send(message);
         return pushSenderPolling.send(message);
@@ -45,8 +47,7 @@ public class PushService {
     public void notifyDevicesOnUpdate(Integer configurationId) {
         final Configuration configuration = this.configurationDAO.getConfigurationById(configurationId);
         if (configuration != null) {
-            final List<Device> devices
-                    = this.deviceDAO.getDeviceIdsByConfigurationId(configurationId);
+            final List<Device> devices = this.deviceDAO.getDeviceIdsByConfigurationId(configurationId);
             devices.forEach(device -> {
                 PushMessage message = new PushMessage();
                 message.setDeviceId(device.getId());

@@ -26,11 +26,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ConfigurationFile;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
-@Schema(description = "A single configuration file to be used on mobile device and used in data " +
-        "synchronization between mobile device and server application")
+@Schema(
+        description = "A single configuration file to be used on mobile device and used in data "
+                + "synchronization between mobile device and server application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyncConfigurationFile implements Serializable, SyncConfigurationFileInt {
@@ -49,9 +49,9 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
      * <p>A description of the file.</p>
      */
     @Override
-    @Schema(description="A description of the file")
+    @Schema(description = "A description of the file")
     public String getDescription() {
-        //return wrapped.getDescription();
+        // return wrapped.getDescription();
         // Not required in the mobile app
         return null;
     }
@@ -60,7 +60,7 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
      * <p>A checksum for the file content.</p>
      */
     @Override
-    @Schema(description="A checksum for the file content")
+    @Schema(description = "A checksum for the file content")
     public String getChecksum() {
         return wrapped.getChecksum();
     }
@@ -69,7 +69,7 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
      * <p>A flag indicating if file is to be removed from the device or not.</p>
      */
     @Override
-    @Schema(description="A flag indicating if file is to be removed from the device or not")
+    @Schema(description = "A flag indicating if file is to be removed from the device or not")
     public Boolean getRemove() {
         return wrapped.isRemove() ? true : null;
     }
@@ -78,7 +78,7 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
      * <p>A timestamp of file uploading to server (in milliseconds since epoch time).</p>
      */
     @Override
-    @Schema(description="A timestamp of file uploading to server (in milliseconds since epoch time)")
+    @Schema(description = "A timestamp of file uploading to server (in milliseconds since epoch time)")
     public Long getLastUpdate() {
         return wrapped.getLastUpdate();
     }
@@ -86,7 +86,7 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
     /**
      * <p>A path to a file on device (including the name of the file).</p>
      */
-    @Schema(description="A path to a file on device")
+    @Schema(description = "A path to a file on device")
     public String getPath() {
         return wrapped.getDevicePath();
     }
@@ -94,7 +94,7 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
     /**
      * <p>An URL referencing the content of the file.</p>
      */
-    @Schema(description="An URL referencing the content of the file")
+    @Schema(description = "An URL referencing the content of the file")
     public String getUrl() {
         return wrapped.getUrl();
     }
@@ -103,7 +103,7 @@ public class SyncConfigurationFile implements Serializable, SyncConfigurationFil
      * <p>A flag indicating if file is to be removed from the device or not.</p>
      */
     @Override
-    @Schema(description="A flag indicating whether the file content must be updated by device-specific values")
+    @Schema(description = "A flag indicating whether the file content must be updated by device-specific values")
     public Boolean getVarContent() {
         return wrapped.isReplaceVariables() ? true : null;
     }

@@ -22,10 +22,7 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hmdm.service.DeviceApplicationsStatus;
-import com.hmdm.service.DeviceConfigFilesStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 @Schema(description = "Response for inquiry summary data by configuration")
@@ -34,11 +31,13 @@ public class SummaryConfigItem implements Serializable {
 
     private static final long serialVersionUID = -8435796711101696938L;
 
-    @Schema(description="Count of items")
+    @Schema(description = "Count of items")
     private int counter;
-    @Schema(description="Configuration ID")
+
+    @Schema(description = "Configuration ID")
     private int id;
-    @Schema(description="Configuration name")
+
+    @Schema(description = "Configuration name")
     private String name;
 
     public int getCounter() {

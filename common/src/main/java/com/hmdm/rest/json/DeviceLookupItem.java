@@ -37,8 +37,7 @@ public class DeviceLookupItem extends LookupItem {
     /**
      * <p>Constructs new <code>DeviceLookupItem</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLookupItem() {
-    }
+    public DeviceLookupItem() {}
 
     public String getImei() {
         return imei;
@@ -58,10 +57,6 @@ public class DeviceLookupItem extends LookupItem {
 
     @Override
     public String toString() {
-        return "DeviceLookupItem{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", imei='" + imei + '\'' +
-                '}';
+        return "DeviceLookupItem{" + "id=" + getId() + ", name='" + getName() + '\'' + ", imei='" + imei + '\'' + '}';
     }
 }

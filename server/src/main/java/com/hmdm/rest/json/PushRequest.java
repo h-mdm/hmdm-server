@@ -23,7 +23,6 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
 
 @Schema(description = "Request to send Push messages to specified devices/groups")
@@ -35,8 +34,7 @@ public class PushRequest {
     private List<String> groups;
     private Boolean broadcast;
 
-    public PushRequest() {
-    }
+    public PushRequest() {}
 
     public String getMessageType() {
         return messageType;

@@ -21,12 +21,9 @@
 
 package com.hmdm.plugin.rest;
 
+import com.hmdm.plugin.service.PluginStatusCache;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import com.hmdm.plugin.service.PluginStatusCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -36,6 +33,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>An interceptor for the request to resources provided by installed plugins. Verifies that respective plugin is not
@@ -73,21 +72,22 @@ public class PluginAccessFilter implements Filter {
      * <p>Does nothing.</p>
      */
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
+    public void init(FilterConfig filterConfig) {}
 
     /**
-     * <p>Intercepts the incoming request. If request URI maps to some plugin then checks the current status of plugin
-     * and if it is disabled them rejects the request. Otherwise the request is processed further.</p>
+     * <p>Intercepts the incoming request. If request URI maps to some plugin then checks the current status of plugin and
+     * if it is disabled them rejects the request. Otherwise the request is processed further.</p>
      *
      * @param request an incoming request.
      * @param response an outgoing response.
      * @param chain a request processing chain.
+     *
      * @throws IOException if an unexpected error occurs.
      * @throws ServletException if an unexpected error occurs.
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             final String pathInfo = httpRequest.getServletPath();
@@ -104,7 +104,9 @@ public class PluginAccessFilter implements Filter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Unexpected error when checking plugin for availability. The request goes on further down the chain.", e);
+            logger.error(
+                    "Unexpected error when checking plugin for availability. The request goes on further down the chain.",
+                    e);
         }
 
         chain.doFilter(request, response);
@@ -114,6 +116,5 @@ public class PluginAccessFilter implements Filter {
      * <p>Does nothing.</p>
      */
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 }

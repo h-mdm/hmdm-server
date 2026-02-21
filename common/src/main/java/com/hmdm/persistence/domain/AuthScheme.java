@@ -22,7 +22,6 @@
 package com.hmdm.persistence.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -36,16 +35,16 @@ public class AuthScheme implements Serializable {
 
     private static final long serialVersionUID = -8203664108955594811L;
 
-    @Schema(description="Scheme type")
+    @Schema(description = "Scheme type")
     private String type;
-    @Schema(description="Implementing class")
+
+    @Schema(description = "Implementing class")
     private String implClass;
 
     /**
      * <p>Constructs new <code>AuthScheme</code> instance. This implementation does nothing.</p>
      */
-    public AuthScheme() {
-    }
+    public AuthScheme() {}
 
     public String getType() {
         return type;
@@ -78,9 +77,6 @@ public class AuthScheme implements Serializable {
 
     @Override
     public String toString() {
-        return "AuthScheme{" +
-                "type=" + type +
-                ", implClass='" + implClass + '\'' +
-                '}';
+        return "AuthScheme{" + "type=" + type + ", implClass='" + implClass + '\'' + '}';
     }
 }

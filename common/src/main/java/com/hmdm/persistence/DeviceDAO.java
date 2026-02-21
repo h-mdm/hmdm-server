@@ -21,25 +21,23 @@
 
 package com.hmdm.persistence;
 
-import jakarta.inject.Inject;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import jakarta.inject.Singleton;
-import jakarta.inject.Named;
 import com.hmdm.event.DeviceInfoUpdatedEvent;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.*;
-import com.hmdm.rest.json.*;
-import com.hmdm.service.DeviceApplicationsStatus;
-import com.hmdm.service.DeviceConfigFilesStatus;
-import org.mybatis.guice.transactional.Transactional;
 import com.hmdm.persistence.mapper.DeviceMapper;
+import com.hmdm.rest.json.*;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
+import com.hmdm.service.DeviceApplicationsStatus;
+import com.hmdm.service.DeviceConfigFilesStatus;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.mybatis.guice.transactional.Transactional;
 
 @Singleton
 public class DeviceDAO extends AbstractDAO<Device> {
@@ -51,8 +49,12 @@ public class DeviceDAO extends AbstractDAO<Device> {
     private final int fastSearchChars;
 
     @Inject
-    public DeviceDAO(DeviceMapper mapper, ApplicationSettingDAO applicationSettingDAO, Injector injector,
-            EventService eventService, @Named("device.fast.search.chars") int fastSearchChars) {
+    public DeviceDAO(
+            DeviceMapper mapper,
+            ApplicationSettingDAO applicationSettingDAO,
+            Injector injector,
+            EventService eventService,
+            @Named("device.fast.search.chars") int fastSearchChars) {
         this.mapper = mapper;
         this.applicationSettingDAO = applicationSettingDAO;
         this.eventService = eventService;
@@ -75,16 +77,9 @@ public class DeviceDAO extends AbstractDAO<Device> {
         return this.mapper.countTotalDevices();
 
         /*
-         * User user = SecurityContext.get()
-         * .getCurrentUser().get();
-         * if (user == null) {
-         * return 0;
-         * }
-         * Long count = this.mapper.countAllDevicesForCustomer(user.getCustomerId());
-         * if (count == null) {
-         * return 0;
-         * }
-         * return count.intValue();
+         * User user = SecurityContext.get() .getCurrentUser().get(); if (user == null) { return 0; } Long count =
+         * this.mapper.countAllDevicesForCustomer(user.getCustomerId()); if (count == null) { return 0; } return
+         * count.intValue();
          */
     }
 
@@ -93,7 +88,8 @@ public class DeviceDAO extends AbstractDAO<Device> {
         return this.mapper.countOnlineDevices();
     }
 
-    public long getTotalDevicesCount(User user,
+    public long getTotalDevicesCount(
+            User user,
             DeviceConfigFilesStatus fileStatus,
             DeviceApplicationsStatus appStatus,
             Long minEnrollTime,
@@ -153,11 +149,11 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     public List<ApplicationSetting> getDeviceApplicationSettings(int deviceId) {
-        final Device dbDevice = getSingleRecord(() -> this.mapper.getDeviceById(deviceId),
-                SecurityException::onDeviceAccessViolation);
+        final Device dbDevice =
+                getSingleRecord(() -> this.mapper.getDeviceById(deviceId), SecurityException::onDeviceAccessViolation);
         if (dbDevice != null) {
-            final List<ApplicationSetting> deviceAppSettings = this.applicationSettingDAO
-                    .getApplicationSettingsByDeviceId(dbDevice.getId());
+            final List<ApplicationSetting> deviceAppSettings =
+                    this.applicationSettingDAO.getApplicationSettingsByDeviceId(dbDevice.getId());
             return deviceAppSettings;
         } else {
             return new ArrayList<>();
@@ -185,8 +181,8 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     public Device getDeviceByNumberIgnoreCase(String number) {
-        return getSingleRecord(() -> this.mapper.getDeviceByNumberIgnoreCase(number),
-                SecurityException::onDeviceAccessViolation);
+        return getSingleRecord(
+                () -> this.mapper.getDeviceByNumberIgnoreCase(number), SecurityException::onDeviceAccessViolation);
     }
 
     @Transactional
@@ -203,32 +199,36 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     /**
-     * <p>
-     * Updates the device data in persistent data store. The reference to related
-     * customer account and last update
-     * time of the device are not affected by this method.
-     * </p>
+     * <p>Updates the device data in persistent data store. The reference to related customer account and last update time
+     * of the device are not affected by this method.</p>
      *
      * @param device a device to be updated.
-     * @throws SecurityException if current user is not authorized to update this
-     *                           device.
+     *
+     * @throws SecurityException if current user is not authorized to update this device.
      */
     @Transactional
     public void updateDevice(Device device) {
-        updateById(device.getId(), this.mapper::getDeviceById, dbDevice -> {
-            device.setCustomerId(dbDevice.getCustomerId());
-            device.updateFastSearch(fastSearchChars);
+        updateById(
+                device.getId(),
+                this.mapper::getDeviceById,
+                dbDevice -> {
+                    device.setCustomerId(dbDevice.getCustomerId());
+                    device.updateFastSearch(fastSearchChars);
 
-            final Integer currentUserId = SecurityContext.get().getCurrentUser().get().getId();
-            this.mapper.updateDevice(device);
-            this.mapper.removeDeviceGroupsByDeviceId(currentUserId, device.getCustomerId(), device.getId());
-            if (device.getGroups() != null && !device.getGroups().isEmpty()) {
-                this.mapper.insertDeviceGroups(
-                        device.getId(),
-                        device.getGroups().stream().map(LookupItem::getId).collect(Collectors.toList()));
-            }
-            this.eventService.fireEvent(new DeviceInfoUpdatedEvent(device.getId()));
-        }, SecurityException::onDeviceAccessViolation);
+                    final Integer currentUserId =
+                            SecurityContext.get().getCurrentUser().get().getId();
+                    this.mapper.updateDevice(device);
+                    this.mapper.removeDeviceGroupsByDeviceId(currentUserId, device.getCustomerId(), device.getId());
+                    if (device.getGroups() != null && !device.getGroups().isEmpty()) {
+                        this.mapper.insertDeviceGroups(
+                                device.getId(),
+                                device.getGroups().stream()
+                                        .map(LookupItem::getId)
+                                        .collect(Collectors.toList()));
+                    }
+                    this.eventService.fireEvent(new DeviceInfoUpdatedEvent(device.getId()));
+                },
+                SecurityException::onDeviceAccessViolation);
     }
 
     public Device getDeviceById(Integer deviceId) {
@@ -236,11 +236,10 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     /**
-     * <p>
-     * Gets the applications installed on specified device.
-     * </p>
+     * <p>Gets the applications installed on specified device.</p>
      *
      * @param deviceId an ID of a device.
+     *
      * @return a list of applications reported as installed on specified device.
      */
     @Transactional
@@ -254,17 +253,17 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     /**
-     * <p>
-     * Gets the lookup list of devices matching the specified filter.
-     * </p>
+     * <p>Gets the lookup list of devices matching the specified filter.</p>
      *
-     * @param filter       a filter to be used for filtering the records.
+     * @param filter a filter to be used for filtering the records.
      * @param resultsCount a maximum number of items to be included to list.
+     *
      * @return a response with list of devices matching the specified filter.
      */
     public List<DeviceLookupItem> findDevices(String filter, int resultsCount) {
         String searchFilter = '%' + filter.trim() + '%';
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> this.mapper.lookupDevices(u.getId(), u.getCustomerId(), searchFilter, resultsCount))
                 .orElse(new ArrayList<>());
     }
@@ -279,14 +278,12 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     /**
-     * <p>
-     * Updates the description for the specified device.
-     * </p>
+     * <p>Updates the description for the specified device.</p>
      *
-     * @param deviceId             an ID of a device to update description for.
+     * @param deviceId an ID of a device to update description for.
      * @param newDeviceDescription a new device description.
-     * @throws SecurityException if current user is not authorized to update the
-     *                           specified device description.
+     *
+     * @throws SecurityException if current user is not authorized to update the specified device description.
      */
     @Transactional
     public void updateDeviceDescription(Integer deviceId, String newDeviceDescription) {
@@ -299,11 +296,11 @@ public class DeviceDAO extends AbstractDAO<Device> {
 
     @Transactional
     public List<ChartItem> getStatusSummary() {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> {
                     DeviceSummaryRequest filter = new DeviceSummaryRequest(
-                            u.getId(), u.getCustomerId(),
-                            null, null, null, null, null, null, null);
+                            u.getId(), u.getCustomerId(), null, null, null, null, null, null, null);
                     long now = System.currentTimeMillis();
                     List<ChartItem> result = new LinkedList<>();
 
@@ -334,11 +331,11 @@ public class DeviceDAO extends AbstractDAO<Device> {
 
     @Transactional
     public List<ChartItem> getInstallSummary() {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> {
                     DeviceSummaryRequest filter = new DeviceSummaryRequest(
-                            u.getId(), u.getCustomerId(),
-                            null, null, 1l, null, null, null, null);
+                            u.getId(), u.getCustomerId(), null, null, 1l, null, null, null, null);
                     List<ChartItem> result = new LinkedList<>();
 
                     ChartItem item1 = new ChartItem();
@@ -366,20 +363,21 @@ public class DeviceDAO extends AbstractDAO<Device> {
 
     @Transactional
     public Long countEnrolled(long lastEnrollTime) {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> {
                     DeviceSummaryRequest filter = new DeviceSummaryRequest(
-                            u.getId(), u.getCustomerId(),
-                            null, null, lastEnrollTime, null, null, null, null);
+                            u.getId(), u.getCustomerId(), null, null, lastEnrollTime, null, null, null, null);
                     return this.mapper.countAllDevicesForSummary(filter);
                 })
                 .orElse(0l);
     }
 
     @Transactional
-    public List<SummaryConfigItem> getSummaryByConfig(DeviceSummaryRequest condition,
-            List<SummaryConfigItem> topConfigs) {
-        return SecurityContext.get().getCurrentUser()
+    public List<SummaryConfigItem> getSummaryByConfig(
+            DeviceSummaryRequest condition, List<SummaryConfigItem> topConfigs) {
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> {
                     List<Integer> configIds = null;
                     if (topConfigs != null) {
@@ -391,7 +389,8 @@ public class DeviceDAO extends AbstractDAO<Device> {
                     }
 
                     DeviceSummaryRequest filter = new DeviceSummaryRequest(
-                            u.getId(), u.getCustomerId(),
+                            u.getId(),
+                            u.getCustomerId(),
                             condition.getFileStatus(),
                             condition.getAppStatus(),
                             condition.getMinEnrollTime(),
@@ -426,7 +425,8 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     public List<ChartItem> getDevicesEnrolledMonthly() {
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(u -> {
                     List<ChartItem> result = new LinkedList<>();
                     Calendar c = Calendar.getInstance();
@@ -450,10 +450,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
                         endTime = c.getTimeInMillis();
 
                         DeviceSummaryRequest filter = new DeviceSummaryRequest(
-                                u.getId(), u.getCustomerId(),
-                                null, null,
-                                startTime, endTime,
-                                null, null, null);
+                                u.getId(), u.getCustomerId(), null, null, startTime, endTime, null, null, null);
 
                         ChartItem item = new ChartItem();
                         item.setStringAttr(label);
@@ -464,7 +461,5 @@ public class DeviceDAO extends AbstractDAO<Device> {
                     return result;
                 })
                 .orElse(null);
-
     }
-
 }

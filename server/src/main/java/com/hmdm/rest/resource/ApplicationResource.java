@@ -21,9 +21,19 @@
 
 package com.hmdm.rest.resource;
 
+import com.hmdm.notification.PushService;
+import com.hmdm.persistence.*;
+import com.hmdm.persistence.domain.*;
+import com.hmdm.rest.json.*;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
+import com.hmdm.util.FileExistsException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -33,29 +43,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
-import jakarta.inject.Named;
-
-import com.hmdm.notification.PushService;
-import com.hmdm.persistence.*;
-import com.hmdm.persistence.domain.*;
-import com.hmdm.rest.json.*;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
-import com.hmdm.util.FileUtil;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.hmdm.util.FileExistsException;
-
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag(name = "Application")
 @Singleton
@@ -70,15 +63,13 @@ public class ApplicationResource {
     private PushService pushService;
 
     /**
-     * <p>
-     * A constructor required by Swagger.
-     * </p>
+     * <p>A constructor required by Swagger.</p>
      */
-    public ApplicationResource() {
-    }
+    public ApplicationResource() {}
 
     @Inject
-    public ApplicationResource(ApplicationDAO applicationDAO,
+    public ApplicationResource(
+            ApplicationDAO applicationDAO,
             ConfigurationDAO configurationDAO,
             PushService pushService,
             @Named("files.directory") String filesDirectory) {
@@ -99,8 +90,8 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllApplications() {
         if (!SecurityContext.get().hasPermission("applications")) {
-            logger.error("Unauthorized attempt to access application list by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to access application list by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         return Response.OK(this.applicationDAO.getAllApplications());
@@ -113,8 +104,8 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchApplications(@PathParam("value") @Parameter(description = "A filter value") String value) {
         if (!SecurityContext.get().hasPermission("applications")) {
-            logger.error("Unauthorized attempt to access application list by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to access application list by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         return Response.OK(this.applicationDAO.getAllApplicationsByValue(value));
@@ -123,12 +114,10 @@ public class ApplicationResource {
     // =================================================================================================================
 
     /**
-     * <p>
-     * Gets the list of application ids/names matching the specified filter for
-     * autocompletions.
-     * </p>
+     * <p>Gets the list of application ids/names matching the specified filter for autocompletions.</p>
      *
      * @param filter a filter to be used for filtering the records.
+     *
      * @return a response with list of devices matching the specified filter.
      */
     @Operation(summary = "Get app ids and names for autocompletions")
@@ -146,14 +135,16 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get application versions", description = "Gets the list of versions for specified application")
+    @Operation(
+            summary = "Get application versions",
+            description = "Gets the list of versions for specified application")
     @GET
     @Path("/{id}/versions")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllApplicationVersions(@PathParam("id") @Parameter(description = "Application ID") Integer id) {
         if (!SecurityContext.get().hasPermission("applications")) {
-            logger.error("Unauthorized attempt to access application version list by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to access application version list by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -171,8 +162,8 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApplication(@PathParam("id") @Parameter(description = "Application ID") Integer id) {
         if (!SecurityContext.get().hasPermission("applications")) {
-            logger.error("Unauthorized attempt to access application list by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to access application list by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -184,15 +175,17 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update Android application", description = "Create a new Android application (if id is not provided) or update existing one otherwise.")
+    @Operation(
+            summary = "Create or update Android application",
+            description = "Create a new Android application (if id is not provided) or update existing one otherwise.")
     @Path("/android")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateApplication(Application application) {
         if (!SecurityContext.get().hasPermission("edit_applications")) {
-            logger.error("Unauthorized attempt to update application by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to update application by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -203,14 +196,14 @@ public class ApplicationResource {
             } else {
                 this.applicationDAO.updateApplication(application);
                 if (application.getUrl() != null && application.getLatestVersion() != null && !application.isSplit()) {
-                    ApplicationVersion version = applicationDAO
-                            .findApplicationVersionById(application.getLatestVersion());
+                    ApplicationVersion version =
+                            applicationDAO.findApplicationVersionById(application.getLatestVersion());
                     if (version != null) {
                         version.setUrl(application.getUrl());
                         applicationDAO.updateApplicationVersion(version);
                         logger.info(
-                                "Application " + application.getPkg() + " updated to version " + version.getVersion() +
-                                        ", user " + SecurityContext.get().getCurrentUserName());
+                                "Application " + application.getPkg() + " updated to version " + version.getVersion()
+                                        + ", user " + SecurityContext.get().getCurrentUserName());
                     }
                 }
                 return Response.OK();
@@ -234,15 +227,17 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update Web-page application", description = "Create a new Web-page application (if id is not provided) or update existing one otherwise.")
+    @Operation(
+            summary = "Create or update Web-page application",
+            description = "Create a new Web-page application (if id is not provided) or update existing one otherwise.")
     @Path("/web")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateWebApplication(Application application) {
         if (!SecurityContext.get().hasPermission("edit_applications")) {
-            logger.error("Unauthorized attempt to update application by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to update application by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -255,8 +250,8 @@ public class ApplicationResource {
                 // package here
                 this.applicationDAO.updateWebApplication(application);
                 if (application.getUrl() != null && application.getLatestVersion() != null) {
-                    ApplicationVersion version = applicationDAO
-                            .findApplicationVersionById(application.getLatestVersion());
+                    ApplicationVersion version =
+                            applicationDAO.findApplicationVersionById(application.getLatestVersion());
                     if (version != null) {
                         version.setUrl(application.getUrl());
                         applicationDAO.updateApplicationVersion(version);
@@ -284,15 +279,17 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Create or update application version", description = "Create a new application version (if id is not provided) or update existing one otherwise.")
+    @Operation(
+            summary = "Create or update application version",
+            description = "Create a new application version (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/versions")
     public Response updateApplicationVersion(ApplicationVersion applicationVersion) {
         if (!SecurityContext.get().hasPermission("edit_application_versions")) {
-            logger.error("Unauthorized attempt to update application version by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to update application version by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -304,8 +301,8 @@ public class ApplicationResource {
                 return Response.OK(applicationVersion);
             } else {
                 logger.info("Application " + applicationVersion.getApplicationId() + " version updated: "
-                        + applicationVersion.getVersion() +
-                        ", user " + SecurityContext.get().getCurrentUserName());
+                        + applicationVersion.getVersion() + ", user "
+                        + SecurityContext.get().getCurrentUserName());
                 this.applicationDAO.updateApplicationVersion(applicationVersion);
                 return Response.OK();
             }
@@ -342,8 +339,8 @@ public class ApplicationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeApplication(@PathParam("id") @Parameter(description = "Application ID") Integer id) {
         if (!SecurityContext.get().hasPermission("edit_applications")) {
-            logger.error("Unauthorized attempt to remove application by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to remove application by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -369,8 +366,8 @@ public class ApplicationResource {
     public Response removeApplicationVersion(
             @PathParam("id") @Parameter(description = "Application Version ID") Integer id) {
         if (!SecurityContext.get().hasPermission("edit_application_versions")) {
-            logger.error("Unauthorized attempt to delete application version by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to delete application version by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -380,8 +377,8 @@ public class ApplicationResource {
             logger.error("Prohibited to delete application version #{} by current user", id, e);
             return Response.PERMISSION_DENIED();
         } catch (ApplicationReferenceExistsException e) {
-            logger.error("Prohibited to delete application version #{} as it is still referenced in configurations", id,
-                    e);
+            logger.error(
+                    "Prohibited to delete application version #{} as it is still referenced in configurations", id, e);
             return Response.APPLICATION_CONFIG_REFERENCE_EXISTS();
         } catch (Exception e) {
             logger.error("Failed to delete application version #{} due to unexpected error", id, e);
@@ -390,30 +387,34 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get application configurations", description = "Gets the list of configurations using requested application")
+    @Operation(
+            summary = "Get application configurations",
+            description = "Gets the list of configurations using requested application")
     @GET
     @Path("/configurations/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApplicationConfigurations(
             @PathParam("id") @Parameter(description = "Application ID") Integer id) {
         if (!SecurityContext.get().hasPermission("applications")) {
-            logger.error("Unauthorized attempt to get application configurations by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to get application configurations by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         return Response.OK(this.applicationDAO.getApplicationConfigurations(id));
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get application version configurations", description = "Gets the list of configurations using requested application version")
+    @Operation(
+            summary = "Get application version configurations",
+            description = "Gets the list of configurations using requested application version")
     @GET
     @Path("/version/{id}/configurations")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApplicationVersionConfigurations(
             @PathParam("id") @Parameter(description = "Application Version ID") Integer id) {
         if (!SecurityContext.get().hasPermission("applications")) {
-            logger.error("Unauthorized attempt to get application version configurations by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to get application version configurations by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
@@ -425,23 +426,28 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Update application configurations", description = "Updates the list of configurations using requested application")
+    @Operation(
+            summary = "Update application configurations",
+            description = "Updates the list of configurations using requested application")
     @POST
     @Path("/configurations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateApplicationConfigurations(LinkConfigurationsToAppRequest request) {
         if (!SecurityContext.get().hasPermission("edit_applications")) {
-            logger.error("Unauthorized attempt to update application configurations by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to update application configurations by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
             User user = SecurityContext.get().getCurrentUser().get();
             if (!user.isAllConfigAvailable()) {
                 // Remove all configurations unavailable to user
-                request.getConfigurations().removeIf(c -> user.getConfigurations().stream()
-                        .filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
+                request.getConfigurations()
+                        .removeIf(c -> user.getConfigurations().stream()
+                                        .filter(uc -> uc.getId() == c.getConfigurationId())
+                                        .findFirst()
+                                == null);
             }
             // Avoid access to objects of another customer
             request.getConfigurations().removeIf(c -> {
@@ -451,10 +457,11 @@ public class ApplicationResource {
                 // anyway
                 Application application = applicationDAO.findById(c.getApplicationId());
                 Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
-                return application.getCustomerId() != user.getCustomerId() ||
-                        configuration.getCustomerId() != user.getCustomerId();
+                return application.getCustomerId() != user.getCustomerId()
+                        || configuration.getCustomerId() != user.getCustomerId();
             });
-            logger.info("Application configurations updated by user " + SecurityContext.get().getCurrentUserName());
+            logger.info("Application configurations updated by user "
+                    + SecurityContext.get().getCurrentUserName());
             this.applicationDAO.updateApplicationConfigurations(request);
 
             for (ApplicationConfigurationLink configurationLink : request.getConfigurations()) {
@@ -471,26 +478,31 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Update application version configurations", description = "Updates the list of configurations using requested application version")
+    @Operation(
+            summary = "Update application version configurations",
+            description = "Updates the list of configurations using requested application version")
     @POST
     @Path("/version/configurations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateApplicationVersionConfigurations(LinkConfigurationsToAppVersionRequest request) {
         if (!SecurityContext.get().hasPermission("edit_application_versions")) {
-            logger.error("Unauthorized attempt to update application version configurations by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.error("Unauthorized attempt to update application version configurations by user "
+                    + SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
             User user = SecurityContext.get().getCurrentUser().get();
             if (!user.isAllConfigAvailable()) {
                 // Remove all configurations unavailable to user
-                request.getConfigurations().removeIf(c -> user.getConfigurations().stream()
-                        .filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
+                request.getConfigurations()
+                        .removeIf(c -> user.getConfigurations().stream()
+                                        .filter(uc -> uc.getId() == c.getConfigurationId())
+                                        .findFirst()
+                                == null);
             }
-            logger.info("Application version configurations updated by user " +
-                    SecurityContext.get().getCurrentUserName());
+            logger.info("Application version configurations updated by user "
+                    + SecurityContext.get().getCurrentUserName());
             this.applicationDAO.updateApplicationVersionConfigurations(request, user);
             for (ApplicationVersionConfigurationLink configurationLink : request.getConfigurations()) {
                 if (configurationLink.isNotify()) {
@@ -541,7 +553,9 @@ public class ApplicationResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Validate application package", description = "Validate the application package ID for uniqueness")
+    @Operation(
+            summary = "Validate application package",
+            description = "Validate the application package ID for uniqueness")
     @Path("/validatePkg")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

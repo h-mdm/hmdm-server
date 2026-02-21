@@ -26,8 +26,8 @@ import com.hmdm.event.EventListener;
 import com.hmdm.event.EventType;
 
 /**
- * <p>A listener for the events of {@link CustomerCreatedEvent} type. This listener is responsible for saving the
- * new customer settings to DB.</p>
+ * <p>A listener for the events of {@link CustomerCreatedEvent} type. This listener is responsible for saving the new
+ * customer settings to DB.</p>
  *
  * @author seva
  */

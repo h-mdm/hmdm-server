@@ -21,24 +21,20 @@
 
 package com.hmdm.rest.resource;
 
+import com.hmdm.persistence.UserDAO;
+import com.hmdm.rest.json.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.rest.json.Response;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A resource for tracking the status of hints shown to users.</p>
@@ -57,8 +53,7 @@ public class HintResource {
     /**
      * <p>A constructor required by Swagger.</p>
      */
-    public HintResource() {
-    }
+    public HintResource() {}
 
     /**
      * <p>Constructs new <code>HintResource</code> instance. This implementation does nothing.</p>
@@ -69,15 +64,15 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Get shown hints",
-            description = "Gets the list of identifiers for the hints already presented to current user"
-    )
+    @Operation(
+            summary = "Get shown hints",
+            description = "Gets the list of identifiers for the hints already presented to current user")
     @GET
     @Path("/history")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getShownHints() {
         try {
-            List<String> shownHints  = this.userDAO.getShownHints();
+            List<String> shownHints = this.userDAO.getShownHints();
             return Response.OK(shownHints);
         } catch (Exception e) {
             logger.error("Unexpected error while getting the list of hints shown to user", e);
@@ -86,9 +81,7 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Enable hints",
-            description = "Enables the hints to be presented to current user"
-    )
+    @Operation(summary = "Enable hints", description = "Enables the hints to be presented to current user")
     @POST
     @Path("/enable")
     @Produces(MediaType.APPLICATION_JSON)
@@ -103,9 +96,7 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "Disable hints",
-            description = "Disables the hints from to be presented to current user"
-    )
+    @Operation(summary = "Disable hints", description = "Disables the hints from to be presented to current user")
     @POST
     @Path("/disable")
     @Produces(MediaType.APPLICATION_JSON)
@@ -120,9 +111,7 @@ public class HintResource {
     }
 
     // =================================================================================================================
-    @Operation(summary = "On hint shown",
-            description = "Marks the hint as shown to current user"
-    )
+    @Operation(summary = "On hint shown", description = "Marks the hint as shown to current user")
     @POST
     @Path("/history")
     @Produces(MediaType.APPLICATION_JSON)

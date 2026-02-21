@@ -25,8 +25,7 @@ public class MoveFileRequest {
     private String path;
     private String localPath;
 
-    public MoveFileRequest() {
-    }
+    public MoveFileRequest() {}
 
     public String getPath() {
         return this.path;

@@ -22,7 +22,6 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -31,8 +30,7 @@ public class UpdateRequest {
     private boolean sendStats;
     private List<UpdateEntry> updates;
 
-    public UpdateRequest() {
-    }
+    public UpdateRequest() {}
 
     public boolean isUpdate() {
         return update;

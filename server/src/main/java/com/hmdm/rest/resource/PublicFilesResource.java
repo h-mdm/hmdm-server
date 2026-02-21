@@ -24,9 +24,6 @@ package com.hmdm.rest.resource;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
-import org.apache.poi.util.IOUtils;
-
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -39,12 +36,14 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import org.apache.poi.util.IOUtils;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 
 /**
  * <p>A REST API for accessing the files from mobile applications.</p>
  *
- * <p>This class must never be used. {@link DownloadFilesServlet} is used instead for downloading files from server
- * by mobile applications.</p>
+ * <p>This class must never be used. {@link DownloadFilesServlet} is used instead for downloading files from server by
+ * mobile applications.</p>
  *
  * @author isv
  */
@@ -64,7 +63,9 @@ public class PublicFilesResource {
      * <p>Sends content of the file to client.</p>
      *
      * @param filePath a relative path to a file.
+     *
      * @return a response to client.
+     *
      * @throws Exception if an unexpected error occurs.
      */
     @GET
@@ -72,20 +73,26 @@ public class PublicFilesResource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public jakarta.ws.rs.core.Response downloadFile(@PathParam("filePath") String filePath) throws Exception {
         // TODO : ISV : Needs to identify the device and do a security check if device is granted access to specified
-        //  file
+        // file
         File file = new File(filesDirectory + "/" + URLDecoder.decode(filePath, StandardCharsets.UTF_8));
         if (!file.exists()) {
             return jakarta.ws.rs.core.Response.status(404).build();
         } else {
-            ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(file.getName()).creationDate(new Date()).build();
-            return jakarta.ws.rs.core.Response.ok( (StreamingOutput) output -> {
-                try {
-                    InputStream input = new FileInputStream( file );
-                    IOUtils.copy(input, output);
-                    output.flush();
-                } catch ( Exception e ) { e.printStackTrace(); }
-            } ).header( "Content-Disposition", contentDisposition ).build();
-
+            ContentDisposition contentDisposition = ContentDisposition.type("attachment")
+                    .fileName(file.getName())
+                    .creationDate(new Date())
+                    .build();
+            return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
+                        try {
+                            InputStream input = new FileInputStream(file);
+                            IOUtils.copy(input, output);
+                            output.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .header("Content-Disposition", contentDisposition)
+                    .build();
         }
     }
 }

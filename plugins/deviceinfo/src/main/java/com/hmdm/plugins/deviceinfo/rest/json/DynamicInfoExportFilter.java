@@ -23,7 +23,6 @@ package com.hmdm.plugins.deviceinfo.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -34,38 +33,41 @@ import java.util.Date;
  * @author isv
  */
 @Schema(description = "A filter for searching the dynamic info records for device for export")
-@JsonIgnoreProperties(value = {"deviceId"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+        value = {"deviceId"},
+        ignoreUnknown = true)
 public class DynamicInfoExportFilter implements Serializable {
 
     private static final long serialVersionUID = -2707690119899104358L;
+
     @Schema(hidden = true)
     private int deviceId;
 
     /**
      * <p>A device identifier.</p>
      */
-    @Schema(description="A device identifier")
+    @Schema(description = "A device identifier")
     private String deviceNumber;
 
     /**
      * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
      */
-    @Schema(description="A timestamp for FROM boundary for filtering the data records by dates")
+    @Schema(description = "A timestamp for FROM boundary for filtering the data records by dates")
     private Date dateFrom;
 
     /**
      * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
      */
-    @Schema(description="A timestamp for TO boundary for filtering the data records by dates")
+    @Schema(description = "A timestamp for TO boundary for filtering the data records by dates")
     private Date dateTo;
 
-    @Schema(description="A fixed interval is to be used for searching the records (in seconds)")
+    @Schema(description = "A fixed interval is to be used for searching the records (in seconds)")
     private Integer fixedInterval = 24 * 3600;
 
-    @Schema(description="A flag indicating if a fixed interval is to be used for searching the records")
+    @Schema(description = "A flag indicating if a fixed interval is to be used for searching the records")
     private boolean useFixedInterval = true;
 
-    @Schema(description="A list of names of record fields to be exported")
+    @Schema(description = "A list of names of record fields to be exported")
     private String[] fields;
 
     /**
@@ -76,8 +78,7 @@ public class DynamicInfoExportFilter implements Serializable {
     /**
      * <p>Constructs new <code>DynamicInfoExportFilter</code> instance. This implementation does nothing.</p>
      */
-    public DynamicInfoExportFilter() {
-    }
+    public DynamicInfoExportFilter() {}
 
     public int getDeviceId() {
         return deviceId;
@@ -161,15 +162,9 @@ public class DynamicInfoExportFilter implements Serializable {
 
     @Override
     public String toString() {
-        return "DynamicInfoExportFilter{" +
-                "deviceId=" + deviceId +
-                ", deviceNumber='" + deviceNumber + '\'' +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                ", fixedInterval=" + fixedInterval +
-                ", useFixedInterval=" + useFixedInterval +
-                ", locale=" + locale +
-                ", fields=" + Arrays.toString(fields) +
-                '}';
+        return "DynamicInfoExportFilter{" + "deviceId=" + deviceId + ", deviceNumber='" + deviceNumber + '\''
+                + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo + ", fixedInterval=" + fixedInterval
+                + ", useFixedInterval=" + useFixedInterval + ", locale=" + locale + ", fields="
+                + Arrays.toString(fields) + '}';
     }
 }

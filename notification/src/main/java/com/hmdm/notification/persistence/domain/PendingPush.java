@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class PendingPush implements Serializable {
 
     private static final long serialVersionUID = 4246565898054398224L;
-    
+
     /**
      * <p>An unique ID of this record.</p>
      */
@@ -60,8 +60,7 @@ public class PendingPush implements Serializable {
     /**
      * <p>Constructs new <code>PendingPush</code> instance. This implementation does nothing.</p>
      */
-    public PendingPush() {
-    }
+    public PendingPush() {}
 
     public long getId() {
         return id;
@@ -105,12 +104,7 @@ public class PendingPush implements Serializable {
 
     @Override
     public String toString() {
-        return "PendingPush{" +
-                "id=" + id +
-                ", messageId=" + messageId +
-                ", status=" + status +
-                ", createTime=" + createTime +
-                ", sendTime=" + sendTime +
-                '}';
+        return "PendingPush{" + "id=" + id + ", messageId=" + messageId + ", status=" + status + ", createTime="
+                + createTime + ", sendTime=" + sendTime + '}';
     }
 }

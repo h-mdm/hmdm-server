@@ -56,5 +56,4 @@ public class DeviceSettings {
     public boolean isSendData() {
         return this.pluginSettings.isSendData();
     }
-
 }

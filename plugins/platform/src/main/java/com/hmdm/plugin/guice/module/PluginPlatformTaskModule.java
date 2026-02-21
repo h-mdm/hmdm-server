@@ -21,14 +21,11 @@
 
 package com.hmdm.plugin.guice.module;
 
-import jakarta.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.plugin.PluginTaskModule;
 import com.hmdm.plugin.persistence.CustomerCreatedEventListener;
 import com.hmdm.plugin.persistence.PluginDAO;
-import com.hmdm.util.BackgroundTaskRunnerService;
-
-import java.util.concurrent.TimeUnit;
+import jakarta.inject.Inject;
 
 /**
  * <p>A module used for initializing the tasks to be executed in background.</p>
@@ -50,8 +47,7 @@ public class PluginPlatformTaskModule implements PluginTaskModule {
      * <p>Constructs new <code>DeviceInfoTaskModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public PluginPlatformTaskModule(EventService eventService,
-                                    PluginDAO pluginDAO) {
+    public PluginPlatformTaskModule(EventService eventService, PluginDAO pluginDAO) {
         this.eventService = eventService;
         this.pluginDAO = pluginDAO;
     }
@@ -64,5 +60,4 @@ public class PluginPlatformTaskModule implements PluginTaskModule {
     public void init() {
         this.eventService.addEventListener(new CustomerCreatedEventListener(this.pluginDAO));
     }
-
 }

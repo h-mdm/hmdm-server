@@ -32,7 +32,7 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
- * <p> $</p>
+ * <p>$</p>
  *
  * @author isv
  */
@@ -41,11 +41,10 @@ public class ResourceBundleUTF8Control extends ResourceBundle.Control {
     /**
      * <p>Constructs new <code>ResourceBundleUTF8Control</code> instance. This implementation does nothing.</p>
      */
-    public ResourceBundleUTF8Control() {
-    }
-    
-    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader,
-                                    boolean reload) throws IllegalAccessException, InstantiationException, IOException {
+    public ResourceBundleUTF8Control() {}
+
+    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+            throws IllegalAccessException, InstantiationException, IOException {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);
         String resourceName = toResourceName(bundleName, "properties");
@@ -73,5 +72,4 @@ public class ResourceBundleUTF8Control extends ResourceBundle.Control {
         }
         return bundle;
     }
-
 }

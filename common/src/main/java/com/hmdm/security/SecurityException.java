@@ -21,7 +21,6 @@
 
 package com.hmdm.security;
 
-
 import com.hmdm.persistence.domain.CustomerData;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.persistence.domain.UploadedFile;
@@ -50,6 +49,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified customerData is detected.</p>
      *
      * @param customerData a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onCustomerDataAccessViolation(CustomerData customerData) {
@@ -57,9 +57,10 @@ public class SecurityException extends RuntimeException {
     }
 
     /**
-     * <p>Constructs an exception to be thrown in case an unauthorized access to specified application is detected. </p>
+     * <p>Constructs an exception to be thrown in case an unauthorized access to specified application is detected.</p>
      *
      * @param application a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onApplicationAccessViolation(CustomerData application) {
@@ -67,9 +68,10 @@ public class SecurityException extends RuntimeException {
     }
 
     /**
-     * <p>Constructs an exception to be thrown in case an unauthorized access to specified application is detected. </p>
+     * <p>Constructs an exception to be thrown in case an unauthorized access to specified application is detected.</p>
      *
      * @param id an ID of an application.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onApplicationAccessViolation(Integer id) {
@@ -77,10 +79,10 @@ public class SecurityException extends RuntimeException {
     }
 
     /**
-     * <p>Constructs an exception to be thrown in case an unauthorized access to specified application version is
-     * detected. </p>
+     * <p>Constructs an exception to be thrown in case an unauthorized access to specified application version is detected.</p>
      *
      * @param id an ID of an application version.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onApplicationVersionAccessViolation(Integer id) {
@@ -91,6 +93,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified user account is detected.</p>
      *
      * @param user a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onUserAccessViolation(CustomerData user) {
@@ -101,6 +104,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified settings is detected.</p>
      *
      * @param settings a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onSettingsAccessViolation(CustomerData settings) {
@@ -111,6 +115,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified configuration is detected.</p>
      *
      * @param configuration a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onConfigurationAccessViolation(CustomerData configuration) {
@@ -125,15 +130,17 @@ public class SecurityException extends RuntimeException {
     public static SecurityException onAdminDataAccessViolation(String message) {
         return SecurityContext.get()
                 .getCurrentUser()
-                .map(u -> new SecurityException(String.format("Unauthorized attempt to %1$s by user %2$s", message, u.getLogin()), 403))
-                .orElse(new SecurityException(String.format("Unauthorized attempt to %1$s by user anonymous user", message), 403));
-
+                .map(u -> new SecurityException(
+                        String.format("Unauthorized attempt to %1$s by user %2$s", message, u.getLogin()), 403))
+                .orElse(new SecurityException(
+                        String.format("Unauthorized attempt to %1$s by user anonymous user", message), 403));
     }
 
     /**
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified configuration is detected.</p>
      *
      * @param id an ID of an configuration.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onConfigurationAccessViolation(Integer id) {
@@ -144,6 +151,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified device is detected.</p>
      *
      * @param device a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onDeviceAccessViolation(CustomerData device) {
@@ -154,6 +162,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified group is detected.</p>
      *
      * @param group a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onGroupAccessViolation(CustomerData group) {
@@ -164,6 +173,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified icon is detected.</p>
      *
      * @param icon a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onIconAccessViolation(Icon icon) {
@@ -174,6 +184,7 @@ public class SecurityException extends RuntimeException {
      * <p>Constructs an exception to be thrown in case an unauthorized access to specified uploaded file is detected.</p>
      *
      * @param file a source of the exception.
+     *
      * @return a security exception to be thrown.
      */
     public static SecurityException onUploadedFileAccessViolation(UploadedFile file) {
@@ -192,14 +203,30 @@ public class SecurityException extends RuntimeException {
     public static SecurityException onCustomerDataAccessViolation(int customerId, int entityId, String entityType) {
         return SecurityContext.get()
                 .getCurrentUser()
-                .map(u -> new SecurityException(String.format("Unauthorized attempt to access %3$s record #%2$s for customer #%1$s by user %4$s", customerId, entityId, entityType, u.getLogin()), 403))
-                .orElse(new SecurityException(String.format("Unauthorized attempt to access %3$s record #%2$s for customer #%1$s by anonymous user", customerId, entityId, entityType), 403));
+                .map(u -> new SecurityException(
+                        String.format(
+                                "Unauthorized attempt to access %3$s record #%2$s for customer #%1$s by user %4$s",
+                                customerId, entityId, entityType, u.getLogin()),
+                        403))
+                .orElse(new SecurityException(
+                        String.format(
+                                "Unauthorized attempt to access %3$s record #%2$s for customer #%1$s by anonymous user",
+                                customerId, entityId, entityType),
+                        403));
     }
 
     public static SecurityException onCustomerDataAccessViolation(int entityId, String entityType) {
         return SecurityContext.get()
                 .getCurrentUser()
-                .map(u -> new SecurityException(String.format("Unauthorized attempt to access %2$s record #%1$s by user %3$s", entityId, entityType, u.getLogin()), 403))
-                .orElse(new SecurityException(String.format("Unauthorized attempt to access %2$s record #%1$s by anonymous user", entityId, entityType), 403));
+                .map(u -> new SecurityException(
+                        String.format(
+                                "Unauthorized attempt to access %2$s record #%1$s by user %3$s",
+                                entityId, entityType, u.getLogin()),
+                        403))
+                .orElse(new SecurityException(
+                        String.format(
+                                "Unauthorized attempt to access %2$s record #%1$s by anonymous user",
+                                entityId, entityType),
+                        403));
     }
 }

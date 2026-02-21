@@ -21,10 +21,9 @@
 
 package com.hmdm.rest.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * <p>$</p>
@@ -35,32 +34,46 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationVersionConfigurationLink implements CustomerData {
 
-    @Schema(description="An ID of a link between the application and configuration. " +
-            "May be null if those are not linked", required = false)
+    @Schema(
+            description = "An ID of a link between the application and configuration. "
+                    + "May be null if those are not linked",
+            required = false)
     private Integer id;
-    @Schema(description="An ID of a customer account which both the application and configuration belong to")
+
+    @Schema(description = "An ID of a customer account which both the application and configuration belong to")
     private int customerId;
-    @Schema(description="An ID of a configuration")
+
+    @Schema(description = "An ID of a configuration")
     private int configurationId;
-    @Schema(description="A name of a configuration")
+
+    @Schema(description = "A name of a configuration")
     private String configurationName;
-    @Schema(description="An ID of an application")
+
+    @Schema(description = "An ID of an application")
     private int applicationId;
-    @Schema(description="A name of an application")
+
+    @Schema(description = "A name of an application")
     private String applicationName;
-    @Schema(description="An ID of an application version")
+
+    @Schema(description = "An ID of an application version")
     private int applicationVersionId;
-    @Schema(description="A version text of an application version")
+
+    @Schema(description = "A version text of an application version")
     private int versionText;
-    @Schema(description="A flag indicating if icon is to be shown on mobile device")
+
+    @Schema(description = "A flag indicating if icon is to be shown on mobile device")
     private Boolean showIcon;
-    @Schema(description="Order of applications on the screen")
+
+    @Schema(description = "Order of applications on the screen")
     private Integer screenOrder;
-    @Schema(description="Key code for fast app start")
+
+    @Schema(description = "Key code for fast app start")
     private Integer keyCode;
-    @Schema(description="A flag indicating if application must be displayed at the bottom of the launcher")
+
+    @Schema(description = "A flag indicating if application must be displayed at the bottom of the launcher")
     private boolean bottom;
-    @Schema(description="A flag indicating if app settings could be opened by a long tap")
+
+    @Schema(description = "A flag indicating if app settings could be opened by a long tap")
     private boolean longTap;
 
     // A helper property to indicate the action required to be performed by mobile device
@@ -68,20 +81,21 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
     // 0 - do not install and hide if installed
     // 1 - install
     // 2 - do not install and remove if installed
-    @Schema(description = "An action required to be performed by mobile device in regard to application installation",
-            allowableValues = "0,1,2"
-    )
+    @Schema(
+            description = "An action required to be performed by mobile device in regard to application installation",
+            allowableValues = "0,1,2")
     private int action;
-    @Schema(description="A flag indicating that application is to be removed from the application")
+
+    @Schema(description = "A flag indicating that application is to be removed from the application")
     private boolean remove;
-    @Schema(description="Set by front-end when the configuration needs to be notified about changes")
+
+    @Schema(description = "Set by front-end when the configuration needs to be notified about changes")
     private boolean notify;
 
     /**
      * <p>Constructs new <code>ApplicationVersionConfigurationLink</code> instance. This implementation does nothing.</p>
      */
-    public ApplicationVersionConfigurationLink() {
-    }
+    public ApplicationVersionConfigurationLink() {}
 
     @Override
     public Integer getId() {
@@ -141,7 +155,6 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
     public void setAction(int action) {
         this.action = action;
     }
-
 
     public boolean isRemove() {
         return remove;
@@ -217,23 +230,11 @@ public class ApplicationVersionConfigurationLink implements CustomerData {
 
     @Override
     public String toString() {
-        return "ApplicationVersionConfigurationLink{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", configurationId=" + configurationId +
-                ", configurationName='" + configurationName + '\'' +
-                ", applicationId=" + applicationId +
-                ", applicationName='" + applicationName + '\'' +
-                ", applicationVersionId=" + applicationVersionId +
-                ", versionText=" + versionText +
-                ", action=" + action +
-                ", remove=" + remove +
-                ", showIcon=" + showIcon +
-                ", screenOrder=" + screenOrder +
-                ", keyCode=" + keyCode +
-                ", bottom=" + bottom +
-                ", longTap=" + longTap +
-                ", notify=" + notify +
-                '}';
+        return "ApplicationVersionConfigurationLink{" + "id=" + id + ", customerId=" + customerId + ", configurationId="
+                + configurationId + ", configurationName='" + configurationName + '\'' + ", applicationId="
+                + applicationId + ", applicationName='" + applicationName + '\'' + ", applicationVersionId="
+                + applicationVersionId + ", versionText=" + versionText + ", action=" + action + ", remove=" + remove
+                + ", showIcon=" + showIcon + ", screenOrder=" + screenOrder + ", keyCode=" + keyCode + ", bottom="
+                + bottom + ", longTap=" + longTap + ", notify=" + notify + '}';
     }
 }

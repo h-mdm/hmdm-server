@@ -23,7 +23,6 @@ package com.hmdm.plugins.push.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -37,47 +36,46 @@ import java.util.Date;
 public class PushMessageFilter implements Serializable {
     private static final long serialVersionUID = 5138659302284470696L;
 
-
     /**
      * <p>A number of records per single page of data to be retrieved.</p>
      */
-    @Schema(description="A number of records per single page of data to be retrieved")
+    @Schema(description = "A number of records per single page of data to be retrieved")
     private int pageSize = 50;
 
     /**
      * <p>A number of page of data to be retrieved.</p>
      */
-    @Schema(description="A number of page of data to be retrieved (1-based)")
+    @Schema(description = "A number of page of data to be retrieved (1-based)")
     private int pageNum = 1;
 
     /**
      * <p>A filter used for filtering the data records by device.</p>
      */
-    @Schema(description="A filter used for filtering the data records by device")
+    @Schema(description = "A filter used for filtering the data records by device")
     private String deviceFilter;
 
     /**
      * <p>A filter used for filtering the data records by device.</p>
      */
-    @Schema(description="A filter used for filtering the data records by message")
+    @Schema(description = "A filter used for filtering the data records by message")
     private String messageFilter;
 
     /**
      * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
      */
-    @Schema(description="A timestamp for FROM boundary for filtering the data records by dates")
+    @Schema(description = "A timestamp for FROM boundary for filtering the data records by dates")
     private Date dateFrom;
 
     /**
      * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
      */
-    @Schema(description="A timestamp for TO boundary for filtering the data records by dates")
+    @Schema(description = "A timestamp for TO boundary for filtering the data records by dates")
     private Date dateTo;
 
     /**
      * <p>A name of sorting column.</p>
      */
-    @Schema(description="A name of sorting column")
+    @Schema(description = "A name of sorting column")
     private String sortValue = "createTime";
 
     /**
@@ -101,8 +99,7 @@ public class PushMessageFilter implements Serializable {
     /**
      * <p>Constructs new <code>PushMessageFilter</code> instance. This implementation does nothing.</p>
      */
-    public PushMessageFilter() {
-    }
+    public PushMessageFilter() {}
 
     public int getPageSize() {
         return pageSize;
@@ -135,7 +132,6 @@ public class PushMessageFilter implements Serializable {
     public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
     }
-
 
     public String getSortValue() {
         return sortValue;
@@ -203,17 +199,9 @@ public class PushMessageFilter implements Serializable {
 
     @Override
     public String toString() {
-        return "PushMessageFilter{" +
-                "pageSize=" + pageSize +
-                ", pageNum=" + pageNum +
-                ", deviceFilter='" + deviceFilter + '\'' +
-                ", messageFilter='" + messageFilter + '\'' +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                ", sortValue='" + sortValue + '\'' +
-                ", customerId=" + customerId +
-                ", userId=" + userId +
-                ", export=" + export +
-                '}';
+        return "PushMessageFilter{" + "pageSize=" + pageSize + ", pageNum=" + pageNum + ", deviceFilter='"
+                + deviceFilter + '\'' + ", messageFilter='" + messageFilter + '\'' + ", dateFrom=" + dateFrom
+                + ", dateTo=" + dateTo + ", sortValue='" + sortValue + '\'' + ", customerId=" + customerId + ", userId="
+                + userId + ", export=" + export + '}';
     }
 }

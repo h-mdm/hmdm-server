@@ -22,7 +22,6 @@
 package com.hmdm.rest.filter;
 
 import jakarta.inject.Singleton;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -56,13 +55,11 @@ public class ApiOriginFilter implements Filter {
      * destroy
      */
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 
     /**
      * init
      */
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 }

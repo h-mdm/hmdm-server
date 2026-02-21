@@ -21,15 +21,13 @@
 
 package com.hmdm.plugins.devicelog.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * <p>A domain object representing a single collection of <code>Device Log</code> plugin settings per customer account.
- * </p>
+ * <p>A domain object representing a single collection of <code>Device Log</code> plugin settings per customer account.</p>
  *
  * @author isv
  */
@@ -39,17 +37,18 @@ public abstract class DeviceLogPluginSettings implements Serializable {
 
     private static final long serialVersionUID = -4806434589453165014L;
 
-    @Schema(description="A period for preserving the log records in persistent data store (in days)", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+            description = "A period for preserving the log records in persistent data store (in days)",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private int logsPreservePeriod = 3;
 
-    @Schema(description="A list of device log rules", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "A list of device log rules", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<DeviceLogRule> rules;
 
     /**
      * <p>Constructs new <code>DeviceLogPluginSettings</code> instance. This implementation does nothing.</p>
      */
-    public DeviceLogPluginSettings() {
-    }
+    public DeviceLogPluginSettings() {}
 
     public int getLogsPreservePeriod() {
         return logsPreservePeriod;
@@ -73,5 +72,4 @@ public abstract class DeviceLogPluginSettings implements Serializable {
      * @return an identifier for this record.
      */
     public abstract String getIdentifier();
-
 }

@@ -24,8 +24,7 @@ package com.hmdm.rest.json;
 public class SettingObject {
     private String text;
 
-    public SettingObject() {
-    }
+    public SettingObject() {}
 
     public String getText() {
         return this.text;

@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class DeviceApplication implements Serializable {
 
     private static final long serialVersionUID = 9105449738375462219L;
-    
+
     /**
      * <p>A package ID for application.</p>
      */
@@ -50,8 +50,7 @@ public class DeviceApplication implements Serializable {
     /**
      * <p>Constructs new <code>DeviceApplication</code> instance. This implementation does nothing.</p>
      */
-    public DeviceApplication() {
-    }
+    public DeviceApplication() {}
 
     public String getPkg() {
         return pkg;
@@ -79,10 +78,7 @@ public class DeviceApplication implements Serializable {
 
     @Override
     public String toString() {
-        return "DeviceApplication{" +
-                "pkg='" + pkg + '\'' +
-                ", version='" + version + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+        return "DeviceApplication{" + "pkg='" + pkg + '\'' + ", version='" + version + '\'' + ", name='" + name + '\''
+                + '}';
     }
 }

@@ -21,19 +21,18 @@
 
 package com.hmdm.plugins.push.persistence;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import com.hmdm.persistence.AbstractDAO;
 import com.hmdm.plugins.push.persistence.domain.PluginPushMessage;
 import com.hmdm.plugins.push.persistence.mapper.PushMessageMapper;
 import com.hmdm.plugins.push.rest.json.PushMessageFilter;
 import com.hmdm.security.SecurityContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>A DAO for {@link PluginPushMessage} domain objects.</p>
@@ -58,11 +57,11 @@ public class PushDAO extends AbstractDAO<PluginPushMessage> {
         this.pushMessageMapper = pushMessageMapper;
     }
 
-
     /**
      * <p>Finds the message records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a list of message records matching the specified filter.
      */
     @Transactional
@@ -81,11 +80,13 @@ public class PushDAO extends AbstractDAO<PluginPushMessage> {
      * <p>Counts the message records matching the specified filter.</p>
      *
      * @param filter a filter used to narrowing down the search results.
+     *
      * @return a number of message records matching the specified filter.
      */
     public long countAll(PushMessageFilter filter) {
         prepareFilter(filter);
-        return SecurityContext.get().getCurrentUser()
+        return SecurityContext.get()
+                .getCurrentUser()
                 .map(user -> {
                     filter.setCustomerId(user.getCustomerId());
                     return this.pushMessageMapper.countAll(filter);
@@ -161,5 +162,4 @@ public class PushDAO extends AbstractDAO<PluginPushMessage> {
             }
         }
     }
-
 }

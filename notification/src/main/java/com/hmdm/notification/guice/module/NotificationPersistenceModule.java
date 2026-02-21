@@ -22,15 +22,11 @@
 package com.hmdm.notification.guice.module;
 
 import com.hmdm.guice.module.AbstractPersistenceModule;
-
 import jakarta.servlet.ServletContext;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
- * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the
- * persistence layer of the <code>Notification</code> sub-system.</p>
+ * <p>A module used for configuring the {@link org.apache.ibatis.session.SqlSessionFactory} to be used by the persistence
+ * layer of the <code>Notification</code> sub-system.</p>
  *
  * @author isv
  */

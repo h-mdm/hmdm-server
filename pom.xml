@@ -360,6 +360,25 @@
             </resource>
         </resources>
 
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>2.44.3</version>
+                    <configuration>
+                        <java>
+                            <palantirJavaFormat>
+                                <version>2.50.0</version>
+                                <style>PALANTIR</style>
+                                <formatJavadoc>false</formatJavadoc>
+                            </palantirJavaFormat>
+                        </java>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -391,6 +410,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

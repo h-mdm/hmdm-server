@@ -26,22 +26,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * <p>
- * A test suite for {@link BaseIPFilter} class.
- * </p>
+ * <p>A test suite for {@link BaseIPFilter} class.</p>
  *
  * @author seva
  */
 public class IPFilterTests {
 
     /**
-     * <p>
-     * Constructs new <code>IPFilterTests</code> instance. This implementation does
-     * nothing.
-     * </p>
+     * <p>Constructs new <code>IPFilterTests</code> instance. This implementation does nothing.</p>
      */
-    public IPFilterTests() {
-    }
+    public IPFilterTests() {}
 
     @Test
     public void testMatch() {

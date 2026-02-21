@@ -24,38 +24,46 @@ package com.hmdm.rest.json;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.io.Serializable;
 
 @Schema(description = "A link between the file and the configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileConfigurationLink implements CustomerData, Serializable {
 
-    @Schema(description="An ID of a link between the file and configuration. " +
-            "May be null if those are not linked", required = false)
+    @Schema(
+            description =
+                    "An ID of a link between the file and configuration. " + "May be null if those are not linked",
+            required = false)
     private Integer id;
-    @Schema(description="An ID of a customer account which both the file and configuration belong to")
+
+    @Schema(description = "An ID of a customer account which both the file and configuration belong to")
     private int customerId;
-    @Schema(description="An ID of a configuration")
+
+    @Schema(description = "An ID of a configuration")
     private int configurationId;
-    @Schema(description="A name of a configuration")
+
+    @Schema(description = "A name of a configuration")
     private String configurationName;
-    @Schema(description="An ID of a file")
+
+    @Schema(description = "An ID of a file")
     private int fileId;
-    @Schema(description="A name of a file")
+
+    @Schema(description = "A name of a file")
     private String fileName;
-    @Schema(description="A flag indicating that file is to be uploaded to device in the configuration")
+
+    @Schema(description = "A flag indicating that file is to be uploaded to device in the configuration")
     private boolean upload;
-    @Schema(description="A flag indicating that file is to be removed from the configuration")
+
+    @Schema(description = "A flag indicating that file is to be removed from the configuration")
     private boolean remove;
-    @Schema(description="Set by front-end when the configuration needs to be notified about changes")
+
+    @Schema(description = "Set by front-end when the configuration needs to be notified about changes")
     private boolean notify;
 
     /**
      * <p>Constructs new <code>FileConfigurationLink</code> instance. This implementation does nothing.</p>
      */
-    public FileConfigurationLink() {
-    }
+    public FileConfigurationLink() {}
 
     @Override
     public Integer getId() {
@@ -134,16 +142,9 @@ public class FileConfigurationLink implements CustomerData, Serializable {
 
     @Override
     public String toString() {
-        return "FileConfigurationLink{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", configurationId=" + configurationId +
-                ", configurationName='" + configurationName + '\'' +
-                ", fileId=" + fileId +
-                ", fileName='" + fileName + '\'' +
-                ", upload=" + upload +
-                ", remove=" + remove +
-                ", notify=" + notify +
-                '}';
+        return "FileConfigurationLink{" + "id=" + id + ", customerId=" + customerId + ", configurationId="
+                + configurationId + ", configurationName='" + configurationName + '\'' + ", fileId=" + fileId
+                + ", fileName='" + fileName + '\'' + ", upload=" + upload + ", remove=" + remove + ", notify=" + notify
+                + '}';
     }
 }

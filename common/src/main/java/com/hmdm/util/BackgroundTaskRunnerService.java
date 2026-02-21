@@ -22,14 +22,13 @@
 package com.hmdm.util;
 
 import jakarta.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A service used for running the standalone tasks in background.</p>
@@ -39,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class BackgroundTaskRunnerService {
 
-    private final static Logger logger = LoggerFactory.getLogger(BackgroundTaskRunnerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BackgroundTaskRunnerService.class);
 
     /**
      * <p>An executor for the tasks to be executed in background.</p>
@@ -49,8 +48,8 @@ public class BackgroundTaskRunnerService {
     /**
      * <p>An executor for the repeatable tasks to be executed in background.</p>
      */
-    private final ScheduledThreadPoolExecutor scheduledExecutor
-            = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
+    private final ScheduledThreadPoolExecutor scheduledExecutor =
+            (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
 
     /**
      * <p>Constructs new <code>BackgroundTaskRunnerService</code> instance. This implementation does nothing.</p>
@@ -66,9 +65,13 @@ public class BackgroundTaskRunnerService {
      * @param task a task to be executed in background.
      */
     public void submitTask(Runnable task) {
-        logger.debug("Submitting task for execution: {}. The current state of executor: active tasks: {}, " +
-                        "tasks count: {}, queue size: {}",
-                task, executor.getActiveCount(), executor.getTaskCount(), executor.getQueue().size());
+        logger.debug(
+                "Submitting task for execution: {}. The current state of executor: active tasks: {}, "
+                        + "tasks count: {}, queue size: {}",
+                task,
+                executor.getActiveCount(),
+                executor.getTaskCount(),
+                executor.getQueue().size());
         this.executor.submit(task);
     }
 
@@ -79,15 +82,19 @@ public class BackgroundTaskRunnerService {
      * @param initialDelay the time to delay first execution.
      * @param period the period between successive executions.
      * @param unit the time unit of the initialDelay and period parameters.
+     *
      * @return a ScheduledFuture representing pending completion of the series of repeated tasks. The future's
-     *        {@link Future#get() get()} method will never return normally, and will throw an exception upon task
-     *        cancellation or abnormal termination of a task execution.
+     *         {@link Future#get() get()} method will never return normally, and will throw an exception upon task
+     *         cancellation or abnormal termination of a task execution.
      */
     public Future<?> submitRepeatableTask(Runnable task, long initialDelay, long period, TimeUnit unit) {
-        logger.debug("Submitting task for repeatable execution: {}. The current state of executor: active tasks: {}, " +
-                        "tasks count: {}, queue size: {}",
-                task, executor.getActiveCount(), executor.getTaskCount(), executor.getQueue().size());
+        logger.debug(
+                "Submitting task for repeatable execution: {}. The current state of executor: active tasks: {}, "
+                        + "tasks count: {}, queue size: {}",
+                task,
+                executor.getActiveCount(),
+                executor.getTaskCount(),
+                executor.getQueue().size());
         return this.scheduledExecutor.scheduleAtFixedRate(task, initialDelay, period, unit);
     }
-
 }
