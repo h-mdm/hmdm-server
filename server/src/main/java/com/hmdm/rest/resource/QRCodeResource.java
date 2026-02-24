@@ -273,7 +273,7 @@ public class QRCodeResource {
                                 imageSize = size;
                             }
                             try {
-                                QRCode.from(s).to(ImageType.PNG).withSize(imageSize, imageSize).writeTo(output);
+                                QRCode.from(s).withCharset("UTF-8").to(ImageType.PNG).withSize(imageSize, imageSize).writeTo(output);
                                 output.flush();
                             } catch ( Exception e ) { e.printStackTrace(); }
                         } )
