@@ -540,11 +540,12 @@
     </select>
 
     <insert id="insertDeviceApplicationSettings">
-        INSERT INTO deviceApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate)
+        INSERT INTO deviceApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate, variable)
         VALUES
         <foreach item="item" index="index" collection="appSettings"
                  open="" separator="," close="">
-            (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})
+            (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value},
+             #{item.comment}, #{item.readonly}, #{item.lastUpdate}, #{item.variable})
         </foreach>
     </insert>
 

@@ -98,6 +98,11 @@ public class ConfigurationView implements Serializable {
         return configuration.getBaseUrl();
     }
 
+    @ApiModelProperty("Whether the configuration has a permissive mode")
+    public Boolean getPermissiveMode() {
+        return configuration.getPermissive();
+    }
+
     @ApiModelProperty("A list of applications set and available for for configuration")
     public List<ApplicationView> getApplications() {
         return this.applications;

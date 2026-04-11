@@ -446,17 +446,9 @@ public class SyncResource {
                 = combineDeviceLogRules(configApplicationSettings, deviceAppSettings);
 
         final Device dbDevice1 = dbDevice;
-        data.setApplicationSettings(applicationSettings.stream().map(s -> {
-            SyncApplicationSetting syncSetting = new SyncApplicationSetting();
-            syncSetting.setPackageId(s.getApplicationPkg());
-            syncSetting.setName(s.getName());
-            syncSetting.setType(s.getType().getId());
-            syncSetting.setReadonly(s.isReadonly());
-            syncSetting.setValue(s.getValueForDevice(dbDevice1));
-            syncSetting.setLastUpdate(s.getLastUpdate());
-
-            return syncSetting;
-        }).collect(Collectors.toList()));
+        data.setApplicationSettings(applicationSettings.stream()
+                .map(s -> new SyncApplicationSetting(s, dbDevice1))
+                .collect(Collectors.toList()));
 
         final List<ConfigurationFile> configurationFiles = this.unsecureDAO.getConfigurationFiles(dbDevice);
         configurationFiles.forEach(

@@ -174,15 +174,21 @@ public class PasswordResetResource {
             User user = unsecureDAO.findByLoginOrEmail(username);
             if (user == null) {
                 logger.warn("Can't recover password for user " + username + ": user not found");
-                return Response.ERROR("error.user.not.found");
+                //return Response.ERROR("error.user.not.found");
+                // Fix the user discovery vulnerability
+                return Response.OK();
             }
             if (!emailService.isConfigured()) {
                 logger.warn("Can't recover password for user " + username + ": email sender not configured");
-                return Response.ERROR("error.email.not.configured");
+                //return Response.ERROR("error.email.not.configured");
+                // Fix the user discovery vulnerability
+                return Response.OK();
             }
             if (user.getEmail() == null || user.getEmail().trim().equals("")) {
                 logger.warn("Can't recover password for user " + username + ": no email for user");
-                return Response.ERROR("error.email.not.found");
+                // return Response.ERROR("error.email.not.found");
+                // Fix the user discovery vulnerability
+                return Response.OK();
             }
 
             if (user.getPasswordResetToken() == null || user.getPasswordResetToken().equals("")) {
@@ -197,7 +203,10 @@ public class PasswordResetResource {
                     emailService.getRecoveryEmailBody(language, user.getPasswordResetToken()))) {
                 return Response.OK();
             } else {
-                return Response.INTERNAL_ERROR();
+                // Error is logged by the emailService.sendEmail method
+                // return Response.INTERNAL_ERROR();
+                // Fix the user discovery vulnerability
+                return Response.OK();
             }
 
         } catch (Exception e) {

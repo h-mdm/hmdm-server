@@ -127,6 +127,7 @@ public class DeviceResource {
                 Configuration configuration = new Configuration();
                 configuration.setId(deviceConfigurationId);
                 configuration.setName(device.getConfigName());
+                configuration.setPermissive(dbConfig.getPermissive());
                 if (dbConfig.getMainAppId() != null && dbConfig.getMainAppId() > 0 &&
                         dbConfig.getEventReceivingComponent() != null && dbConfig.getEventReceivingComponent().length() > 0) {
                     configuration.setQrCodeKey(dbConfig.getQrCodeKey());
@@ -134,7 +135,7 @@ public class DeviceResource {
                 }
                 configuration.setApplications(configIdToApplicationsMap.get(deviceConfigurationId));
                 configuration.setFiles(configIdToFilesMap.get(deviceConfigurationId));
-                
+
                 configIdToConfigurationsMap.put(deviceConfigurationId, configuration);
             }
 

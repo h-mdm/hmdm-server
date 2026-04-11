@@ -450,6 +450,8 @@ document.localization ['zh_CN'] = {
     'form.configuration.file.create': '(创建新文件)',
     'form.configuration.file.description' : "文档资讯",
     'form.configuration.file.description.placeholder':"可选，为了您的方便",
+    'form.configuration.file.override.path': '覆盖路径',
+    'form.configuration.file.override.path.title': '仅为此配置指定设备路径',
     'form.configuration.file.path':"设备上的路径",
     'form.configuration.file.path.placeholder':"不包括驱动器的路径，例如/my-app/image.jpg",
     'form.configuration.file.url':"URL",

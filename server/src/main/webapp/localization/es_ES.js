@@ -451,6 +451,8 @@ document.localization ['es_ES'] = {
     'form.configuration.file.description': 'Descripcion',
     'form.configuration.file.description.placeholder': 'Opcional, para su conveniencia',
     'form.configuration.file.path': 'Ruta al archivo',
+    'form.configuration.file.override.path': 'Anular la ruta',
+    'form.configuration.file.override.path.title': 'Especificar la ruta del dispositivo solo para esta configuración',
     'form.configuration.file.path.placeholder': 'Sin ruta a una unidad, p. Ej. /my-app/image.jpg',
     'form.configuration.file.url': 'URL',
     'form.configuration.file.url.placeholder': 'Si un archivo está alojado en un recurso externo',

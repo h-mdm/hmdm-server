@@ -450,6 +450,8 @@ document.localization ['tr_TR'] = {
     'form.configuration.file.create': '(yeni bir dosya oluştur)',
 	'form.configuration.file.description': 'Dosya açıklaması',
 	'form.configuration.file.description.placeholder': 'İsteğe bağlı, kolaylığınız için',
+	'form.configuration.file.override.path': 'Yolu geçersiz kıl',
+	'form.configuration.file.override.path.title': 'Yalnızca bu yapılandırma için cihaz yolunu belirtin',
 	'form.configuration.file.path': 'Cihazdaki yol',
 	'form.configuration.file.path.placeholder': 'Örneğin bir sürücüye giden yolu hariç tutma /my-app/image.jpg',
 	'form.configuration.file.url': 'URL',

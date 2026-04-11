@@ -62,6 +62,9 @@ public class ApplicationSetting implements Serializable {
     @ApiModelProperty(value = "An ID of the external object (device, configuration) which settings belong to", required = true)
     private Integer extRefId;
 
+    @ApiModelProperty(value = "A flag indicating if the setting has the variable content", required = true)
+    private boolean variable;
+
     @ApiModelProperty(hidden = true)
     private String applicationPkg;
 
@@ -145,6 +148,14 @@ public class ApplicationSetting implements Serializable {
         this.extRefId = extRefId;
     }
 
+    public boolean isVariable() {
+        return variable;
+    }
+
+    public void setVariable(boolean variable) {
+        this.variable = variable;
+    }
+
     public String getApplicationPkg() {
         return applicationPkg;
     }
@@ -196,6 +207,7 @@ public class ApplicationSetting implements Serializable {
                 ", readonly=" + readonly +
                 ", extRefId=" + extRefId +
                 ", type=" + type +
+                ", variable=" + variable +
                 ", applicationPkg='" + applicationPkg + '\'' +
                 ", extRefName='" + extRefName + '\'' +
                 ", lastUpdate='" + lastUpdate + '\'' +

@@ -450,6 +450,8 @@ document.localization ['en_US'] = {
     'form.configuration.file.create': '(create a new file)',
     'form.configuration.file.description': 'File description',
     'form.configuration.file.description.placeholder': 'Optional, for your convenience',
+    'form.configuration.file.override.path': 'Override path',
+    'form.configuration.file.override.path.title': 'Specify the device path for this configuration only',
     'form.configuration.file.path': 'Path on device',
     'form.configuration.file.path.placeholder': 'Excluding path to a drive, e.g. /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

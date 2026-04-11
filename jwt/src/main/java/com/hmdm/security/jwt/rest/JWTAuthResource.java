@@ -119,8 +119,14 @@ public class JWTAuthResource {
 
             User user = userDAO.findByLoginOrEmail(credentials.getLogin());
             if (user == null) {
+                Thread.sleep(1000);
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            } else if (user.getLastLoginFail() > System.currentTimeMillis() - 1000) {
+                Thread.sleep(1000);
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             } else if (!PasswordUtil.passwordMatch(credentials.getPassword(), user.getPassword())) {
+                userDAO.setUserLoginFailTime(user, System.currentTimeMillis());
+                Thread.sleep(1000);
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             } else {
                 this.taskRunner.submitTask(() -> {

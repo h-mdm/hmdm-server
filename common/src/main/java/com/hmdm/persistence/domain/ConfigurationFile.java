@@ -67,6 +67,13 @@ public class ConfigurationFile implements Serializable {
     private String devicePath;
 
     /**
+     * <p>A flag specifying whether the file's device path should be overridden in this configuration</p>
+     */
+    @ApiModelProperty("A path to a file on device (including the file name)")
+    @JsonProperty("overridePath")
+    private boolean overrideDevicePath;
+
+    /**
      * <p>An URL referencing the content of the file available on external resource. This property is mutually exclusive with {
      * @link #filePath} property. Since v5.36.1, determined in UploadedFile</p>
      */

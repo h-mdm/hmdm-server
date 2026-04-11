@@ -1118,7 +1118,7 @@
                                                    ng-model="filesPaging.filesFilterText"/>
                                         </div>
                                         <div class="col-sm-2 text-right">
-                                            <button type="button" class="btn btn-default" ng-click="addFile()"
+                                            <button type="button" class="btn btn-default" ng-click="editFile({})"
                                                     localized>button.add</button>
                                         </div>
                                     </div>
@@ -1146,6 +1146,9 @@
                                                                               localized-title="table.heading.file.remove.hint"></td>
                                         <td class="text-right" style="padding-right: 16px">
                                             <div>
+                                                <button class="btn btn-default" ng-click="editFile(file)">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </button>
                                                 <button class="btn btn-default" ng-click="removeFile(file)">
                                                     <span class="glyphicon glyphicon-trash"></span>
                                                 </button>

@@ -43,7 +43,12 @@ public class ResourceBundleUTF8Control extends ResourceBundle.Control {
      */
     public ResourceBundleUTF8Control() {
     }
-    
+
+    @Override
+    public Locale getFallbackLocale(String baseName, Locale locale) {
+        return Locale.ENGLISH;
+    }
+
     public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader,
                                     boolean reload) throws IllegalAccessException, InstantiationException, IOException {
         // The below is a copy of the default implementation.

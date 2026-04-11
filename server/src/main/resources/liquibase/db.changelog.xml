@@ -2597,4 +2597,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="10.04.26-10:34" author="seva" context="common">
+        <comment>Column,new: applicationSettings#variable</comment>
+        <sql>
+            ALTER TABLE deviceApplicationSettings ADD COLUMN variable BOOLEAN NOT NULL DEFAULT false;
+            ALTER TABLE configurationApplicationSettings ADD COLUMN variable BOOLEAN NOT NULL DEFAULT false;
+        </sql>
+        <rollback>
+            ALTER TABLE deviceApplicationSettings DROP COLUMN variable;
+            ALTER TABLE configurationApplicationSettings DROP COLUMN variable;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

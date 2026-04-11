@@ -450,6 +450,8 @@ document.localization ['ar_AE'] = {
     'form.configuration.file.create': '(إنشاء ملف جديد)',
     'form.configuration.file.description': 'وصف الملف',
     'form.configuration.file.description.placeholder': 'اختياري, لراحتك',
+    'form.configuration.file.override.path': 'تجاوز المسار',
+    'form.configuration.file.override.path.title': 'حدد مسار الجهاز لهذا التكوين فقط',
     'form.configuration.file.path': 'مسار على الجهاز',
     'form.configuration.file.path.placeholder': 'استبعاد المسار إلى محرك الأقراص: /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

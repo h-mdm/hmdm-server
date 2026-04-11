@@ -22,7 +22,9 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hmdm.persistence.domain.ApplicationSetting;
 import com.hmdm.persistence.domain.ApplicationSettingType;
+import com.hmdm.persistence.domain.Device;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -55,10 +57,23 @@ public class SyncApplicationSetting implements Serializable, SyncApplicationSett
     @ApiModelProperty("A timestamp of the last update of the setting (in milliseconds since epoch time")
     private long lastUpdate;
 
+    @ApiModelProperty(value = "A flag indicating if setting has variable content", required = true)
+    private Boolean variable;
+
     /**
      * <p>Constructs new <code>SyncApplicationSetting</code> instance. This implementation does nothing.</p>
      */
     public SyncApplicationSetting() {
+    }
+
+    public SyncApplicationSetting(ApplicationSetting s, Device device) {
+        setPackageId(s.getApplicationPkg());
+        setName(s.getName());
+        setType(s.getType().getId());
+        setReadonly(s.isReadonly());
+        setValue(s.getValueForDevice(device));
+        setLastUpdate(s.getLastUpdate());
+        setVariable(s.isVariable());
     }
 
     @Override
@@ -116,6 +131,15 @@ public class SyncApplicationSetting implements Serializable, SyncApplicationSett
     }
 
     @Override
+    public Boolean isVariable() {
+        return variable != null && variable ? true : null;
+    }
+
+    public void setVariable(boolean variable) {
+        this.variable = variable;
+    }
+
+    @Override
     public String toString() {
         return "SyncApplicationSetting{" +
                 "packageId='" + packageId + '\'' +
@@ -124,6 +148,7 @@ public class SyncApplicationSetting implements Serializable, SyncApplicationSett
                 ", value='" + value + '\'' +
                 ", readonly=" + readonly +
                 ", lastUpdate=" + lastUpdate +
+                ", variable=" + variable +
                 '}';
     }
 }

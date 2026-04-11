@@ -154,6 +154,11 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                     this.mapper.removeConfigurationFilesById(configuration.getId());
                     final List<ConfigurationFile> files = configuration.getFiles();
                     if (files != null && !files.isEmpty()) {
+                        files.forEach(file -> {
+                            if (!file.isOverrideDevicePath()) {
+                                file.setDevicePath(null);
+                            }
+                        });
                         files.stream()
                                 .filter(file -> file.getExternalUrl() != null)
                                 .forEach(file -> {

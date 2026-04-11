@@ -450,6 +450,8 @@ document.localization ['ja_JP'] = {
     'form.configuration.file.create': '(新しいファイルを作成)',
     'form.configuration.file.description': 'ファイルの説明',
     'form.configuration.file.description.placeholder': '便利なオプションです',
+    'form.configuration.file.override.path': 'パスを上書きします',
+    'form.configuration.file.override.path.title': 'この設定のみのデバイスパスを指定します',
     'form.configuration.file.path': 'デバイス上のパス',
     'form.configuration.file.path.placeholder': 'ドライブへのパスを除外します。 /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

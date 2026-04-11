@@ -86,7 +86,9 @@ public interface ApplicationSettingMapper {
     void deleteApplicationSettingByApp(@Param("configurationId") int configurationId,
                                         @Param("applicationId") int applicationId);
 
-    @Insert("INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate) " +
-            "        VALUES (#{configurationId}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})")
+    @Insert("INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, " +
+            " type, value, comment, readonly, lastUpdate, variable) " +
+            "        VALUES (#{configurationId}, #{item.applicationId}, #{item.name}, " +
+            " #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate}, #{item.variable})")
     void insertApplicationSetting(@Param("configurationId") int configurationId, @Param("item") ApplicationSetting setting);
 }

@@ -667,7 +667,7 @@ angular.module('headwind-kiosk')
     .controller('ApplicationConfigurationsModalController',
         function ($scope, $modalInstance, applicationService, application, localization, confirmModal, configurationService,
                   alertService) {
-
+            $scope.loading = false;
             $scope.localizeRenewVersionTitle = function (appConfigurationLink) {
                 let localizedText = localization.localize('configuration.app.version.upgrade.message')
                     .replace('${installedVersion}', appConfigurationLink.currentVersionText)
@@ -750,6 +750,7 @@ angular.module('headwind-kiosk')
             loadData();
 
             $scope.save = function () {
+                $scope.loading = true;
                 $scope.errorMessage = '';
 
                 var request = {"applicationId": application.id};
@@ -768,6 +769,7 @@ angular.module('headwind-kiosk')
                     if (response.status === 'OK') {
                         $modalInstance.close();
                     } else {
+                        $scope.loading = false;
                         $scope.errorMessage = localization.localizeServerResponse(response);
                     }
                 });
@@ -1066,7 +1068,7 @@ angular.module('headwind-kiosk')
     .controller('ApplicationVersionConfigurationsModalController',
         function ($scope, $modalInstance, applicationService, applicationVersion, localization, confirmModal, configurationService,
                   alertService) {
-
+            $scope.loading = false;
             $scope.localizeRenewVersionTitle = function (appConfigurationLink) {
                 let localizedText = localization.localize('configuration.app.version.upgrade.message')
                     .replace('${installedVersion}', appConfigurationLink.currentVersionText)
@@ -1155,6 +1157,7 @@ angular.module('headwind-kiosk')
             };
 
             $scope.save = function () {
+                $scope.loading = true;
                 $scope.errorMessage = '';
 
                 var request = {"applicationVersionId": applicationVersion.id};
@@ -1172,6 +1175,7 @@ angular.module('headwind-kiosk')
                     if (response.status === 'OK') {
                         $modalInstance.close();
                     } else {
+                        $scope.loading = false;
                         $scope.errorMessage = localization.localizeServerResponse(response);
                     }
                 }, alertService.onRequestFailure);

@@ -450,6 +450,8 @@ document.localization[ 'ru_RU' ] = {
     'form.configuration.file.create': '(создать новый файл)',
     'form.configuration.file.description': 'Описание файла',
     'form.configuration.file.description.placeholder': 'Опционально, для вашего удобства',
+    'form.configuration.file.override.path': 'Переопределить путь',
+    'form.configuration.file.override.path.title': 'Указать путь к устройству только для этой конфигурации',
     'form.configuration.file.path': 'Путь на устройстве',
     'form.configuration.file.path.placeholder': 'Без пути к носителю, например /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

@@ -449,6 +449,8 @@ document.localization ['it_IT'] = {
     'form.configuration.file.create': '(crea un nuovo file)',
 	'form.configuration.file.description': 'Descrizione',
 	'form.configuration.file.description.placeholder': 'Facoltativo, per comodità',
+	'form.configuration.file.override.path': 'Sovrascrivi il percorso',
+	'form.configuration.file.override.path.title': 'Specifica il percorso del dispositivo solo per questa configurazione',
 	'form.configuration.file.path': 'Percorso sul dispositivo',
 	'form.configuration.file.path.placeholder': 'Escluso il percorso a un\'unità, ad esempio /my-app/image.jpg',
 	'form.configuration.file.url': 'URL',

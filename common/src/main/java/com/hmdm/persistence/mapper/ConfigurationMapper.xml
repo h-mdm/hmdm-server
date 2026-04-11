@@ -60,20 +60,22 @@
     </insert>
 
     <insert id="insertConfigurationApplicationSettings">
-        INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type, value, comment, readonly, lastUpdate)
+        INSERT INTO configurationApplicationSettings (extRefId, applicationId, name, type,
+                                                      value, comment, readonly, lastUpdate, variable)
         VALUES
         <foreach item="item" index="index" collection="appSettings"
                  open="" separator="," close="">
-            (${id}, #{item.applicationId}, #{item.name}, #{item.type}, #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate})
+            (${id}, #{item.applicationId}, #{item.name}, #{item.type},
+             #{item.value}, #{item.comment}, #{item.readonly}, #{item.lastUpdate}, #{item.variable})
         </foreach>
     </insert>
 
     <insert id="insertConfigurationFiles">
-        INSERT INTO configurationFiles (configurationId, fileId, lastUpdate, remove)
+        INSERT INTO configurationFiles (configurationId, fileId, lastUpdate, devicePath, remove)
         VALUES
         <foreach item="item" index="index" collection="files"
                  open="" separator="," close="">
-            (${id}, #{item.fileId}, 0, #{item.remove})
+            (${id}, #{item.fileId}, 0, #{item.devicePath}, #{item.remove})
         </foreach>
     </insert>
 

@@ -122,6 +122,7 @@ public class AuthResource {
         }
         if (user.getLastLoginFail() > System.currentTimeMillis() - 1000) {
             // No delay to avoid server overload while there's a brute force attack
+            Thread.sleep(1000);
             return Response.ERROR();
         }
 

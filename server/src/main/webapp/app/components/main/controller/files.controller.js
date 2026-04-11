@@ -230,6 +230,7 @@ angular.module('headwind-kiosk')
 
             if (response.data.status === 'OK') {
                 $scope.file.filePath = response.data.data.name;
+                $scope.file.devicePath = "/Download/" + response.data.data.name;
                 $scope.file.tmpPath = response.data.data.serverPath;
                 $scope.successMessage = localization.localize('success.file.uploaded');
             } else if (response.data.message == 'error.size.limit.exceeded') {

@@ -42,7 +42,8 @@ public interface ConfigurationFileMapper {
     @Select("SELECT cf.id AS id, " +
             "       cf.configurationId AS configurationId,  " +
             "       f.description AS description,  " +
-            "       f.devicePath AS devicePath,  " +
+            "       CASE WHEN cf.devicePath IS NOT NULL THEN cf.devicePath ELSE f.devicePath END AS devicePath,  " +
+            "       cf.devicePath IS NOT NULL AS overrideDevicePath,  " +
             "       CASE WHEN f.external THEN f.externalUrl ELSE null END AS externalUrl,  " +
             "       CASE WHEN NOT f.external THEN f.filePath ELSE null END AS filePath,  " +
             "       f.uploadTime AS lastUpdate,  " +
@@ -63,8 +64,8 @@ public interface ConfigurationFileMapper {
             "WHERE cf.fileId = #{fileId}")
     long countFileUsedAsConfigFile(@Param("fileId") Integer fileId);
 
-    @Insert("INSERT INTO configurationFiles(configurationId, fileId, lastUpdate, remove) VALUES " +
-            "(#{configurationId}, #{fileId}, 0, #{remove})")
+    @Insert("INSERT INTO configurationFiles(configurationId, fileId, devicePath, lastUpdate, remove) VALUES " +
+            "(#{configurationId}, #{fileId}, #{devicePath}, 0, #{remove})")
     void insertConfigurationFile(ConfigurationFile file);
 
     // Used only in the migration task from old to new method of storing configuration files

@@ -811,11 +811,14 @@ angular.module('headwind-kiosk')
                 // $window.close();
             };
 
-            $scope.addFile = function () {
+            $scope.editFile = function (configFile) {
                 var modalInstance = $modal.open({
                     templateUrl: 'app/components/main/view/modal/configurationFile.html',
                     controller: 'FileEditorController',
                     resolve: {
+                        configFile: function() {
+                            return configFile;
+                        },
                         configFiles: function() {
                             return $scope.configuration.files;
                         },
@@ -827,11 +830,20 @@ angular.module('headwind-kiosk')
 
                 modalInstance.result.then(function (file) {
                     $scope.configurationForm.$dirty = true;
-                    if (!file.id) {
-                        file.tempId = new Date().getTime();
-                        $scope.configuration.files.push(file);
-                        filterFiles();
+                    if (configFile !== {}) {
+                        // Remove old file from the configuration if it has been changed
+                        $scope.configuration.files = $scope.configuration.files.filter(function (f) {
+                            if (configFile.id !== null) {
+                                return f.id !== configFile.id;
+                            } else {
+                                return f.tempId !== configFile.tempId;
+                            }
+                        });
                     }
+                    // FileEditorController always creates new configFile link
+                    file.tempId = new Date().getTime();
+                    $scope.configuration.files.push(file);
+                    filterFiles();
                 });
             };
 
@@ -1257,7 +1269,7 @@ angular.module('headwind-kiosk')
             let bConfigurationWasLost = false;
 
             $scope.configuration = {
-                defaultFilePath: "/"
+                defaultFilePath: "/Download/"
             };
             $scope.isTypical = ($stateParams.typical === 'true');
             $scope.saved = false;
@@ -1471,7 +1483,7 @@ angular.module('headwind-kiosk')
             $modalInstance.dismiss();
         };
     })
-    .controller('FileEditorController', function ($scope, $modalInstance, localization,
+    .controller('FileEditorController', function ($scope, $modalInstance, localization, configFile,
                                                   defaultFilePath, fileService, configFiles) {
 
         $scope.file = {};
@@ -1482,9 +1494,10 @@ angular.module('headwind-kiosk')
         fileService.getAllFiles({},
             function (response) {
                 if (response.status === 'OK') {
-                    // Exclude already existing files
+                    // Exclude already existing files (except the file currently being edited)
                     var configIds = new Set(configFiles.map(f => f.fileId));
-                    response.data = response.data.filter(f => !configIds.has(f.id));
+                    response.data = response.data.filter(f => !configIds.has(f.id) ||
+                        (configFile !== {} && f.id === configFile.fileId));
 
                     response.data.forEach(function (file) {
                         file.name = file.description ? file.description :
@@ -1498,10 +1511,19 @@ angular.module('headwind-kiosk')
                         id: 0,
                         name: localization.localize('form.configuration.file.create')
                     });
-                    if ($scope.files.length > 1) {
-                        $scope.file = $scope.files[1];
+                    if (configFile === {}) {
+                        if ($scope.files.length > 1) {
+                            $scope.file = $scope.files[1];
+                        } else {
+                            $scope.file = $scope.files[0];
+                        }
                     } else {
-                        $scope.file = $scope.files[0];
+                        $scope.file = $scope.files.find(function(f) {
+                            return f.id === configFile.fileId;
+                        });
+                        $scope.file.overridePath = configFile.overridePath;
+                        $scope.file.devicePath = configFile.path;
+                        $scope.file.remove = configFile.remove;
                     }
                 } else {
                     $scope.errorMessage = localization.localizeServerResponse(response);
@@ -1575,6 +1597,7 @@ angular.module('headwind-kiosk')
                 // $scope.file is UploadedFile, make a "new" ConfigurationFile from it
                 $scope.file.fileId = $scope.file.id;
                 $scope.file.id = null;
+                $scope.file.path = $scope.file.devicePath;
                 $modalInstance.close($scope.file);
             }
         };

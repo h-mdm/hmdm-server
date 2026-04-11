@@ -502,7 +502,7 @@ document.localization ['vi_VN'] = {
     'form.device.phone.number': 'Số điện thoại',
 
     'form.file.name': 'Tên',
-    
+
     'form.file.path': 'Đường dẫn trên thiết bị',
     'form.file.path.placeholder': 'Ví dụ: /sdcard/app',
     
@@ -533,6 +533,8 @@ document.localization ['vi_VN'] = {
     'form.configuration.file.create': '(tạo một tệp mới)',
     'form.configuration.file.description': 'Mô tả tệp',
     'form.configuration.file.description.placeholder': 'Tùy chọn, để thuận tiện cho bạn',
+    'form.configuration.file.override.path': 'Ghi đè đường dẫn',
+    'form.configuration.file.override.path.title': 'Chỉ định đường dẫn thiết bị chỉ cho cấu hình này',
     'form.configuration.file.path': 'Đường dẫn trên thiết bị',
     'form.configuration.file.path.placeholder': 'Không bao gồm đường dẫn tới ổ đĩa, ví dụ: /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

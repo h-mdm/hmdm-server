@@ -450,6 +450,8 @@ document.localization ['de_DE'] = {
     'form.configuration.file.create': '(Neue Datei erstellen)',
     'form.configuration.file.description': 'Dateibeschreibung',
     'form.configuration.file.description.placeholder': 'Optional',
+    'form.configuration.file.override.path': 'Pfad überschreiben',
+    'form.configuration.file.override.path.title': 'Gerätepfad nur für diese Konfiguration angeben',
     'form.configuration.file.path': 'Pfad auf Gerät',
     'form.configuration.file.path.placeholder': 'Kein Pfad zum Laufwerk, z.B. /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

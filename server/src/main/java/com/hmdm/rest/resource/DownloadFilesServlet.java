@@ -122,6 +122,8 @@ public class DownloadFilesServlet extends HttpServlet {
                 return;
             }
 
+            // Cross XSS vulnerability fix: prevent opening a potentially malicious file having the Headwind MDM domain
+            resp.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
             try (InputStream input = new FileInputStream(file);
                  ServletOutputStream outputStream = resp.getOutputStream()) {
                 long length = file.length();

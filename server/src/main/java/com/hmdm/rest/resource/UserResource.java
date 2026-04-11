@@ -98,11 +98,19 @@ public class UserResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    // This method doesn't seem to be used by the front-end
     public Response getUserDetails(@PathParam("id") @ApiParam("User ID") int id) {
-        User userDetails = userDAO.getUserDetails(id);
-        userDetails.setPassword(null);
-
-        return Response.OK(userDetails);
+        return SecurityContext.get().getCurrentUser().map(u -> {
+            if (u.getId() != id && !SecurityContext.get().hasPermission("settings")) {
+            logger.error("Unauthorized attempt to access user details by user " +
+                u.getLogin());
+                return Response.PERMISSION_DENIED();
+            }
+            User userDetails = userDAO.getUserDetails(id);
+            userDetails.setPassword(null);
+            return Response.OK(userDetails);
+        })
+        .orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================

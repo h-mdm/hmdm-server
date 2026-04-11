@@ -39,4 +39,6 @@ public interface SyncApplicationSettingInt {
     Boolean isReadonly();
 
     long getLastUpdate();
+
+    Boolean isVariable();
 }

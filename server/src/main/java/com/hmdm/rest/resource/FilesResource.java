@@ -181,6 +181,7 @@ public class FilesResource {
                 }
 
                 try {
+                    logger.info("File {} is removed by user {}", file.getFilePath(), SecurityContext.get().getCurrentUserName());
                     uploadedFileDAO.remove(file.getId());
                     if (filePath.toFile().exists() &&
                             uploadedFileDAO.getByPath(customer.getId(), file.getFilePath()) == null) {
@@ -192,6 +193,8 @@ public class FilesResource {
                     return Response.ERROR("error.file.deletion");
                 }
             } else {
+                logger.info("External file {} ({}) is removed by user {}",
+                        file.getDescription(), file.getUrl(), SecurityContext.get().getCurrentUserName());
                 uploadedFileDAO.remove(file.getId());
                 return Response.OK();
             }

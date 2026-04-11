@@ -450,6 +450,8 @@ document.localization ['fr_FR'] = {
     'form.configuration.file.create': '(créer un nouveau fichier)',
     'form.configuration.file.description': 'Description',
     'form.configuration.file.description.placeholder': 'En option, pour votre commodité',
+    'form.configuration.file.override.path': 'Remplacer le chemin',
+    'form.configuration.file.override.path.title': 'Spécifier le chemin du périphérique pour cette configuration uniquement',
     'form.configuration.file.path': 'Chemin sur l\'appareil',
     'form.configuration.file.path.placeholder': 'Pas de chemin vers un lecteur: /my-app/image.jpg',
     'form.configuration.file.url': 'URL',

@@ -369,8 +369,16 @@ public class ApplicationResource {
             return Response.PERMISSION_DENIED();
         }
         try {
-            this.applicationDAO.removeApplicationById(id, true);
-            return Response.OK();
+            Application application = applicationDAO.findById(id);
+            if (application != null) {
+                logger.info("Application '{}' ({}) is removed by user {}",
+                        application.getName(), application.getPkg(), SecurityContext.get().getCurrentUserName());
+                this.applicationDAO.removeApplicationById(id, true);
+                return Response.OK();
+            } else {
+                logger.error("Cannot find application by id #{}", id);
+                return Response.INTERNAL_ERROR();
+            }
         } catch (SecurityException e) {
             logger.error("Prohibited to delete application #{} by current user", id, e);
             return Response.PERMISSION_DENIED();
@@ -398,8 +406,23 @@ public class ApplicationResource {
             return Response.PERMISSION_DENIED();
         }
         try {
-            this.applicationDAO.removeApplicationVersionByIdWithAPKFile(id);
-            return Response.OK();
+            ApplicationVersion version = applicationDAO.findApplicationVersionById(id);
+            if (version != null) {
+                Application application = applicationDAO.findById(version.getApplicationId());
+                if (application != null) {
+                    logger.info("Version {} of application '{}' ({}) is removed by user {}",
+                            version.getVersion(), application.getName(), application.getPkg(),
+                            SecurityContext.get().getCurrentUserName());
+                } else {
+                    logger.info("Version {} of unexisting application {} is removed by user {}",
+                            version.getVersion(), version.getApplicationId(), SecurityContext.get().getCurrentUserName());
+                }
+                this.applicationDAO.removeApplicationVersionByIdWithAPKFile(id);
+                return Response.OK();
+            } else {
+                logger.error("Cannot find application version by id #{}", id);
+                return Response.INTERNAL_ERROR();
+            }
         } catch (SecurityException e) {
             logger.error("Prohibited to delete application version #{} by current user", id, e);
             return Response.PERMISSION_DENIED();

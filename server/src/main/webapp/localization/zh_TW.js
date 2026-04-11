@@ -450,6 +450,8 @@ document.localization ['zh_TW'] = {
     'form.configuration.file.create': '(建立新檔案)',
     'form.configuration.file.description' : "文檔資訊",
     'form.configuration.file.description.placeholder':"可選，為了您的方便",
+    'form.configuration.file.override.path': '覆蓋路徑',
+    'form.configuration.file.override.path.title': '僅此配置指定設備路徑',
     'form.configuration.file.path':"設備上的路徑",
     'form.configuration.file.path.placeholder':"不包括驅動器的路徑，例如/my-app/image.jpg",
     'form.configuration.file.url':"URL",
