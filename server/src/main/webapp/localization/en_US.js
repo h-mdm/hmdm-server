@@ -948,10 +948,10 @@ document.localization ['en_US'] = {
     'breadcrumb.config.details': 'Details',
     'breadcrumb.application.versions': 'Versions',
 
-    'app.name': 'Headwind MDM',
+    'app.name': 'PITB MDM',
     'app.vendor.name':"h-mdm.com",
     'app.vendor.link':"https://h-mdm.com",
-    'app.description': 'is an open source mobile device management system',
+    'app.description': 'is an open source mobile device management system, extended by PITB for internal use',
     'app.title': '${appName} Web Panel',
 
     'box.show.my.apps.only': 'Display my applications only',
