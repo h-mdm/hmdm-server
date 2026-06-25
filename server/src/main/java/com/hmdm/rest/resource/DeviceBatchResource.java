@@ -2,14 +2,19 @@ package com.hmdm.rest.resource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,33 +33,69 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.hmdm.persistence.ConfigurationDAO;
 import com.hmdm.persistence.GroupDAO;
+import com.hmdm.rest.json.Response;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
+import com.hmdm.service.DeviceBatchExcelParser;
+import com.hmdm.service.DeviceBatchValidationService;
+import com.hmdm.rest.json.BatchDevicePreviewResponse;
+import com.hmdm.rest.json.BatchDeviceUploadRow;
+import java.util.List;
+
 @Api(tags = { "Batch Device Upload" }, authorizations = { @Authorization("Bearer Token") })
 @Singleton
 @Path("/private/devices/batch")
-public class DeviceBatchTemplateResource {
+public class DeviceBatchResource {
 
     private GroupDAO groupDAO;
     private ConfigurationDAO configurationDAO;
+    private DeviceBatchExcelParser excelParser;
+    private DeviceBatchValidationService validationService;
 
     /**
      * Constructor required by Swagger/Jersey
      */
-    public DeviceBatchTemplateResource() {
+    public DeviceBatchResource() {
     }
 
     @Inject
-    public DeviceBatchTemplateResource(GroupDAO groupDAO,
-            ConfigurationDAO configurationDAO) {
+    public DeviceBatchResource(GroupDAO groupDAO,
+            ConfigurationDAO configurationDAO,
+            DeviceBatchExcelParser excelParser,
+            DeviceBatchValidationService validationService) {
         this.groupDAO = groupDAO;
         this.configurationDAO = configurationDAO;
+        this.excelParser = excelParser;
+        this.validationService = validationService;
+    }
+
+    @ApiOperation(value = "Preview batch device upload Excel", notes = "Parses uploaded Excel and validates each device row before import")
+    @POST
+    @Path("/preview")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response previewBatchUpload(@FormDataParam("file") InputStream fileInputStream) {
+        if (fileInputStream == null) {
+            return Response.ERROR("error.file.required");
+        }
+
+        try {
+            BatchDevicePreviewResponse previewResponse = this.validationService
+                    .validate(this.excelParser.parse(fileInputStream));
+
+            return Response.OK(previewResponse);
+        } catch (IllegalArgumentException e) {
+            return Response.ERROR(e.getMessage());
+        } catch (Exception e) {
+            return Response.ERROR("Failed to parse uploaded Excel file");
+        }
     }
 
     @ApiOperation(value = "Download batch device upload Excel template", notes = "Downloads an Excel template containing Device Upload sheet and reference sheets for groups and configurations")

@@ -1,13 +1,5 @@
 package com.hmdm.task;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.UploadedFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +9,15 @@ import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.UploadedFile;
+
 public class FileCheckTask implements Runnable {
     private final UnsecureDAO unsecureDAO;
     private final String filesDirectory;
@@ -25,7 +26,7 @@ public class FileCheckTask implements Runnable {
 
     @Inject
     public FileCheckTask(UnsecureDAO unsecureDAO,
-                         @Named("files.directory") String filesDirectory) {
+            @Named("files.directory") String filesDirectory) {
         this.unsecureDAO = unsecureDAO;
         this.filesDirectory = filesDirectory;
     }
@@ -71,7 +72,8 @@ public class FileCheckTask implements Runnable {
 
     private void checkFile(Path file) {
         if (file.getFileName().toString().endsWith(".apk") || file.getFileName().toString().endsWith(".xapk")) {
-            // For simplicity, do not process APK files as we presume they're always added as applications
+            // For simplicity, do not process APK files as we presume they're always added
+            // as applications
             return;
         }
 
@@ -91,7 +93,8 @@ public class FileCheckTask implements Runnable {
             unsecureDAO.insertUploadedFile(uploadedFile);
         }
 
-        // Check the modification date and update the DB if a file was changed externally
+        // Check the modification date and update the DB if a file was changed
+        // externally
         try {
             BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
             FileTime modificationTime = attrs.lastModifiedTime();
