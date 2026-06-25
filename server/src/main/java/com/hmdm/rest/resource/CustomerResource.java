@@ -21,22 +21,12 @@
 
 package com.hmdm.rest.resource;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import com.hmdm.persistence.CustomerDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.rest.json.CustomerSearchRequest;
-import com.hmdm.rest.json.PaginatedData;
-import com.hmdm.rest.json.Response;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.service.MailchimpService;
-import com.hmdm.util.PasswordUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -50,13 +40,26 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.rest.json.CustomerSearchRequest;
+import com.hmdm.rest.json.PaginatedData;
+import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.service.MailchimpService;
+import com.hmdm.util.PasswordUtil;
 
 /**
- * <p>$END$</p>
+ * <p>
+ * $END$
+ * </p>
  *
  * @author isv
  */
@@ -76,10 +79,14 @@ public class CustomerResource {
     }
 
     /**
-     * <p>Constructs new <code>CustomerResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>CustomerResource</code> instance. This implementation
+     * does nothing.
+     * </p>
      */
     @Inject
-    public CustomerResource(CustomerDAO customerDAO, UnsecureDAO unsecureDAO, UserDAO userDAO, MailchimpService mailchimpService) {
+    public CustomerResource(CustomerDAO customerDAO, UnsecureDAO unsecureDAO, UserDAO userDAO,
+            MailchimpService mailchimpService) {
         this.customerDAO = customerDAO;
         this.unsecureDAO = unsecureDAO;
         this.userDAO = userDAO;
@@ -147,7 +154,8 @@ public class CustomerResource {
 
                 dbUser = unsecureDAO.findByEmail(customer.getEmail());
                 if (dbUser != null && (customer.getId() == null || dbUser.getCustomerId() != customer.getId())) {
-                    log.warn("User with email {} already exists, customer {}", customer.getEmail(), dbUser.getCustomerId());
+                    log.warn("User with email {} already exists, customer {}", customer.getEmail(),
+                            dbUser.getCustomerId());
                     return Response.DUPLICATE_ENTITY("error.duplicate.email");
                 }
             }
@@ -156,12 +164,14 @@ public class CustomerResource {
                 // Check users with the same name or email
                 dbUser = unsecureDAO.findByLogin(customer.getName());
                 if (dbUser != null) {
-                    log.warn("User with login {} already exists, customer {}", customer.getName(), dbUser.getCustomerId());
+                    log.warn("User with login {} already exists, customer {}", customer.getName(),
+                            dbUser.getCustomerId());
                     return Response.DUPLICATE_ENTITY("error.duplicate.customer.name");
                 }
                 dbUser = unsecureDAO.findByEmail(customer.getEmail());
                 if (dbUser != null) {
-                    log.warn("User with email {} already exists, customer {}", customer.getEmail(), dbUser.getCustomerId());
+                    log.warn("User with email {} already exists, customer {}", customer.getEmail(),
+                            dbUser.getCustomerId());
                     return Response.DUPLICATE_ENTITY("error.duplicate.email");
                 }
                 String adminCredentials = this.customerDAO.insertCustomer(customer);
@@ -235,15 +245,15 @@ public class CustomerResource {
     @Path("/impersonate/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response impersonateCustomer(@PathParam("id") Integer id,
-                                        @Context HttpServletRequest req,
-                                        @Context HttpServletResponse res) throws IOException {
+            @Context HttpServletRequest req,
+            @Context HttpServletResponse res) throws IOException {
         try {
             if (SecurityContext.get().isSuperAdmin()) {
                 Customer customer = this.customerDAO.findById(id);
                 User orgAdmin = this.userDAO.findOrgAdmin(customer.getId());
                 if (orgAdmin != null) {
-                    HttpSession session = req.getSession( false );
-                    if ( session != null ) {
+                    HttpSession session = req.getSession(false);
+                    if (session != null) {
                         session.invalidate();
                     }
 
@@ -252,22 +262,23 @@ public class CustomerResource {
                         // findOrgAdmin() doesn't return password, so we need to get the user's password
                         User user = unsecureDAO.findByLoginOrEmail(orgAdmin.getLogin());
                         user.setAuthToken(PasswordUtil.generateToken());
-                        user.setNewPassword(user.getPassword());        // copy value for setUserNewPasswordUnsecure
+                        user.setNewPassword(user.getPassword()); // copy value for setUserNewPasswordUnsecure
                         unsecureDAO.setUserNewPasswordUnsecure(user);
                         orgAdmin.setAuthToken(user.getAuthToken());
                     }
 
                     // Notice: impersonation doesn't work if the password reset token is set
-                    // An alternative would be to clear the password reset token, but it seems to be less secure
+                    // An alternative would be to clear the password reset token, but it seems to be
+                    // less secure
                     // So let's disable impersonation before the user resets his password by now
                     // The same behavior will be in users/impersonate (called by the org admin)
 
                     orgAdmin.setPassword(null);
 
                     HttpSession userSession = req.getSession(true);
-                    userSession.setAttribute( sessionCredentials, orgAdmin );
+                    userSession.setAttribute(sessionCredentials, orgAdmin);
 
-                    return Response.OK( orgAdmin );
+                    return Response.OK(orgAdmin);
                 } else {
                     log.warn("Failed to impersonate: org admin not found for customer {}", customer.getName());
                     return Response.ERROR("error.notfound.customer.admin");

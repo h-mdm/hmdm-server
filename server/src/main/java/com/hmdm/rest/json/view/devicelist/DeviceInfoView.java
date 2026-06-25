@@ -125,6 +125,11 @@ public class DeviceInfoView implements Serializable {
         return deviceInfo.getSerial();
     }
 
+    @ApiModelProperty("MAC number of the device")
+    public String getMac() {
+        return deviceInfo.getMac();
+    }
+
     @ApiModelProperty("A flag showing if Headwind MDM is set as default launcher on a device")
     public Boolean getDefaultLauncher() {
         return deviceInfo.getDefaultLauncher();

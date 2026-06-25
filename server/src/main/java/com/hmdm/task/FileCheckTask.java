@@ -2,27 +2,19 @@ package com.hmdm.task;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.hmdm.event.EventService;
 import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UploadedFileDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
-import com.hmdm.service.EmailService;
-import com.hmdm.service.MailchimpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public class FileCheckTask implements Runnable {

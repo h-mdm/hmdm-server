@@ -21,13 +21,14 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,22 +39,38 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hmdm.notification.PushService;
-import com.hmdm.persistence.*;
-import com.hmdm.persistence.domain.*;
-import com.hmdm.rest.json.*;
+import com.hmdm.persistence.CommonDAO;
+import com.hmdm.persistence.ConfigurationDAO;
+import com.hmdm.persistence.ConfigurationFileDAO;
+import com.hmdm.persistence.DeviceDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.ApplicationSetting;
+import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.ConfigurationFile;
+import com.hmdm.persistence.domain.Device;
+import com.hmdm.persistence.domain.DeviceSearchRequest;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.rest.json.DeviceGroupBulkRequest;
+import com.hmdm.rest.json.DeviceLookupItem;
+import com.hmdm.rest.json.LookupItem;
+import com.hmdm.rest.json.PaginatedData;
+import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.view.devicelist.DeviceListView;
 import com.hmdm.rest.json.view.devicelist.DeviceView;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Api(tags = {"Device"}, authorizations = {@Authorization("Bearer Token")})
+@Api(tags = { "Device" }, authorizations = { @Authorization("Bearer Token") })
 @Singleton
 @Path("/private/devices")
 public class DeviceResource {
@@ -68,18 +85,20 @@ public class DeviceResource {
     private UnsecureDAO unsecureDAO;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public DeviceResource() {
     }
 
     @Inject
     public DeviceResource(DeviceDAO deviceDAO,
-                          ConfigurationDAO configurationDAO,
-                          PushService pushService,
-                          ConfigurationFileDAO configurationFileDAO,
-                          CommonDAO commonDAO,
-                          UnsecureDAO unsecureDAO) {
+            ConfigurationDAO configurationDAO,
+            PushService pushService,
+            ConfigurationFileDAO configurationFileDAO,
+            CommonDAO commonDAO,
+            UnsecureDAO unsecureDAO) {
         this.deviceDAO = deviceDAO;
         this.configurationDAO = configurationDAO;
         this.pushService = pushService;
@@ -89,11 +108,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Search devices",
-            notes = "Search devices meeting the specified filter value",
-            response = DeviceListView.class
-    )
+    @ApiOperation(value = "Search devices", notes = "Search devices meeting the specified filter value", response = DeviceListView.class)
     @POST
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -109,17 +124,20 @@ public class DeviceResource {
             if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
                 dbConfig = configurationDAO.getConfigurationById(deviceConfigurationId);
                 if (dbConfig == null) {
-                    log.error("Device " + device.getNumber() + ": configuration does not exist: " + deviceConfigurationId);
-                    device.setConfigurationId(null);     // Will be filtered out when converting to DeviceView
+                    log.error("Device " + device.getNumber() + ": configuration does not exist: "
+                            + deviceConfigurationId);
+                    device.setConfigurationId(null); // Will be filtered out when converting to DeviceView
                     continue;
                 }
             }
 
             if (!configIdToApplicationsMap.containsKey(deviceConfigurationId)) {
-                configIdToApplicationsMap.put(deviceConfigurationId, this.configurationDAO.getConfigurationApplications(deviceConfigurationId));
+                configIdToApplicationsMap.put(deviceConfigurationId,
+                        this.configurationDAO.getConfigurationApplications(deviceConfigurationId));
             }
             if (!configIdToFilesMap.containsKey(deviceConfigurationId)) {
-                configIdToFilesMap.put(deviceConfigurationId, this.configurationFileDAO.getConfigurationFiles(deviceConfigurationId));
+                configIdToFilesMap.put(deviceConfigurationId,
+                        this.configurationFileDAO.getConfigurationFiles(deviceConfigurationId));
             }
 
             if (!configIdToConfigurationsMap.containsKey(deviceConfigurationId)) {
@@ -129,7 +147,8 @@ public class DeviceResource {
                 configuration.setName(device.getConfigName());
                 configuration.setPermissive(dbConfig.getPermissive());
                 if (dbConfig.getMainAppId() != null && dbConfig.getMainAppId() > 0 &&
-                        dbConfig.getEventReceivingComponent() != null && dbConfig.getEventReceivingComponent().length() > 0) {
+                        dbConfig.getEventReceivingComponent() != null
+                        && dbConfig.getEventReceivingComponent().length() > 0) {
                     configuration.setQrCodeKey(dbConfig.getQrCodeKey());
                     configuration.setBaseUrl(this.configurationDAO.getBaseUrl());
                 }
@@ -155,11 +174,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get the device info by number",
-            notes = "Get the device info by number",
-            response = DeviceListView.class
-    )
+    @ApiOperation(value = "Get the device info by number", notes = "Get the device info by number", response = DeviceListView.class)
     @GET
     @Path("/number/{number}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -176,7 +191,10 @@ public class DeviceResource {
 
     // =================================================================================================================
     /**
-     * <p>Gets the list of device ids/names matching the specified string filter for autocompletions.</p>
+     * <p>
+     * Gets the list of device ids/names matching the specified string filter for
+     * autocompletions.
+     * </p>
      *
      * @param filter a filter to be used for filtering the records.
      * @return a response with list of devices matching the specified filter.
@@ -196,10 +214,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update device",
-            notes = "Create a new device (if id is not provided) or update existing one otherwise."
-    )
+    @ApiOperation(value = "Create or update device", notes = "Create a new device (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -271,10 +286,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete device",
-            notes = "Delete an existing device"
-    )
+    @ApiOperation(value = "Delete device", notes = "Delete an existing device")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -292,10 +304,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete bulk devices",
-            notes = "Delete multiple devices at once"
-    )
+    @ApiOperation(value = "Delete bulk devices", notes = "Delete multiple devices at once")
     @POST
     @Path("/deleteBulk")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -322,9 +331,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Set or clear device groups in bulk"
-    )
+    @ApiOperation(value = "Set or clear device groups in bulk")
     @POST
     @Path("/groupBulk")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -362,10 +369,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get device application settings",
-            notes = "Get application settings set at device level"
-    )
+    @ApiOperation(value = "Get device application settings", notes = "Get application settings set at device level")
     @GET
     @Path("/{id}/applicationSettings")
     @Produces(MediaType.APPLICATION_JSON)
@@ -380,15 +384,12 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Save device application settings",
-            notes = "Save application settings set at device level"
-    )
+    @ApiOperation(value = "Save device application settings", notes = "Save application settings set at device level")
     @POST
     @Path("/{id}/applicationSettings")
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveDeviceApplicationSettings(@PathParam("id") @ApiParam("Device ID") Integer id,
-                                                  List<ApplicationSetting> applicationSettings) {
+            List<ApplicationSetting> applicationSettings) {
         try {
             this.deviceDAO.saveDeviceApplicationSettings(id, applicationSettings);
             return Response.OK();
@@ -399,11 +400,7 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Notify device on update",
-            notes = "Sends a notification to device on application settings update",
-            response = Void.class
-    )
+    @ApiOperation(value = "Notify device on update", notes = "Sends a notification to device on application settings update", response = Void.class)
     @POST
     @Path("/{id}/applicationSettings/notify")
     @Produces(MediaType.APPLICATION_JSON)
@@ -418,15 +415,12 @@ public class DeviceResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Save device description",
-            notes = "Updates existing device description"
-    )
+    @ApiOperation(value = "Save device description", notes = "Updates existing device description")
     @POST
     @Path("/{id}/description")
     @Produces(MediaType.APPLICATION_JSON)
     public Response saveDeviceDescription(@PathParam("id") @ApiParam("Device ID") Integer deviceId,
-                                          String newDeviceDescription) {
+            String newDeviceDescription) {
         try {
             final boolean canEditDeviceDescription = SecurityContext.get().hasPermission("edit_device_desc");
 

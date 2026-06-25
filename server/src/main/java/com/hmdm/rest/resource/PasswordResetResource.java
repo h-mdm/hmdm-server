@@ -21,40 +21,37 @@
 
 package com.hmdm.rest.resource;
 
-import com.hmdm.persistence.CommonDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.domain.UserRole;
-import com.hmdm.rest.json.Response;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.service.EmailService;
-import com.hmdm.util.PasswordUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Api(tags = {"Password-Reset"})
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hmdm.persistence.CommonDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.service.EmailService;
+import com.hmdm.util.PasswordUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags = { "Password-Reset" })
 @Singleton
 @Path("/public/passwordReset")
 public class PasswordResetResource {
@@ -67,17 +64,22 @@ public class PasswordResetResource {
     private EmailService emailService;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public PasswordResetResource() {
     }
 
     /**
-     * <p>Constructs new <code>PasswordResetResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>PasswordResetResource</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     @Inject
     public PasswordResetResource(CommonDAO commonDAO, UnsecureDAO unsecureDAO, EmailService emailService,
-                                 @Named("base.url") String baseUrl) {
+            @Named("base.url") String baseUrl) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.emailService = emailService;
@@ -85,11 +87,7 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get settings by token",
-            notes = "Returns the user settings by password reset token.",
-            response = User.class
-    )
+    @ApiOperation(value = "Get settings by token", notes = "Returns the user settings by password reset token.", response = User.class)
     @GET
     @Path("/settings/{token}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -116,10 +114,7 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Reset password",
-            notes = "Resets the user password"
-    )
+    @ApiOperation(value = "Reset password", notes = "Resets the user password")
     @POST
     @Path("/reset")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -145,10 +140,7 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Password recovery feature",
-            notes = "Checks if the password can be recovered."
-    )
+    @ApiOperation(value = "Password recovery feature", notes = "Checks if the password can be recovered.")
     @GET
     @Deprecated
     @Path("/canRecover")
@@ -162,25 +154,23 @@ public class PasswordResetResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Request password recovery",
-            notes = "Checks if the password can be recovered."
-    )
+    @ApiOperation(value = "Request password recovery", notes = "Checks if the password can be recovered.")
     @GET
     @Path("/recover/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response recover(@PathParam("username") @ApiParam("Login of the user who wants to recover the password") String username) {
+    public Response recover(
+            @PathParam("username") @ApiParam("Login of the user who wants to recover the password") String username) {
         try {
             User user = unsecureDAO.findByLoginOrEmail(username);
             if (user == null) {
                 logger.warn("Can't recover password for user " + username + ": user not found");
-                //return Response.ERROR("error.user.not.found");
+                // return Response.ERROR("error.user.not.found");
                 // Fix the user discovery vulnerability
                 return Response.OK();
             }
             if (!emailService.isConfigured()) {
                 logger.warn("Can't recover password for user " + username + ": email sender not configured");
-                //return Response.ERROR("error.email.not.configured");
+                // return Response.ERROR("error.email.not.configured");
                 // Fix the user discovery vulnerability
                 return Response.OK();
             }

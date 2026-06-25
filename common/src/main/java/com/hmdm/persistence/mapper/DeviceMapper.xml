@@ -27,6 +27,7 @@
         SELECT devices.id AS deviceId, devices.number, devices.description, devices.lastUpdate,
                devices.configurationId, devices.info, devices.imei, devices.phone, devices.customerId,
                devices.custom1, devices.custom2, devices.custom3, devices.oldNumber,
+               devices.infojson ->> 'mac' AS mac,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName
         FROM devices
@@ -53,6 +54,7 @@
         <result property="androidVersion" column="androidVersion"/>
         <result property="enrollTime" column="enrollTime"/>
         <result property="serial" column="serial"/>
+        <result property="mac" column="mac"/>
         <result property="statusCode" column="statusCode"/>
         <result property="publicIp" column="publicIp"/>
         <result property="custom1" column="custom1"/>
@@ -250,7 +252,8 @@
                (devices.infojson ->> 'mdmMode')::BOOLEAN AS mdmMode,
                (devices.infojson ->> 'kioskMode')::BOOLEAN AS kioskMode,
                devices.infojson ->> 'androidVersion' AS androidVersion,
-               devices.infojson ->> 'serial' AS serial,
+                devices.infojson ->> 'serial' AS serial,
+                devices.infojson ->> 'mac' AS mac,
                devices.custom1, devices.custom2, devices.custom3, devices.oldNumber, devices.fastSearch,
                groups.id AS groupId, groups.name AS groupName,
                configurations.name as configName,

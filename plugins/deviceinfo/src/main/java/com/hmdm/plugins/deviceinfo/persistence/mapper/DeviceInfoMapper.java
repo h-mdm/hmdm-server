@@ -226,6 +226,7 @@ public interface DeviceInfoMapper {
             "    devices.infojson ->> 'iccid2' AS iccid2," +
             "    devices.infojson ->> 'imsi2' AS imsi2," +
             "    devices.infojson ->> 'serial' AS serial," +
+            "    devices.infojson ->> 'mac' AS mac," +
             "    devices.infojson ->> 'cpu' AS cpu," +
             "    COALESCE((devices.infojson -> 'permissions' ->> 0)::BOOLEAN, FALSE) AS adminPermission, " +
             "    COALESCE((devices.infojson -> 'permissions' ->> 1)::BOOLEAN, FALSE) AS overlapPermission, " +

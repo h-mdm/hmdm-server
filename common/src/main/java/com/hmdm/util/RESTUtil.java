@@ -1,7 +1,5 @@
 package com.hmdm.util;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -14,8 +12,8 @@ public class RESTUtil {
         try {
             URL url = new URL(location);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(30000);
-            conn.setConnectTimeout(30000);
+            conn.setReadTimeout(30000*10);
+            conn.setConnectTimeout(30000*10);
             conn.setUseCaches(false);
             conn.setAllowUserInteraction(false);
             conn.setRequestMethod(method);

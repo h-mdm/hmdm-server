@@ -726,6 +726,15 @@ angular.module('headwind-kiosk')
             return null;
         };
 
+        $scope.getMac = function (device) {
+            var info = $scope.getDeviceInfo(device);
+            if (info) {
+                return info.mac;
+            }
+
+            return null;
+        };
+
         $scope.getDeviceLauncherVersionColor = function (device) {
             var info = $scope.getDeviceInfo(device);
             if (info) {

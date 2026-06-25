@@ -871,6 +871,7 @@ document.localization ['en_US'] = {
     'table.heading.device.android.version': 'Android version',
     'table.heading.device.enrollment.date': 'Enrolled',
     'table.heading.device.serial': 'Serial number',
+    'table.heading.device.mac': 'MAC Address',
     'table.heading.device.publicip': 'IP address',
     'table.heading.device.actions': 'Actions',
 

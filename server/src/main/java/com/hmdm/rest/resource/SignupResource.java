@@ -21,33 +21,40 @@
 
 package com.hmdm.rest.resource;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hmdm.persistence.CommonDAO;
 import com.hmdm.persistence.PendingSignupDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.PendingSignup;
-import com.hmdm.persistence.domain.Settings;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.SignupCompleteRequest;
-import com.hmdm.security.SecurityContext;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.MailchimpService;
 import com.hmdm.util.PasswordUtil;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.*;
-
-@Api(tags = {"Signup"})
+@Api(tags = { "Signup" })
 @Singleton
 @Path("/public/signup")
 public class SignupResource {
@@ -71,27 +78,32 @@ public class SignupResource {
     private int customerSignupDeviceConfig;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public SignupResource() {
     }
 
     /**
-     * <p>Constructs new <code>SignupResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>SignupResource</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     @Inject
     public SignupResource(CommonDAO commonDAO, UnsecureDAO unsecureDAO, PendingSignupDAO pendingSignupDAO,
-                          EmailService emailService, MailchimpService mailchimpService,
-                          @Named("admin.email") String adminEmail,
-                          @Named("base.url") String baseUrl,
-                          @Named("customer.signup") boolean customerSignup,
-                          @Named("customer.signup.copy.settings") boolean customerSignupCopySettings,
-                          @Named("customer.signup.configurations") String customerSignupConfigStr,
-                          @Named("customer.signup.support.email") String customerSignupSupportEmail,
-                          @Named("customer.signup.device.limit") String customerSignupDeviceLimitStr,
-                          @Named("customer.signup.size.limit") String customerSignupSizeLimitStr,
-                          @Named("customer.signup.expiry.days") String customerSignupExpiryDaysStr,
-                          @Named("customer.signup.device.config") String customerSignupDeviceConfigStr) {
+            EmailService emailService, MailchimpService mailchimpService,
+            @Named("admin.email") String adminEmail,
+            @Named("base.url") String baseUrl,
+            @Named("customer.signup") boolean customerSignup,
+            @Named("customer.signup.copy.settings") boolean customerSignupCopySettings,
+            @Named("customer.signup.configurations") String customerSignupConfigStr,
+            @Named("customer.signup.support.email") String customerSignupSupportEmail,
+            @Named("customer.signup.device.limit") String customerSignupDeviceLimitStr,
+            @Named("customer.signup.size.limit") String customerSignupSizeLimitStr,
+            @Named("customer.signup.expiry.days") String customerSignupExpiryDaysStr,
+            @Named("customer.signup.device.config") String customerSignupDeviceConfigStr) {
         this.commonDAO = commonDAO;
         this.unsecureDAO = unsecureDAO;
         this.pendingSignupDAO = pendingSignupDAO;
@@ -121,10 +133,7 @@ public class SignupResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Signup feature",
-            notes = "Checks if the customer signup is allowed."
-    )
+    @ApiOperation(value = "Signup feature", notes = "Checks if the customer signup is allowed.")
     @GET
     @Deprecated
     @Path("/canSignup")
@@ -137,12 +146,8 @@ public class SignupResource {
         }
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Verify email",
-            notes = "Check whether the email doesn't exist and start the signup flow"
-    )
+    @ApiOperation(value = "Verify email", notes = "Check whether the email doesn't exist and start the signup flow")
     @POST
     @Path("/verifyEmail")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -179,12 +184,8 @@ public class SignupResource {
         return Response.OK();
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Verify token",
-            notes = "Checks if the customer's token is valid."
-    )
+    @ApiOperation(value = "Verify token", notes = "Checks if the customer's token is valid.")
     @GET
     @Path("/verifyToken/{token}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -196,12 +197,8 @@ public class SignupResource {
         return Response.OK(signup);
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Complete the registration",
-            notes = "Create a new customer and notify admins and customer itself."
-    )
+    @ApiOperation(value = "Complete the registration", notes = "Create a new customer and notify admins and customer itself.")
     @POST
     @Path("/complete")
     @Consumes(MediaType.APPLICATION_JSON)
