@@ -68,6 +68,7 @@ public class ApplicationResource {
     private File baseDirectory;
     private ApplicationDAO applicationDAO;
     private ConfigurationDAO configurationDAO;
+    private UnsecureDAO unsecureDAO;
     private PushService pushService;
 
     /**
@@ -79,10 +80,12 @@ public class ApplicationResource {
     @Inject
     public ApplicationResource(ApplicationDAO applicationDAO,
                                ConfigurationDAO configurationDAO,
+                               UnsecureDAO unsecureDAO,
                                PushService pushService,
                                @Named("files.directory") String filesDirectory) {
         this.applicationDAO = applicationDAO;
         this.configurationDAO = configurationDAO;
+        this.unsecureDAO = unsecureDAO;
         this.pushService = pushService;
         this.baseDirectory = new File(filesDirectory);
 
@@ -502,13 +505,16 @@ public class ApplicationResource {
                 request.getConfigurations().removeIf(c ->
                         user.getConfigurations().stream().filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
             }
+            Integer _masterCustomer = unsecureDAO.getMasterCustomerId();
+            final int masterCustomer = _masterCustomer != null ? _masterCustomer : 0;
+
             // Avoid access to objects of another customer
             request.getConfigurations().removeIf(c -> {
                 // findById will raise a SecurityException if attempting to access an object of another customer
                 // So actually this code is a bit redundant, but it guards access to own objects anyway
                 Application application = applicationDAO.findById(c.getApplicationId());
                 Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
-                return application.getCustomerId() != user.getCustomerId() ||
+                return (application.getCustomerId() != masterCustomer && application.getCustomerId() != user.getCustomerId()) ||
                        configuration.getCustomerId() != user.getCustomerId();
             });
             logger.info("Application configurations updated by user " + SecurityContext.get().getCurrentUserName());

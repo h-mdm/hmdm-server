@@ -57,6 +57,9 @@ public interface CustomerMapper {
     @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
     List<Customer> findAllExceptMaster();
 
+    @Select({"SELECT id FROM customers WHERE master = TRUE LIMIT 1"})
+    Integer getMasterId();
+
     @Insert({"INSERT INTO customers (name, email, description, filesDir, master, prefix, registrationTime, " +
              "accountType, expiryTime, deviceLimit, customerStatus, firstName, lastName, language, " +
              "inactiveState, pauseState, abandonState, sizeLimit, signupStatus, signupToken) " +

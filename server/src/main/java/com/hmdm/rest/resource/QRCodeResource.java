@@ -182,7 +182,7 @@ public class QRCodeResource {
                                                     @QueryParam("useId") @ApiParam("Which parameter to use as a device ID") String useId,
                                                     @QueryParam("group") @ApiParam("Groups to assign when creating a device") List<String> groups,
                                                     @Context HttpServletRequest req) {
-        logger.info("Generating QR-code image for configuration key: {}", id);
+        logger.debug("Generating QR-code image for configuration key: {}", id);
         try {
             Configuration configuration = this.unsecureDAO.getConfigurationByQRCodeKey(id);
             if (configuration != null) {
@@ -265,7 +265,7 @@ public class QRCodeResource {
                                 "}\n");
                         final String s = sb.toString();
 
-                        logger.info("The base for QR code generation:\n{}", s);
+                        logger.debug("The base for QR code generation:\n{}", s);
 
                         return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
                             int imageSize = 250;
@@ -299,7 +299,7 @@ public class QRCodeResource {
     }
 
     private String calculateApkHash(String apkUrl) throws NoSuchAlgorithmException, IOException {
-        logger.info("Digesting the application file: {}", apkUrl);
+        logger.debug("Digesting the application file: {}", apkUrl);
 
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] buffer= new byte[8192];
@@ -333,7 +333,7 @@ public class QRCodeResource {
         final byte[] hash = digest.digest();
         String sha256 = CryptoUtil.getBase64String(hash);
 
-        logger.info("Finished digesting the application file: {}. Hash: {}", apkUrl, sha256);
+        logger.debug("Finished digesting the application file: {}. Hash: {}", apkUrl, sha256);
         return sha256;
     }
 
