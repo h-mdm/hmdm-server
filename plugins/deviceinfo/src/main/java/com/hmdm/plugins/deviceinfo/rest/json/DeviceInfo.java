@@ -138,6 +138,9 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty("A device serial number")
     private String serial;
 
+    @ApiModelProperty("A device MAC address")
+    private String mac;
+
     @ApiModelProperty("CPU architecture")
     private String cpu;
 
@@ -386,6 +389,14 @@ public class DeviceInfo implements Serializable {
 
     public void setSerial(String serial) {
         this.serial = serial;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
     public String getCpu() {

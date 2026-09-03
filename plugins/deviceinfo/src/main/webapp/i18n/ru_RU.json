@@ -73,6 +73,7 @@
   "plugin.deviceinfo.title.iccid2": "ICCID 2-й SIM",
   "plugin.deviceinfo.title.imsi2": "IMSI 2-й SIM",
   "plugin.deviceinfo.title.serial": "Серийный номер",
+  "plugin.deviceinfo.title.mac": "MAC адрес",
   "plugin.deviceinfo.title.cpu": "Архитектура CPU",
   "plugin.deviceinfo.title.battery.level": "Заряд батареи",
   "plugin.deviceinfo.title.permission.1": "Разрешение на установку как администратор устройства",

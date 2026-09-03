@@ -73,6 +73,7 @@
   "plugin.deviceinfo.title.iccid2": "2. SIM ICCID",
   "plugin.deviceinfo.title.imsi2": "2. SIM IMSI",
   "plugin.deviceinfo.title.serial": "Sorozatszám",
+  "plugin.deviceinfo.title.mac": "MAC-cím",
   "plugin.deviceinfo.title.cpu": "CPU architektúra",
   "plugin.deviceinfo.title.battery.level": "Akkumulátor töltés",
   "plugin.deviceinfo.title.permission.1": "Telepítési engedély eszközrendszergazdaként",
