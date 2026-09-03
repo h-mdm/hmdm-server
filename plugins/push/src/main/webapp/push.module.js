@@ -363,7 +363,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             $scope.groups = response.data;
         });
 
-        configurationService.getAllConfigurations(function (response) {
+        configurationService.getAllConfigNames(function (response) {
             $scope.configurations = response.data;
         });
 
@@ -467,7 +467,7 @@ angular.module('plugin-push', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTag
             $scope.groups = response.data;
         });
 
-        configurationService.getAllConfigurations(function (response) {
+        configurationService.getAllConfigNames(function (response) {
             $scope.configurations = response.data;
         });
 

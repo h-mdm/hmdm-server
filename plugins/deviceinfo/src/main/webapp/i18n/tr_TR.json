@@ -73,6 +73,7 @@
 	"plugin.deviceinfo.title.iccid2": "2. SIM ICCID",
 	"plugin.deviceinfo.title.imsi2": "2. SIM IMSI",
 	"plugin.deviceinfo.title.serial": "Seri numarası",
+	"plugin.deviceinfo.title.mac": "MAC adresi",
 	"plugin.deviceinfo.title.cpu": "CPU mimarisi",
 	"plugin.deviceinfo.title.battery.level": "Pil şarjı",
 	"plugin.deviceinfo.title.permission.1": "Aygıt yöneticisi olarak yükleme izni",

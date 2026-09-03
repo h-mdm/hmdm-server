@@ -29,6 +29,8 @@
   "plugin.audit.action.password.reset": "Se restablece la contraseña del dispositivo",
   "plugin.audit.action.device.reset": "Restablecimiento de fábrica",
   "plugin.audit.action.device.lock": "Dispositivo bloqueado",
+  "plugin.audit.action.update.check": "Buscar actualizaciones",
+  "plugin.audit.action.update.update": "Aplicar actualizaciones",
   "plugin.audit.error": " - Error",
   "plugin.audit.tab.title": "Auditar",
   "plugin.audit.all.items": "Todas las acciones",

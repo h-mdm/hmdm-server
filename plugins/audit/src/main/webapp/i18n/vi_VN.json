@@ -29,6 +29,8 @@
   "plugin.audit.action.password.reset": "Mật khẩu thiết bị đã được đặt lại",
   "plugin.audit.action.device.reset": "Thiết bị đã được đặt lại về nhà máy",
   "plugin.audit.action.device.lock": "Thiết bị đã được khóa",
+  "plugin.audit.action.update.check": "Kiểm tra cập nhật",
+  "plugin.audit.action.update.update": "Áp dụng cập nhật",
   "plugin.audit.error": " - Lỗi",
   "plugin.audit.tab.title": "Kiểm toán",
   "plugin.audit.all.items": "Tất cả hành động",

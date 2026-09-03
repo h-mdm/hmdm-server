@@ -55,7 +55,9 @@ public interface ConfigurationFileMapper {
             "WHERE configurationId = #{configurationId} ORDER BY id")
     List<ConfigurationFile> getConfigurationFiles(@Param("configurationId") int configurationId);
 
-    @Select("SELECT * FROM configurationFiles WHERE configurationId = #{configurationId} AND devicepath = #{path} LIMIT 1")
+    @Select("SELECT * FROM configurationFiles cf " +
+            " LEFT JOIN uploadedFiles uf ON cf.fileId=uf.id " +
+            " WHERE cf.configurationId = #{configurationId} AND (cf.devicepath=#{path} OR uf.devicePath=#{path}) LIMIT 1")
     @Deprecated
     ConfigurationFile getConfigurationFileByPath(@Param("configurationId") int configurationId, @Param("path") String path);
 

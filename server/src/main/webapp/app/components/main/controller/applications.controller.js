@@ -295,6 +295,11 @@ angular.module('headwind-kiosk')
             if (files.length > 0) {
                 $scope.fileName = files[0].name;
                 if ($scope.fileName.endsWith(".apk") || $scope.fileName.endsWith(".xapk")) {
+                    if ($scope.fileName.startsWith("app-debug") || $scope.fileName.startsWith("app-release")) {
+                        $scope.appNameWarning = localization.localize('form.application.generic.name');
+                    } else {
+                        $scope.appNameWarning = null;
+                    }
                     $scope.loading = true;
                     $scope.successMessage = localization.localize('success.uploading.file');
                 } else {

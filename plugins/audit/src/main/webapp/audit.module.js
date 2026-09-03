@@ -82,7 +82,8 @@ angular.module('plugin-audit', ['ngResource', 'ui.bootstrap', 'ui.router', 'ngTa
             "plugin.audit.action.password.changed",
             "plugin.audit.action.password.reset",
             "plugin.audit.action.device.reset",
-            "plugin.audit.action.device.lock"
+            "plugin.audit.action.device.lock",
+            "plugin.audit.action.update.update"
         ];
         $scope.filters = [{item: '', localized: localization.localize('plugin.audit.all.items')}];
         filters.forEach(function(item, index) {

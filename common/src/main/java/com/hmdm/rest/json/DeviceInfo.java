@@ -108,7 +108,7 @@ public class DeviceInfo implements Serializable {
     @ApiModelProperty("A device serial number")
     private String serial;
 
-    @ApiModelProperty("A device Mac number")
+    @ApiModelProperty("A device MAC address")
     private String mac;
 
     @ApiModelProperty("CPU architecture")

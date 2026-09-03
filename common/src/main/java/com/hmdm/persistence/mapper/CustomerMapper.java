@@ -57,6 +57,9 @@ public interface CustomerMapper {
     @Select({SELECT_BASE + " WHERE master = FALSE ORDER BY name"})
     List<Customer> findAllExceptMaster();
 
+    @Select({"SELECT id FROM customers WHERE master = TRUE LIMIT 1"})
+    Integer getMasterId();
+
     @Insert({"INSERT INTO customers (name, email, description, filesDir, master, prefix, registrationTime, " +
              "accountType, expiryTime, deviceLimit, customerStatus, firstName, lastName, language, " +
              "inactiveState, pauseState, abandonState, sizeLimit, signupStatus, signupToken) " +
@@ -80,7 +83,11 @@ public interface CustomerMapper {
 
     @Select({SELECT_BASE +
             "WHERE master = FALSE " +
-            "AND (LOWER(name) LIKE #{filter} OR LOWER(description) LIKE #{filter}) " +
+            "AND (LOWER(name) LIKE #{filter} " +
+            "OR LOWER(description) LIKE #{filter} " +
+            "OR LOWER(firstname) LIKE #{filter} " +
+            "OR LOWER(lastname) LIKE #{filter} " +
+            "OR LOWER(email) LIKE #{filter}) " +
             "ORDER BY name"})
     List<Customer> findAllByValue(@Param("filter") String value);
 
