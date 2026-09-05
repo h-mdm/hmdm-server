@@ -2,7 +2,6 @@ package com.hmdm.rest.json;
 
 public class BatchDeviceUploadRow {
     private int rowNumber;
-    private String busNo;
     private String deviceName;
     private String configurationValue;
     private String groupValue;
@@ -17,14 +16,6 @@ public class BatchDeviceUploadRow {
 
     public void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
-    }
-
-    public String getBusNo() {
-        return busNo;
-    }
-
-    public void setBusNo(String busNo) {
-        this.busNo = busNo;
     }
 
     public String getDeviceName() {

@@ -194,6 +194,9 @@
             <button type='button' ng-if="hasPermission('edit_devices')"
                     ng-disabled='commonSettings.deviceLimit > 0 && commonSettings.deviceCount >= commonSettings.deviceLimit'
                     class='btn btn-default' ng-click='editDevice( {} )' localized>button.add</button>
+            <button type="button" ng-if="hasPermission('edit_devices')" 
+                    ng-disabled="commonSettings.deviceLimit > 0 && commonSettings.deviceCount >= commonSettings.deviceLimit"
+                    class="btn btn-default" ng-click='addDevicesBatch( {} )' localized>button.add.batch</button>        
         </div>
     </div>
 
@@ -467,6 +470,9 @@
                     <ul class="dropdown-menu dropdown-menu-devices" uib-dropdown-menu role="menu" aria-labelledby="single-button-{{device.id}}">
                         <li role="menuitem" ng-if="hasPermission('edit_device_app_settings')">
                             <a ng-click="manageApplicationSettings(device)" localized>button.app.settings</a>
+                        </li>
+                        <li role="menuitem" ng-if="hasPermission('edit_device_app_settings')">
+                            <a ng-click="restartDevice(device)" localized>button.device.restart</a>
                         </li>
                         <li role="menuitem" ng-repeat="plugin in plugins" ng-if="plugins && plugins.length > 0">
                             <a ng-click="notifyPluginOnDevice(plugin, device)">{{plugin.nameLocalizationKey | localize}}</a>

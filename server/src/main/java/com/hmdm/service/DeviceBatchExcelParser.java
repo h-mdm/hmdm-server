@@ -33,11 +33,10 @@ public class DeviceBatchExcelParser {
 
                 BatchDeviceUploadRow dto = new BatchDeviceUploadRow();
                 dto.setRowNumber(i + 1); // Excel row number
-                dto.setBusNo(getCellString(row, 0));
-                dto.setDeviceName(getCellString(row, 1));
-                dto.setConfigurationValue(getCellString(row, 2));
-                dto.setGroupValue(getCellString(row, 3));
-                dto.setDescription(getCellString(row, 4));
+                dto.setDeviceName(getCellString(row, 0));
+                dto.setConfigurationValue(getCellString(row, 1));
+                dto.setGroupValue(getCellString(row, 2));
+                dto.setDescription(getCellString(row, 3));
 
                 rows.add(dto);
             }

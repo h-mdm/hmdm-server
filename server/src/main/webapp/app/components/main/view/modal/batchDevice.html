@@ -1,0 +1,152 @@
+<div class="modal-body custom-batch-modal">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <i class="glyphicon glyphicon-import"></i> Batch Device Import
+    </h3>
+  </div>
+
+  <div class="panel-body">
+    <div ng-controller="BatchDeviceController">
+      <!-- Download Template (Centered & Upgraded Layout Block) -->
+      <div class="form-group template-center-container">
+        <button
+          type="button"
+          class="btn btn-outline-template"
+          ng-click="downloadTemplate()"
+        >
+          <i class="glyphicon glyphicon-download-alt"></i> Download File
+          Template
+        </button>
+      </div>
+
+      <!-- Upload Row (Re-structured using modern grid alignment alignment) -->
+      <div class="form-group upload-row row">
+        <div class="col-sm-2 label-col">
+          <label class="control-label">Excel File</label>
+        </div>
+        <div class="col-sm-6 input-col">
+          <input
+            type="file"
+            class="form-control"
+            accept=".xlsx,.xls"
+            file-model="importFile"
+          />
+        </div>
+        <div class="col-sm-4 button-col">
+          <button
+            class="btn btn-primary btn-block-xs"
+            ng-click="preview()"
+            ng-disabled="!importFile || loading"
+          >
+            <i class="glyphicon glyphicon-eye-open"></i> Preview
+          </button>
+        </div>
+      </div>
+
+      <!-- Validation errors -->
+      <div class="alert alert-danger" ng-if="validationErrors.length">
+        <strong>Validation Errors:</strong>
+        <ul>
+          <li ng-repeat="e in validationErrors">{{e}}</li>
+        </ul>
+      </div>
+
+      <!-- Preview -->
+      <div ng-if="devicesPreview.length" class="preview-section">
+        <h4 class="text-primary preview-title">
+          <i class="glyphicon glyphicon-list-alt"></i> Preview
+          ({{devicesPreview.length}} device(s))
+        </h4>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered custom-preview-table">
+            <thead class="thead-dark">
+              <tr>
+                <th class="text-center">Row Number</th>
+                <th class="text-left">Device Name</th>
+                <th class="text-left">Configuration</th>
+                <th class="text-left">Group</th>
+                <th class="text-center">Status</th>
+                <th class="text-left">Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                ng-repeat="d in devicesPreview"
+                ng-class="{'danger': d.valid === false || d.importSuccess === false, 'success': d.importSuccess === true}"
+              >
+                <td class="text-center">{{d.rowNumber}}</td>
+                <td class="text-left font-weight-medium">{{d.deviceName}}</td>
+                <td class="text-left">{{d.configurationValue}}</td>
+                <td class="text-left">{{d.groupValue}}</td>
+                <td class="text-center status-cell">
+                  <span ng-if="d.valid === false" class="text-danger"
+                    ><i class="glyphicon glyphicon-remove"></i
+                  ></span>
+                  <span ng-if="d.valid === true" class="text-success"
+                    ><i class="glyphicon glyphicon-ok"></i
+                  ></span>
+                  <span
+                    ng-if="importCompleted && d.importSuccess === false"
+                    class="text-danger"
+                    ><i class="glyphicon glyphicon-remove"></i
+                  ></span>
+                  <span
+                    ng-if="importCompleted && d.importSuccess === true"
+                    class="text-success"
+                    ><i class="glyphicon glyphicon-ok"></i
+                  ></span>
+                </td>
+                <td class="text-left remarks-cell">
+                  <!-- Fixed structural list tags here -->
+                  <ul class="remarks-list" ng-if="d.errors && d.errors.length">
+                    <li class="text-danger" ng-repeat="error in d.errors">
+                      {{error}}
+                    </li>
+                  </ul>
+                  <span
+                    ng-if="importCompleted && d.importSuccess === false"
+                    class="text-danger"
+                    >{{d.importMessage}}</span
+                  >
+                  <span
+                    ng-if="importCompleted && d.importSuccess === true"
+                    class="text-success"
+                    >{{d.importMessage || 'Imported successfully'}}</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Inline Results Block -->
+        <div ng-if="importCompleted" class="result-message-container">
+          <p class="text-muted result-text">
+            <i class="glyphicon glyphicon-info-sign"></i> Result:
+            {{importSuccessCount}} device(s) imported successfully,
+            {{importFailedCount}} device(s) failed to import.
+          </p>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="form-group action-buttons text-right">
+          <button
+            class="btn btn-success"
+            ng-click="import()"
+            ng-disabled="devicesPreview.length==0 || loading"
+          >
+            <i class="glyphicon glyphicon-upload"></i> Import
+          </button>
+          <button
+            class="btn btn-default"
+            ng-click="closeModal()"
+            ng-disabled="loading"
+          >
+            <i class="glyphicon glyphicon-remove"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
-if (! document.localization) document.localization = [];
+if (!document.localization) document.localization = [];
 
-document.localization ['en_US'] = {
+document.localization['en_US'] = {
     'login.username': 'Username or email',
     'login.username.placeholder': 'Enter your username or email',
     'login.password': 'Password:',
@@ -90,6 +90,7 @@ document.localization ['en_US'] = {
     'button.wifi.on': 'Enable Wi-Fi',
     'button.notify.update': 'Notify on update',
     'button.app.settings': 'Application settings',
+    "button.device.restart": "Restart Device",
     'button.ok': 'OK',
     'button.help': 'Help',
     'button.new.app': 'New application',
@@ -105,6 +106,7 @@ document.localization ['en_US'] = {
     'button.more': 'More ...',
     'button.cleanup': 'Clear',
     'button.add': 'Add',
+    'button.add.batch': 'Add Batch',
     'button.add.icon': 'New Icon',
     'button.search': 'Search',
     'button.export': 'Export',
@@ -410,26 +412,26 @@ document.localization ['en_US'] = {
     'form.configuration.settings.apps.permissions.ask.location': 'Auto-grant all, ask user for the location permission',
     'form.configuration.settings.apps.permissions.deny.location': 'Auto-grant all, do not grant the location permission',
     'form.configuration.settings.apps.permissions.ask.all': 'Ask user for all permissions',
-    'form.configuration.settings.push.options' : 'Push notifications',
-    'form.configuration.settings.push.options.mqtt.worker' : 'MQTT protocol (save battery)',
-    'form.configuration.settings.push.options.mqtt.alarm' : 'MQTT protocol',
-    'form.configuration.settings.push.options.polling' : 'HTTP polling',
-    'form.configuration.settings.push.options.mqtt.worker.hint' : 'Delivers Push messages instantly when the device is active. But messages may delay by up to few hours in sleeping mode. Do not use this option on standalone devices. MQTT uses TCP port 31000, enable it on your firewall.',
-    'form.configuration.settings.push.options.mqtt.alarm.hint' : 'MQTT is a lightweight protocol consuming minimal resources. MQTT uses TCP port 31000, enable it on your firewall.',
-    'form.configuration.settings.push.options.polling.hint' : 'Long polling persists an HTTP connection which can consume more server resources. Doesn\'t require any TCP ports other than HTTP(S).',
-    'form.configuration.settings.push.options.keepalive' : 'Keep-Alive time',
-    'form.configuration.settings.minute.1' : '1 minute',
-    'form.configuration.settings.minutes.2' : '2 minutes',
-    'form.configuration.settings.minutes.3' : '3 minutes',
-    'form.configuration.settings.minutes.5' : '5 minutes',
-    'form.configuration.settings.minutes.10' : '10 minutes',
-    'form.configuration.settings.minutes.15' : '15 minutes',
-    'form.configuration.settings.password.mode' : 'Password requirements',
-    'form.configuration.settings.password.mode.any' : 'None',
-    'form.configuration.settings.password.mode.present' : 'Password presents',
-    'form.configuration.settings.password.mode.easy' : 'Easy (at least 6 symbols)',
-    'form.configuration.settings.password.mode.moderate' : 'Moderate (8+ symbols, letters and digits)',
-    'form.configuration.settings.password.mode.strong' : 'Strong (8+, upper & lowercase, digits, signs)',
+    'form.configuration.settings.push.options': 'Push notifications',
+    'form.configuration.settings.push.options.mqtt.worker': 'MQTT protocol (save battery)',
+    'form.configuration.settings.push.options.mqtt.alarm': 'MQTT protocol',
+    'form.configuration.settings.push.options.polling': 'HTTP polling',
+    'form.configuration.settings.push.options.mqtt.worker.hint': 'Delivers Push messages instantly when the device is active. But messages may delay by up to few hours in sleeping mode. Do not use this option on standalone devices. MQTT uses TCP port 31000, enable it on your firewall.',
+    'form.configuration.settings.push.options.mqtt.alarm.hint': 'MQTT is a lightweight protocol consuming minimal resources. MQTT uses TCP port 31000, enable it on your firewall.',
+    'form.configuration.settings.push.options.polling.hint': 'Long polling persists an HTTP connection which can consume more server resources. Doesn\'t require any TCP ports other than HTTP(S).',
+    'form.configuration.settings.push.options.keepalive': 'Keep-Alive time',
+    'form.configuration.settings.minute.1': '1 minute',
+    'form.configuration.settings.minutes.2': '2 minutes',
+    'form.configuration.settings.minutes.3': '3 minutes',
+    'form.configuration.settings.minutes.5': '5 minutes',
+    'form.configuration.settings.minutes.10': '10 minutes',
+    'form.configuration.settings.minutes.15': '15 minutes',
+    'form.configuration.settings.password.mode': 'Password requirements',
+    'form.configuration.settings.password.mode.any': 'None',
+    'form.configuration.settings.password.mode.present': 'Password presents',
+    'form.configuration.settings.password.mode.easy': 'Easy (at least 6 symbols)',
+    'form.configuration.settings.password.mode.moderate': 'Moderate (8+ symbols, letters and digits)',
+    'form.configuration.settings.password.mode.strong': 'Strong (8+, upper & lowercase, digits, signs)',
     'form.configuration.settings.show.wifi': 'WiFi settings on connection error',
     'form.configuration.settings.use.default.launcher': 'Background mode',
     'form.configuration.settings.use.default.launcher.hint': 'Do not replace a system launcher, only run background MDM services. Not recommended with the kiosk mode.',
@@ -535,7 +537,7 @@ document.localization ['en_US'] = {
     'form.application.setting.comment': 'Comment',
     'form.application.setting.type': 'Type',
     'form.application.setting.readonly': 'Does not change on the device',
-    
+
     'form.application.configurations.app': 'Application',
     'form.application.configurations.configs': 'Configurations',
 
@@ -782,7 +784,7 @@ document.localization ['en_US'] = {
     'tab.license': 'License',
     'tab.hints': 'Hints',
     'tab.plugins': 'Plugins',
-    
+
     'tab.configeditor.common.settings': 'Common settings',
     'tab.configeditor.design.settings': 'Design Settings',
     'tab.configeditor.applications': 'Applications',
@@ -844,7 +846,7 @@ document.localization ['en_US'] = {
     'table.heading.file.description': 'File description',
     'table.heading.file.action': 'Action',
     'table.heading.file.lastUpdate': 'Creation date',
-    
+
     'table.heading.application.pkg': 'Package ID',
     'table.heading.application.name': 'Application Name',
     'table.heading.application.version': 'Version',
@@ -910,17 +912,17 @@ document.localization ['en_US'] = {
     'table.heading.common.apps.actions': 'Actions',
 
     'notfound.devices': 'There are no devices to display.',
-    'notfound.files':' The file list is empty.',
+    'notfound.files': ' The file list is empty.',
     'notfound.configurations': 'No configurations were found.',
     'notfound.customers': 'Organizations not found.',
     'notfound.common.apps': 'There are no applications to display.',
     'notfound.applications': 'Applications not found',
-    'notfound.groups':' No groups found. Try a different query.',
-    'notfound.users':' Users not found. Try a different query.',
+    'notfound.groups': ' No groups found. Try a different query.',
+    'notfound.users': ' Users not found. Try a different query.',
     'notfound.apps.for.display': 'There are no applications to display.',
     'notfound.app.versions.for.display': 'There are no versions to display.',
-    'notfound.roles':'The role list is empty.',
-    'notfound.icons':'The icon list is empty.',
+    'notfound.roles': 'The role list is empty.',
+    'notfound.icons': 'The icon list is empty.',
 
     'format.date.header': 'HH:mm dd/MM/yyyy',
 
@@ -952,8 +954,8 @@ document.localization ['en_US'] = {
     'breadcrumb.application.versions': 'Versions',
 
     'app.name': 'PITB MDM',
-    'app.vendor.name':"h-mdm.com",
-    'app.vendor.link':"https://h-mdm.com",
+    'app.vendor.name': "h-mdm.com",
+    'app.vendor.link': "https://h-mdm.com",
     'app.description': 'is an open source mobile device management system, extended by PITB for internal use',
     'app.title': '${appName} Web Panel',
 

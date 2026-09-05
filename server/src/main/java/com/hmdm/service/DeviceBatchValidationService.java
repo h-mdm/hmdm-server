@@ -59,7 +59,6 @@ public class DeviceBatchValidationService {
         for (BatchDeviceUploadRow row : uploadedRows) {
             BatchDevicePreviewRow preview = new BatchDevicePreviewRow();
             preview.setRowNumber(row.getRowNumber());
-            preview.setBusNo(row.getBusNo());
             preview.setDeviceName(row.getDeviceName());
             preview.setConfigurationValue(row.getConfigurationValue());
             preview.setGroupValue(row.getGroupValue());

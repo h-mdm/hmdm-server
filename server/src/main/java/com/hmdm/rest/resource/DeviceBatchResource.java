@@ -13,7 +13,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -43,10 +42,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
+import com.hmdm.service.BatchImportResult;
 import com.hmdm.service.DeviceBatchExcelParser;
 import com.hmdm.service.DeviceBatchValidationService;
+import com.hmdm.service.DeviceBatchImportService;
 import com.hmdm.rest.json.BatchDevicePreviewResponse;
-import com.hmdm.rest.json.BatchDeviceUploadRow;
+import com.hmdm.rest.json.BatchDevicePreviewRow;
 import java.util.List;
 
 @Api(tags = { "Batch Device Upload" }, authorizations = { @Authorization("Bearer Token") })
@@ -58,6 +59,7 @@ public class DeviceBatchResource {
     private ConfigurationDAO configurationDAO;
     private DeviceBatchExcelParser excelParser;
     private DeviceBatchValidationService validationService;
+    private DeviceBatchImportService importService;
 
     /**
      * Constructor required by Swagger/Jersey
@@ -69,11 +71,13 @@ public class DeviceBatchResource {
     public DeviceBatchResource(GroupDAO groupDAO,
             ConfigurationDAO configurationDAO,
             DeviceBatchExcelParser excelParser,
-            DeviceBatchValidationService validationService) {
+            DeviceBatchValidationService validationService,
+            DeviceBatchImportService importService) {
         this.groupDAO = groupDAO;
         this.configurationDAO = configurationDAO;
         this.excelParser = excelParser;
         this.validationService = validationService;
+        this.importService = importService;
     }
 
     @ApiOperation(value = "Preview batch device upload Excel", notes = "Parses uploaded Excel and validates each device row before import")
@@ -96,6 +100,17 @@ public class DeviceBatchResource {
         } catch (Exception e) {
             return Response.ERROR("Failed to parse uploaded Excel file");
         }
+    }
+
+    @POST
+    @Path("/import")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response importDevices(List<BatchDevicePreviewRow> rows) {
+
+        BatchImportResult result = importService.importDevices(rows);
+
+        return Response.OK(result);
     }
 
     @ApiOperation(value = "Download batch device upload Excel template", notes = "Downloads an Excel template containing Device Upload sheet and reference sheets for groups and configurations")
@@ -192,13 +207,13 @@ public class DeviceBatchResource {
         int firstRow = 1;
         int lastRow = 1000;
 
-        // Column C = Configuration (index 2)
+        // Column C = Configuration (index 1)
         addNamedRangeDropdown(validationHelper, uploadSheet,
-                "CONFIGURATION_OPTIONS", firstRow, lastRow, 2, 2);
+                "CONFIGURATION_OPTIONS", firstRow, lastRow, 1, 1);
 
-        // Column D = Group (index 3)
+        // Column D = Group (index 2)
         addNamedRangeDropdown(validationHelper, uploadSheet,
-                "GROUP_OPTIONS", firstRow, lastRow, 3, 3);
+                "GROUP_OPTIONS", firstRow, lastRow, 2, 2);
     }
 
     private void addNamedRangeDropdown(DataValidationHelper validationHelper,
@@ -233,11 +248,10 @@ public class DeviceBatchResource {
         CellStyle headerStyle = createHeaderStyle(workbook);
 
         Row header = sheet.createRow(0);
-        createCell(header, 0, "Bus No", headerStyle);
-        createCell(header, 1, "Device Name", headerStyle);
-        createCell(header, 2, "Configuration", headerStyle);
-        createCell(header, 3, "Group", headerStyle);
-        createCell(header, 4, "Description", headerStyle);
+        createCell(header, 0, "Device Name", headerStyle);
+        createCell(header, 1, "Configuration", headerStyle);
+        createCell(header, 2, "Group", headerStyle);
+        createCell(header, 3, "Description", headerStyle);
 
         for (int i = 1; i <= 20; i++) {
             sheet.createRow(i);

@@ -48,6 +48,7 @@ import com.hmdm.persistence.ApplicationReferenceExistsException;
 import com.hmdm.persistence.ApplicationVersionPackageMismatchException;
 import com.hmdm.persistence.CommonAppAccessException;
 import com.hmdm.persistence.ConfigurationDAO;
+import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.DuplicateApplicationException;
 import com.hmdm.persistence.RecentApplicationVersionExistsException;
 import com.hmdm.persistence.domain.Application;
