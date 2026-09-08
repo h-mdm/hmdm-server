@@ -1,0 +1,2 @@
+- press CTRL + SHIFT + B to start build in VS code
+- press CTRL + SHIFT + D and attach tomcat 9 to start debugging

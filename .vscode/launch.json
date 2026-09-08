@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Attach to Tomcat 9",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 8000
+        }
+    ],
+    "tomcatManager.servers": [
+        {
+            "id": "tomcat9",
+            "name": "Tomcat 9",
+            "tomcatHome": "/usr/share/tomcat9",
+            "jdkHome": "/usr/lib/jvm/java-11-openjdk-amd64"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Maven: Build & Deploy to Tomcat",
+            "type": "shell",
+            "command": "mvn clean package && sudo cp server/target/*.war /var/lib/tomcat9/webapps/",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$javac"
+            ]
+        }
+    ]
+}
