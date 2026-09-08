@@ -30,3 +30,5 @@ server/build.properties
 # Backup copies
 server/pom.xml.bak
 plugins/pom.xml.bak
+
+server/webtarget.zip

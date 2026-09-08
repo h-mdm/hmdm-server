@@ -23,15 +23,11 @@ package com.hmdm.rest.filter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.security.SecurityContext;
 
 import javax.inject.Named;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Singleton

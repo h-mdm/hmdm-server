@@ -21,28 +21,28 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import javax.inject.Named;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+
+import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.hmdm.notification.rest.NotificationResource;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.rest.filter.PublicIPFilter;
-import com.hmdm.rest.json.Response;
-import com.hmdm.util.CryptoUtil;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.rest.filter.PublicIPFilter;
+import com.hmdm.util.CryptoUtil;
 
 @Singleton
 public class DownloadFilesServlet extends HttpServlet {
@@ -61,10 +61,10 @@ public class DownloadFilesServlet extends HttpServlet {
 
     @Inject
     public DownloadFilesServlet(ApplicationDAO applicationDAO,
-                                PublicIPFilter publicIPFilter,
-                                @Named("files.directory") String filesDirectory,
-                                @Named("secure.enrollment") boolean secureEnrollment,
-                                @Named("hash.secret") String hashSecret) {
+            PublicIPFilter publicIPFilter,
+            @Named("files.directory") String filesDirectory,
+            @Named("secure.enrollment") boolean secureEnrollment,
+            @Named("hash.secret") String hashSecret) {
         this.applicationDAO = applicationDAO;
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
@@ -98,7 +98,8 @@ public class DownloadFilesServlet extends HttpServlet {
             try {
                 String goodSignature = CryptoUtil.getSHA1String(hashSecret + path);
                 if (!signature.equalsIgnoreCase(goodSignature)) {
-                    log.warn("Wrong signature for file request " + path + ": " + signature + " Should be: " + goodSignature);
+                    log.warn("Wrong signature for file request " + path + ": " + signature + " Should be: "
+                            + goodSignature);
                     resp.sendError(403);
                     return;
                 }
@@ -122,13 +123,14 @@ public class DownloadFilesServlet extends HttpServlet {
                 return;
             }
 
-            // Cross XSS vulnerability fix: prevent opening a potentially malicious file having the Headwind MDM domain
+            // Cross XSS vulnerability fix: prevent opening a potentially malicious file
+            // having the Headwind MDM domain
             resp.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
             try (InputStream input = new FileInputStream(file);
-                 ServletOutputStream outputStream = resp.getOutputStream()) {
+                    ServletOutputStream outputStream = resp.getOutputStream()) {
                 long length = file.length();
                 if (length <= 2147483647L) {
-                    resp.setContentLength((int)length);
+                    resp.setContentLength((int) length);
                 } else {
                     resp.addHeader("Content-Length", Long.toString(length));
                 }
@@ -167,7 +169,7 @@ public class DownloadFilesServlet extends HttpServlet {
             resp.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + length);
             long contentLength = end - start;
             if (length <= 2147483647L) {
-                resp.setContentLength((int)contentLength);
+                resp.setContentLength((int) contentLength);
             } else {
                 resp.addHeader("Content-Length", Long.toString(contentLength));
             }

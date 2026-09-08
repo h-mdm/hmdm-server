@@ -21,23 +21,25 @@
 
 package com.hmdm.rest.resource;
 
-import com.hmdm.persistence.IconDAO;
-import com.hmdm.persistence.UsageStatsDAO;
-import com.hmdm.persistence.domain.Icon;
-import com.hmdm.persistence.domain.UsageStats;
-import com.hmdm.rest.json.Response;
-import io.swagger.annotations.Api;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import com.hmdm.persistence.UsageStatsDAO;
+import com.hmdm.persistence.domain.UsageStats;
+import com.hmdm.rest.json.Response;
 
 /**
- * <p>A resource providing interface to usage statistics collection functionality.</p>
+ * <p>
+ * A resource providing interface to usage statistics collection functionality.
+ * </p>
  *
  * @author isv
  */
@@ -53,7 +55,10 @@ public class StatsResource {
     }
 
     /**
-     * <p>Constructs new <code>StatsResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>StatsResource</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     @Inject
     public StatsResource(UsageStatsDAO usageStatsDAO) {

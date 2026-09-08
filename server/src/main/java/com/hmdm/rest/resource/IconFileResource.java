@@ -21,21 +21,10 @@
 
 package com.hmdm.rest.resource;
 
-import com.hmdm.persistence.CustomerDAO;
-import com.hmdm.persistence.UploadedFileDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.UploadedFile;
-import com.hmdm.rest.json.FileUploadResult;
-import com.hmdm.rest.json.Response;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.imgscalr.Scalr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.InputStream;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -46,13 +35,29 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
-import java.util.UUID;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.UploadedFileDAO;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.UploadedFile;
+import com.hmdm.rest.json.FileUploadResult;
+import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.security.SecurityException;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
- * <p>$</p>
+ * <p>
+ * $
+ * </p>
  *
  * @author isv
  */
@@ -68,35 +73,34 @@ public class IconFileResource {
     private CustomerDAO customerDAO;
     private String filesDirectory;
 
-
     /**
-     * <p>Constructs new <code>IconFileResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>IconFileResource</code> instance. This implementation
+     * does nothing.
+     * </p>
      */
     @Inject
     public IconFileResource(UploadedFileDAO uploadedFileDAO,
-                            CustomerDAO customerDAO,
-                            @Named("files.directory") String filesDirectory) {
+            CustomerDAO customerDAO,
+            @Named("files.directory") String filesDirectory) {
         this.uploadedFileDAO = uploadedFileDAO;
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload icon",
-            notes = "Uploads the icon to server. Returns a path to uploaded icon file",
-            response = FileUploadResult.class
-    )
+    @ApiOperation(value = "Upload icon", notes = "Uploads the icon to server. Returns a path to uploaded icon file", response = FileUploadResult.class)
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadIconFile(@FormDataParam("file") InputStream uploadedInputStream,
-                                   @ApiParam("An icon file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+            @ApiParam("An icon file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail)
+            throws Exception {
         try {
             BufferedImage img = ImageIO.read(uploadedInputStream);
             if (img.getWidth() != img.getHeight()) {
-                logger.error("Rejecting the icon file {} upload due to unequal icon width and height", fileDetail.getFileName());
+                logger.error("Rejecting the icon file {} upload due to unequal icon width and height",
+                        fileDetail.getFileName());
                 return Response.ERROR("error.icon.dimension.invalid");
             }
 
