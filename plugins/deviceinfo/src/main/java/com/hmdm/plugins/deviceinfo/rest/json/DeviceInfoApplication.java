@@ -21,7 +21,6 @@
 
 package com.hmdm.plugins.deviceinfo.rest.json;
 
-import com.hmdm.persistence.domain.Application;
 import com.hmdm.util.ApplicationUtil;
 import io.swagger.annotations.ApiModelProperty;
 

@@ -40,11 +40,11 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
     })
     .factory('pluginDeviceLogService', function ($resource) {
         return $resource('', {}, {
-            getSettings: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private', method: 'GET'},
-            saveSettings: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private', method: 'PUT'},
-            saveSettingsRule: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/rule', method: 'PUT'},
-            deleteSettingsRule: {url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/rule/:id', method: 'DELETE'},
-            getLogs: {url: 'rest/plugins/devicelog/log/private/search', method: 'POST'},
+            getSettings: { url: 'rest/plugins/devicelog/devicelog-plugin-settings/private', method: 'GET' },
+            saveSettings: { url: 'rest/plugins/devicelog/devicelog-plugin-settings/private', method: 'PUT' },
+            saveSettingsRule: { url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/rule', method: 'PUT' },
+            deleteSettingsRule: { url: 'rest/plugins/devicelog/devicelog-plugin-settings/private/rule/:id', method: 'DELETE' },
+            getLogs: { url: 'rest/plugins/devicelog/log/private/search', method: 'POST' },
             exportLogs: {
                 url: 'rest/plugins/devicelog/log/private/search/export',
                 method: 'POST',
@@ -58,15 +58,15 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
                     };
                 }
             },
-            lookupDevices: {url: 'rest/private/devices/autocomplete', method: 'POST'},
-            lookupApplications: {url: 'rest/private/applications/autocomplete', method: 'POST'},
-            lookupGroups: {url: 'rest/private/groups/autocomplete', method: 'POST'},
-            lookupConfigurations: {url: 'rest/private/configurations/autocomplete', method: 'POST'},
+            lookupDevices: { url: 'rest/private/devices/autocomplete', method: 'POST' },
+            lookupApplications: { url: 'rest/private/applications/autocomplete', method: 'POST' },
+            lookupGroups: { url: 'rest/private/groups/autocomplete', method: 'POST' },
+            lookupConfigurations: { url: 'rest/private/configurations/autocomplete', method: 'POST' },
         });
     })
-    .controller('PluginDeviceLogTabController', function ($scope, $rootScope, $window, $location, $interval, $http,
-                                                          pluginDeviceLogService, confirmModal,
-                                                          authService, localization) {
+    .controller('PluginDeviceLogTabController', function ($scope, $rootScope, $window, $location, $interval, $http, $modal, $timeout,
+        pluginDeviceLogService, confirmModal,
+        authService, localization) {
 
         $scope.hasPermission = authService.hasPermission;
 
@@ -86,7 +86,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             sortValue: 'createTime'
         };
 
-        $scope.$watch('paging.pageNum', function() {
+        $scope.$watch('paging.pageNum', function () {
             $window.scrollTo(0, 0);
         });
 
@@ -105,11 +105,11 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         $scope.errorMessage = undefined;
         $scope.successMessage = undefined;
 
-        var getDeviceInfo = function( device ) {
-            if ( device.info ) {
+        var getDeviceInfo = function (device) {
+            if (device.info) {
                 try {
-                    return JSON.parse( device.info );
-                } catch ( e ) {}
+                    return JSON.parse(device.info);
+                } catch (e) { }
             }
 
             return undefined;
@@ -127,8 +127,8 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             }
         };
 
-        $scope.getDevices = function(val) {
-            return pluginDeviceLogService.lookupDevices(val).$promise.then(function(response){
+        $scope.getDevices = function (val) {
+            return pluginDeviceLogService.lookupDevices(val).$promise.then(function (response) {
                 if (response.status === 'OK') {
                     return response.data.map(function (device) {
                         var deviceInfo = getDeviceInfo(device);
@@ -154,8 +154,8 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             return v;
         };
 
-        $scope.getApplications = function(val) {
-            return pluginDeviceLogService.lookupApplications(val).$promise.then(function(response){
+        $scope.getApplications = function (val) {
+            return pluginDeviceLogService.lookupApplications(val).$promise.then(function (response) {
                 if (response.status === 'OK') {
                     return response.data.map(function (app) {
                         return app.name;
@@ -166,11 +166,11 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             });
         };
 
-        $scope.openDateCalendar = function( $event, isStartDate ) {
+        $scope.openDateCalendar = function ($event, isStartDate) {
             $event.preventDefault();
             $event.stopPropagation();
 
-            if ( isStartDate ) {
+            if (isStartDate) {
                 $scope.openDatePickers.dateFrom = true;
             } else {
                 $scope.openDatePickers.dateTo = true;
@@ -232,7 +232,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         var loading = false;
         var loadData = function () {
             $scope.errorMessage = undefined;
-            
+
             if (loading) {
                 console.log("Skipping to query for list of log record since a previous request is pending");
                 return;
@@ -254,6 +254,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
                 if (response.status === 'OK') {
                     $scope.logs = response.data.items;
                     $scope.paging.totalItems = response.data.totalItemsCount;
+
                 } else {
                     $scope.errorMessage = localization.localizeServerResponse(response);
                 }
@@ -265,7 +266,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
 
         loadData();
 
-        var reloadData = function() {
+        var reloadData = function () {
             if ($scope.paging.pageNum == 1) {
                 loadData();
             }
@@ -276,9 +277,123 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             if (autoUpdateInterval) $interval.cancel(autoUpdateInterval);
         });
 
+        $scope.newMessage = function (message) {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/components/plugins/push/views/push.modal.html',
+                controller: 'NewPushMessageController',
+                resolve: {
+                    message: function () {
+                        return message;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                $scope.successMessage = localization.localize('plugin.push.send.success');
+                $timeout(function () { $scope.successMessage = undefined; }, 5000);
+                $scope.search();
+            });
+        };
+    })
+    .controller('NewPushMessageController', function ($scope, $rootScope, $modalInstance, configurationService, groupService,
+        confirmModal, localization, alertService, pluginPushService, getDevicesService) {
+
+        $scope.sending = false;
+
+        $scope.getDevices = getDevicesService.getDevices;
+        $scope.deviceLookupFormatter = getDevicesService.deviceLookupFormatter;
+
+        groupService.getAllGroups(function (response) {
+            $scope.groups = response.data;
+        });
+
+        configurationService.getAllConfigurations(function (response) {
+            $scope.configurations = response.data;
+        });
+
+        $scope.message = {
+            scope: "device",
+            deviceNumber: "",
+            groupId: "",
+            configurationId: "",
+            messageType: "configUpdated",
+            customMessageType: "",
+            payload: ""
+        };
+
+        var samplePayloads = {
+            configUpdated: "",
+            runApp: "{\"pkg\": \"app.package.id\"}",
+            uninstallApp: "{\"pkg\": \"app.package.id\"}",
+            deleteFile: "{\"path\": \"/path/to/file\"}",
+            deleteDir: "{\"path\": \"/path/to/dir\"}",
+            purgeDir: "{\"path\": \"/path/to/dir\", \"recursive\": \"1\"}",
+            permissiveMode: "",
+            intent: "{\"action\": \"android.intent.action.VIEW\", \"data\": \"https://h-mdm.com\"}",
+            runCommand: "{\"command\": \"shell command\"}",
+            reboot: "",
+            exitKiosk: "",
+            adminPanel: "",
+            clearDownloadHistory: "",
+            grantPermissions: "{\"pkg\": \"app.package.id\"}",
+            clearAppData: "{\"pkg\": \"app.package.id\"}",
+            "(custom)": ""
+        };
+
+        $scope.typeChanged = function () {
+            $scope.message.payload = samplePayloads[$scope.message.messageType];
+        };
+
+        $scope.send = function () {
+            $scope.errorMessage = undefined;
+
+            if ($scope.message.scope === 'device' && $scope.message.deviceNumber.trim() === '') {
+                $scope.errorMessage = localization.localize('plugin.push.error.empty.device');
+                return;
+            }
+
+            if ($scope.message.scope === 'group' && !$scope.message.groupId) {
+                $scope.errorMessage = localization.localize('plugin.push.error.empty.group');
+                return;
+            }
+
+            if ($scope.message.scope === 'configuration' && !$scope.message.configurationId) {
+                $scope.errorMessage = localization.localize('plugin.push.error.empty.configuration');
+                return;
+            }
+
+            $scope.message.deviceNumber = getDevicesService.deviceLookupFormatter($scope.message.deviceNumber)
+
+            $scope.sending = true;
+
+            if ($scope.message.messageType == '(custom)') {
+                if (!$scope.message.customMessageType) {
+                    $scope.errorMessage = localization.localize('plugin.push.error.empty.messageType');
+                    return;
+                }
+                $scope.message.messageType = $scope.message.customMessageType;
+            }
+
+            pluginPushService.sendMessage($scope.message).$promise.then(function (response) {
+                $scope.sending = false;
+                if (response.status === 'OK') {
+                    $modalInstance.close();
+                    alertService.success("Message sent successfully.");
+                } else {
+                    $scope.errorMessage = localization.localizeServerResponse(response);
+                }
+            }, function () {
+                $scope.sending = false;
+                $scope.errorMessage = localization.localizeServerResponse('error.request.failure');
+            });
+        };
+
+        $scope.closeModal = function () {
+            $modalInstance.dismiss();
+        };
     })
     .controller('PluginDeviceLogSettingsController', function ($scope, $rootScope, $modal,
-                                                               confirmModal, localization, pluginDeviceLogService) {
+        confirmModal, localization, pluginDeviceLogService) {
         $scope.successMessage = undefined;
         $scope.errorMessage = undefined;
 
@@ -323,7 +438,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         $scope.removeRule = function (rule) {
             let localizedText = localization.localize('plugin.devicelog.settings.question.delete.rule').replace('${rulename}', rule.name);
             confirmModal.getUserConfirmation(localizedText, function () {
-                pluginDeviceLogService.deleteSettingsRule({id: rule.id}, function (response) {
+                pluginDeviceLogService.deleteSettingsRule({ id: rule.id }, function (response) {
                     if (response.status === 'OK') {
                         refreshRules();
                     } else {
@@ -362,7 +477,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         };
     })
     .controller('PluginDeviceLogEditRuleController', function ($scope, $modal, $modalInstance, $http,
-                                                               localization, pluginDeviceLogService, rule) {
+        localization, pluginDeviceLogService, rule) {
 
         var ruleCopy = {};
         for (var p in rule) {
@@ -378,8 +493,8 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
         var groupCandidates = [];
         var configurationCandidates = [];
 
-        $scope.getApplications = function(val) {
-            return pluginDeviceLogService.lookupApplications(val).$promise.then(function(response){
+        $scope.getApplications = function (val) {
+            return pluginDeviceLogService.lookupApplications(val).$promise.then(function (response) {
                 if (response.status === 'OK') {
                     appCandidates = response.data;
                     return response.data.map(function (item) {
@@ -392,8 +507,8 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             });
         };
 
-        $scope.getGroups = function(val) {
-            return pluginDeviceLogService.lookupGroups(val).$promise.then(function(response){
+        $scope.getGroups = function (val) {
+            return pluginDeviceLogService.lookupGroups(val).$promise.then(function (response) {
                 if (response.status === 'OK') {
                     groupCandidates = response.data;
                     return response.data.map(function (item) {
@@ -406,8 +521,8 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
             });
         };
 
-        $scope.getConfigurations = function(val) {
-            return pluginDeviceLogService.lookupConfigurations(val).$promise.then(function(response){
+        $scope.getConfigurations = function (val) {
+            return pluginDeviceLogService.lookupConfigurations(val).$promise.then(function (response) {
                 if (response.status === 'OK') {
                     configurationCandidates = response.data;
                     return response.data.map(function (item) {
@@ -539,7 +654,7 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
 
     })
     .controller('PluginDeviceLogEditRuleDevicesController', function ($scope, $modalInstance, $http,
-                              localization, pluginDeviceLogService, rule) {
+        localization, pluginDeviceLogService, rule) {
 
         var ruleCopy = {};
         for (var p in rule) {
@@ -570,17 +685,17 @@ angular.module('plugin-devicelog', ['ngResource', 'ui.bootstrap', 'ui.router', '
                 });
 
                 if (foundItems.length > 0) {
-                     $scope.rule.devices.push(foundItems[0]);
-                     $scope.newDevice = null;
-                     deviceCandidates = [];
+                    $scope.rule.devices.push(foundItems[0]);
+                    $scope.newDevice = null;
+                    deviceCandidates = [];
                 } else {
                     $scope.errorMessage = localization.localize('plugin.devicelog.settings.error.invalid.device');
                 }
             }
         };
 
-        $scope.getDevices = function(val) {
-            return pluginDeviceLogService.lookupDevices(val).$promise.then(function(response){
+        $scope.getDevices = function (val) {
+            return pluginDeviceLogService.lookupDevices(val).$promise.then(function (response) {
                 if (response.status === 'OK') {
                     deviceCandidates = response.data.filter(function (device) {
                         return $scope.rule.devices.findIndex(function (ruleDevice) {

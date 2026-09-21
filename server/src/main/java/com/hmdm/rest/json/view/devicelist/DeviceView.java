@@ -174,6 +174,10 @@ public class DeviceView {
     public String getSerial() {
         return device.getSerial();
     }
+    @ApiModelProperty("Device MAC number")
+    public String getMac() {
+        return device.getMac();
+    }
 
     @ApiModelProperty("A version number for Launcher application installed on device")
     public String getLauncherVersion() {

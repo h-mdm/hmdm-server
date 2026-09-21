@@ -21,43 +21,48 @@
 
 package com.hmdm.rest.resource;
 
-import com.hmdm.persistence.GroupDAO;
-import com.hmdm.persistence.UserDAO;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hmdm.persistence.UserRoleDAO;
-import com.hmdm.persistence.domain.Group;
-import com.hmdm.persistence.domain.User;
 import com.hmdm.persistence.domain.UserRole;
 import com.hmdm.persistence.domain.UserRolePermission;
-import com.hmdm.rest.json.LookupItem;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Api(tags = {"UserRole"}, authorizations = {@Authorization("Bearer Token")})
+@Api(tags = { "UserRole" }, authorizations = { @Authorization("Bearer Token") })
 @Singleton
 @Path("/private/roles")
 public class UserRoleResource {
     private UserRoleDAO userRoleDAO;
 
     /**
-     * <p>A logger to be used for logging the events.</p>
+     * <p>
+     * A logger to be used for logging the events.
+     * </p>
      */
     private static final Logger log = LoggerFactory.getLogger(UserRoleResource.class);
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public UserRoleResource() {
     }
@@ -68,12 +73,7 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get all permissions",
-            notes = "Gets the list of all permissions",
-            response = UserRolePermission.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "Get all permissions", notes = "Gets the list of all permissions", response = UserRolePermission.class, responseContainer = "List")
     @GET
     @Path("/permissions")
     @Produces(MediaType.APPLICATION_JSON)
@@ -82,12 +82,7 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get all roles",
-            notes = "Get the list of all user roles",
-            response = UserRole.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "Get all roles", notes = "Get the list of all user roles", response = UserRole.class, responseContainer = "List")
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,10 +91,7 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update user role",
-            notes = "Create a new user role (if id is not provided) or update existing one otherwise."
-    )
+    @ApiOperation(value = "Create or update user role", notes = "Create a new user role (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -125,10 +117,7 @@ public class UserRoleResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete user role",
-            notes = "Delete an existing user role"
-    )
+    @ApiOperation(value = "Delete user role", notes = "Delete an existing user role")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

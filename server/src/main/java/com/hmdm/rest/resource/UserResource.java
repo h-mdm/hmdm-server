@@ -21,26 +21,13 @@
 
 package com.hmdm.rest.resource;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.hmdm.persistence.CommonDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.Settings;
-import com.hmdm.util.PasswordUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.persistence.domain.UserRole;
-import com.hmdm.rest.json.Response;
-import com.hmdm.security.SecurityContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -54,13 +41,26 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Api(tags = {"User"}, authorizations = {@Authorization("Bearer Token")})
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hmdm.persistence.CommonDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.Settings;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.persistence.domain.UserRole;
+import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.util.PasswordUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
+
+@Api(tags = { "User" }, authorizations = { @Authorization("Bearer Token") })
 @Singleton
 @Path("/private/users")
 public class UserResource {
@@ -73,13 +73,18 @@ public class UserResource {
     private UnsecureDAO unsecureDAO;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public UserResource() {
     }
 
     /**
-     * <p>Constructs new <code>UserResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>UserResource</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     @Inject
     public UserResource(UserDAO userDAO, CommonDAO settingsDAO, UnsecureDAO unsecureDAO) {
@@ -89,11 +94,7 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get user details",
-            notes = "Returns the details for the user account referenced by the specified ID.",
-            response = User.class
-    )
+    @ApiOperation(value = "Get user details", notes = "Returns the details for the user account referenced by the specified ID.", response = User.class)
     @GET
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -102,23 +103,19 @@ public class UserResource {
     public Response getUserDetails(@PathParam("id") @ApiParam("User ID") int id) {
         return SecurityContext.get().getCurrentUser().map(u -> {
             if (u.getId() != id && !SecurityContext.get().hasPermission("settings")) {
-            logger.error("Unauthorized attempt to access user details by user " +
-                u.getLogin());
+                logger.error("Unauthorized attempt to access user details by user " +
+                        u.getLogin());
                 return Response.PERMISSION_DENIED();
             }
             User userDetails = userDAO.getUserDetails(id);
             userDetails.setPassword(null);
             return Response.OK(userDetails);
         })
-        .orElse(Response.PERMISSION_DENIED());
+                .orElse(Response.PERMISSION_DENIED());
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get current user details",
-            notes = "Returns the details for the current user account",
-            response = User.class
-    )
+    @ApiOperation(value = "Get current user details", notes = "Returns the details for the current user account", response = User.class)
     @GET
     @Path("/current")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -133,12 +130,7 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "List all users",
-            notes = "Gets the list of all existing user accounts",
-            response = User.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "List all users", notes = "Gets the list of all existing user accounts", response = User.class, responseContainer = "List")
     @GET
     @Path("/all")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -168,11 +160,7 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Update password",
-            notes = "Updates the password for current user",
-            response = User.class
-    )
+    @ApiOperation(value = "Update password", notes = "Updates the password for current user", response = User.class)
     @PUT
     @Path("/current")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -191,10 +179,7 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update user",
-            notes = "Creates a new user account (if id is not provided) or update existing one otherwise."
-    )
+    @ApiOperation(value = "Create or update user", notes = "Creates a new user account (if id is not provided) or update existing one otherwise.")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -267,10 +252,7 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete user",
-            notes = "Deletes a user account referenced by the specified ID"
-    )
+    @ApiOperation(value = "Delete user", notes = "Deletes a user account referenced by the specified ID")
     @DELETE
     @Path("/other/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -291,12 +273,8 @@ public class UserResource {
         }).orElse(Response.PERMISSION_DENIED());
     }
 
-
     // =================================================================================================================
-    @ApiOperation(
-            value = "Update user's details",
-            notes = "Update user's name and email."
-    )
+    @ApiOperation(value = "Update user's details", notes = "Update user's name and email.")
     @PUT
     @Path("/details")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -330,12 +308,7 @@ public class UserResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "List user roles",
-            notes = "Gets the list of all available user roles",
-            response = UserRole.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "List user roles", notes = "Gets the list of all available user roles", response = UserRole.class, responseContainer = "List")
     @GET
     @Path("/roles")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -386,8 +359,8 @@ public class UserResource {
     @Path("/impersonate/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@PathParam("id") Integer id,
-                                        @Context HttpServletRequest req,
-                                        @Context HttpServletResponse res) throws IOException {
+            @Context HttpServletRequest req,
+            @Context HttpServletResponse res) throws IOException {
 
         return SecurityContext.get().getCurrentUser().map(u -> {
             if (!u.getUserRole().isSuperAdmin() && !this.userDAO.isOrgAdmin(u)) {
@@ -405,17 +378,17 @@ public class UserResource {
                 return Response.PERMISSION_DENIED();
             }
 
-            HttpSession session = req.getSession( false );
-            if ( session != null ) {
+            HttpSession session = req.getSession(false);
+            if (session != null) {
                 session.invalidate();
             }
 
             user.setPassword(null);
 
             HttpSession userSession = req.getSession(true);
-            userSession.setAttribute( sessionCredentials, user );
+            userSession.setAttribute(sessionCredentials, user);
 
-            return Response.OK( user );
+            return Response.OK(user);
 
         }).orElse(Response.PERMISSION_DENIED());
     }
@@ -441,6 +414,5 @@ public class UserResource {
         logger.info("Password for {} is updated", user.getLogin());
         return Response.OK("success.operation.completed", dbUser);
     }
-
 
 }

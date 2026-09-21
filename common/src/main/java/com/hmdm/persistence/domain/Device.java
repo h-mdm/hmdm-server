@@ -52,6 +52,8 @@ public class Device implements CustomerData, Serializable {
     private String info;
     @ApiModelProperty("An IMEM of device")
     private String imei;
+    @ApiModelProperty("A MAC of device")
+    private String mac;
     @ApiModelProperty("A phone number of device")
     private String phone;
     @ApiModelProperty(hidden = true)
@@ -353,6 +355,14 @@ public class Device implements CustomerData, Serializable {
         this.serial = serial;
     }
 
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
     public String getFastSearch() {
         return fastSearch;
     }
@@ -404,6 +414,7 @@ public class Device implements CustomerData, Serializable {
                 ", androidVersion='" + androidVersion + '\'' +
                 ", enrollTime='" + enrollTime + '\'' +
                 ", serial='" + serial + '\'' +
+                ", mac='" + mac + '\'' +
                 ", statusCode='" + statusCode + '\'' +
                 ", oldNumber='" + oldNumber + '\'' +
                 ", fastSearch='" + fastSearch + '\'' +

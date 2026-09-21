@@ -23,10 +23,8 @@ package com.hmdm.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.util.StringUtil;
-import liquibase.util.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

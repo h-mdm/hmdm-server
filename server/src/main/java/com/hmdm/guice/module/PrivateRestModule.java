@@ -21,7 +21,6 @@
 
 package com.hmdm.guice.module;
 
-import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.hmdm.rest.filter.PrivateIPFilter;
 import com.hmdm.rest.resource.*;

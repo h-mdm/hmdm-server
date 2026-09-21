@@ -21,62 +21,64 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.inject.Named;
+import static com.hmdm.util.FileUtil.writeToFile;
 
-import com.hmdm.persistence.domain.ApplicationType;
-import com.hmdm.rest.json.NameResponse;
-import com.hmdm.util.FileUtil;
-import net.glxn.qrgen.core.image.ImageType;
-import net.glxn.qrgen.javase.QRCode;
-import nonapi.io.github.classgraph.utils.FileUtils;
-import org.apache.poi.util.IOUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.CustomerDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.persistence.domain.Device;
-import com.hmdm.rest.json.Response;
-import com.hmdm.rest.json.UploadAppRequest;
-import com.hmdm.util.CryptoUtil;
-import com.hmdm.util.StringUtil;
-
-import javax.servlet.ServletOutputStream;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hmdm.util.FileUtil.writeToFile;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.poi.util.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.ApplicationType;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.Device;
+import com.hmdm.rest.json.NameResponse;
+import com.hmdm.rest.json.Response;
+import com.hmdm.rest.json.UploadAppRequest;
+import com.hmdm.util.CryptoUtil;
+import com.hmdm.util.FileUtil;
+import com.hmdm.util.StringUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
- * <p>A publicly available API which does not require authentication/authorization.</p>
+ * <p>
+ * A publicly available API which does not require authentication/authorization.
+ * </p>
  *
  * @author isv
  */
 @Singleton
 @Path("/public")
-@Api(tags = {"Mobile client API"})
+@Api(tags = { "Mobile client API" })
 public class PublicResource {
 
-    private static final Logger logger  = LoggerFactory.getLogger(PublicResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(PublicResource.class);
 
     private UnsecureDAO unsecureDAO;
     private CustomerDAO customerDAO;
@@ -92,26 +94,31 @@ public class PublicResource {
     private String appTermsLink;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public PublicResource() {
     }
 
     /**
-     * <p>Constructs new <code>PublicResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>PublicResource</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     @Inject
     public PublicResource(@Named("files.directory") String filesDirectory,
-                          @Named("base.url") String baseUrl,
-                          @Named("rebranding.name") String appName,
-                          @Named("rebranding.logo") String appLogo,
-                          @Named("rebranding.vendor.name") String appVendorName,
-                          @Named("rebranding.vendor.link") String appVendorLink,
-                          @Named("rebranding.signup.link") String appSignupLink,
-                          @Named("rebranding.terms.link") String appTermsLink,
-                          UnsecureDAO unsecureDAO,
-                          CustomerDAO customerDAO,
-                          @Named("hash.secret") String hashSecret) {
+            @Named("base.url") String baseUrl,
+            @Named("rebranding.name") String appName,
+            @Named("rebranding.logo") String appLogo,
+            @Named("rebranding.vendor.name") String appVendorName,
+            @Named("rebranding.vendor.link") String appVendorLink,
+            @Named("rebranding.signup.link") String appSignupLink,
+            @Named("rebranding.terms.link") String appTermsLink,
+            UnsecureDAO unsecureDAO,
+            CustomerDAO customerDAO,
+            @Named("hash.secret") String hashSecret) {
         this.filesDirectory = filesDirectory;
         this.baseUrl = baseUrl;
         this.appName = appName;
@@ -124,19 +131,16 @@ public class PublicResource {
         this.customerDAO = customerDAO;
         this.hashSecret = hashSecret;
     }
-    
+
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload application",
-            notes = "Uploads application to MDM server. This method is only used by the AppList utility, no usage by the web backend"
-    )
+    @ApiOperation(value = "Upload application", notes = "Uploads application to MDM server. This method is only used by the AppList utility, no usage by the web backend")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/applications/upload")
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
-                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail,
-                                @ApiParam("A JSON-string with application details") @FormDataParam("app") String app) throws Exception {
+            @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail,
+            @ApiParam("A JSON-string with application details") @FormDataParam("app") String app) throws Exception {
 
         logger.info("Received Upload App request. App: {}", app);
 
@@ -202,10 +206,10 @@ public class PublicResource {
 
             // Check for duplicate package ID
             List<Application> dbApps = this.unsecureDAO.findByPackageIdAndVersion(
-                    dbDevice.getCustomerId(), request.getPkg(), request.getVersion()
-            );
+                    dbDevice.getCustomerId(), request.getPkg(), request.getVersion());
             if (!dbApps.isEmpty()) {
-                logger.error("Application with same package ID and version already exists: {} v{}", request.getPkg(), request.getVersion());
+                logger.error("Application with same package ID and version already exists: {} v{}", request.getPkg(),
+                        request.getVersion());
                 return Response.DUPLICATE_APPLICATION();
             }
 
@@ -214,8 +218,8 @@ public class PublicResource {
             boolean fileUploaded = false;
             if (fileDetail != null && !fileDetail.getFileName().isEmpty() && uploadedInputStream != null) {
                 File uploadFile = new File(
-                        new File(new File(this.filesDirectory, customer.getFilesDir()), request.getLocalPath()), request.getFileName()
-                );
+                        new File(new File(this.filesDirectory, customer.getFilesDir()), request.getLocalPath()),
+                        request.getFileName());
 
                 File parentFile = uploadFile.getParentFile();
                 if (!parentFile.exists()) {
@@ -253,7 +257,8 @@ public class PublicResource {
 
             this.unsecureDAO.insertApplication(application);
 
-            logger.info("Application {} has been uploaded to server from device {} successfully", application, deviceId);
+            logger.info("Application {} has been uploaded to server from device {} successfully", application,
+                    deviceId);
 
             return Response.OK();
         } catch (Exception e) {
@@ -263,10 +268,7 @@ public class PublicResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get name and vendor",
-            notes = "Gets the application name and vendor for rebranding purposes."
-    )
+    @ApiOperation(value = "Get name and vendor", notes = "Gets the application name and vendor for rebranding purposes.")
     @GET
     @Path("/name")
     @Produces(MediaType.APPLICATION_JSON)
@@ -281,10 +283,7 @@ public class PublicResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get logo",
-            notes = "Returns the rebranded logo."
-    )
+    @ApiOperation(value = "Get logo", notes = "Returns the rebranded logo.")
     @GET
     @Path("/logo")
     @Produces(MediaType.APPLICATION_JSON)
@@ -295,11 +294,11 @@ public class PublicResource {
                 if (file.exists()) {
                     InputStream input = new FileInputStream(file);
 
-                    return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
+                    return javax.ws.rs.core.Response.ok((StreamingOutput) output -> {
                         IOUtils.copy(input, output);
-                    } )
+                    })
                             .header("Cache-Control", "no-cache")
-                            .header( "Content-Type", "image/png" ).build();
+                            .header("Content-Type", "image/png").build();
                 } else {
                     System.out.println("Not found: " + file.getAbsolutePath());
                     return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();

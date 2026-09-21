@@ -21,28 +21,34 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
-import org.apache.poi.util.IOUtils;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.Date;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.poi.util.IOUtils;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+
 /**
- * <p>A REST API for accessing the files from mobile applications.</p>
+ * <p>
+ * A REST API for accessing the files from mobile applications.
+ * </p>
  *
- * <p>This class must never be used. {@link DownloadFilesServlet} is used instead for downloading files from server
- * by mobile applications.</p>
+ * <p>
+ * This class must never be used. {@link DownloadFilesServlet} is used instead
+ * for downloading files from server
+ * by mobile applications.
+ * </p>
  *
  * @author isv
  */
@@ -56,7 +62,9 @@ public class PublicFilesResource {
     }
 
     /**
-     * <p>Sends content of the file to client.</p>
+     * <p>
+     * Sends content of the file to client.
+     * </p>
      *
      * @param filePath a relative path to a file.
      * @return a response to client.
@@ -66,20 +74,24 @@ public class PublicFilesResource {
     @Path("/{filePath}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public javax.ws.rs.core.Response downloadFile(@PathParam("filePath") String filePath) throws Exception {
-        // TODO : ISV : Needs to identify the device and do a security check if device is granted access to specified
-        //  file
+        // TODO : ISV : Needs to identify the device and do a security check if device
+        // is granted access to specified
+        // file
         File file = new File(filePath + "/" + URLDecoder.decode(filePath, "UTF8"));
         if (!file.exists()) {
             return javax.ws.rs.core.Response.status(404).build();
         } else {
-            ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(file.getName()).creationDate(new Date()).build();
-            return javax.ws.rs.core.Response.ok( (StreamingOutput) output -> {
+            ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(file.getName())
+                    .creationDate(new Date()).build();
+            return javax.ws.rs.core.Response.ok((StreamingOutput) output -> {
                 try {
-                    InputStream input = new FileInputStream( file );
+                    InputStream input = new FileInputStream(file);
                     IOUtils.copy(input, output);
                     output.flush();
-                } catch ( Exception e ) { e.printStackTrace(); }
-            } ).header( "Content-Disposition", contentDisposition ).build();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).header("Content-Disposition", contentDisposition).build();
 
         }
     }

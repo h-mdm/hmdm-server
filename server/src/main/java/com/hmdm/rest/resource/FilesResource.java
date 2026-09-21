@@ -21,21 +21,6 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.inject.Named;
-
-import com.hmdm.notification.PushService;
-import com.hmdm.persistence.*;
-import com.hmdm.persistence.domain.*;
-import com.hmdm.rest.json.*;
-import com.hmdm.rest.json.view.FileView;
-import com.hmdm.util.APKFileAnalyzer;
-import com.hmdm.util.StringUtil;
-import org.apache.commons.io.FileUtils;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,6 +34,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -58,19 +47,49 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.util.IOUtils;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hmdm.notification.PushService;
+import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.persistence.ConfigurationDAO;
+import com.hmdm.persistence.ConfigurationFileDAO;
+import com.hmdm.persistence.CustomerDAO;
+import com.hmdm.persistence.IconDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.UploadedFileDAO;
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.persistence.domain.Configuration;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.persistence.domain.UploadedFile;
+import com.hmdm.persistence.domain.User;
+import com.hmdm.rest.json.APKFileDetails;
+import com.hmdm.rest.json.ApplicationConfigurationLink;
+import com.hmdm.rest.json.FileConfigurationLink;
+import com.hmdm.rest.json.FileUploadResult;
+import com.hmdm.rest.json.LimitResponse;
+import com.hmdm.rest.json.LinkConfigurationsToFileRequest;
+import com.hmdm.rest.json.Response;
+import com.hmdm.rest.json.view.FileView;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.util.APKFileAnalyzer;
+import com.hmdm.util.FileExistsException;
+import com.hmdm.util.FileUtil;
+import com.hmdm.util.StringUtil;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.ResponseHeader;
-import org.apache.poi.util.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.util.FileExistsException;
-import com.hmdm.util.FileUtil;
 
-@Api(tags = {"Files"}, authorizations = {@Authorization("Bearer Token")})
+@Api(tags = { "Files" }, authorizations = { @Authorization("Bearer Token") })
 @Singleton
 @Path("/private/web-ui-files")
 public class FilesResource {
@@ -90,23 +109,25 @@ public class FilesResource {
     private PushService pushService;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public FilesResource() {
     }
 
     @Inject
     public FilesResource(@Named("files.directory") String filesDirectory,
-                         @Named("base.url") String baseUrl,
-                         CustomerDAO customerDAO,
-                         UnsecureDAO unsecureDAO,
-                         ApplicationDAO applicationDAO,
-                         ConfigurationDAO configurationDAO,
-                         UploadedFileDAO uploadedFileDAO,
-                         APKFileAnalyzer apkFileAnalyzer,
-                         ConfigurationFileDAO configurationFileDAO,
-                         IconDAO iconDAO,
-                         PushService pushService) {
+            @Named("base.url") String baseUrl,
+            CustomerDAO customerDAO,
+            UnsecureDAO unsecureDAO,
+            ApplicationDAO applicationDAO,
+            ConfigurationDAO configurationDAO,
+            UploadedFileDAO uploadedFileDAO,
+            APKFileAnalyzer apkFileAnalyzer,
+            ConfigurationFileDAO configurationFileDAO,
+            IconDAO iconDAO,
+            PushService pushService) {
         this.filesDirectory = filesDirectory;
         this.baseDirectory = new File(filesDirectory);
         this.customerDAO = customerDAO;
@@ -126,12 +147,7 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get all files",
-            notes = "Gets the list of all available files",
-            response = FileView.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "Get all files", notes = "Gets the list of all available files", response = FileView.class, responseContainer = "List")
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -141,14 +157,11 @@ public class FilesResource {
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
-        return Response.OK(this.generateFilesList((String)null));
+        return Response.OK(this.generateFilesList((String) null));
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Remove a file",
-            notes = "Removes the file from the MDM server"
-    )
+    @ApiOperation(value = "Remove a file", notes = "Removes the file from the MDM server")
     @POST
     @Path("/remove")
     public Response removeFile(FileView file) {
@@ -181,7 +194,8 @@ public class FilesResource {
                 }
 
                 try {
-                    logger.info("File {} is removed by user {}", file.getFilePath(), SecurityContext.get().getCurrentUserName());
+                    logger.info("File {} is removed by user {}", file.getFilePath(),
+                            SecurityContext.get().getCurrentUserName());
                     uploadedFileDAO.remove(file.getId());
                     if (filePath.toFile().exists() &&
                             uploadedFileDAO.getByPath(customer.getId(), file.getFilePath()) == null) {
@@ -202,11 +216,7 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Complete file upload",
-            notes = "Commits the file upload to MDM server. Returns the uploaded file data",
-            response = FileView.class
-    )
+    @ApiOperation(value = "Complete file upload", notes = "Commits the file upload to MDM server. Returns the uploaded file data", response = FileView.class)
     @POST
     @Path("/update")
     public Response updateFile(UploadedFile uploadedFile) {
@@ -232,14 +242,15 @@ public class FilesResource {
         }
         String tmpdir = System.getProperty("java.io.tmpdir");
         if (!FileUtil.isSafePath(uploadedFile.getFilePath()) ||
-            !uploadedFile.getTmpPath().startsWith(tmpdir)) {
+                !uploadedFile.getTmpPath().startsWith(tmpdir)) {
             logger.error("Attempt to create a file with unsafe path: " + uploadedFile.getFilePath() +
                     " tmp path: " + uploadedFile.getTmpPath());
             return Response.PERMISSION_DENIED();
         }
 
         String fname = uploadedFile.getFileName();
-        // Empty fname means using the default name from tmp path (processed by moveFile)
+        // Empty fname means using the default name from tmp path (processed by
+        // moveFile)
         if (fname.equals("")) {
             fname = FileUtil.getNameFromTmpPath(uploadedFile.getTmpPath());
             while (fname.startsWith("/")) {
@@ -252,7 +263,8 @@ public class FilesResource {
         return SecurityContext.get().getCurrentUser().map(u -> {
             Customer customer = customerDAO.findById(u.getCustomerId());
             try {
-                File movedFile = FileUtil.moveFile(customer, filesDirectory, uploadedFile.getSubdir(), uploadedFile.getTmpPath(), fileName);
+                File movedFile = FileUtil.moveFile(customer, filesDirectory, uploadedFile.getSubdir(),
+                        uploadedFile.getTmpPath(), fileName);
                 if (movedFile != null) {
                     List<FileView> result = new LinkedList<>();
                     handleFile(movedFile, result, null, customer);
@@ -303,7 +315,8 @@ public class FilesResource {
             if (!uploadedFile.isExternal()) {
                 UploadedFile dbFile = uploadedFileDAO.getById(uploadedFile.getId());
                 if (!StringUtil.isEmpty(uploadedFile.getTmpPath())) {
-                    // Renew the file content - remove the old file and overwrite with the new content
+                    // Renew the file content - remove the old file and overwrite with the new
+                    // content
                     FileUtil.deleteFile(customer, filesDirectory, dbFile.getFilePath());
                     File movedFile = FileUtil.moveFile(customer, filesDirectory, dbFile.getSubdir(),
                             uploadedFile.getTmpPath(), dbFile.getFileName());
@@ -323,7 +336,8 @@ public class FilesResource {
                         logger.error("Attempt to move a file to unsafe path: " + uploadedFile.getFilePath());
                         return Response.PERMISSION_DENIED();
                     }
-                    String srcPath = String.format("%s/%s/%s", filesDirectory, customer.getFilesDir(), dbFile.getFilePath());
+                    String srcPath = String.format("%s/%s/%s", filesDirectory, customer.getFilesDir(),
+                            dbFile.getFilePath());
                     File movedFile = FileUtil.moveFile(customer, filesDirectory, "",
                             srcPath, uploadedFile.getFilePath());
                     if (movedFile == null) {
@@ -338,12 +352,7 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Search files",
-            notes = "Search files meeting the specified filter value",
-            response = FileView.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "Search files", notes = "Search files meeting the specified filter value", response = FileView.class, responseContainer = "List")
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -357,12 +366,7 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get applications",
-            notes = "Gets the list of applications using the file",
-            response = Application.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "Get applications", notes = "Gets the list of applications using the file", response = Application.class, responseContainer = "List")
     @GET
     @Path("/apps/{url}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -404,12 +408,7 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get file configurations",
-            notes = "Gets the list of configurations using requested file",
-            response = ApplicationConfigurationLink.class,
-            responseContainer = "List"
-    )
+    @ApiOperation(value = "Get file configurations", notes = "Gets the list of configurations using requested file", response = ApplicationConfigurationLink.class, responseContainer = "List")
     @GET
     @Path("/configurations/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -423,10 +422,7 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Update file configurations",
-            notes = "Updates the list of configurations using requested file"
-    )
+    @ApiOperation(value = "Update file configurations", notes = "Updates the list of configurations using requested file")
     @POST
     @Path("/configurations")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -441,15 +437,16 @@ public class FilesResource {
             User user = SecurityContext.get().getCurrentUser().get();
             if (!user.isAllConfigAvailable()) {
                 // Remove all configurations unavailable to user
-                request.getConfigurations().removeIf(c ->
-                        user.getConfigurations()
-                                .stream()
-                                .filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
+                request.getConfigurations().removeIf(c -> user.getConfigurations()
+                        .stream()
+                        .filter(uc -> uc.getId() == c.getConfigurationId()).findFirst() == null);
             }
             // Avoid access to objects of another customer
             request.getConfigurations().removeIf(c -> {
-                // findById will raise a SecurityException if attempting to access an object of another customer
-                // So actually this code is a bit redundant, but it guards access to own objects anyway
+                // findById will raise a SecurityException if attempting to access an object of
+                // another customer
+                // So actually this code is a bit redundant, but it guards access to own objects
+                // anyway
                 UploadedFile file = uploadedFileDAO.getById(c.getFileId());
                 Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
                 return file.getCustomerId() != user.getCustomerId() ||
@@ -472,48 +469,44 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload raw file",
-            notes = "Uploads the raw file to server (without attempt to parse APK). Returns a path to uploaded file",
-            response = FileUploadResult.class
-    )
+    @ApiOperation(value = "Upload raw file", notes = "Uploads the raw file to server (without attempt to parse APK). Returns a path to uploaded file", response = FileUploadResult.class)
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/raw")
     public Response uploadFilesRaw(@FormDataParam("file") InputStream uploadedInputStream,
-                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+            @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail)
+            throws Exception {
         return uploadFilesInternal(uploadedInputStream, fileDetail, false);
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload file or application",
-            notes = "Uploads the file or application to server. Returns a path to uploaded file",
-            response = FileUploadResult.class
-    )
+    @ApiOperation(value = "Upload file or application", notes = "Uploads the file or application to server. Returns a path to uploaded file", response = FileUploadResult.class)
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFiles(@FormDataParam("file") InputStream uploadedInputStream,
-                                @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+            @ApiParam("A file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail)
+            throws Exception {
         return uploadFilesInternal(uploadedInputStream, fileDetail, true);
     }
 
     // =================================================================================================================
     private Response uploadFilesInternal(InputStream uploadedInputStream,
-                                         FormDataContentDisposition fileDetail,
-                                         boolean parseFile) throws Exception {
+            FormDataContentDisposition fileDetail,
+            boolean parseFile) throws Exception {
         if (!SecurityContext.get().hasPermission("edit_files")) {
             logger.error("Unauthorized attempt to upload a file by user " +
                     SecurityContext.get().getCurrentUserName());
             return Response.PERMISSION_DENIED();
         }
         try {
-            // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
+            // For some reason, the browser sends the file name in ISO_8859_1, so we use a
+            // workaround to convert
             // it to UTF_8 and enable non-ASCII characters
             // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
-            String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1),
+                    StandardCharsets.UTF_8);
             String adjustedFileName = FileUtil.adjustFileName(fileName);
             File uploadFile = FileUtil.createTempFile(adjustedFileName);
             FileUtil.writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
@@ -551,7 +544,8 @@ public class FilesResource {
 
                 ApplicationVersion version;
                 if (apkFileDetails.getVersionCode() != 0) {
-                    version = this.applicationDAO.findApplicationVersionByCode(apkFileDetails.getPkg(), apkFileDetails.getVersionCode());
+                    version = this.applicationDAO.findApplicationVersionByCode(apkFileDetails.getPkg(),
+                            apkFileDetails.getVersionCode());
                     if (version != null && !version.getVersion().equals(apkFileDetails.getVersion())) {
                         logger.warn("Version of {} with code {} already exists, name {}", apkFileDetails.getPkg(),
                                 apkFileDetails.getVersionCode(), version.getVersion());
@@ -561,8 +555,9 @@ public class FilesResource {
                     }
                 }
 
-                version = this.applicationDAO.findApplicationVersion(apkFileDetails.getPkg(), apkFileDetails.getVersion());
-                if (StringUtil.isEmpty(apkFileDetails.getArch())){
+                version = this.applicationDAO.findApplicationVersion(apkFileDetails.getPkg(),
+                        apkFileDetails.getVersion());
+                if (StringUtil.isEmpty(apkFileDetails.getArch())) {
                     if (version != null) {
                         result.setExists(true);
                     }
@@ -570,10 +565,12 @@ public class FilesResource {
                     // If version for arm64 is already uploaded, set the complete flag
                     result.setComplete(version != null && !StringUtil.isEmpty(version.getUrlArm64()));
                     // Check if version is already uploaded
-                    result.setExists(version != null && (!version.isSplit() || !StringUtil.isEmpty(version.getUrlArmeabi())));
+                    result.setExists(
+                            version != null && (!version.isSplit() || !StringUtil.isEmpty(version.getUrlArmeabi())));
                 } else if (apkFileDetails.getArch().equals(Application.ARCH_ARM64)) {
                     result.setComplete(version != null && !StringUtil.isEmpty(version.getUrlArmeabi()));
-                    result.setExists(version != null && (!version.isSplit() || !StringUtil.isEmpty(version.getUrlArm64())));
+                    result.setExists(
+                            version != null && (!version.isSplit() || !StringUtil.isEmpty(version.getUrlArm64())));
                 }
 
                 final List<Application> dbAppsByPkg = this.applicationDAO.findByPackageId(apkFileDetails.getPkg());
@@ -593,7 +590,6 @@ public class FilesResource {
                 }
             }
 
-
             return Response.OK(result);
         } catch (Exception e) {
             logger.error("Unexpected error when handling file upload", e);
@@ -602,27 +598,28 @@ public class FilesResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Download a file",
-            notes = "Downloads the content of the file",
-            responseHeaders = {@ResponseHeader(name = "Content-Disposition")}
-    )
+    @ApiOperation(value = "Download a file", notes = "Downloads the content of the file", responseHeaders = {
+            @ResponseHeader(name = "Content-Disposition") })
     @GET
     @Path("/{filePath}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public javax.ws.rs.core.Response downloadFile(@PathParam("filePath") @ApiParam("A path to a file") String filePath) throws Exception {
+    public javax.ws.rs.core.Response downloadFile(@PathParam("filePath") @ApiParam("A path to a file") String filePath)
+            throws Exception {
         File file = new File(filePath + "/" + URLDecoder.decode(filePath, "UTF8"));
         if (!file.exists()) {
             return javax.ws.rs.core.Response.status(404).build();
         } else {
-            ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(file.getName()).creationDate(new Date()).build();
-            return javax.ws.rs.core.Response.ok( ( StreamingOutput ) output -> {
+            ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(file.getName())
+                    .creationDate(new Date()).build();
+            return javax.ws.rs.core.Response.ok((StreamingOutput) output -> {
                 try {
-                    InputStream input = new FileInputStream( file );
+                    InputStream input = new FileInputStream(file);
                     IOUtils.copy(input, output);
                     output.flush();
-                } catch ( Exception e ) { e.printStackTrace(); }
-            } ).header( "Content-Disposition", contentDisposition ).build();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).header("Content-Disposition", contentDisposition).build();
 
         }
     }
@@ -631,13 +628,13 @@ public class FilesResource {
         List<FileView> files = SecurityContext.get().getCurrentUser().map(u -> {
             Customer customer = customerDAO.findById(u.getCustomerId());
 
-            List<UploadedFile> customerFiles = value != null ?
-                    uploadedFileDAO.getAllByValue(value) :
-                    uploadedFileDAO.getAll();
+            List<UploadedFile> customerFiles = value != null ? uploadedFileDAO.getAllByValue(value)
+                    : uploadedFileDAO.getAll();
             List<FileView> result = customerFiles.stream()
                     .map(f -> {
                         FileView hFile = new FileView(f, this.baseUrl, this.filesDirectory, customer);
-                        hFile.setUsedByConfigurations(this.configurationFileDAO.getUsingConfigurations(customer.getId(), hFile.getId()));
+                        hFile.setUsedByConfigurations(
+                                this.configurationFileDAO.getUsingConfigurations(customer.getId(), hFile.getId()));
                         hFile.setUsedByIcons(this.iconDAO.getUsingIcons(customer.getId(), hFile.getId()));
                         return hFile;
                     })
@@ -657,27 +654,36 @@ public class FilesResource {
                 File[] filesArray = files;
                 int length = files.length;
 
-                for(int i = 0; i < length; ++i) {
+                for (int i = 0; i < length; ++i) {
                     File fl = filesArray[i];
                     this.handleFile(fl, result, value, customer);
                 }
             } else if (value == null || file.getName().contains(value)) {
 
-                String path = file.getParentFile().getAbsolutePath().replace(this.filesDirectory.replace("/", File.separator), "");
+                String path = file.getParentFile().getAbsolutePath()
+                        .replace(this.filesDirectory.replace("/", File.separator), "");
                 if (!path.endsWith(File.separator)) {
                     path += File.separator;
                 }
                 String url;
                 if (customerFilesBaseDir != null && !customerFilesBaseDir.isEmpty()) {
-                    path = path.substring((File.separator + customerFilesBaseDir + File.separator).length()); // Strip off the name of directory for customer files
-                    url = String.format("%s/files/%s/%s", this.baseUrl, customerFilesBaseDir, path.replace(File.separator, "/") + file.getName());
+                    path = path.substring((File.separator + customerFilesBaseDir + File.separator).length()); // Strip
+                                                                                                              // off the
+                                                                                                              // name of
+                                                                                                              // directory
+                                                                                                              // for
+                                                                                                              // customer
+                                                                                                              // files
+                    url = String.format("%s/files/%s/%s", this.baseUrl, customerFilesBaseDir,
+                            path.replace(File.separator, "/") + file.getName());
                 } else {
                     url = String.format("%s/files%s", this.baseUrl, path.replace(File.separator, "/") + file.getName());
                 }
 
                 final FileView fileObj = new FileView(path, file.getName(), url, file.length());
 
-                fileObj.setUsedByConfigurations(this.configurationFileDAO.getUsingConfigurations(customer.getId(), fileObj.getId()));
+                fileObj.setUsedByConfigurations(
+                        this.configurationFileDAO.getUsingConfigurations(customer.getId(), fileObj.getId()));
                 fileObj.setUsedByIcons(this.iconDAO.getUsingIcons(customer.getId(), fileObj.getId()));
 
                 result.add(fileObj);

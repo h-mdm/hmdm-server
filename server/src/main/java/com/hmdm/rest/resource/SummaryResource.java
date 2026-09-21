@@ -21,27 +21,31 @@
 
 package com.hmdm.rest.resource;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hmdm.persistence.DeviceDAO;
 import com.hmdm.persistence.domain.DeviceSummaryRequest;
 import com.hmdm.persistence.domain.SummaryConfigItem;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.SummaryResponse;
 import com.hmdm.service.DeviceApplicationsStatus;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
-
-@Api(tags = {"Summary"}, authorizations = {@Authorization("Bearer Token")})
+@Api(tags = { "Summary" }, authorizations = { @Authorization("Bearer Token") })
 @Singleton
 @Path("/private/summary")
 public class SummaryResource {
@@ -51,7 +55,9 @@ public class SummaryResource {
     private DeviceDAO deviceDAO;
 
     /**
-     * <p>A constructor required by Swagger.</p>
+     * <p>
+     * A constructor required by Swagger.
+     * </p>
      */
     public SummaryResource() {
     }
@@ -62,11 +68,7 @@ public class SummaryResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Get device statistics",
-            notes = "Get statistics of device enrollment",
-            response = SummaryResponse.class
-    )
+    @ApiOperation(value = "Get device statistics", notes = "Get statistics of device enrollment", response = SummaryResponse.class)
     @GET
     @Path("/devices")
     @Produces(MediaType.APPLICATION_JSON)
@@ -98,11 +100,12 @@ public class SummaryResource {
         summaryResponse.setTopConfigs(new LinkedList<>());
         for (SummaryConfigItem summaryConfigItem : topConfigs) {
             summaryResponse.getTopConfigs().add(summaryConfigItem.getName());
-        };
+        }
+        ;
 
         // Offline devices
         long now = System.currentTimeMillis();
-        condition.setMaxOnlineTime(now - 3600*1000l);
+        condition.setMaxOnlineTime(now - 3600 * 1000l);
         List<SummaryConfigItem> offline = deviceDAO.getSummaryByConfig(condition, topConfigs);
         summaryResponse.setStatusOfflineByConfig(new LinkedList<>());
         for (SummaryConfigItem item : offline) {
@@ -110,8 +113,8 @@ public class SummaryResource {
         }
 
         // Idle devices
-        condition.setMinOnlineTime(now - 3600*4000l);
-        condition.setMaxOnlineTime(now - 3600*1000l);
+        condition.setMinOnlineTime(now - 3600 * 4000l);
+        condition.setMaxOnlineTime(now - 3600 * 1000l);
         List<SummaryConfigItem> idle = deviceDAO.getSummaryByConfig(condition, topConfigs);
         summaryResponse.setStatusIdleByConfig(new LinkedList<>());
         for (SummaryConfigItem item : idle) {
@@ -119,7 +122,7 @@ public class SummaryResource {
         }
 
         // Online devices
-        condition.setMinOnlineTime(now - 3600*1000l);
+        condition.setMinOnlineTime(now - 3600 * 1000l);
         condition.setMaxOnlineTime(null);
         List<SummaryConfigItem> online = deviceDAO.getSummaryByConfig(condition, topConfigs);
         summaryResponse.setStatusOnlineByConfig(new LinkedList<>());

@@ -21,6 +21,29 @@
 
 package com.hmdm.rest.resource;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.UploadedFileDAO;
@@ -32,32 +55,14 @@ import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.FileUtil;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 /**
- * <p>A resource used for uploading configuration files to server.</p>
+ * <p>
+ * A resource used for uploading configuration files to server.
+ * </p>
  */
 @Singleton
 @Path("/private/config-files")
@@ -72,21 +77,26 @@ public class ConfigurationFileResource {
     private String baseUrl;
 
     /**
-     * <p>Constructs new <code>ConfigurationFileResource</code> instance.</p>
+     * <p>
+     * Constructs new <code>ConfigurationFileResource</code> instance.
+     * </p>
      */
     public ConfigurationFileResource() {
         // Required by Swagger
     }
 
     /**
-     * <p>Constructs new <code>ConfigurationFileResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>ConfigurationFileResource</code> instance. This
+     * implementation does nothing.
+     * </p>
      */
     @Inject
     public ConfigurationFileResource(CustomerDAO customerDAO,
-                                     @Named("files.directory") String filesDirectory,
-                                     @Named("base.url") String baseUrl,
-                                     UploadedFileDAO uploadedFileDAO,
-                                     UnsecureDAO unsecureDAO) {
+            @Named("files.directory") String filesDirectory,
+            @Named("base.url") String baseUrl,
+            UploadedFileDAO uploadedFileDAO,
+            UnsecureDAO unsecureDAO) {
         this.customerDAO = customerDAO;
         this.filesDirectory = filesDirectory;
         this.uploadedFileDAO = uploadedFileDAO;
@@ -95,17 +105,12 @@ public class ConfigurationFileResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Upload configuration file",
-            notes = "Uploads the configuration file to server. Returns a path to uploaded file",
-            response = FileUploadResult.class
-    )
+    @ApiOperation(value = "Upload configuration file", notes = "Uploads the configuration file to server. Returns a path to uploaded file", response = FileUploadResult.class)
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadConfigurationFile(@FormDataParam("file") InputStream uploadedInputStream,
-                                            @ApiParam("A configuration file to upload") @FormDataParam("file")
-                                                    FormDataContentDisposition fileDetail) {
+            @ApiParam("A configuration file to upload") @FormDataParam("file") FormDataContentDisposition fileDetail) {
         try {
 
             return SecurityContext.get().getCurrentCustomerId().map(customerId -> {
@@ -117,15 +122,18 @@ public class ConfigurationFileResource {
                     if (!customerFilesDirectory.exists()) {
                         customerFilesDirectory.mkdirs();
                     }
-                    // For some reason, the browser sends the file name in ISO_8859_1, so we use a workaround to convert
+                    // For some reason, the browser sends the file name in ISO_8859_1, so we use a
+                    // workaround to convert
                     // it to UTF_8 and enable non-ASCII characters
                     // https://stackoverflow.com/questions/50582435/jersey-filename-encoded
-                    String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                    String fileName = new String(fileDetail.getFileName().getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8);
                     File configFile = new File(customerFilesDirectory, fileName);
 
                     if (configFile.exists()) {
-                        logger.warn("The file already exists and will be overwritten: {}", configFile.getAbsolutePath());
-//                        return Response.FILE_EXISTS();
+                        logger.warn("The file already exists and will be overwritten: {}",
+                                configFile.getAbsolutePath());
+                        // return Response.FILE_EXISTS();
                     }
 
                     FileOutputStream fos = new FileOutputStream(configFile);
@@ -160,7 +168,8 @@ public class ConfigurationFileResource {
                     // Calculate checksum
                     final String checksum = CryptoUtil.calculateChecksum(Files.newInputStream(configFile.toPath()));
                     uploadedFile.setChecksum(checksum);
-                    final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(), configFile.getName());
+                    final String url = FileUtil.createFileUrl(this.baseUrl, customer.getFilesDir(),
+                            configFile.getName());
                     uploadedFile.setUrl(url);
 
                     return Response.OK(uploadedFile);

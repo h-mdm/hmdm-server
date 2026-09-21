@@ -21,26 +21,6 @@
 
 package com.hmdm.rest.resource;
 
-import com.google.common.io.Files;
-import com.hmdm.notification.PushService;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.UserDAO;
-import com.hmdm.persistence.domain.Application;
-import com.hmdm.persistence.domain.ApplicationVersion;
-import com.hmdm.persistence.domain.User;
-import com.hmdm.rest.json.*;
-import com.hmdm.security.SecurityContext;
-import com.hmdm.util.*;
-import org.json.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,12 +28,46 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.io.Files;
+import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Application;
+import com.hmdm.persistence.domain.ApplicationVersion;
+import com.hmdm.rest.json.APKFileDetails;
+import com.hmdm.rest.json.ApplicationVersionConfigurationLink;
+import com.hmdm.rest.json.LinkConfigurationsToAppVersionRequest;
+import com.hmdm.rest.json.Response;
+import com.hmdm.rest.json.UpdateEntry;
+import com.hmdm.rest.json.UpdateRequest;
+import com.hmdm.security.SecurityContext;
+import com.hmdm.util.APKFileAnalyzer;
+import com.hmdm.util.ApplicationUtil;
+import com.hmdm.util.FileUtil;
+import com.hmdm.util.StatsSender;
+import com.hmdm.util.UpdateSettings;
 
 @Singleton
 @Path("/private/update")
 public class UpdateResource {
-    private String baseUrl;
     private String filesDirectory;
     private String protocol;
     private String customerDomain;
@@ -70,13 +84,12 @@ public class UpdateResource {
 
     @Inject
     public UpdateResource(@Named("files.directory") String filesDirectory,
-                          @Named("base.url") String baseUrl,
-                          ApplicationDAO applicationDAO,
-                          UnsecureDAO unsecureDAO,
-                          StatsSender statsSender,
-                          APKFileAnalyzer apkFileAnalyzer) {
+            @Named("base.url") String baseUrl,
+            ApplicationDAO applicationDAO,
+            UnsecureDAO unsecureDAO,
+            StatsSender statsSender,
+            APKFileAnalyzer apkFileAnalyzer) {
         this.filesDirectory = filesDirectory;
-        this.baseUrl = baseUrl;
         this.applicationDAO = applicationDAO;
         this.unsecureDAO = unsecureDAO;
         this.statsSender = statsSender;
@@ -177,7 +190,8 @@ public class UpdateResource {
         return Response.OK(request.getUpdates());
     }
 
-    // Download the web app (using the authentification!) and create the manifest file
+    // Download the web app (using the authentification!) and create the manifest
+    // file
     private boolean downloadWebApp(UpdateEntry app) {
         InputStream inputStream = null;
         HttpURLConnection conn = null;
@@ -192,7 +206,8 @@ public class UpdateResource {
 
             if (UpdateSettings.WEB_UPDATE_USERNAME != null && UpdateSettings.WEB_UPDATE_PASSWORD != null) {
                 String userCredentials = UpdateSettings.WEB_UPDATE_USERNAME + ":" + UpdateSettings.WEB_UPDATE_PASSWORD;
-                String basicAuth = "Basic " + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
+                String basicAuth = "Basic "
+                        + new String(Base64.getEncoder().encodeToString(userCredentials.getBytes()));
                 conn.setRequestProperty("Authorization", basicAuth);
             }
 
@@ -275,12 +290,14 @@ public class UpdateResource {
     // Update installedVersion to version in all configs
     // Record which configurations are affected to notify them via Push notification
     private void updateAppInConfig(UpdateEntry app) {
-        ApplicationVersion currentVersion = applicationDAO.findApplicationVersion(app.getPkg(), app.getCurrentVersion());
+        ApplicationVersion currentVersion = applicationDAO.findApplicationVersion(app.getPkg(),
+                app.getCurrentVersion());
         ApplicationVersion newVersion = applicationDAO.findApplicationVersion(app.getPkg(), app.getVersion());
 
         LinkConfigurationsToAppVersionRequest request = new LinkConfigurationsToAppVersionRequest();
         request.setApplicationVersionId(newVersion.getId());
-        List<ApplicationVersionConfigurationLink> linkList = applicationDAO.getApplicationVersionConfigurations(currentVersion.getId());
+        List<ApplicationVersionConfigurationLink> linkList = applicationDAO
+                .getApplicationVersionConfigurations(currentVersion.getId());
         for (ApplicationVersionConfigurationLink link : linkList) {
             link.setApplicationVersionId(newVersion.getId());
         }
@@ -309,7 +326,8 @@ public class UpdateResource {
     }
 
     private void processLauncherAppEntry(UpdateEntry entry) {
-        // We need to determine the currently installed launcher variant (os/master/system or custom)
+        // We need to determine the currently installed launcher variant
+        // (os/master/system or custom)
         List<Application> appList = applicationDAO.findByPackageId(entry.getPkg());
         if (appList.size() != 1) {
             // Not available for update
@@ -413,7 +431,8 @@ public class UpdateResource {
     private ApplicationVersion findLatestInstalledVersion(List<ApplicationVersion> versions) {
         ApplicationVersion result = null;
         for (ApplicationVersion v : versions) {
-            if (v.isDeletionProhibited() && (result == null || ApplicationUtil.compareVersions(v.getVersion(), result.getVersion()) > 0)) {
+            if (v.isDeletionProhibited()
+                    && (result == null || ApplicationUtil.compareVersions(v.getVersion(), result.getVersion()) > 0)) {
                 result = v;
             }
         }

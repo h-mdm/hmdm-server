@@ -1,17 +1,16 @@
 package com.hmdm.task;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.hmdm.persistence.CustomerDAO;
-import com.hmdm.persistence.UnsecureDAO;
-import com.hmdm.persistence.domain.Customer;
-import com.hmdm.service.EmailService;
-import com.hmdm.service.MailchimpService;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.hmdm.persistence.UnsecureDAO;
+import com.hmdm.persistence.domain.Customer;
+import com.hmdm.service.EmailService;
+import com.hmdm.service.MailchimpService;
 
 public class CustomerStatusTask implements Runnable {
     private final UnsecureDAO unsecureDAO;
@@ -19,17 +18,17 @@ public class CustomerStatusTask implements Runnable {
     private final MailchimpService mailchimpService;
     private final String adminEmail;
 
-    private final int INTERVAL_PAUSE_1   = 3;
-    private final int INTERVAL_PAUSE_2   = 5;
+    private final int INTERVAL_PAUSE_1 = 3;
+    private final int INTERVAL_PAUSE_2 = 5;
     private final int INTERVAL_ABANDON_1 = 7;
     private final int INTERVAL_ABANDON_2 = 14;
-    private final int INTERVAL_DENIAL    = 14;
+    private final int INTERVAL_DENIAL = 14;
 
     @Inject
     public CustomerStatusTask(UnsecureDAO unsecureDAO,
-                              EmailService emailService,
-                              MailchimpService mailchimpService,
-                              @Named("admin.email") String adminEmail) {
+            EmailService emailService,
+            MailchimpService mailchimpService,
+            @Named("admin.email") String adminEmail) {
         this.unsecureDAO = unsecureDAO;
         this.emailService = emailService;
         this.mailchimpService = mailchimpService;
@@ -39,7 +38,7 @@ public class CustomerStatusTask implements Runnable {
     @Override
     public void run() {
         List<Customer> customers = unsecureDAO.getFollowUpCustomersUnsecure();
-        Map<String,Customer> updatedCustomersMap = new HashMap<>();
+        Map<String, Customer> updatedCustomersMap = new HashMap<>();
 
         for (Customer customer : customers) {
             long now = System.currentTimeMillis();
@@ -145,7 +144,7 @@ public class CustomerStatusTask implements Runnable {
         }
         if (!adminEmail.equals("")) {
             // This info is not required now
-//            emailService.sendEmail(adminEmail, adminSubj, adminBody);
+            // emailService.sendEmail(adminEmail, adminSubj, adminBody);
         }
 
         // Notify Mailchimp

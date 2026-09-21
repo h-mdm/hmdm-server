@@ -36,6 +36,8 @@ import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.*;
 import com.hmdm.service.DeviceApplicationsStatus;
 import com.hmdm.service.DeviceConfigFilesStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.math3.stat.descriptive.summary.Sum;
 import org.mybatis.guice.transactional.Transactional;
 import com.hmdm.persistence.mapper.DeviceMapper;
@@ -44,6 +46,8 @@ import com.hmdm.security.SecurityException;
 
 @Singleton
 public class DeviceDAO extends AbstractDAO<Device> {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceDAO.class);
+
     private final DeviceMapper mapper;
     private final ApplicationSettingDAO applicationSettingDAO;
 
@@ -123,6 +127,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     public List<Device> getAllDevices() {
         DeviceSearchRequest request = new DeviceSearchRequest();
         List<Device> devices = getListWithCurrentUser(currentUser -> {
+            logger.debug("Fetching all devices for customer: {}", currentUser.getCustomerId());
             request.setCustomerId(currentUser.getCustomerId());
             request.setUserId(currentUser.getId());
             request.setPageSize(1000000);

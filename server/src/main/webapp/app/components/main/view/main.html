@@ -1,6 +1,57 @@
 <!-- Localization completed -->
-<div ng-controller='HeaderController'>
-    <div ng-include='"app/components/header/header.html"' ng-if='isAuth() && !isHidden()'></div>
+<div ng-controller="HeaderController">
+  <div
+    ng-include='"app/components/header/header.html"'
+    ng-if="isAuth() && !isHidden()"
+  ></div>
 </div>
 
 <div ui-view></div>
+
+<div
+  class="notification-container"
+  ng-if="notifications && notifications.length"
+>
+  <div
+    class="notification-toast"
+    ng-repeat="notification in notifications track by notification.id"
+    ng-class="{
+             'notification-success': notification.type === 'success',
+             'notification-error': notification.type === 'error',
+             'notification-warning': notification.type === 'warning',
+             'notification-info': notification.type === 'info'
+         }"
+  >
+    <div class="notification-icon">
+      <i
+        ng-if="notification.type === 'success'"
+        class="glyphicon glyphicon-ok"
+      ></i>
+
+      <i
+        ng-if="notification.type === 'error'"
+        class="glyphicon glyphicon-remove"
+      ></i>
+
+      <i
+        ng-if="notification.type === 'warning'"
+        class="glyphicon glyphicon-warning-sign"
+      ></i>
+
+      <i
+        ng-if="notification.type === 'info'"
+        class="glyphicon glyphicon-info-sign"
+      ></i>
+    </div>
+
+    <div class="notification-message">{{notification.message}}</div>
+
+    <button
+      type="button"
+      class="notification-close"
+      ng-click="dismissNotification(notification)"
+    >
+      &times;
+    </button>
+  </div>
+</div>

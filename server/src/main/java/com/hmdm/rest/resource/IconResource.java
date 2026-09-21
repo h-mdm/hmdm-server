@@ -21,28 +21,39 @@
 
 package com.hmdm.rest.resource;
 
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
- * <p>A resource providing interface to icon management functionality.</p>
+ * <p>
+ * A resource providing interface to icon management functionality.
+ * </p>
  *
  * @author isv
  */
-@Api(tags = {"Icons"})
+@Api(tags = { "Icons" })
 @Path("/private/icons")
 @Singleton
 public class IconResource {
@@ -55,7 +66,10 @@ public class IconResource {
     }
 
     /**
-     * <p>Constructs new <code>IconResource</code> instance. This implementation does nothing.</p>
+     * <p>
+     * Constructs new <code>IconResource</code> instance. This implementation does
+     * nothing.
+     * </p>
      */
     @Inject
     public IconResource(IconDAO iconDAO) {
@@ -64,7 +78,9 @@ public class IconResource {
 
     // =================================================================================================================
     /**
-     * <p>Creates new icon record on server.</p>
+     * <p>
+     * Creates new icon record on server.
+     * </p>
      *
      * @param icon the data for new icon.
      * @return a response to client containing the created icon.
@@ -74,9 +90,7 @@ public class IconResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createIcon(Icon icon) {
         try {
-            final Icon newIcon = icon.getId() == null ?
-                        iconDAO.insertIcon(icon) :
-                        iconDAO.updateIcon(icon);
+            final Icon newIcon = icon.getId() == null ? iconDAO.insertIcon(icon) : iconDAO.updateIcon(icon);
             return Response.OK(newIcon);
         } catch (Exception e) {
             return Response.INTERNAL_ERROR();
@@ -112,10 +126,7 @@ public class IconResource {
     }
 
     // =================================================================================================================
-    @ApiOperation(
-            value = "Delete an icon",
-            notes = "Delete an existing icon"
-    )
+    @ApiOperation(value = "Delete an icon", notes = "Delete an existing icon")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

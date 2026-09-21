@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~
   ~ Headwind MDM: Open Source Android MDM Software
@@ -20,8 +20,9 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>server</artifactId>
@@ -34,6 +35,7 @@
         <artifactId>root</artifactId>
         <version>0.1.0</version>
     </parent>
+
 
     <repositories>
         <repository>
@@ -74,23 +76,59 @@
             <version>2.21.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-core</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>devicelog-core</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>devicelog-postgres</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>devicelog-postgres</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>deviceinfo</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>deviceinfo</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>audit</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>audit</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>messaging</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>messaging</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- The formatting of this line must be kept as is - a single line -->
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>xtra</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>xtra</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.hmdm.plugin</groupId>
@@ -98,7 +136,12 @@
             <version>0.1.0</version>
         </dependency>
 
-        <dependency><groupId>com.hmdm.plugin</groupId><artifactId>push</artifactId><version>0.1.0</version><scope>runtime</scope></dependency>
+        <dependency>
+            <groupId>com.hmdm.plugin</groupId>
+            <artifactId>push</artifactId>
+            <version>0.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -111,8 +154,12 @@
                 <version>2.6.1</version>
                 <configuration>
                     <filesets>
-                        <fileset><directory>target</directory></fileset>
-                        <fileset><directory>src/main/webapp/lib</directory></fileset>
+                        <fileset>
+                            <directory>target</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>src/main/webapp/lib</directory>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -164,7 +211,8 @@
                                     </plugin>
                                     <goal>copy-resources</goal>
                                     <configuration>
-                                        <outputDirectory>${basedir}/target/launcher/app/components/plugins/@item@</outputDirectory>
+                                        <outputDirectory>
+                                            ${basedir}/target/launcher/app/components/plugins/@item@</outputDirectory>
                                         <overwrite>true</overwrite>
                                         <resources>
                                             <resource>
@@ -203,7 +251,9 @@
                 <executions>
                     <execution>
                         <id>install node and npm</id>
-                        <goals><goal>install-node-and-npm</goal></goals>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
 
                         <configuration>
                             <nodeVersion>v18.16.0</nodeVersion>
@@ -213,7 +263,9 @@
 
                     <execution>
                         <id>npm install</id>
-                        <goals><goal>npm</goal></goals>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
 
                         <configuration>
                             <arguments>install</arguments>
@@ -223,14 +275,16 @@
                     <execution>
                         <id>install js libs</id>
                         <phase>generate-resources</phase>
-                        <goals><goal>grunt</goal></goals>
+                        <goals>
+                            <goal>grunt</goal>
+                        </goals>
 
                         <configuration>
                             <arguments>resolve</arguments>
                         </configuration>
                     </execution>
 
-<!--
+                    <!--
                     <execution>
                         <id>remove node modules</id>
                         <goals><goal>grunt</goal></goals>
