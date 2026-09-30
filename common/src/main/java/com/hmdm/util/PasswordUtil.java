@@ -1,13 +1,16 @@
 package com.hmdm.util;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class PasswordUtil {
     public static final int PASS_STRENGTH_NONE = 0;
     public static final int PASS_STRENGTH_ALPHADIGIT = 1;
     public static final int PASS_STRENGTH_SPECIAL = 2;
 
-    private static final Random random = new Random();
+    // SecureRandom, not Random: these values are used as session auth tokens,
+    // password-reset tokens and signup verification tokens, so they must not
+    // be predictable (java.util.Random state can be recovered from outputs).
+    private static final SecureRandom random = new SecureRandom();
 
     private static final String PASS_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-.,!#$%()=+;*/";
     private static int DIGIT_START = 0;
