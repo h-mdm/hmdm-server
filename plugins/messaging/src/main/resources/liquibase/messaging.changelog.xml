@@ -156,7 +156,7 @@
                     AND am.amname        = 'btree'
                     AND i.indnkeyatts    = 2
                     AND i.indnatts       = 2
-                    AND (SELECT array_agg(a.attname ORDER BY k.ord)
+                    AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
                          FROM unnest(i.indkey) WITH ORDINALITY AS k(attnum, ord)
                          LEFT JOIN pg_attribute a
                                 ON a.attrelid = i.indrelid AND a.attnum = k.attnum)
@@ -250,7 +250,7 @@
                     AND am.amname        = 'btree'
                     AND i.indnkeyatts    = 1
                     AND i.indnatts       = 1
-                    AND (SELECT array_agg(a.attname ORDER BY k.ord)
+                    AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
                          FROM unnest(i.indkey) WITH ORDINALITY AS k(attnum, ord)
                          LEFT JOIN pg_attribute a
                                 ON a.attrelid = i.indrelid AND a.attnum = k.attnum)

@@ -99,4 +99,10 @@
     <!-- <Parameter name="jwt.secretkey" value="${jwt.secretkey}"/> -->
     <!-- <Parameter name="jwt.validity" value="${jwt.validity}"/> -->
     <!-- <Parameter name="jwt.validityrememberme" value="${jwt.validityrememberme}"/> -->
+
+    <!-- Restrict device API access to specific IP addresses or CIDR ranges (comma-separated) -->
+    <!-- <Parameter name="device.allowed.address" value="${device.allowed.address}"/> -->
+
+    <!-- Restrict web UI access to specific IP addresses or CIDR ranges (comma-separated) -->
+    <!-- <Parameter name="ui.allowed.address" value="${ui.allowed.address}"/> -->
 </Context>

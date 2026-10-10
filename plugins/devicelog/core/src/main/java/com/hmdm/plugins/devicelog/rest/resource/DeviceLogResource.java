@@ -170,7 +170,6 @@ public class DeviceLogResource {
                             b.append('\n');
 
                             output.write(b.toString().getBytes());
-                            output.flush();
                         } catch (IOException e) {
                             logger.error("Failed to write log record {} to output stream. Stopping to export further log records.", log, e);
                             stop.set(true);
@@ -179,6 +178,7 @@ public class DeviceLogResource {
                     }
 
                     if (!stop.get()) {
+                        output.flush();
                         filter.setPageNum(filter.getPageNum() + 1);
                         records = this.deviceLogDAO.findAll(filter);
                     } else {
