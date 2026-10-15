@@ -41,8 +41,8 @@ initialization.completion.signal.file=/home/launcher/initialized.txt
 # A command for calling the aapt
 aapt.command=aapt
 
-# An URL for the file with configuration for loggers
-log4j.config=file:///log4j-hmdm.xml
+# A URL for the file with logger configuration
+logback.config=file:///logback-hmdm.xml
 
 # The parameters specific to Device Log plugin
 plugin.devicelog.persistence.config.class=com.hmdm.plugins.devicelog.persistence.postgres.DeviceLogPostgresPersistenceConfiguration
@@ -56,11 +56,19 @@ mqtt.auth=true
 # MQTT admin password for broker authentication
 mqtt.admin.password=
 
-# SSL keystore password for MQTT broker
-ssl.keystore.password=
+# PEM certificate paths for the MQTT broker.
+# Published by the certbot deploy hook installed by hmdm_install.sh; the "current"
+# symlink is swapped atomically on each renewal, so these paths never change.
+# Leave empty if the MQTT server URI is not ssl:// / mqtts:// / wss:// -- they are
+# only consulted when TLS is requested, and a half-set pair aborts startup.
+ssl.pem.key.path=/etc/hmdm/tls/current/privkey.pem
+ssl.pem.cert.path=/etc/hmdm/tls/current/fullchain.pem
 
-# SSL keystore path for MQTT broker (default: /usr/local/tomcat/ssl/<domain>.jks)
-ssl.keystore.path=
+# Artemis PEMCFG file. Must live in a directory the Tomcat account can WRITE to:
+# the broker creates a temp file there and moves it into place. /etc/hmdm/tls is
+# root-owned and group-readable only, so pointing this at the key directory would
+# abort every startup.
+ssl.pem.config.path=/var/lib/hmdm/mqtt/mqtt-broker.pemcfg
 
 # Delaying MQTT messages in milliseconds to avoid congestion
 mqtt.message.delay=1000

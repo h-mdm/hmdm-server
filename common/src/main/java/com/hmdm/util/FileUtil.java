@@ -17,6 +17,7 @@ import com.hmdm.persistence.domain.Customer;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * <p>An utility class for managing the files on local file system.</p>
@@ -31,6 +32,16 @@ public final class FileUtil {
      */
     private FileUtil() {}
 
+    /** Returns an existing regular file within the storage root, resolving symlinks and relative segments. */
+    public static File resolveDownloadFile(String directory, String path) throws IOException {
+        File base = new File(directory).getCanonicalFile();
+        File file = new File(base, path).getCanonicalFile();
+        if (!file.toPath().startsWith(base.toPath()) || !file.isFile()) {
+            return null;
+        }
+        return file;
+    }
+
     public static String adjustFileName(String fileName) {
         return fileName.replace(' ', '_')
                 .replace('+', '_') // Not valid in URL
@@ -43,19 +54,10 @@ public final class FileUtil {
         return File.createTempFile(fileName + TEMP_FILE_DELIMITER, ".temp");
     }
 
-    public static void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+    /** Copies the upload, leaving ownership of the input stream with the caller. */
+    public static void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) throws IOException {
         try (FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation))) {
-            byte[] bytes = new byte[1024];
-
-            int read;
-            while ((read = uploadedInputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-
-            out.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            uploadedInputStream.transferTo(out);
         }
     }
 
@@ -116,22 +118,14 @@ public final class FileUtil {
             throw new FileExistsException(customer, file.getName());
         }
 
-        final boolean success = localFile.renameTo(file);
-        if (success) {
+        try {
+            Files.move(localFile.toPath(), file.toPath());
             return file;
-        } else {
-            // Try to copy and delete because rename can fail due to different file systems. For example, on Tomcat 9
-            // renaming from /tmp to /var/lib/tomcat9/work will fail due to sandbox restrictions
-            try {
-                FileInputStream inputStream = new FileInputStream(localFile);
-                writeToFile(inputStream, file.getAbsolutePath());
-                inputStream.close();
-                localFile.delete();
-                return file;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+        } catch (java.nio.file.FileAlreadyExistsException e) {
+            throw new FileExistsException(customer, file.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -174,31 +168,21 @@ public final class FileUtil {
     }
 
     public static String downloadTextFile(URL url) throws IOException {
-        BufferedInputStream bis = new BufferedInputStream(url.openStream());
-        StringBuffer stringBuffer = new StringBuffer();
-        byte[] buffer = new byte[1024];
-        int count = 0;
-        while ((count = bis.read(buffer, 0, 1024)) != -1) {
-            stringBuffer.append(new String(buffer, StandardCharsets.UTF_8));
+        try (InputStream input = url.openStream()) {
+            return new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
-        bis.close();
-        return stringBuffer.toString();
     }
 
     public static void downloadFile(URL url, String directory, String name) throws IOException {
-        BufferedInputStream bis = new BufferedInputStream(url.openStream());
-        File file = new File(directory, name);
-        if (file.exists()) {
-            file.delete();
+        try (InputStream input = url.openStream()) {
+            File file = new File(directory, name);
+            if (file.exists()) {
+                file.delete();
+            }
+            try (OutputStream output = new FileOutputStream(file)) {
+                input.transferTo(output);
+            }
         }
-        FileOutputStream fos = new FileOutputStream(file);
-        byte[] buffer = new byte[1024];
-        int count = 0;
-        while ((count = bis.read(buffer, 0, 1024)) != -1) {
-            fos.write(buffer, 0, count);
-        }
-        bis.close();
-        fos.close();
     }
 
     public static boolean isSafePath(String path) {

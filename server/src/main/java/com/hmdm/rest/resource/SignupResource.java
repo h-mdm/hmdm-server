@@ -112,7 +112,6 @@ public class SignupResource {
         list.toArray(this.customerSignupConfigurations);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Signup feature", description = "Checks if the customer signup is allowed.")
     @GET
     @Deprecated
@@ -126,7 +125,6 @@ public class SignupResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Verify email",
             description = "Check whether the email doesn't exist and start the signup flow")
@@ -167,7 +165,6 @@ public class SignupResource {
         return Response.OK();
     }
 
-    // =================================================================================================================
     @Operation(summary = "Verify token", description = "Checks if the customer's token is valid.")
     @GET
     @Path("/verifyToken/{token}")
@@ -180,7 +177,6 @@ public class SignupResource {
         return Response.OK(signup);
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Complete the registration",
             description = "Create a new customer and notify admins and customer itself.")

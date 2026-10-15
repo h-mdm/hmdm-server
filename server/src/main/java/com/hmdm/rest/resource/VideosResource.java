@@ -29,13 +29,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Date;
-import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -70,7 +68,8 @@ public class VideosResource {
         writeToFile(uploadedInputStream, uploadFile.getAbsolutePath());
         Video video = new Video();
         video.setPath(String.format(
-                "%s/rest/public/videos/%s", this.baseUrl, URLEncoder.encode(fileDetail.getFileName(), "UTF8")));
+                "%s/rest/public/videos/%s", this.baseUrl,
+                URLEncoder.encode(fileDetail.getFileName(), StandardCharsets.UTF_8).replace("+", "%20")));
         return Response.OK(video);
     }
 
@@ -83,7 +82,12 @@ public class VideosResource {
             videoDir.mkdirs();
         }
 
-        File videoFile = new File(videoDir, URLDecoder.decode(fileName, StandardCharsets.UTF_8));
+        File requestedFile = new File(videoDir, fileName);
+        // Older upload URLs encoded spaces as '+'. Prefer the exact filename so
+        // literal-plus names remain accessible; never percent-decode a second time.
+        File videoFile = !requestedFile.exists() && fileName.contains("+")
+                ? new File(videoDir, fileName.replace('+', ' '))
+                : requestedFile;
         if (!videoFile.exists()) {
             return jakarta.ws.rs.core.Response.status(404).build();
         } else {
@@ -92,13 +96,7 @@ public class VideosResource {
                     .creationDate(new Date())
                     .build();
             return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
-                try {
-                    InputStream input = new FileInputStream(videoFile);
-                    IOUtils.copy(input, output);
-                    output.flush();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Files.copy(videoFile.toPath(), output);
             })
                     .header("Content-Disposition", contentDisposition)
                     .build();

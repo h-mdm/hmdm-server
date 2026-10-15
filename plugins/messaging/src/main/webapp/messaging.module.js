@@ -281,7 +281,7 @@ angular.module('plugin-messaging', ['ngResource', 'ui.bootstrap', 'ui.router', '
             $scope.groups = response.data;
         });
 
-        configurationService.getAllConfigurations(function (response) {
+        configurationService.getAllConfigNames(function (response) {
             $scope.configurations = response.data;
         });
 
@@ -343,5 +343,4 @@ angular.module('plugin-messaging', ['ngResource', 'ui.bootstrap', 'ui.router', '
         })
         localization.loadPluginResourceBundles("messaging");
     });
-
 

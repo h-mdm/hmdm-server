@@ -87,6 +87,10 @@
         INNER JOIN users ON users.id = #{userId}
         LEFT JOIN applications ON applications.id = data.applicationId
         WHERE devices.customerId = #{customerId}
+        <!-- devices.customerId is the device owner; data.customerId is the log row's own tenant.
+             Both are required: a log row may carry a different customerId than the device it
+             references, and filtering on the device alone exposes that row to the wrong tenant. -->
+        AND data.customerId = #{customerId}
         AND (users.allDevicesAvailable = TRUE
         OR
         EXISTS(SELECT 1
@@ -151,6 +155,10 @@
         INNER JOIN users ON users.id = #{userId}
         LEFT JOIN applications ON applications.id = data.applicationId
         WHERE devices.customerId = #{customerId}
+        <!-- devices.customerId is the device owner; data.customerId is the log row's own tenant.
+             Both are required: a log row may carry a different customerId than the device it
+             references, and filtering on the device alone exposes that row to the wrong tenant. -->
+        AND data.customerId = #{customerId}
         AND (users.allDevicesAvailable = TRUE
         OR
         EXISTS(SELECT 1

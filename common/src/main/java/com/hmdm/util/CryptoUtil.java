@@ -14,18 +14,20 @@
 package com.hmdm.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.BaseEncoding;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.Base64;
+import java.util.HexFormat;
 
 public class CryptoUtil {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
@@ -43,15 +45,7 @@ public class CryptoUtil {
     }
 
     public static String getHexString(byte[] digest) {
-        char[] hexChars = new char[digest.length * 2];
-
-        for (int i = 0; i < digest.length; ++i) {
-            int v = digest[i] & 255;
-            hexChars[i * 2] = hexArray[v >>> 4];
-            hexChars[i * 2 + 1] = hexArray[v & 15];
-        }
-
-        return (new String(hexChars)).toUpperCase();
+        return HexFormat.of().withUpperCase().formatHex(digest);
     }
 
     /**
@@ -62,8 +56,7 @@ public class CryptoUtil {
      * @return a base-64 encoded string representing the specified content.
      */
     public static String getBase64String(byte[] digest) {
-        String hashString = BaseEncoding.base64Url().encode(digest);
-        return hashString;
+        return Base64.getUrlEncoder().encodeToString(digest);
     }
 
     public static String calculateChecksum(InputStream fileContent) throws NoSuchAlgorithmException, IOException {
@@ -71,28 +64,10 @@ public class CryptoUtil {
         MessageDigest md = MessageDigest.getInstance("MD5");
         try (InputStream is = new BufferedInputStream(fileContent);
                 DigestInputStream dis = new DigestInputStream(is, md)) {
-            /* Read decorated stream (dis) to EOF as normal... */
-            int b;
-            while ((b = dis.read()) != -1) {
-                // digest will consume the content when read() called
-            }
+            dis.transferTo(OutputStream.nullOutputStream());
         }
 
-        // to calculate message digest of the input string returned as array of byte
-        byte[] digest = md.digest();
-
-        // Convert byte array into signum representation
-        BigInteger no = new BigInteger(1, digest);
-
-        // Convert message digest into hex value
-        String hashtext = no.toString(16);
-
-        // Add preceding 0s to make it 32 bit
-        while (hashtext.length() < 32) {
-            hashtext = "0" + hashtext;
-        }
-
-        return hashtext;
+        return HexFormat.of().formatHex(md.digest());
     }
 
     public static String getSHA1String(String value) {
@@ -101,23 +76,16 @@ public class CryptoUtil {
             md.update(value.getBytes());
             byte[] digest = md.digest();
 
-            char[] hexChars = new char[digest.length * 2];
-            for (int i = 0; i < digest.length; i++) {
-                int v = digest[i] & 0xFF;
-                hexChars[i * 2] = hexArray[v >>> 4];
-                hexChars[i * 2 + 1] = hexArray[v & 0x0F];
-            }
-            return new String(hexChars).toUpperCase();
+            return getHexString(digest);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public static String getDataSignature(String hashSecret, Object data) {
-        ObjectMapper objectMapper = new ObjectMapper();
         String s = "";
         try {
-            s = objectMapper.writeValueAsString(data);
+            s = JSON_MAPPER.writeValueAsString(data);
         } catch (Exception e) {
             e.printStackTrace();
         }

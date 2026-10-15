@@ -50,9 +50,6 @@
         <appender-ref ref="AUDIT_FILE"/>
     </logger>
 
-    <!-- Suppress 'Stealing link for clientId ...' warnings -->
-    <logger name="org.apache.activemq.broker.region.RegionBroker" level="ERROR"/>
-
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="MAIN_LOG_FILE"/>

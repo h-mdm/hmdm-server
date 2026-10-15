@@ -29,6 +29,8 @@
   "plugin.audit.action.password.reset": "デバイスのパスワードのリセット",
   "plugin.audit.action.device.reset": "デバイスの出荷時設定へのリセット",
   "plugin.audit.action.device.lock": "デバイスがロックされています",
+  "plugin.audit.action.update.check": "アップデートを確認する",
+  "plugin.audit.action.update.update": "アップデートを適用する",
   "plugin.audit.error": " - エラー",
   "plugin.audit.tab.title": "監査",
   "plugin.audit.all.items": "すべてのアクション",

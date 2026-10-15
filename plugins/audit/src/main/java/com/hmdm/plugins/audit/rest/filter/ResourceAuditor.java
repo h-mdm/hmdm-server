@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 class ResourceAuditor {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceAuditor.class);
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     /**
      * <p>A name of session attribute holding the details for current user.</p>
@@ -58,7 +59,7 @@ class ResourceAuditor {
     /**
      * <p>A response to be sent to client.</p>
      */
-    private final ServletResponseAuditWrapper response;
+    private final HttpServletResponse response;
 
     /**
      * <p>A filter chain</p>
@@ -97,7 +98,9 @@ class ResourceAuditor {
         } else {
             this.request = request;
         }
-        this.response = new ServletResponseAuditWrapper((HttpServletResponse) response);
+        this.response = checkResponse
+                ? new ServletResponseAuditWrapper((HttpServletResponse) response)
+                : (HttpServletResponse) response;
         this.chain = chain;
         this.payload = payload;
         this.checkResponse = checkResponse;
@@ -163,13 +166,13 @@ class ResourceAuditor {
             }
         }
         if (this.response.getStatus() == 200) {
-            final byte[] content = this.response.getContent();
-            ObjectMapper objectMapper = new ObjectMapper();
-            final Response response = objectMapper.readValue(content, Response.class);
-            if (checkResponse && (response == null || response.getStatus() != Response.ResponseStatus.OK)) {
-                logRecord.setErrorCode(1);
-            } else {
-                logRecord.setErrorCode(0);
+            logRecord.setErrorCode(0);
+            if (checkResponse) {
+                final byte[] content = ((ServletResponseAuditWrapper) this.response).getContent();
+                final Response response = JSON_MAPPER.readValue(content, Response.class);
+                if (response == null || response.getStatus() != Response.ResponseStatus.OK) {
+                    logRecord.setErrorCode(1);
+                }
             }
         } else {
             logRecord.setErrorCode(2);

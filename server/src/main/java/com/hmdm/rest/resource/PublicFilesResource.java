@@ -13,6 +13,9 @@
 
 package com.hmdm.rest.resource;
 
+import java.nio.file.Files;
+
+import com.hmdm.util.FileUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -23,12 +26,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 
 /**
@@ -64,8 +62,8 @@ public class PublicFilesResource {
     public jakarta.ws.rs.core.Response downloadFile(@PathParam("filePath") String filePath) throws Exception {
         // TODO : ISV : Needs to identify the device and do a security check if device is granted access to specified
         // file
-        File file = new File(filesDirectory + "/" + URLDecoder.decode(filePath, StandardCharsets.UTF_8));
-        if (!file.exists()) {
+        File file = FileUtil.resolveDownloadFile(filesDirectory, filePath);
+        if (file == null) {
             return jakarta.ws.rs.core.Response.status(404).build();
         } else {
             ContentDisposition contentDisposition = ContentDisposition.type("attachment")
@@ -73,13 +71,7 @@ public class PublicFilesResource {
                     .creationDate(new Date())
                     .build();
             return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
-                try {
-                    InputStream input = new FileInputStream(file);
-                    IOUtils.copy(input, output);
-                    output.flush();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Files.copy(file.toPath(), output);
             })
                     .header("Content-Disposition", contentDisposition)
                     .build();

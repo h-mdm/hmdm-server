@@ -83,7 +83,6 @@ public class JWTAuthResource {
         this.taskRunner = taskRunner;
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Authenticate client",
             description = "Authenticates the client using provided credentials and responds with JWT token in case of "

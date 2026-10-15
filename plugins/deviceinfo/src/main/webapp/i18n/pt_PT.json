@@ -73,6 +73,7 @@
   "plugin.deviceinfo.title.iccid2": "ICCID do Segundo Chip",
   "plugin.deviceinfo.title.imsi2": "IMSI do Segundo Chip",
   "plugin.deviceinfo.title.serial": "Número do Serial",
+  "plugin.deviceinfo.title.mac": "Endereço MAC",
   "plugin.deviceinfo.title.cpu": "CPU",
   "plugin.deviceinfo.title.battery.level": "Nível de Bateria",
   "plugin.deviceinfo.title.permission.1": "Permissão de administrador do dispositivo",

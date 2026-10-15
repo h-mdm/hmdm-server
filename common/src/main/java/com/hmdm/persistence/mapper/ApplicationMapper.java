@@ -104,6 +104,14 @@ public interface ApplicationMapper {
     })
     List<Application> getAllApplicationsByUrl(@Param("customerId") int customerId, @Param("url") String url);
 
+    // How many OTHER application versions reference the same APK file (any arch column,
+    // any customer). Used to avoid unlinking a file that a remaining version still needs.
+    @Select("SELECT COUNT(*) FROM applicationVersions "
+            + "WHERE id <> #{excludeId} "
+            + "AND (url = #{url} OR urlArmeabi = #{url} OR urlArm64 = #{url})")
+    int countOtherVersionsByUrl(@Param("url") String url,
+            @Param("excludeId") Integer excludeVersionId);
+
     @Insert({
                     "INSERT INTO applications (name, pkg, showIcon, useKiosk, system, customerId, runAfterInstall, runAtBoot, type, iconText, iconId, intent) "
                             + "VALUES (#{name}, #{pkg}, #{showIcon}, #{useKiosk}, #{system}, #{customerId}, #{runAfterInstall}, #{runAtBoot}, #{type}, #{iconText}, #{iconId}, #{intent})"
@@ -241,6 +249,10 @@ public interface ApplicationMapper {
             @Param("versionId") Integer applicationVersionId,
             @Param("confs") List<ApplicationConfigurationLink> configurations);
 
+    @Select("SELECT EXISTS (SELECT 1 FROM configurations WHERE id = #{configurationId} AND customerId = #{customerId})")
+    boolean isConfigurationOwnedByCustomer(
+            @Param("configurationId") int configurationId, @Param("customerId") int customerId);
+
     void insertApplicationVersionConfigurations(
             @Param("applicationId") Integer applicationId,
             @Param("versionId") Integer applicationVersionId,
@@ -309,6 +321,22 @@ public interface ApplicationMapper {
     @Update("UPDATE configurations SET contentAppId=#{newId} WHERE contentAppId=#{id}")
     void changeConfigurationsContentApplication(@Param("id") Integer id, @Param("newId") Integer newId);
 
+    // Customer-scoped rebind variants. Used when deleting a per-customer (non-common)
+    // application version so the UPDATE only ever touches that customer's configurations and can never
+    // repoint another tenant's mainApp/contentApp. Common apps (super-admin only) keep the unscoped
+    // variants above because they are intentionally shared across tenants.
+    @Update("UPDATE configurations SET mainAppId=#{newId} WHERE mainAppId=#{id} AND customerId=#{customerId}")
+    void changeConfigurationsMainApplicationForCustomer(
+            @Param("id") Integer id,
+            @Param("newId") Integer newId,
+            @Param("customerId") Integer customerId);
+
+    @Update("UPDATE configurations SET contentAppId=#{newId} WHERE contentAppId=#{id} AND customerId=#{customerId}")
+    void changeConfigurationsContentApplicationForCustomer(
+            @Param("id") Integer id,
+            @Param("newId") Integer newId,
+            @Param("customerId") Integer customerId);
+
     @Select("SELECT COUNT(*) > 0 " + "FROM configurationApplications "
             + "WHERE configurationApplications.applicationId=#{id}")
     boolean isApplicationUsedInConfigurations(@Param("id") Integer applicationId);
@@ -329,7 +357,24 @@ public interface ApplicationMapper {
 
     @Select("SELECT COUNT(*) > 0 " + "FROM configurationApplications "
             + "WHERE configurationApplications.applicationVersionId=#{id}")
-    boolean isApplicationVersionUsedInConfigurations(@Param("id") Integer applicationVersionId);
+    boolean isApplicationVersionUsedInConfigurationApplications(@Param("id") Integer applicationVersionId);
+
+    @Select("SELECT COUNT(*) > 0 FROM configurations WHERE mainAppId=#{id}")
+    boolean isApplicationVersionUsedAsMainApp(@Param("id") Integer applicationVersionId);
+
+    @Select("SELECT COUNT(*) > 0 FROM configurations WHERE contentAppId=#{id}")
+    boolean isApplicationVersionUsedAsContentApp(@Param("id") Integer applicationVersionId);
+
+    // Scope the replacement lookup to the owning customer's application versions so the
+    // rebind on deletion can never select (and then apply) a version outside the app's customer.
+    @Select("SELECT applicationVersions.id FROM applicationVersions "
+            + "INNER JOIN applications ON applications.id = applicationVersions.applicationId "
+            + "WHERE applicationVersions.applicationId = #{appId} AND applicationVersions.id <> #{excludeId} "
+            + "AND applications.customerId = #{customerId} "
+            + "ORDER BY mdm_app_version_comparison_index(applicationVersions.version) DESC LIMIT 1")
+    Integer findReplacementVersionId(@Param("appId") Integer applicationId,
+            @Param("excludeId") Integer excludeVersionId,
+            @Param("customerId") Integer customerId);
 
     @Select({SELECT_VERSION_BASE + "WHERE applicationVersions.id = #{id}"})
     ApplicationVersion findVersionById(@Param("id") int id);

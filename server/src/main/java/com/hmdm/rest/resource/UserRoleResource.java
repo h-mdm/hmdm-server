@@ -48,7 +48,6 @@ public class UserRoleResource {
         this.userRoleDAO = userRoleDAO;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get all permissions", description = "Gets the list of all permissions")
     @GET
     @Path("/permissions")
@@ -57,7 +56,6 @@ public class UserRoleResource {
         return Response.OK(this.userRoleDAO.getPermissionsList());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get all roles", description = "Get the list of all user roles")
     @GET
     @Path("/all")
@@ -66,7 +64,6 @@ public class UserRoleResource {
         return Response.OK(this.userRoleDAO.findAll());
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update user role",
             description = "Create a new user role (if id is not provided) or update existing one otherwise.")
@@ -94,7 +91,6 @@ public class UserRoleResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete user role", description = "Delete an existing user role")
     @DELETE
     @Path("/{id}")

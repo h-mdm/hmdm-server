@@ -69,7 +69,6 @@ public class ConfigurationResource {
         this.baseUrl = baseUrl;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get configurations", description = "Gets the list of available configurations")
     @GET
     @Path("/search")
@@ -84,7 +83,6 @@ public class ConfigurationResource {
         return Response.OK(configurations);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get configuration names", description = "Gets the list of available configuration names")
     @GET
     @Path("/list")
@@ -97,7 +95,6 @@ public class ConfigurationResource {
         return Response.OK(items);
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Search configurations",
             description = "Searches configurations meeting the specified filter value")
@@ -114,7 +111,6 @@ public class ConfigurationResource {
         return Response.OK(configurations);
     }
 
-    // =================================================================================================================
     /**
      * <p>Gets the list of configuration id/names matching the specified filter for autocompletions.</p>
      *
@@ -138,7 +134,6 @@ public class ConfigurationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update configuration",
             description = "Creates a new configuration (if id is not provided) or update existing one otherwise.")
@@ -193,7 +188,6 @@ public class ConfigurationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Upgrade configuration application",
             description = "Upgrades the application used by configuration to most recent version")
@@ -222,7 +216,6 @@ public class ConfigurationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Copy configuration",
             description = "Creates a new copy of configuration referenced by the id and names it with provided name.")
@@ -259,7 +252,6 @@ public class ConfigurationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Delete configuration",
             description = "Deletes a configuration referenced by the specified ID.")
@@ -291,7 +283,6 @@ public class ConfigurationResource {
         return Response.OK(this.applicationDAO.getAllApplications());
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get configuration applications",
             description = "Gets the list of all applications in context of usage by the requested configuration")
@@ -307,7 +298,6 @@ public class ConfigurationResource {
         return Response.OK(this.configurationDAO.getConfigurationApplications(id));
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get configuration",
             description = "Gets the details for configuration referenced by the specified ID")

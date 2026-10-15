@@ -73,6 +73,7 @@
   "plugin.deviceinfo.title.iccid2": "بطاقة SIM الثانية ICCID",
   "plugin.deviceinfo.title.imsi2": "الثانية SIM IMSI",
   "plugin.deviceinfo.title.serial": "رقم سري",
+  "plugin.deviceinfo.title.mac": "عنوان MAC",
   "plugin.deviceinfo.title.cpu": "بنية وحدة المعالجة المركزية",
   "plugin.deviceinfo.title.battery.level": "شحن البطارية",
   "plugin.deviceinfo.title.permission.1": "إذن للتثبيت كمسؤول الجهاز",

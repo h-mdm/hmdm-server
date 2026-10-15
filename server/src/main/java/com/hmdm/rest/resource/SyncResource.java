@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 @Path("/public/sync")
 @Tag(name = "Device data synchronization")
 public class SyncResource {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private static final Logger logger = LoggerFactory.getLogger(SyncResource.class);
 
@@ -150,7 +151,6 @@ public class SyncResource {
         this.syncResponseHooks = allYourInterfaces;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get device settings", description = "Gets the device info and settings from the MDM server.")
     @POST
     @Path("/configuration/{deviceId}")
@@ -214,7 +214,6 @@ public class SyncResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get device settings", description = "Gets the device info and settings from the MDM server.")
     @GET
     @Path("/configuration/{deviceId}")
@@ -504,7 +503,6 @@ public class SyncResource {
         return Response.OK(syncResponse);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Update device info", description = "Updates the device info on the MDM server.")
     @POST
     @Path("/info")
@@ -541,10 +539,9 @@ public class SyncResource {
                     dbDevice.setOldNumber(null);
                 }
 
-                ObjectMapper objectMapper = new ObjectMapper();
                 DeviceInfo prevInfo = null;
                 try {
-                    prevInfo = objectMapper.readValue(dbDevice.getInfo(), DeviceInfo.class);
+                    prevInfo = JSON_MAPPER.readValue(dbDevice.getInfo(), DeviceInfo.class);
                 } catch (Exception e) {
                 }
                 if (prevInfo != null
@@ -555,7 +552,7 @@ public class SyncResource {
                 }
                 this.unsecureDAO.updateDeviceInfo(
                         dbDevice.getId(),
-                        objectMapper.writeValueAsString(deviceInfo),
+                        JSON_MAPPER.writeValueAsString(deviceInfo),
                         dbDevice.getImeiUpdateTs(),
                         remoteAddrResolver.getRemoteAddr(request));
 
@@ -602,7 +599,6 @@ public class SyncResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Save application settings",
             description = "Saves the application settings for the device on the MDM server.")

@@ -231,4 +231,193 @@
             ALTER TABLE plugin_deviceinfo_deviceparams_device DROP COLUMN memoryAvailable;
         </rollback>
     </changeSet>
+
+    <!-- ===================================================================
+         Index plugin_deviceinfo_deviceparams_deviceid_ts_idx on plugin_deviceinfo_deviceParams (deviceId, ts)
+
+         Three changesets, not one. These indexes were first authored as
+         'convergent'; re-authoring them as 'hmdm' changes the Liquibase
+         identity (id, author, filename), so a database that already ran the
+         convergent changesets treats these as new. The cleanup drops an index
+         left unusable by an interrupted CONCURRENTLY build, the guard reports
+         a same-name index with a different definition, and the create runs
+         only when the name is genuinely absent.
+
+         CREATE INDEX CONCURRENTLY IF NOT EXISTS is deliberately NOT used: it
+         silently accepts an existing invalid index, and Liquibase then records
+         the changeset as successful.
+
+         Identifier case is load-bearing. The DDL is unquoted, so PostgreSQL
+         folds these names to lower case; every catalog comparison below uses
+         the lower-cased form and is schema-qualified.
+         =================================================================== -->
+
+    <changeSet id="plugin-deviceinfo-2026.06.17-idx-device-ts-cleanup" author="hmdm"
+               context="common" runInTransaction="false">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM pg_class idx
+                JOIN pg_namespace n ON n.oid = idx.relnamespace
+                JOIN pg_index i    ON i.indexrelid = idx.oid
+                WHERE n.nspname = current_schema()
+                  AND idx.relname = 'plugin_deviceinfo_deviceparams_deviceid_ts_idx'
+                  AND (NOT i.indisvalid OR NOT i.indisready)
+            </sqlCheck>
+        </preConditions>
+        <comment>Drop plugin_deviceinfo_deviceparams_deviceid_ts_idx only if it was left invalid or not ready</comment>
+        <sql>DROP INDEX CONCURRENTLY IF EXISTS plugin_deviceinfo_deviceparams_deviceid_ts_idx;</sql>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-2026.06.17-idx-device-ts-guard" author="hmdm" context="common">
+        <preConditions onFail="WARN"
+            onFailMessage="Index plugin_deviceinfo_deviceparams_deviceid_ts_idx exists in the current schema with
+                           an unexpected definition (unique, partial, expression key, INCLUDE columns,
+                           non-btree, non-default sort order or operator class, or a different
+                           table/columns). It has NOT been modified and the intended index has NOT been
+                           created; queries on plugin_deviceinfo_deviceParams (deviceId, ts) remain unindexed.
+                           Resolve manually, then re-run the verification query.">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM pg_class idx
+                JOIN pg_namespace n  ON n.oid = idx.relnamespace
+                JOIN pg_index i      ON i.indexrelid = idx.oid
+                JOIN pg_class tbl    ON tbl.oid = i.indrelid
+                JOIN pg_am am        ON am.oid = idx.relam
+                WHERE n.nspname = current_schema()
+                  AND idx.relname = 'plugin_deviceinfo_deviceparams_deviceid_ts_idx'
+                  AND i.indisvalid AND i.indisready
+                  AND NOT (
+                        tbl.relname      = 'plugin_deviceinfo_deviceparams'
+                    AND i.indisunique    = false
+                    AND i.indisexclusion = false
+                    AND i.indislive      = true
+                    AND i.indpred        IS NULL
+                    AND i.indexprs       IS NULL
+                    AND am.amname        = 'btree'
+                    AND i.indnkeyatts    = 2
+                    AND i.indnatts       = 2
+                    AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+                         FROM unnest(i.indkey) WITH ORDINALITY AS k(attnum, ord)
+                         LEFT JOIN pg_attribute a
+                                ON a.attrelid = i.indrelid AND a.attnum = k.attnum)
+                        = ARRAY['deviceid', 'ts']
+                    AND (SELECT bool_and(o = 0) FROM unnest(i.indoption) AS o)
+                    AND (SELECT bool_and(oc.opcdefault)
+                         FROM unnest(i.indclass) AS c JOIN pg_opclass oc ON oc.oid = c)
+                  )
+            </sqlCheck>
+        </preConditions>
+        <comment>Report a valid but differently-defined plugin_deviceinfo_deviceparams_deviceid_ts_idx, without touching it</comment>
+        <sql>SELECT 1;</sql>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-2026.06.17-idx-device-ts" author="hmdm"
+               context="common" runInTransaction="false">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM pg_class idx
+                JOIN pg_namespace n ON n.oid = idx.relnamespace
+                WHERE n.nspname = current_schema()
+                  AND idx.relname = 'plugin_deviceinfo_deviceparams_deviceid_ts_idx'
+            </sqlCheck>
+        </preConditions>
+        <comment>Index,new: plugin_deviceinfo_deviceparams_deviceid_ts_idx on plugin_deviceinfo_deviceParams (deviceId, ts)</comment>
+        <sql>CREATE INDEX CONCURRENTLY plugin_deviceinfo_deviceparams_deviceid_ts_idx
+             ON plugin_deviceinfo_deviceParams (deviceId, ts);</sql>
+        <rollback>DROP INDEX CONCURRENTLY IF EXISTS plugin_deviceinfo_deviceparams_deviceid_ts_idx;</rollback>
+    </changeSet>
+
+    <!-- ===================================================================
+         Index plugin_deviceinfo_deviceparams_customerid_ts_idx on plugin_deviceinfo_deviceParams (customerId, ts)
+
+         Three changesets, not one. These indexes were first authored as
+         'convergent'; re-authoring them as 'hmdm' changes the Liquibase
+         identity (id, author, filename), so a database that already ran the
+         convergent changesets treats these as new. The cleanup drops an index
+         left unusable by an interrupted CONCURRENTLY build, the guard reports
+         a same-name index with a different definition, and the create runs
+         only when the name is genuinely absent.
+
+         CREATE INDEX CONCURRENTLY IF NOT EXISTS is deliberately NOT used: it
+         silently accepts an existing invalid index, and Liquibase then records
+         the changeset as successful.
+
+         Identifier case is load-bearing. The DDL is unquoted, so PostgreSQL
+         folds these names to lower case; every catalog comparison below uses
+         the lower-cased form and is schema-qualified.
+         =================================================================== -->
+
+    <changeSet id="plugin-deviceinfo-2026.06.17-idx-cust-ts-cleanup" author="hmdm"
+               context="common" runInTransaction="false">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM pg_class idx
+                JOIN pg_namespace n ON n.oid = idx.relnamespace
+                JOIN pg_index i    ON i.indexrelid = idx.oid
+                WHERE n.nspname = current_schema()
+                  AND idx.relname = 'plugin_deviceinfo_deviceparams_customerid_ts_idx'
+                  AND (NOT i.indisvalid OR NOT i.indisready)
+            </sqlCheck>
+        </preConditions>
+        <comment>Drop plugin_deviceinfo_deviceparams_customerid_ts_idx only if it was left invalid or not ready</comment>
+        <sql>DROP INDEX CONCURRENTLY IF EXISTS plugin_deviceinfo_deviceparams_customerid_ts_idx;</sql>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-2026.06.17-idx-cust-ts-guard" author="hmdm" context="common">
+        <preConditions onFail="WARN"
+            onFailMessage="Index plugin_deviceinfo_deviceparams_customerid_ts_idx exists in the current schema with
+                           an unexpected definition (unique, partial, expression key, INCLUDE columns,
+                           non-btree, non-default sort order or operator class, or a different
+                           table/columns). It has NOT been modified and the intended index has NOT been
+                           created; queries on plugin_deviceinfo_deviceParams (customerId, ts) remain unindexed.
+                           Resolve manually, then re-run the verification query.">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM pg_class idx
+                JOIN pg_namespace n  ON n.oid = idx.relnamespace
+                JOIN pg_index i      ON i.indexrelid = idx.oid
+                JOIN pg_class tbl    ON tbl.oid = i.indrelid
+                JOIN pg_am am        ON am.oid = idx.relam
+                WHERE n.nspname = current_schema()
+                  AND idx.relname = 'plugin_deviceinfo_deviceparams_customerid_ts_idx'
+                  AND i.indisvalid AND i.indisready
+                  AND NOT (
+                        tbl.relname      = 'plugin_deviceinfo_deviceparams'
+                    AND i.indisunique    = false
+                    AND i.indisexclusion = false
+                    AND i.indislive      = true
+                    AND i.indpred        IS NULL
+                    AND i.indexprs       IS NULL
+                    AND am.amname        = 'btree'
+                    AND i.indnkeyatts    = 2
+                    AND i.indnatts       = 2
+                    AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+                         FROM unnest(i.indkey) WITH ORDINALITY AS k(attnum, ord)
+                         LEFT JOIN pg_attribute a
+                                ON a.attrelid = i.indrelid AND a.attnum = k.attnum)
+                        = ARRAY['customerid', 'ts']
+                    AND (SELECT bool_and(o = 0) FROM unnest(i.indoption) AS o)
+                    AND (SELECT bool_and(oc.opcdefault)
+                         FROM unnest(i.indclass) AS c JOIN pg_opclass oc ON oc.oid = c)
+                  )
+            </sqlCheck>
+        </preConditions>
+        <comment>Report a valid but differently-defined plugin_deviceinfo_deviceparams_customerid_ts_idx, without touching it</comment>
+        <sql>SELECT 1;</sql>
+    </changeSet>
+
+    <changeSet id="plugin-deviceinfo-2026.06.17-idx-cust-ts" author="hmdm"
+               context="common" runInTransaction="false">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM pg_class idx
+                JOIN pg_namespace n ON n.oid = idx.relnamespace
+                WHERE n.nspname = current_schema()
+                  AND idx.relname = 'plugin_deviceinfo_deviceparams_customerid_ts_idx'
+            </sqlCheck>
+        </preConditions>
+        <comment>Index,new: plugin_deviceinfo_deviceparams_customerid_ts_idx on plugin_deviceinfo_deviceParams (customerId, ts)</comment>
+        <sql>CREATE INDEX CONCURRENTLY plugin_deviceinfo_deviceparams_customerid_ts_idx
+             ON plugin_deviceinfo_deviceParams (customerId, ts);</sql>
+        <rollback>DROP INDEX CONCURRENTLY IF EXISTS plugin_deviceinfo_deviceparams_customerid_ts_idx;</rollback>
+    </changeSet>
+
 </databaseChangeLog>

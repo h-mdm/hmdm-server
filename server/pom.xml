@@ -94,6 +94,25 @@
         </dependency>
 
         <dependency><groupId>com.hmdm.plugin</groupId><artifactId>push</artifactId><version>0.2.0</version><scope>runtime</scope></dependency>
+
+        <!-- Integration-test support. Version comes from testcontainers-bom in the root POM.
+             Test scope only, and the suites that use them run solely under the `it` profile,
+             so `mvn install` remains Docker-free.
+
+             The plugin dependencies above are <scope>runtime</scope>, which IS on the test
+             classpath, so the server-module ITs compile and run against the plugin mappers
+             with no additional dependency. Putting the ITs in the plugin modules instead
+             would be a cycle: server already depends on devicelog-postgres and deviceinfo. -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -193,17 +212,17 @@
                         <goals><goal>install-node-and-npm</goal></goals>
 
                         <configuration>
-                            <nodeVersion>v18.16.0</nodeVersion>
-                            <npmVersion>9.5.1</npmVersion>
+                            <nodeVersion>v24.18.0</nodeVersion>
+                            <npmVersion>11.16.0</npmVersion>
                         </configuration>
                     </execution>
 
                     <execution>
-                        <id>npm install</id>
+                        <id>npm ci</id>
                         <goals><goal>npm</goal></goals>
 
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>ci</arguments>
                         </configuration>
                     </execution>
 

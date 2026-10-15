@@ -69,18 +69,39 @@ if [ ! -d "./install" ]; then
     exit 1
 fi
 
-# Check if there's aapt tool installed
-if ! which aapt > /dev/null; then
-    echo "Android App Packaging Tool is not installed!"
-    install_soft aapt
+# --- TLS-only resume mode: decided FIRST ----------------------------------
+# This has to be settled before any prerequisite check runs. Recovery is about a
+# certificate on a host where the application is ALREADY installed, while the
+# checks below are about building and deploying it: they install packages, and
+# two of them exit outright. A host without psql, or a checkout without a
+# compiled WAR, would abort the recovery run before it ever learned it was one --
+# so the advice every failure branch prints would still be unfollowable.
+#
+# Only the detection lives here. The prompts it drives come later, after
+# TOMCAT_USER and TOMCAT_HOME have been resolved, because the TLS work needs both.
+TLS_RECOVERY_ONLY=0
+if [ "${HMDM_SKIP_ISSUANCE:-}" = "1" ] || [ "${HMDM_REPUBLISH_ONLY:-}" = "1" ]; then
+    TLS_RECOVERY_ONLY=1
 fi
 
-# Check PostgreSQL installation
-if ! which psql > /dev/null; then
-    echo "PostgreSQL is not installed!"
-    install_soft postgresql
-    exit 1
-fi
+# aapt, PostgreSQL and the WAR are build/deploy prerequisites. TLS-only mode
+# touches none of them: no APK is repackaged, no database is opened, nothing is
+# deployed. The Tomcat account and $TOMCAT_HOME checks further down are NOT
+# skipped -- the certificate work needs both.
+if [ "$TLS_RECOVERY_ONLY" != "1" ]; then
+    # Check if there's aapt tool installed
+    if ! which aapt > /dev/null; then
+        echo "Android App Packaging Tool is not installed!"
+        install_soft aapt
+    fi
+
+    # Check PostgreSQL installation
+    if ! which psql > /dev/null; then
+        echo "PostgreSQL is not installed!"
+        install_soft postgresql
+        exit 1
+    fi
+fi      # end of the build/deploy prerequisites skipped by TLS-only mode
 
 # Check if tomcat user exists
 getent passwd $TOMCAT_USER > /dev/null
@@ -97,15 +118,18 @@ if [ "$?" -ne 0 ]; then
 fi
 
 
-# Search for the WAR
-SERVER_WAR=./server/target/launcher.war
-if [ ! -f $SERVER_WAR ]; then
-    SERVER_WAR=$(ls hmdm*.war | tail -1)
-fi
-if [ ! -f $SERVER_WAR ]; then
-    echo "FAILED to find the WAR file of Headwind MDM!"
-    echo "Did you compile the project?"
-    exit 1
+# Search for the WAR. Skipped by TLS-only mode: nothing is deployed there, and
+# requiring a compiled WAR would make certificate recovery depend on a build.
+if [ "$TLS_RECOVERY_ONLY" != "1" ]; then
+    SERVER_WAR=./server/target/launcher.war
+    if [ ! -f $SERVER_WAR ]; then
+        SERVER_WAR=$(ls hmdm*.war | tail -1)
+    fi
+    if [ ! -f $SERVER_WAR ]; then
+        echo "FAILED to find the WAR file of Headwind MDM!"
+        echo "Did you compile the project?"
+        exit 1
+    fi
 fi
 
 # Check the Tomcat base folder
@@ -127,6 +151,58 @@ fi
 #fi
 
 CLIENT_APK="hmdm-$CLIENT_VERSION-$CLIENT_VARIANT.apk"
+
+# --- TLS-only resume mode: the prompts ------------------------------------
+# TLS_RECOVERY_ONLY itself was decided near the top, before the build prerequisites.
+# HMDM_SKIP_ISSUANCE and HMDM_REPUBLISH_ONLY are recovery entry points: the
+# operator is resuming a run whose certificate work failed AFTER the application
+# was already installed. Re-running the FULL installer for that is not merely
+# wasteful -- on a host whose database is already populated it stops at the
+# "type erase to continue" prompt, and that prompt has exactly two outcomes:
+# DESTROY the database, or abort with "installation aborted". There was no third
+# path, so the resume command every failure branch below prints could not
+# actually be followed on the hosts that need it most.
+#
+# In this mode the installer asks only for the values the TLS section consumes
+# and skips database setup, file storage, SMTP, WAR deployment and the APK sync.
+# Nothing outside /etc/hmdm/tls, the renewal script and server.xml is touched.
+if [ "$TLS_RECOVERY_ONLY" = "1" ]; then
+    echo
+    echo "======================================"
+    echo "TLS-ONLY MODE: resuming certificate setup on an existing installation."
+    echo "The database, the file storage, SMTP settings and the deployed"
+    echo "application are left exactly as they are. Nothing is erased, nothing is"
+    echo "redeployed, and you will NOT be asked to clear the database."
+    echo "======================================"
+    echo
+
+    # These must match the original run: the domain selects the certificate
+    # lineage, and the two paths decide where the renewal script lives and which
+    # URL the closing banner prints.
+    read -e -p "Headwind MDM scripts directory [$DEFAULT_SCRIPT_LOCATION]: " -i "$DEFAULT_SCRIPT_LOCATION" SCRIPT_LOCATION
+    if [ ! -d "$SCRIPT_LOCATION" ]; then
+        mkdir -p "$SCRIPT_LOCATION" || exit 1
+    fi
+    while [ -z "$BASE_DOMAIN" ]; do
+        read -e -p "Domain name or public IP (e.g. example.com): " -i "$DEFAULT_BASE_DOMAIN" BASE_DOMAIN
+        if [ -z "$BASE_DOMAIN" ]; then
+            echo "Please enter a non-empty domain name"
+        fi
+    done
+    read -e -p "Project path on server (e.g. /hmdm) or ROOT: " -i "$DEFAULT_BASE_PATH" BASE_PATH
+    if [ "$BASE_PATH" == "ROOT" ]; then
+        BASE_PATH=""
+    fi
+    # The closing banner builds its URL from these. HTTPS on the default port is
+    # the only thing this mode can produce, so they are not prompted for.
+    PROTOCOL=https
+    BASE_HOST="$BASE_DOMAIN"
+fi
+
+# Everything from here to the HTTPS prompt is the full installation. TLS-only
+# mode skips the whole span rather than guarding each block, so the code inside
+# is unchanged and a reviewer sees only this one condition.
+if [ "$TLS_RECOVERY_ONLY" != "1" ]; then
 
 read -e -p "Please choose the installation language (en/ru) [en]: " -i "en" LANGUAGE
 echo
@@ -207,8 +283,8 @@ fi
 INSTALL_FLAG_FILE="$LOCATION/hmdm_install_flag"
 
 # Logger configuration
-cat ./install/log4j_template.xml | sed "s|_BASE_DIRECTORY_|$LOCATION|g" > $LOCATION/log4j-hmdm.xml
-chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/log4j-hmdm.xml
+cat ./install/logback_template.xml | sed "s|_BASE_DIRECTORY_|$LOCATION|g" > $LOCATION/logback-hmdm.xml
+chown $TOMCAT_USER:$TOMCAT_USER $LOCATION/logback-hmdm.xml
 
 echo
 echo "Please choose the directory where supply scripts will be located."
@@ -258,7 +334,7 @@ fi
 TOMCAT_DEPLOY_PATH=$BASE_PATH
 if [ "$BASE_PATH" == "ROOT" ]; then
     BASE_PATH=""
-fi 
+fi
 
 if [[ ! -z "$PORT" ]]; then
     BASE_HOST="$BASE_DOMAIN:$PORT"
@@ -306,7 +382,7 @@ cat ./install/context_template.xml | sed "s|_SQL_HOST_|$SQL_HOST|g; s|_SQL_PORT_
 if [ "$?" -ne 0 ]; then
     echo "Failed to create a Tomcat config file $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml!"
     exit 1
-fi 
+fi
 echo "Tomcat config file created: $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml"
 chmod 644 $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml
 cp $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml $TOMCAT_CONFIG_PATH/$TOMCAT_DEPLOY_PATH.xml~
@@ -358,46 +434,344 @@ echo "Login: admin:admin"
 echo "======================================"
 echo
 
+fi      # end of the full-installation span skipped by TLS-only mode
+
 # HTTPS via LetsEncrypt
-read -e -p "Setup HTTPS via LetsEncrypt [Y/n]?: " -i "Y" REPLY
+if [ "$TLS_RECOVERY_ONLY" = "1" ]; then
+    # Certificate work is the entire purpose of this mode, so the prompt would
+    # only offer a dead end: answering "n" would skip straight to the closing
+    # banner having done nothing at all.
+    REPLY=Y
+else
+    read -e -p "Setup HTTPS via LetsEncrypt [Y/n]?: " -i "Y" REPLY
+fi
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     if ! which certbot > /dev/null; then
         apt update
         apt install -y certbot
     fi
+    # --- certbot deploy hook: publish PEMs where Tomcat and the MQTT broker can read them ---
+    #
+    # Certbot creates /etc/letsencrypt/{live,archive} root-only, so neither Tomcat's
+    # HTTPS connector nor the embedded broker can read the key there. A deploy hook
+    # stages each renewal into /etc/hmdm/tls instead. An ACL on /etc/letsencrypt was
+    # rejected as the alternative: it would grant the Tomcat account read access to
+    # the private key of every domain on the host.
+    #
+    # This must be installed by hmdm_install.sh rather than by letsencrypt-ssl.sh,
+    # because the renewal script runs from $SCRIPT_LOCATION (and from cron), where
+    # the checkout that contains the hook may not exist at all.
+
+    # Explicit certificate name. Pinning it makes the lineage path deterministic:
+    # --cert-name targets one specific lineage, and reusing the name updates that
+    # lineage instead of creating a colliding <domain>-0001.
+    #
+    # Domain-qualified, NOT a bare "hmdm": --cert-name modifies whatever certificate
+    # already bears that name, so a generic name could silently repurpose an
+    # unrelated lineage on a shared host.
+    CERT_NAME="${CERT_NAME:-hmdm-$BASE_DOMAIN}"
+
+    # --- recovery identity check: BEFORE anything persistent is rewritten ----
+    # In TLS-only mode the operator retypes the domain, and CERT_NAME is derived
+    # from it. Everything downstream rewrites persistent renewal identity --
+    # hook.env and the installed letsencrypt-ssl.sh. A mistyped domain would
+    # therefore repoint this host's renewal configuration at a lineage that does
+    # not exist and leave it that way even if a later configuration step aborts.
+    # The next unattended cron renewal would then fail against the wrong name.
+    #
+    # Recovery is by definition resuming an existing setup, so the installed
+    # hook.env is the AUTHORITY, not an optional cross-check. The installer writes
+    # it before it ever calls letsencrypt-ssl.sh, so any run that got as far as
+    # requesting a certificate has one; its absence means no previous run reached
+    # that point, and recovery is the wrong mode. Making it conditional left open
+    # exactly the gap it was added to close: validation skipped when the file is
+    # missing, and the renewal identity overwritten regardless a few hundred
+    # lines later.
+    if [ "$TLS_RECOVERY_ONLY" = "1" ]; then
+        if [ ! -r /etc/hmdm/tls/hook.env ]; then
+            echo "======================================"
+            echo "ERROR: /etc/hmdm/tls/hook.env is missing or unreadable, so this host has"
+            echo "       no renewal identity to resume. The installer writes that file"
+            echo "       before it ever requests a certificate, so its absence means no"
+            echo "       previous run got that far."
+            echo
+            echo "Nothing has been modified. Unset HMDM_SKIP_ISSUANCE / HMDM_REPUBLISH_ONLY"
+            echo "and run the installer normally to set this host up."
+            echo "======================================"
+            exit 1
+        fi
+
+        # Read in a subshell with the names unset first, so a hook.env that omits
+        # one cannot silently return OUR value and make the comparison vacuous.
+        EXISTING_CERT_NAME=$(unset CERT_NAME; . /etc/hmdm/tls/hook.env 2>/dev/null; echo "$CERT_NAME")
+        EXISTING_LINEAGE=$(unset HMDM_LINEAGE; . /etc/hmdm/tls/hook.env 2>/dev/null; echo "$HMDM_LINEAGE")
+
+        # BOTH must be present. An empty value is not "nothing to check against";
+        # it is a hook.env that cannot drive a renewal at all, and
+        # letsencrypt-ssl.sh refuses to run against one for the same reason.
+        if [ -z "$EXISTING_CERT_NAME" ] || [ -z "$EXISTING_LINEAGE" ]; then
+            echo "======================================"
+            echo "ERROR: /etc/hmdm/tls/hook.env does not define both CERT_NAME and"
+            echo "       HMDM_LINEAGE, so this host's renewal identity cannot be confirmed:"
+            echo "         CERT_NAME=${EXISTING_CERT_NAME:-<empty>}"
+            echo "         HMDM_LINEAGE=${EXISTING_LINEAGE:-<empty>}"
+            echo
+            echo "Nothing has been modified. Repair that file, or remove it and run the"
+            echo "installer normally to regenerate it."
+            echo "======================================"
+            exit 1
+        fi
+
+        if [ "$EXISTING_CERT_NAME" != "$CERT_NAME" ]; then
+            echo "======================================"
+            echo "ERROR: this host's renewal configuration is for the certificate"
+            echo "         $EXISTING_CERT_NAME"
+            echo "       but the domain you entered produces"
+            echo "         $CERT_NAME"
+            echo
+            echo "Nothing has been modified. Re-run and enter the domain this host was"
+            echo "originally set up with, or unset HMDM_SKIP_ISSUANCE / HMDM_REPUBLISH_ONLY"
+            echo "and run the installer normally to configure a different domain."
+            echo "======================================"
+            exit 1
+        fi
+
+        # The lineage recorded in hook.env must agree with the name, exactly as
+        # letsencrypt-ssl.sh requires of it. A disagreement means hook.env was
+        # hand-edited inconsistently, and rewriting it here would quietly repair
+        # the symptom while leaving whatever caused it unexamined. Unconditional
+        # now -- an empty lineage was rejected above, so nothing skips this.
+        if [ "$EXISTING_LINEAGE" != "/etc/letsencrypt/live/$CERT_NAME" ]; then
+            echo "======================================"
+            echo "ERROR: /etc/hmdm/tls/hook.env is internally inconsistent:"
+            echo "         CERT_NAME=$EXISTING_CERT_NAME"
+            echo "         HMDM_LINEAGE=$EXISTING_LINEAGE"
+            echo "       Nothing has been modified. Fix that file before resuming."
+            echo "======================================"
+            exit 1
+        fi
+    fi
+
+    # Resolve the Tomcat group deterministically. A username is not its primary group.
+    TOMCAT_GROUP=$(id -gn "$TOMCAT_USER") || { echo "cannot resolve group for $TOMCAT_USER"; exit 1; }
+
+    # Key material: root-owned, Tomcat-group-readable.
+    # Check installation inputs before issuing or publishing a certificate.
+    SERVER_XML_TEMPLATE="./install/server_template.xml"
+    # Configuration semantics are covered by install/tests/server-template-test.sh.
+    if ! command -v xmllint >/dev/null 2>&1; then
+        echo "Installing libxml2-utils (xmllint), required to check XML syntax..."
+        apt install -y libxml2-utils
+    fi
+    if ! command -v xmllint >/dev/null 2>&1; then
+        echo "======================================"
+        echo "ERROR: xmllint is required and could not be installed."
+        echo "Install it with: apt install libxml2-utils"
+        echo "No certificate was issued or published by this run."
+        echo "======================================"
+        exit 1
+    fi
+
+    if ! xmllint --noout "$SERVER_XML_TEMPLATE"; then
+        echo "ERROR: $SERVER_XML_TEMPLATE is missing or invalid XML."
+        echo "Restore the template and re-run. No certificate was issued or published by this run."
+        exit 1
+    fi
+    # The old file must be readable for backup, but may contain broken XML.
+    if [ ! -r "$TOMCAT_HOME/conf/server.xml" ]; then
+        echo "ERROR: $TOMCAT_HOME/conf/server.xml is missing or unreadable."
+        echo "No certificate was issued or published by this run."
+        exit 1
+    fi
+
+    install -d -o root -g "$TOMCAT_GROUP" -m 0750 /etc/hmdm/tls
+    # Runtime state: Tomcat-owned, because the application's pemcfg writer creates
+    # its temp file HERE and so needs write permission on the directory itself.
+    # This is why the pemcfg does not live beside the keys.
+    install -d -o "$TOMCAT_USER" -g "$TOMCAT_GROUP" -m 0750 /var/lib/hmdm/mqtt
+    mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+
+    # Write hook.env COMPLETE, before the hook exists on disk. All values are known
+    # now: the account and group from id(1), the name we chose, the lineage derived
+    # from it. Writing it in two stages would leave a window in which the hook is
+    # installed but cannot resolve HMDM_LINEAGE.
+    #
+    # hook.env is the single source of CERT_NAME -- it is not sed-substituted into
+    # the renewal script. One file defines the name, the lineage, the account and
+    # the group together, and both the hook and the renewal script source it. Two
+    # mechanisms could drift apart; one cannot.
+    ( umask 077
+      cat > /etc/hmdm/tls/hook.env <<EOF
+CERT_NAME=$CERT_NAME
+TOMCAT_USER=$TOMCAT_USER
+TOMCAT_GROUP=$TOMCAT_GROUP
+HMDM_LINEAGE=/etc/letsencrypt/live/$CERT_NAME
+EOF
+    )
+    chown root:root /etc/hmdm/tls/hook.env && chmod 0600 /etc/hmdm/tls/hook.env
+
+    # Only now install the hook, from the checkout, where it exists.
+    install -o root -g root -m 0755 ./install/hmdm-tls-deploy-hook.sh \
+            /etc/letsencrypt/renewal-hooks/deploy/hmdm-tls
+
     sed "s/DOMAIN=your-domain.com/DOMAIN=$BASE_DOMAIN/" ./letsencrypt-ssl.sh > $SCRIPT_LOCATION/letsencrypt-ssl.sh
     chmod +x $SCRIPT_LOCATION/letsencrypt-ssl.sh
-    $SCRIPT_LOCATION/letsencrypt-ssl.sh
+
+    # Resume after publication without requesting another certificate.
+    if [ "${HMDM_SKIP_ISSUANCE:-}" = "1" ]; then
+        echo
+        echo "HMDM_SKIP_ISSUANCE=1: reusing the certificate already published at"
+        echo "/etc/hmdm/tls/current -- certbot will NOT run and nothing is re-issued."
+
+        # Publication validation belongs to the deploy hook, and Tomcat validates
+        # and loads the configured PEM files when the staged server.xml is activated.
+        # Do not duplicate certificate parsing, SAN/expiry checks, key matching or
+        # Tomcat-user readability checks here.
+        LE_STATUS=0
+    else
+        $SCRIPT_LOCATION/letsencrypt-ssl.sh
+        LE_STATUS=$?
+    fi
+
+    # Preserve the renewal script's distinct recovery outcomes.
+    case "$LE_STATUS" in
+        0) ;;
+        2)
+            echo "ERROR: certificate published, but $TOMCAT_SERVICE recovery restart failed."
+            echo "Check: journalctl -u $TOMCAT_SERVICE -n 50"
+            echo "After fixing Tomcat, resume without issuance: HMDM_SKIP_ISSUANCE=1 $0"
+            exit 1
+            ;;
+        3)
+            echo "ERROR: certificate available at /etc/letsencrypt/live/$CERT_NAME, but publication failed."
+            echo "Check the deploy-hook error above and: ls -l /etc/hmdm/tls/"
+            echo "Retry publication without issuance: HMDM_REPUBLISH_ONLY=1 $0"
+            exit 1
+            ;;
+        *)
+            echo "ERROR: $SCRIPT_LOCATION/letsencrypt-ssl.sh failed (status $LE_STATUS)."
+            echo "Check the errors above and inspect the certificate state:"
+            echo "  ls -l /etc/hmdm/tls/current /etc/letsencrypt/live/$CERT_NAME"
+            echo "Recovery options: README.md (TLS recovery). Do not re-issue blindly."
+            exit 1
+            ;;
+    esac
 
     echo
-    echo "======================================"
-    echo "The installer can try to update Tomcat config automatically."
-    echo "Use this feature with care, ONLY IF YOU DIDN'T TOUCH server.xml"
+    echo "Automatic setup REPLACES server.xml with $SERVER_XML_TEMPLATE."
+    echo "Use this only for a dedicated, uncustomized Tomcat installation."
+    echo "Custom connectors, virtual hosts and realms will NOT be preserved."
+    echo "Choose n to merge the TLS settings manually instead."
     echo "If Tomcat won't work after update, please revert the config back:"
     echo "cp $TOMCAT_HOME/conf/server.xml~ $TOMCAT_HOME/conf/server.xml"
     echo "======================================"
     echo
-    read -e -p "Update Tomcat config automatically [Y/n]?: " -i "Y" REPLY
+
+    # Tracks configuration and restart, not HTTPS readiness.
+    AUTO_CONFIGURED=0
+
+    read -e -p "Replace Tomcat config with the HMDM template [y/N]?: " -i "N" REPLY
     if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        cp $TOMCAT_HOME/conf/server.xml $TOMCAT_HOME/conf/server.xml~
-	# EPIC MAGIC!!!
-        sed -z -e "s^<\!\-\-\n    <Connector port=\"8443\" protocol=\"org.apache.coyote.http11.Http11NioProtocol\"^<Connector port=\"8443\" protocol=\"org.apache.coyote.http11.Http11NioProtocol\"^" -e "s^\-\->\n    <\!\-\- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2^<\!\-\- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2^" -e "s^certificateKeystoreFile=\"conf/localhost-rsa.jks\"^certificateKeystoreFile=\"/usr/local/tomcat/ssl/$BASE_DOMAIN.jks\" certificateKeystorePassword=\"123456\"^" $TOMCAT_HOME/conf/server.xml~ > $TOMCAT_HOME/conf/server.xml
-        CERTBOT_VERSION=`certbot --version | awk '{print $2}' | awk '{n=split($1,A,"."); print A[1]}'`
-        if [ "$CERTBOT_VERSION" != "" ] && [ "$CERTBOT_VERSION" -ge "2" ]; then
-        # In certbot 2, default encryption is ECDSA so we need to adjust it in Tomcat config
-            cp $TOMCAT_HOME/conf/server.xml $TOMCAT_HOME/conf/server.xml.1
-            sed -z -e "s^type=\"RSA\" />^type=\"EC\" />^" $TOMCAT_HOME/conf/server.xml.1 > $TOMCAT_HOME/conf/server.xml
-            rm -f $TOMCAT_HOME/conf/server.xml.1
+        SERVER_XML="$TOMCAT_HOME/conf/server.xml"
+        SERVER_XML_BACKUP="$TOMCAT_HOME/conf/server.xml~"
+        SERVER_XML_STAGED="$TOMCAT_HOME/conf/.server.xml.hmdm.$$"
+
+        # Stage changes; leave the live configuration untouched until replacement.
+        tls_config_abort() {
+            rm -f "$SERVER_XML_STAGED"
+            echo "======================================"
+            echo "ERROR: $*"
+            echo
+            echo "$SERVER_XML was NOT modified and Tomcat was NOT restarted."
+            echo "The certificate is published at /etc/hmdm/tls/current/ and is unaffected."
+            echo "Fix the cause, then resume without re-issuing it:"
+            echo "  HMDM_SKIP_ISSUANCE=1 $0"
+            echo "======================================"
+            exit 1
+        }
+
+        if ! cp -p "$SERVER_XML" "$SERVER_XML_BACKUP"; then
+            tls_config_abort "could not back up $SERVER_XML to $SERVER_XML_BACKUP"
         fi
-        service $TOMCAT_SERVICE restart
+        # cp -p first so the staging file inherits server.xml's mode and ownership.
+        # A redirection into an existing file rewrites its contents and changes
+        # neither, so the file that is finally renamed into place carries the
+        # permissions Tomcat expects.
+        if ! cp -p "$SERVER_XML" "$SERVER_XML_STAGED"; then
+            tls_config_abort "could not create the staging file $SERVER_XML_STAGED"
+        fi
+
+        # The template owns the connector and listener declarations. No XML
+        # insertion or matching against a distribution's commented examples.
+        if ! cat "$SERVER_XML_TEMPLATE" > "$SERVER_XML_STAGED"; then
+            tls_config_abort "could not stage $SERVER_XML_TEMPLATE"
+        fi
+
+        if ! xmllint --noout "$SERVER_XML_STAGED"; then
+            tls_config_abort "the staged server.xml is not well-formed XML"
+        fi
+
+        # Preserve the live configuration's ownership and permissions.
+        if ! chown --reference="$SERVER_XML" "$SERVER_XML_STAGED" \
+                || ! chmod --reference="$SERVER_XML" "$SERVER_XML_STAGED"; then
+            tls_config_abort "could not set ownership/mode on $SERVER_XML_STAGED"
+        fi
+
+        # One rename, and only now. Everything above this line left the running
+        # configuration untouched.
+        if ! mv -f "$SERVER_XML_STAGED" "$SERVER_XML"; then
+            tls_config_abort "could not install the verified server.xml"
+        fi
+
+        # Leave a failed configuration in place for diagnosis; recovery is manual.
+        if ! service "$TOMCAT_SERVICE" restart; then
+            echo "ERROR: $TOMCAT_SERVICE failed to restart. It may be unavailable."
+            echo "The new configuration remains at $SERVER_XML."
+            echo "Check: journalctl -u $TOMCAT_SERVICE -n 50"
+            echo "Previous configuration saved at $SERVER_XML_BACKUP (not automatically restored)."
+            echo "The published certificate is unchanged. After fixing the cause, resume:"
+            echo "  HMDM_SKIP_ISSUANCE=1 $0"
+            exit 1
+        fi
+        AUTO_CONFIGURED=1
     fi
+
+    # Read the renewal state BEFORE the banner that describes it. The cron entry
+    # is inspected further down, but the banner asserts something about it first,
+    # and on a recovery run against a host that already has the entry the old
+    # wording ("not configured yet") was simply false.
+    CERTBOT_RENEWAL=$(crontab -l 2>/dev/null | grep letsencrypt-ssl.sh)
 
     echo
     echo "======================================"
-    echo "Secure installation of Headwind MDM has been done!"
-    echo "At this step, you can open in your web browser:"
-    echo "https://$BASE_DOMAIN:8443$BASE_PATH"
+    # Tomcat can keep running after an HTTPS connector fails. A successful service
+    # restart alone does not verify HTTPS; leave that check explicit for the operator.
+    if [ "$AUTO_CONFIGURED" = "1" ]; then
+        echo "Tomcat configuration installed and service restart completed."
+        echo "HTTPS has NOT been verified. Open this URL to confirm it works:"
+        echo "https://$BASE_DOMAIN:8443$BASE_PATH"
+        echo "If it does not work, check: journalctl -u $TOMCAT_SERVICE -n 50"
+    else
+        echo "Certificate provisioning is complete, but MANUAL HTTPS SETUP REMAINS."
+        echo "The certificate is published at /etc/hmdm/tls/current/."
+        echo "This run has not configured or restarted Tomcat."
+        echo
+        echo "Merge the HTTPS Connector and TLS reload Listener from $SERVER_XML_TEMPLATE into"
+        echo "  $TOMCAT_HOME/conf/server.xml"
+        echo "then restart Tomcat:"
+        echo "  service $TOMCAT_SERVICE restart"
+        echo "Then verify: https://$BASE_DOMAIN:8443$BASE_PATH"
+        echo
+        # State the renewal situation as it actually is, read above. The old
+        # wording asserted "not configured yet" before anything had looked.
+        if [ -n "$CERTBOT_RENEWAL" ]; then
+            echo "Automatic renewal is already configured in cron and stays as it is."
+        else
+            echo "Automatic renewal is NOT configured yet -- it is the next question this"
+            echo "installer asks, and it only happens if you accept there."
+        fi
+    fi
     echo
     echo "Notice: if Tomcat starts slowly:"
     echo "Open the Java security config, e.g. /etc/java-21-openjdk/security/java.security"
@@ -407,8 +781,8 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     echo "======================================"
     echo
 
-    CERTBOT_RENEWAL=$(crontab -l | grep letsencrypt-ssl.sh)
-    if [ -z "$CERTBOT_RENEWAL" ]; then 
+    # CERTBOT_RENEWAL was read above, before the banner that describes it.
+    if [ -z "$CERTBOT_RENEWAL" ]; then
         read -e -p "Setup regular HTTPS certificate renewal [Y/n]?: " -i "Y" REPLY
         if [[ "$REPLY" =~ ^[Yy]$ ]]; then
             crontab -l > /tmp/current-crontab
@@ -438,7 +812,9 @@ if [ -z "$IPTABLES_HTTPS_SET" ]; then
     fi
 fi
 
-# Download required files
+# Download required files. Skipped by TLS-only mode: it queries the database and
+# writes into $LOCATION/files, and that mode configures neither.
+if [ "$TLS_RECOVERY_ONLY" != "1" ]; then
 read -e -p "Move required APKs from h-mdm.com to your server [Y/n]?: " -i "Y" REPLY
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     FILES=$(echo "SELECT url FROM applicationversions WHERE url IS NOT NULL" | psql $PSQL_CONNSTRING 2>/dev/null | tail -n +3 | head -n -2)
@@ -452,15 +828,23 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     echo "UPDATE applicationversions SET url=REPLACE(url, 'https://h-mdm.com', '$PROTOCOL://$BASE_HOST$BASE_PATH') WHERE url IS NOT NULL" | psql $PSQL_CONNSTRING >/dev/null 2>&1
     cd $CURRENT_DIR
 fi
+fi
 
 echo
 echo "======================================"
-echo "Headwind MDM installation is completed!"
-echo "To access your web panel, open in the web browser:"
-echo "$PROTOCOL://$BASE_HOST$BASE_PATH"
-echo "Login: admin:admin"
+if [ "$TLS_RECOVERY_ONLY" = "1" ]; then
+    # Do not claim an installation happened: this mode deliberately touched only
+    # the certificate, the renewal script and server.xml.
+    echo "TLS-only run is complete."
+    echo "The database, the file storage and the deployed application were not"
+    echo "modified. Your existing credentials are unchanged."
+    echo "Web panel:"
+    echo "$PROTOCOL://$BASE_HOST$BASE_PATH"
+else
+    echo "Headwind MDM installation is completed!"
+    echo "To access your web panel, open in the web browser:"
+    echo "$PROTOCOL://$BASE_HOST$BASE_PATH"
+    echo "Login: admin:admin"
+fi
 echo "======================================"
 echo
-
-
-

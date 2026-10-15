@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,7 @@ public class ApplicationResource {
     private File baseDirectory;
     private ApplicationDAO applicationDAO;
     private ConfigurationDAO configurationDAO;
+    private UnsecureDAO unsecureDAO;
     private PushService pushService;
 
     /**
@@ -63,10 +65,12 @@ public class ApplicationResource {
     public ApplicationResource(
             ApplicationDAO applicationDAO,
             ConfigurationDAO configurationDAO,
+            UnsecureDAO unsecureDAO,
             PushService pushService,
             @Named("files.directory") String filesDirectory) {
         this.applicationDAO = applicationDAO;
         this.configurationDAO = configurationDAO;
+        this.unsecureDAO = unsecureDAO;
         this.pushService = pushService;
         this.baseDirectory = new File(filesDirectory);
 
@@ -75,7 +79,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get all applications", description = "Gets the list of all available applications")
     @GET
     @Path("/search")
@@ -89,7 +92,6 @@ public class ApplicationResource {
         return Response.OK(this.applicationDAO.getAllApplications());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Search applications", description = "Search applications meeting the specified filter value")
     @GET
     @Path("/search/{value}")
@@ -103,7 +105,6 @@ public class ApplicationResource {
         return Response.OK(this.applicationDAO.getAllApplicationsByValue(value));
     }
 
-    // =================================================================================================================
 
     /**
      * <p>Gets the list of application ids/names matching the specified filter for autocompletions.</p>
@@ -126,7 +127,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get application versions",
             description = "Gets the list of versions for specified application")
@@ -147,7 +147,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get application", description = "Gets the details for specified application")
     @GET
     @Path("/{id}")
@@ -166,7 +165,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update Android application",
             description = "Create a new Android application (if id is not provided) or update existing one otherwise.")
@@ -218,7 +216,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update Web-page application",
             description = "Create a new Web-page application (if id is not provided) or update existing one otherwise.")
@@ -270,7 +267,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update application version",
             description = "Create a new application version (if id is not provided) or update existing one otherwise.")
@@ -323,7 +319,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete application", description = "Delete an existing application")
     @DELETE
     @Path("/{id}")
@@ -357,7 +352,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete application version", description = "Delete an existing application version")
     @DELETE
     @Path("/versions/{id}")
@@ -400,7 +394,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get application configurations",
             description = "Gets the list of configurations using requested application")
@@ -417,7 +410,6 @@ public class ApplicationResource {
         return Response.OK(this.applicationDAO.getApplicationConfigurations(id));
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get application version configurations",
             description = "Gets the list of configurations using requested application version")
@@ -439,7 +431,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Update application configurations",
             description = "Updates the list of configurations using requested application")
@@ -459,16 +450,18 @@ public class ApplicationResource {
                 // Remove all configurations unavailable to user
                 request.getConfigurations()
                         .removeIf(c -> user.getConfigurations().stream()
-                                .filter(uc -> uc.getId() == c.getConfigurationId())
-                                .findFirst() == null);
+                                .noneMatch(uc -> uc.getId() == c.getConfigurationId()));
             }
+            Integer masterCustomerId = unsecureDAO.getMasterCustomerId();
             // Avoid access to objects of another customer
             request.getConfigurations().removeIf(c -> {
-                // findById will raise a SecurityException if attempting to access an object of another customer
-                // So actually this code is a bit redundant, but it guards access to own objects anyway
+                // ApplicationDAO.findById is unscoped: allow own or master-owned apps only.
+                // Configurations must still belong to the current customer.
                 Application application = applicationDAO.findById(c.getApplicationId());
                 Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
-                return application.getCustomerId() != user.getCustomerId()
+                return application == null || configuration == null
+                        || (application.getCustomerId() != user.getCustomerId()
+                        && !Objects.equals(application.getCustomerId(), masterCustomerId))
                         || configuration.getCustomerId() != user.getCustomerId();
             });
             logger.info("Application configurations updated by user "
@@ -482,13 +475,14 @@ public class ApplicationResource {
             }
 
             return Response.OK();
+        } catch (SecurityException e) {
+            return Response.PERMISSION_DENIED();
         } catch (Exception e) {
             logger.error("Unexpected error when updating application configurations", e);
             return Response.INTERNAL_ERROR();
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Update application version configurations",
             description = "Updates the list of configurations using requested application version")
@@ -508,9 +502,12 @@ public class ApplicationResource {
                 // Remove all configurations unavailable to user
                 request.getConfigurations()
                         .removeIf(c -> user.getConfigurations().stream()
-                                .filter(uc -> uc.getId() == c.getConfigurationId())
-                                .findFirst() == null);
+                                .noneMatch(uc -> uc.getId() == c.getConfigurationId()));
             }
+            request.getConfigurations().removeIf(c -> {
+                Configuration configuration = configurationDAO.getConfigurationById(c.getConfigurationId());
+                return configuration == null || configuration.getCustomerId() != user.getCustomerId();
+            });
             logger.info("Application version configurations updated by user "
                     + SecurityContext.get().getCurrentUserName());
             this.applicationDAO.updateApplicationVersionConfigurations(request, user);
@@ -521,6 +518,8 @@ public class ApplicationResource {
             }
 
             return Response.OK();
+        } catch (SecurityException e) {
+            return Response.PERMISSION_DENIED();
         } catch (Exception e) {
             logger.error("Unexpected error when updating application configurations", e);
             return Response.INTERNAL_ERROR();
@@ -562,7 +561,6 @@ public class ApplicationResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Validate application package",
             description = "Validate the application package ID for uniqueness")

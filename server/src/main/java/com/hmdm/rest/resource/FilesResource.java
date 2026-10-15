@@ -38,7 +38,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -51,7 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -112,7 +110,6 @@ public class FilesResource {
         this.baseUrl = baseUrl;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get all files", description = "Gets the list of all available files")
     @GET
     @Path("/search")
@@ -125,7 +122,6 @@ public class FilesResource {
         return Response.OK(this.generateFilesList((String) null));
     }
 
-    // =================================================================================================================
     @Operation(summary = "Remove a file", description = "Removes the file from the MDM server")
     @POST
     @Path("/remove")
@@ -181,7 +177,6 @@ public class FilesResource {
                 .orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Complete file upload", description = "Commits the file upload to MDM server. Returns the uploaded file data")
     @POST
     @Path("/update")
@@ -330,7 +325,6 @@ public class FilesResource {
                 .orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Search files", description = "Search files meeting the specified filter value")
     @GET
     @Path("/search/{value}")
@@ -344,7 +338,6 @@ public class FilesResource {
         return Response.OK(this.generateFilesList(value));
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get applications", description = "Gets the list of applications using the file")
     @GET
     @Path("/apps/{url}")
@@ -364,7 +357,6 @@ public class FilesResource {
         }
     }
 
-    // =================================================================================================================
     @GET
     @Path("/limit")
     @Produces(MediaType.APPLICATION_JSON)
@@ -387,7 +379,6 @@ public class FilesResource {
         return Response.OK(lr);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get file configurations", description = "Gets the list of configurations using requested file")
     @GET
     @Path("/configurations/{id}")
@@ -402,7 +393,6 @@ public class FilesResource {
         return Response.OK(this.uploadedFileDAO.getFileConfigurations(id));
     }
 
-    // =================================================================================================================
     @Operation(summary = "Update file configurations", description = "Updates the list of configurations using requested file")
     @POST
     @Path("/configurations")
@@ -448,7 +438,6 @@ public class FilesResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Upload raw file",
             description = "Uploads the raw file to server (without attempt to parse APK). Returns a path to uploaded file")
     @POST
@@ -461,7 +450,6 @@ public class FilesResource {
         return uploadFilesInternal(uploadedInputStream, fileDetail, false);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Upload file or application",
             description = "Uploads the file or application to server. Returns a path to uploaded file")
     @POST
@@ -473,7 +461,6 @@ public class FilesResource {
         return uploadFilesInternal(uploadedInputStream, fileDetail, true);
     }
 
-    // =================================================================================================================
     private Response uploadFilesInternal(InputStream uploadedInputStream, FormDataContentDisposition fileDetail,
             boolean parseFile) throws Exception {
         if (!SecurityContext.get().hasPermission("edit_files")) {
@@ -582,15 +569,14 @@ public class FilesResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Download a file", description = "Downloads the content of the file")
     @GET
     @Path("/{filePath}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public jakarta.ws.rs.core.Response downloadFile(
             @PathParam("filePath") @Parameter(description = "A path to a file") String filePath) throws Exception {
-        File file = new File(filesDirectory + "/" + URLDecoder.decode(filePath, StandardCharsets.UTF_8));
-        if (!file.exists()) {
+        File file = FileUtil.resolveDownloadFile(filesDirectory, filePath);
+        if (file == null) {
             return jakarta.ws.rs.core.Response.status(404).build();
         } else {
             ContentDisposition contentDisposition = ContentDisposition.type("attachment")
@@ -598,13 +584,7 @@ public class FilesResource {
                     .creationDate(new Date())
                     .build();
             return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
-                try {
-                    InputStream input = new FileInputStream(file);
-                    IOUtils.copy(input, output);
-                    output.flush();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Files.copy(file.toPath(), output);
             }).header("Content-Disposition", contentDisposition)
                     .build();
         }

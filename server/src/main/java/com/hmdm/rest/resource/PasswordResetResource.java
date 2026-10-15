@@ -69,7 +69,6 @@ public class PasswordResetResource {
         this.baseUrl = baseUrl;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get settings by token", description = "Returns the user settings by password reset token.")
     @GET
     @Path("/settings/{token}")
@@ -98,7 +97,6 @@ public class PasswordResetResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Reset password", description = "Resets the user password")
     @POST
     @Path("/reset")
@@ -124,7 +122,6 @@ public class PasswordResetResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Password recovery feature", description = "Checks if the password can be recovered.")
     @GET
     @Deprecated
@@ -138,7 +135,6 @@ public class PasswordResetResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Request password recovery", description = "Checks if the password can be recovered.")
     @GET
     @Path("/recover/{username}")

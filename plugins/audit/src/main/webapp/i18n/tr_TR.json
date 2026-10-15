@@ -29,6 +29,8 @@
 	"plugin.audit.action.password.reset": "Cihaz parolası sıfırlandı",
 	"plugin.audit.action.device.reset": "Cihaz fabrika ayarlarına sıfırlandı",
 	"plugin.audit.action.device.lock": "Cihaz kilitlendi",
+	"plugin.audit.action.update.check": "Güncellemeleri kontrol et",
+	"plugin.audit.action.update.update": "Güncellemeleri uygula",
 	"plugin.audit.error": " - Hata",
 	"plugin.audit.tab.title": "Denetim",
 	"plugin.audit.all.items": "Tüm eylemler",

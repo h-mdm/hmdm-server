@@ -52,7 +52,6 @@ public class IconResource {
         this.iconDAO = iconDAO;
     }
 
-    // =================================================================================================================
     /**
      * <p>Creates new icon record on server.</p>
      *
@@ -72,7 +71,6 @@ public class IconResource {
         }
     }
 
-    // =================================================================================================================
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -86,7 +84,6 @@ public class IconResource {
         }
     }
 
-    // =================================================================================================================
     @GET
     @Path("/search/{value}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,7 +97,6 @@ public class IconResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete an icon", description = "Delete an existing icon")
     @DELETE
     @Path("/{id}")

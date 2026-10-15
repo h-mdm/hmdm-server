@@ -180,7 +180,6 @@ public class DeviceLogPluginSettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete rule", description = "Delete an existing plugin settings rule")
     @DELETE
     @Path("/private/rule/{id}")

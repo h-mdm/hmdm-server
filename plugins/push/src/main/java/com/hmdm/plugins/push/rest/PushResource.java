@@ -106,7 +106,6 @@ public class PushResource {
         this.pluginStatusCache = pluginStatusCache;
     }
 
-    // =================================================================================================================
 
     /**
      * <p>Gets the list of push message records matching the specified filter.</p>
@@ -133,7 +132,6 @@ public class PushResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Send new Push message", description = "Sends a new Push message to a specified device.")
     @POST
     @Path("/private/send")
@@ -235,7 +233,6 @@ public class PushResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete Push message", description = "Delete an existing Push message")
     @DELETE
     @Path("/private/{id}")
@@ -254,7 +251,6 @@ public class PushResource {
         return Response.OK();
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Purge old Push messages",
             description = "Deletes all Push messages older than a specified number of days.")
@@ -281,7 +277,6 @@ public class PushResource {
         }
     }
 
-    // =================================================================================================================
 
     /**
      * <p>Gets the list of scheduled task records matching the specified filter.</p>
@@ -308,7 +303,6 @@ public class PushResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update a scheduled task",
             description = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise")
@@ -346,7 +340,6 @@ public class PushResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete a scheduled task", description = "Delete an existing scheduled task")
     @DELETE
     @Path("/private/task/{id}")

@@ -13,6 +13,8 @@
 
 package com.hmdm.rest.resource;
 
+import java.nio.file.Files;
+
 import static com.hmdm.util.FileUtil.writeToFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,13 +40,11 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.poi.util.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 @Path("/public")
 @Tag(name = "Mobile client API")
 public class PublicResource {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private static final Logger logger = LoggerFactory.getLogger(PublicResource.class);
 
@@ -109,7 +110,6 @@ public class PublicResource {
         this.hashSecret = hashSecret;
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Upload application",
             description = "Uploads application to MDM server. This method is only used by the AppList utility, no usage by the web backend")
@@ -126,8 +126,7 @@ public class PublicResource {
         logger.info("Received Upload App request. App: {}", app);
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            UploadAppRequest request = objectMapper.readValue(app, UploadAppRequest.class);
+            UploadAppRequest request = JSON_MAPPER.readValue(app, UploadAppRequest.class);
 
             String deviceId = StringUtil.stripOffTrailingCharacter(request.getDeviceId(), "\"");
             String hash = StringUtil.stripOffTrailingCharacter(request.getHash(), "\"");
@@ -255,7 +254,6 @@ public class PublicResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get name and vendor",
             description = "Gets the application name and vendor for rebranding purposes.")
@@ -272,7 +270,6 @@ public class PublicResource {
         return Response.OK(nameResponse);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get logo", description = "Returns the rebranded logo.")
     @GET
     @Path("/logo")
@@ -282,10 +279,8 @@ public class PublicResource {
             if (!appLogo.equals("")) {
                 File file = new File(appLogo);
                 if (file.exists()) {
-                    InputStream input = new FileInputStream(file);
-
                     return jakarta.ws.rs.core.Response.ok((StreamingOutput) output -> {
-                        IOUtils.copy(input, output);
+                        Files.copy(file.toPath(), output);
                     })
                             .header("Cache-Control", "no-cache")
                             .header("Content-Type", "image/png")

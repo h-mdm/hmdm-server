@@ -188,7 +188,7 @@ public class UpdateResource {
 
             File file = new File(filesDirectory, getFileNameFromUrl(app.getUrl()));
             inputStream = conn.getInputStream();
-            FileUtil.writeToFile(conn.getInputStream(), file.getAbsolutePath());
+            FileUtil.writeToFile(inputStream, file.getAbsolutePath());
 
             createWebManifest(app);
 
@@ -233,7 +233,9 @@ public class UpdateResource {
 
             // We download to the temp file to reuse the existing Application management API
             File tempFile = FileUtil.createTempFile(FileUtil.adjustFileName(name));
-            FileUtil.writeToFile(URI.create(app.getUrl()).toURL().openStream(), tempFile.getAbsolutePath());
+            try (InputStream input = URI.create(app.getUrl()).toURL().openStream()) {
+                FileUtil.writeToFile(input, tempFile.getAbsolutePath());
+            }
 
             APKFileDetails fileDetails = apkFileAnalyzer.analyzeFile(tempFile.getAbsolutePath());
 

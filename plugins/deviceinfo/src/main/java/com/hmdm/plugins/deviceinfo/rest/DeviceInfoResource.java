@@ -117,7 +117,6 @@ public class DeviceInfoResource {
         this.eventService = eventService;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save device info", description = "Save the Device Info dynamic data")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -173,7 +172,6 @@ public class DeviceInfoResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get device info", description = "Get the current detailed info for device")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -196,7 +194,6 @@ public class DeviceInfoResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Search devices", description = "Search ")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)

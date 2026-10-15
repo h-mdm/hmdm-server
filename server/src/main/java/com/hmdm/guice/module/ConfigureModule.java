@@ -90,8 +90,9 @@ public class ConfigureModule extends AbstractModule {
     private final String jwtSecretKey = "jwt.secretkey";
     private final String jwtValidity = "jwt.validity";
     private final String jwtValidityForRememberMe = "jwt.validityrememberme";
-    private final String sslKeystorePassword = "ssl.keystore.password";
-    private final String sslKeystorePath = "ssl.keystore.path";
+    private final String sslPemKeyPath = "ssl.pem.key.path";
+    private final String sslPemCertPath = "ssl.pem.cert.path";
+    private final String sslPemConfigPath = "ssl.pem.config.path";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -317,9 +318,13 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant().annotatedWith(Names.named(jwtValidity)).to(opt != null ? opt : "");
         opt = this.context.getInitParameter(jwtValidityForRememberMe);
         this.bindConstant().annotatedWith(Names.named(jwtValidityForRememberMe)).to(opt != null ? opt : "");
-        opt = this.context.getInitParameter(sslKeystorePassword);
-        this.bindConstant().annotatedWith(Names.named(sslKeystorePassword)).to(opt != null ? opt : "");
-        opt = this.context.getInitParameter(sslKeystorePath);
-        this.bindConstant().annotatedWith(Names.named(sslKeystorePath)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(sslPemKeyPath);
+        this.bindConstant().annotatedWith(Names.named(sslPemKeyPath)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(sslPemCertPath);
+        this.bindConstant().annotatedWith(Names.named(sslPemCertPath)).to(opt != null ? opt : "");
+        // Three bindings, not two: omitting ssl.pem.config.path leaves Guice unable to construct
+        // NotificationMqttTaskModule, and the servlet context fails to start.
+        opt = this.context.getInitParameter(sslPemConfigPath);
+        this.bindConstant().annotatedWith(Names.named(sslPemConfigPath)).to(opt != null ? opt : "");
     }
 }

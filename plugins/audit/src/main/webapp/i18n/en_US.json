@@ -29,6 +29,8 @@
   "plugin.audit.action.password.reset": "Device password reset",
   "plugin.audit.action.device.reset": "Device factory reset",
   "plugin.audit.action.device.lock": "Device locked",
+  "plugin.audit.action.update.check": "Check for updates",
+  "plugin.audit.action.update.update": "Apply updates",
   "plugin.audit.error": " - Error",
   "plugin.audit.tab.title": "Audit",
   "plugin.audit.all.items": "All actions",

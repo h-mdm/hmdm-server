@@ -80,7 +80,9 @@ public enum ResourceAuditInfo {
 
     DEVICE_FACTORY_RESET("PUT", "/rest/plugins/devicereset/private/reset", false, "plugin.audit.action.device.reset", true, true),
 
-    DEVICE_LOCK("PUT", "/rest/plugins/devicereset/private/lock", true, "plugin.audit.action.device.lock", true, true);
+    DEVICE_LOCK("PUT", "/rest/plugins/devicereset/private/lock", true, "plugin.audit.action.device.lock", true, true),
+
+    UPDATE_UPDATE("POST", "/rest/private/update", true, "plugin.audit.action.update.update", true, true);
 
     /**
      * <p>Method for the REST resource to track audit log for.</p>

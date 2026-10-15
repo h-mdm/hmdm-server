@@ -29,6 +29,8 @@
   "plugin.audit.action.remove.version": "تم حذف إصدار التطبيق",
   "plugin.audit.action.update.file": "تم تحديث الملف",
   "plugin.audit.action.remove.file": "تم حذف الملف",
+  "plugin.audit.action.update.check": "التحقق من وجود تحديثات",
+  "plugin.audit.action.update.update": "تطبيق التحديثات",
   "plugin.audit.error": "- خطأ" ,
   "plugin.audit.tab.title": "تدقيق" ,
   "plugin.audit.all.items": "كل الإجراءات" ,

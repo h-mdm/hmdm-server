@@ -110,7 +110,6 @@ public class DeviceInfoPluginSettingsResource {
                 Optional.ofNullable(this.settingsDAO.getPluginSettings()).orElse(new DeviceInfoPluginSettings()));
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save settings", description = "Save the Device Info plugin settings")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -130,7 +129,6 @@ public class DeviceInfoPluginSettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get plugin settings by device", description = "Gets the plugin settings for usage by device ")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)

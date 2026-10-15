@@ -73,6 +73,7 @@
   "plugin.deviceinfo.title.iccid2": "ICCID SIM thứ 2",
   "plugin.deviceinfo.title.imsi2": "IMSI SIM thứ 2",
   "plugin.deviceinfo.title.serial": "Số seri",
+  "plugin.deviceinfo.title.mac": "Địa chỉ MAC",
   "plugin.deviceinfo.title.cpu": "Kiến trúc CPU",
   "plugin.deviceinfo.title.battery.level": "Mức pin",
   "plugin.deviceinfo.title.permission.1": "Quyền cài đặt như quản trị viên thiết bị",

@@ -99,6 +99,9 @@ public class DeviceInfo implements Serializable {
     @Schema(description = "A device serial number")
     private String serial;
 
+    @Schema(description = "A device MAC address")
+    private String mac;
+
     @Schema(description = "CPU architecture")
     private String cpu;
 
@@ -293,6 +296,14 @@ public class DeviceInfo implements Serializable {
         return cpu;
     }
 
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
     public void setCpu(String cpu) {
         this.cpu = cpu;
     }
@@ -338,7 +349,8 @@ public class DeviceInfo implements Serializable {
                 + ", kioskMode='" + kioskMode + '\'' + ", location='" + location + '\'' + ", launcherType='"
                 + launcherType + '\'' + ", launcherPackage='" + launcherPackage + '\'' + ", imei2='" + imei2 + '\''
                 + ", phone2='" + phone2 + '\'' + ", imsi='" + imsi + '\'' + ", iccid='" + iccid + '\'' + ", imsi2='"
-                + imsi2 + '\'' + ", iccid2='" + iccid2 + '\'' + ", serial='" + serial + '\'' + ", cpu='" + cpu + '\''
+                + imsi2 + '\'' + ", iccid2='" + iccid2 + '\'' + ", serial='" + serial + '\''
+                + ", mac='" + mac + '\'' + ", cpu='" + cpu + '\''
                 + ", custom1='" + custom1 + '\'' + ", custom2='" + custom2 + '\'' + ", custom3='" + custom3 + '\''
                 + '}';
     }

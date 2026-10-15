@@ -29,6 +29,8 @@
   "plugin.audit.action.password.reset": "Gerätepasswort zurückgesetzt",
   "plugin.audit.action.device.reset": "Werkseinstellungen zurückgesetzt",
   "plugin.audit.action.device.lock": "Gerät gesperrt",
+  "plugin.audit.action.update.check": "Auf Updates prüfen",
+  "plugin.audit.action.update.update": "Updates anwenden",
   "plugin.audit.error": " - Fehler",
   "plugin.audit.tab.title": "Audit",
   "plugin.audit.all.items": "Alle Aktionen",

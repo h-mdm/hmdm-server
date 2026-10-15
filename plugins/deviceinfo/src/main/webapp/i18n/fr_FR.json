@@ -73,6 +73,7 @@
   "plugin.deviceinfo.title.iccid2": "2ème SIM ICCID",
   "plugin.deviceinfo.title.imsi2": "2ème SIM IMSI",
   "plugin.deviceinfo.title.serial": "Numéro de série",
+  "plugin.deviceinfo.title.mac": "Adresse MAC",
   "plugin.deviceinfo.title.cpu": "Architecture CPU",
   "plugin.deviceinfo.title.battery.level": "Charge de la batterie",
   "plugin.deviceinfo.title.permission.1": "Autorisation d'installer en tant qu'administrateur de l'appareil",

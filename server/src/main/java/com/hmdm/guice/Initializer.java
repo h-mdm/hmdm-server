@@ -22,6 +22,7 @@ import com.hmdm.guice.module.*;
 import com.hmdm.notification.guice.module.*;
 import com.hmdm.plugin.PluginList;
 import com.hmdm.plugin.PluginTaskModule;
+import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.plugin.guice.module.PluginLiquibaseModule;
 import com.hmdm.plugin.guice.module.PluginPersistenceModule;
 import com.hmdm.plugin.guice.module.PluginPlatformTaskModule;
@@ -40,6 +41,7 @@ import java.util.List;
 public final class Initializer extends GuiceServletContextListener {
     private ServletContext context;
     private Injector injector;
+    private final List<Runnable> taskShutdowns = new LinkedList<>();
 
     public Initializer() {}
 
@@ -50,6 +52,7 @@ public final class Initializer extends GuiceServletContextListener {
         PrintWriter errorWriter = new PrintWriter(errorOut);
         try {
             this.injector = Guice.createInjector(Stage.PRODUCTION, this.getModules());
+            taskShutdowns.add(this.injector.getInstance(BackgroundTaskRunnerService.class)::shutdown);
             success = true;
         } catch (Exception e) {
             System.err.println("[HMDM-INITIALIZER]: Unexpected error during injector initialization: " + e);
@@ -104,13 +107,53 @@ public final class Initializer extends GuiceServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         this.context = servletContextEvent.getServletContext();
 
-        String log4jConfig = context.getInitParameter("log4j.config");
-        if (log4jConfig != null && !log4jConfig.isEmpty()) {
-            System.out.println("[HMDM-LOGGING] : Using log4j configuration from: " + log4jConfig);
-            System.setProperty("log4j.configuration", log4jConfig);
-            System.setProperty("log4j.ignoreTCL", "true");
+        String logbackConfig = context.getInitParameter("logback.config");
+        if (logbackConfig != null && !logbackConfig.isEmpty()) {
+            System.out.println("[HMDM-LOGGING] Reconfiguring Logback from: " + logbackConfig);
+
+            org.slf4j.ILoggerFactory loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
+            if (loggerFactory instanceof ch.qos.logback.classic.LoggerContext loggerContext) {
+                // NOTE: deliberate deviation from the upstream (convergent dd0c39a) form of this block.
+                // Upstream called loggerContext.reset() before resolving the URL, so any failure -- an
+                // unresolved ${logback.config} token, a missing file, malformed XML -- left the logger
+                // context wiped with no appenders and silenced the application, while printing a
+                // "falling back" message that nothing implemented. The URL is now resolved before
+                // anything is reset, and the failure path genuinely restores the bundled configuration.
+                // Please do not "restore" this to match upstream.
+                java.net.URL configUrl = null;
+                try {
+                    configUrl = java.net.URI.create(logbackConfig).toURL();
+                } catch (Exception e) {
+                    System.err.println("[HMDM-LOGGING] Invalid logback.config URL '" + logbackConfig
+                            + "': " + e);
+                    System.err.println("[HMDM-LOGGING] Keeping the bundled logback.xml configuration");
+                }
+
+                if (configUrl != null) {
+                    try {
+                        loggerContext.reset();
+
+                        ch.qos.logback.classic.joran.JoranConfigurator configurator =
+                                new ch.qos.logback.classic.joran.JoranConfigurator();
+                        configurator.setContext(loggerContext);
+                        configurator.doConfigure(configUrl);
+
+                        System.out.println("[HMDM-LOGGING] Logback reconfigured successfully");
+                    } catch (Exception e) {
+                        System.err.println("[HMDM-LOGGING] Failed to reconfigure Logback: " + e);
+                        restoreBundledLogbackConfig(loggerContext);
+                    }
+                }
+            } else {
+                // SLF4J resolved to a provider other than Logback, so there is nothing to
+                // reconfigure. Skip it rather than letting a ClassCastException escape
+                // contextInitialized() and abort the deployment of the web application.
+                System.err.println("[HMDM-LOGGING] SLF4J is bound to "
+                        + loggerFactory.getClass().getName() + ", not to Logback; "
+                        + "skipping the reconfiguration from " + logbackConfig);
+            }
         } else {
-            System.out.println("[HMDM-LOGGING] Using log4j configuration from build");
+            System.out.println("[HMDM-LOGGING] Using bundled Logback configuration");
         }
 
         super.contextInitialized(servletContextEvent);
@@ -118,17 +161,38 @@ public final class Initializer extends GuiceServletContextListener {
         initTasks();
     }
 
+    /**
+     * <p>Re-applies the <code>logback.xml</code> bundled in the web application after an attempt to apply an external configuration has failed.</p>
+     *
+     * <p>The context is reset first: a <code>doConfigure()</code> that threw part-way through may have left a partially applied configuration behind.
+     * Without this, a failed reconfiguration leaves the logger context with no appenders at all and the application logs nothing.</p>
+     *
+     * @param loggerContext the Logback context to restore.
+     */
+    private static void restoreBundledLogbackConfig(ch.qos.logback.classic.LoggerContext loggerContext) {
+        try {
+            loggerContext.reset();
+            new ch.qos.logback.classic.util.ContextInitializer(loggerContext)
+                    .autoConfig(Initializer.class.getClassLoader());
+            System.err.println("[HMDM-LOGGING] Restored the bundled logback.xml configuration");
+        } catch (Exception e) {
+            System.err.println("[HMDM-LOGGING] Could not restore the bundled logback.xml "
+                    + "configuration, logging may be disabled: " + e);
+        }
+    }
+
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        if (this.injector != null) {
+        // Retain the exact instances started by this context; Guice lookups here can
+        // otherwise create new services while the old workers continue running.
+        for (Runnable shutdown : taskShutdowns.reversed()) {
             try {
-                final NotificationMqttTaskModule mqttModule =
-                        this.injector.getInstance(NotificationMqttTaskModule.class);
-                mqttModule.shutdown();
+                shutdown.run();
             } catch (Exception e) {
-                System.err.println("[HMDM-INITIALIZER]: Error shutting down MQTT broker: " + e);
+                System.err.println("[HMDM-INITIALIZER]: Error shutting down application task: " + e);
             }
         }
+        taskShutdowns.clear();
         super.contextDestroyed(servletContextEvent);
     }
 
@@ -158,10 +222,12 @@ public final class Initializer extends GuiceServletContextListener {
 
     private void initTasks() {
         final NotificationTaskModule notificationTaskModule = this.injector.getInstance(NotificationTaskModule.class);
+        taskShutdowns.add(notificationTaskModule::shutdown);
         notificationTaskModule.init();
 
         final NotificationMqttTaskModule notificationMqttTaskModule =
                 this.injector.getInstance(NotificationMqttTaskModule.class);
+        taskShutdowns.add(notificationMqttTaskModule::shutdown);
         notificationMqttTaskModule.init();
 
         final PluginPlatformTaskModule pluginPlatformTaskModule =
@@ -182,6 +248,7 @@ public final class Initializer extends GuiceServletContextListener {
         }
 
         final EventListenerModule eventListenerModule = this.injector.getInstance(EventListenerModule.class);
+        taskShutdowns.add(eventListenerModule::shutdown);
         eventListenerModule.init();
 
         final StartupTaskModule startupTaskModule = this.injector.getInstance(StartupTaskModule.class);

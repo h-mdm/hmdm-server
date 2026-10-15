@@ -14,6 +14,7 @@
 package com.hmdm.notification.guice.module;
 
 import com.hmdm.notification.persistence.NotificationDAO;
+import com.hmdm.util.BackgroundTaskRunnerService;
 import jakarta.inject.Inject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,7 +44,10 @@ public class NotificationTaskModule {
     public void init() {
         messagePurgeService.scheduleWithFixedDelay(new MessagePurgeWorker(notificationDAO), 1, 1, TimeUnit.HOURS);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(messagePurgeService::shutdown));
+    }
+
+    public void shutdown() {
+        BackgroundTaskRunnerService.shutdownExecutor(messagePurgeService);
     }
 
     /**

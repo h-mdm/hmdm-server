@@ -55,7 +55,6 @@ public class HintResource {
         this.userDAO = userDAO;
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get shown hints",
             description = "Gets the list of identifiers for the hints already presented to current user")
@@ -72,7 +71,6 @@ public class HintResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Enable hints", description = "Enables the hints to be presented to current user")
     @POST
     @Path("/enable")
@@ -87,7 +85,6 @@ public class HintResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Disable hints", description = "Disables the hints from to be presented to current user")
     @POST
     @Path("/disable")
@@ -102,7 +99,6 @@ public class HintResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "On hint shown", description = "Marks the hint as shown to current user")
     @POST
     @Path("/history")

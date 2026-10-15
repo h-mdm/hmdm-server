@@ -69,8 +69,7 @@ public class PushSenderMqtt implements PushSender {
         try {
             // Parse protocol, host and port using URI for IPv6 safety
             URI uri = NotificationMqttTaskModule.parseServerUri(serverUri);
-            String scheme = uri.getScheme() != null ? uri.getScheme() : "mqtt";
-            connectSSL = "ssl".equals(scheme) || "mqtts".equals(scheme);
+            connectSSL = NotificationMqttTaskModule.isSslScheme(uri);
             connectPort = uri.getPort() > 0 ? uri.getPort() : (connectSSL ? 8883 : 1883);
             connectHost = uri.getHost();
 

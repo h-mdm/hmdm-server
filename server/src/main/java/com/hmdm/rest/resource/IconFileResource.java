@@ -69,7 +69,6 @@ public class IconFileResource {
         this.filesDirectory = filesDirectory;
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Upload icon",
             description = "Uploads the icon to server. Returns a path to uploaded icon file")

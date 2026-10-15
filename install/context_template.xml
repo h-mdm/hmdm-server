@@ -42,7 +42,7 @@
 
     <Parameter name="initialization.completion.signal.file" value="_INSTALL_FLAG_"/>
 
-    <Parameter name="log4j.config" value="file://_BASE_DIRECTORY_/log4j-hmdm.xml"/>
+    <Parameter name="logback.config" value="file://_BASE_DIRECTORY_/logback-hmdm.xml"/>
 
     <Parameter name="aapt.command" value="aapt"/>
 
@@ -59,6 +59,16 @@
     <!-- Optional tag for MQTT authentication for more security
          (supported by Headwind MDM launcher v5.05 and above) -->
     <Parameter name="mqtt.auth" value="1"/>
+
+    <!-- PEM certificate paths for the MQTT broker, published by the certbot deploy hook
+         that hmdm_install.sh installs. Only consulted when mqtt.server.uri uses a TLS
+         scheme (ssl:// / mqtts:// / wss://); with the plain default above they are unused.
+         ssl.pem.config.path must stay in a Tomcat-WRITABLE directory: the broker creates a
+         temp file there and moves it into place, whereas /etc/hmdm/tls is root-owned and
+         group-readable only. -->
+    <Parameter name="ssl.pem.key.path" value="/etc/hmdm/tls/current/privkey.pem"/>
+    <Parameter name="ssl.pem.cert.path" value="/etc/hmdm/tls/current/fullchain.pem"/>
+    <Parameter name="ssl.pem.config.path" value="/var/lib/hmdm/mqtt/mqtt-broker.pemcfg"/>
 
     <!-- If you have any reverse proxies, specify them here (IP addresses, 
     comma-separated) for correct logging of IP addresses -->

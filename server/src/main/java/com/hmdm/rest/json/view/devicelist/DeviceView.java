@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "A device registered to MDM server and running the MDM mobile application")
 public class DeviceView {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceView.class);
 
@@ -60,8 +61,7 @@ public class DeviceView {
             if (device.getInfo() != null) {
                 if (!device.getInfo().trim().isEmpty()) {
                     final String deviceInfoString = device.getInfo();
-                    ObjectMapper jsonMapper = new ObjectMapper();
-                    info = jsonMapper.readValue(deviceInfoString, DeviceInfo.class);
+                    info = JSON_MAPPER.readValue(deviceInfoString, DeviceInfo.class);
                 }
             }
         } catch (IOException e) {

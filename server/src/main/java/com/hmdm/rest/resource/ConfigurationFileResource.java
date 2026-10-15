@@ -85,7 +85,6 @@ public class ConfigurationFileResource {
         this.baseUrl = baseUrl;
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Upload configuration file",
             description = "Uploads the configuration file to server. Returns a path to uploaded file")

@@ -74,6 +74,7 @@
                     <option ng-value="'arm64'" ng-selected="application.arch === 'arm64'"
                             localized>form.application.arch.arm64</option>
                 </select>
+                <div class="field-hint warning-font" ng-show="appNameWarning">{{appNameWarning}}</div>
                 <div class="field-hint warning-font" ng-show="appTypeWarning">{{appTypeWarning}}</div>
                 <div class="field-hint success-font" ng-show="appTypeSuccess">{{appTypeSuccess}}</div>
                 <input ng-if="application.id"

@@ -91,10 +91,14 @@ public interface PostgresDeviceLogMapper {
     /**
      * <p>Deletes the log records which are older than number of days configured in customer's profile.</p>
      *
+     * <p>The customerId predicate is required, not redundant: the subquery only computes the cutoff for the given customer, so without it the
+     * statement deletes every customer's records older than that cutoff.</p>
+     *
      * @return a number of deleted records.
      */
     @Delete("DELETE FROM plugin_devicelog_log "
-            + "WHERE createTime < (SELECT EXTRACT(EPOCH FROM DATE_TRUNC('day', NOW() - (pds.logsPreservePeriod || ' day')::INTERVAL)) * 1000 "
+            + "WHERE customerId = #{customerId} "
+            + "AND createTime < (SELECT EXTRACT(EPOCH FROM DATE_TRUNC('day', NOW() - (pds.logsPreservePeriod || ' day')::INTERVAL)) * 1000 "
             + "                    FROM plugin_devicelog_settings pds "
             + "                    WHERE pds.customerId = #{customerId})")
     int purgeLogRecords(@Param("customerId") int customerId);

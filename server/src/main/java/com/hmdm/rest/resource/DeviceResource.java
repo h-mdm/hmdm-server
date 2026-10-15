@@ -77,7 +77,6 @@ public class DeviceResource {
         this.unsecureDAO = unsecureDAO;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Search devices", description = "Search devices meeting the specified filter value")
     @POST
     @Path("/search")
@@ -141,7 +140,6 @@ public class DeviceResource {
         return Response.OK(view);
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get the device info by number", description = "Get the device info by number")
     @GET
     @Path("/number/{number}")
@@ -158,7 +156,6 @@ public class DeviceResource {
         }
     }
 
-    // =================================================================================================================
     /**
      * <p>Gets the list of device ids/names matching the specified string filter for autocompletions.</p>
      *
@@ -180,7 +177,6 @@ public class DeviceResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Create or update device",
             description = "Create a new device (if id is not provided) or update existing one otherwise.")
     @PUT
@@ -256,7 +252,6 @@ public class DeviceResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete device", description = "Delete an existing device")
     @DELETE
     @Path("/{id}")
@@ -276,7 +271,6 @@ public class DeviceResource {
         return Response.OK();
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete bulk devices", description = "Delete multiple devices at once")
     @POST
     @Path("/deleteBulk")
@@ -304,7 +298,6 @@ public class DeviceResource {
         return Response.OK();
     }
 
-    // =================================================================================================================
     @Operation(summary = "Set or clear device groups in bulk")
     @POST
     @Path("/groupBulk")
@@ -343,7 +336,6 @@ public class DeviceResource {
         return Response.OK();
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get device application settings", description = "Get application settings set at device level")
     @GET
     @Path("/{id}/applicationSettings")
@@ -359,7 +351,6 @@ public class DeviceResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save device application settings", description = "Save application settings set at device level")
     @POST
     @Path("/{id}/applicationSettings")
@@ -376,7 +367,6 @@ public class DeviceResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Notify device on update", description = "Sends a notification to device on application settings update")
     @POST
     @Path("/{id}/applicationSettings/notify")
@@ -391,7 +381,6 @@ public class DeviceResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save device description", description = "Updates existing device description")
     @POST
     @Path("/{id}/description")

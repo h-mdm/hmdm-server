@@ -59,7 +59,6 @@ public class SettingsResource {
         this.unsecureDAO = unsecureDAO;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get settings", description = "Gets the current settings")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -78,7 +77,6 @@ public class SettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get user role settings",
             description = "Gets the current settings for role of the current user")
@@ -101,7 +99,6 @@ public class SettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Save default design",
             description = "Save the settings for Default Design for mobile application")
@@ -124,7 +121,6 @@ public class SettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save user role common settings", description = "Save the settings for user roles")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -145,7 +141,6 @@ public class SettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save language settings", description = "Save the language settings for MDM web application")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -166,7 +161,6 @@ public class SettingsResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Save misc settings", description = "Save the misc settings for MDM web application")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

@@ -16,6 +16,7 @@ package com.hmdm.rest.resource;
 import com.hmdm.persistence.ApplicationDAO;
 import com.hmdm.rest.filter.PublicIPFilter;
 import com.hmdm.util.CryptoUtil;
+import com.hmdm.util.FileUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -97,8 +98,8 @@ public class DownloadFilesServlet extends HttpServlet {
             }
         }
 
-        File file = new File(String.format("%s/%s", this.filesDirectory, path));
-        if (file.exists()) {
+        File file = FileUtil.resolveDownloadFile(this.filesDirectory, path);
+        if (file != null) {
 
             long modifiedSince = req.getDateHeader("If-Modified-Since");
             if (modifiedSince != -1 && modifiedSince > file.lastModified()) {
@@ -115,8 +116,8 @@ public class DownloadFilesServlet extends HttpServlet {
 
             // Cross XSS vulnerability fix: prevent opening a potentially malicious file having the MDM domain
             resp.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-            try (InputStream input = new FileInputStream(file);
-                    ServletOutputStream outputStream = resp.getOutputStream()) {
+            try (InputStream input = new FileInputStream(file)) {
+                ServletOutputStream outputStream = resp.getOutputStream();
                 long length = file.length();
                 if (length <= 2147483647L) {
                     resp.setContentLength((int) length);
@@ -129,24 +130,20 @@ public class DownloadFilesServlet extends HttpServlet {
 
                 IOUtils.copy(input, outputStream);
                 outputStream.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         } else {
-            System.out.println("Not found: " + file.getAbsolutePath());
             resp.sendError(404);
         }
     }
 
-    private void sendPartialContent(String rangeStr, File file, HttpServletResponse resp) {
-        try {
+    private void sendPartialContent(String rangeStr, File file, HttpServletResponse resp) throws IOException {
+        try (InputStream input = new FileInputStream(file)) {
             String[] range = rangeStr.split("-");
             Long start = Long.parseLong(range[0]);
             Long end = null;
             if (range.length > 1) {
                 end = Long.parseLong(range[1]);
             }
-            InputStream input = new FileInputStream(file);
             ServletOutputStream outputStream = resp.getOutputStream();
             long length = file.length();
             if (end == null) {
@@ -172,8 +169,6 @@ public class DownloadFilesServlet extends HttpServlet {
             IOUtils.copy(input, outputStream, contentLength);
             outputStream.flush();
 
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

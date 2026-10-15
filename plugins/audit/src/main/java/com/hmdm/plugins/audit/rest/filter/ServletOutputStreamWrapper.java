@@ -49,6 +49,12 @@ public class ServletOutputStreamWrapper extends ServletOutputStream {
         copy.write(b);
     }
 
+    @Override
+    public void write(byte[] bytes, int offset, int length) throws IOException {
+        outputStream.write(bytes, offset, length);
+        copy.write(bytes, offset, length);
+    }
+
     /**
      * <p>Gets the content of the response.</p>
      *

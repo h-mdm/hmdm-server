@@ -15,6 +15,7 @@ package com.hmdm.util;
 
 import jakarta.inject.Singleton;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -46,9 +47,27 @@ public class BackgroundTaskRunnerService {
     /**
      * <p>Constructs new <code>BackgroundTaskRunnerService</code> instance. This implementation does nothing.</p>
      */
-    public BackgroundTaskRunnerService() {
-        Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdown));
-        Runtime.getRuntime().addShutdownHook(new Thread(scheduledExecutor::shutdown));
+    public BackgroundTaskRunnerService() {}
+
+    public void shutdown() {
+        shutdownExecutor(scheduledExecutor);
+        shutdownExecutor(executor);
+    }
+
+    /** Stops application-owned workers on WAR destruction, without an unbounded wait. */
+    public static void shutdownExecutor(ExecutorService service) {
+        service.shutdown();
+        try {
+            if (!service.awaitTermination(5, TimeUnit.SECONDS)) {
+                service.shutdownNow();
+                if (!service.awaitTermination(5, TimeUnit.SECONDS)) {
+                    logger.warn("Background executor did not terminate after interruption");
+                }
+            }
+        } catch (InterruptedException e) {
+            service.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**

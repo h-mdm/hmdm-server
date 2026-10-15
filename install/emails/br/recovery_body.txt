@@ -1,0 +1,3 @@
+Foi solicitado o resete da senha em ${baseUrl}<br><br>
+Para mudar sua senha, por favor, acesse o link: <a href='${passwordResetUrl}'>${passwordResetUrl}</a>.<br><br>
+Se você não solicitou o reset da senha, desconsidere esse email.

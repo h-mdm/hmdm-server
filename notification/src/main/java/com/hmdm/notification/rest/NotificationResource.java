@@ -62,7 +62,6 @@ public class NotificationResource {
         this.notificationDAO = notificationDAO;
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Get device notifications",
             description = "Gets the notifications for device from the MDM server.")

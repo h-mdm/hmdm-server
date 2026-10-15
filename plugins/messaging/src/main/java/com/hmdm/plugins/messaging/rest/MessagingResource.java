@@ -96,7 +96,6 @@ public class MessagingResource {
         this.pluginStatusCache = pluginStatusCache;
     }
 
-    // =================================================================================================================
 
     /**
      * <p>Gets the list of device log records matching the specified filter.</p>
@@ -123,7 +122,6 @@ public class MessagingResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Send new message", description = "Sends a new message to a specified device.")
     @POST
     @Path("/private/send")
@@ -222,7 +220,6 @@ public class MessagingResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete message", description = "Delete an existing message")
     @DELETE
     @Path("/{id}")
@@ -241,7 +238,6 @@ public class MessagingResource {
         return Response.OK();
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Purge old messages",
             description = "Deletes all messages older than a specified number of days.")
@@ -268,7 +264,6 @@ public class MessagingResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Sets the message status", description = "Marks message as delivered or read.")
     @GET
     @Path("/public/status/{id}/{status}")

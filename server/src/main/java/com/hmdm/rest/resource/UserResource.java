@@ -74,7 +74,6 @@ public class UserResource {
         this.unsecureDAO = unsecureDAO;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get user details", description = "Returns the details for the user account referenced by the specified ID.")
     @GET
     @Path("/{id}")
@@ -93,7 +92,6 @@ public class UserResource {
         }).orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get current user details", description = "Returns the details for the current user account")
     @GET
     @Path("/current")
@@ -110,7 +108,6 @@ public class UserResource {
                 .orElse(Response.OK(null));
     }
 
-    // =================================================================================================================
     @Operation(summary = "List all users", description = "Gets the list of all existing user accounts")
     @GET
     @Path("/all")
@@ -140,7 +137,6 @@ public class UserResource {
                 .orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Update password", description = "Updates the password for current user")
     @PUT
     @Path("/current")
@@ -161,7 +157,6 @@ public class UserResource {
                 .orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Create or update user",
             description = "Creates a new user account (if id is not provided) or update existing one otherwise.")
     @PUT
@@ -240,7 +235,6 @@ public class UserResource {
         return user;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete user", description = "Deletes a user account referenced by the specified ID")
     @DELETE
     @Path("/other/{id}")
@@ -265,7 +259,6 @@ public class UserResource {
                 .orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "Update user's details", description = "Update user's name and email.")
     @PUT
     @Path("/details")
@@ -302,7 +295,6 @@ public class UserResource {
                 .orElse(Response.PERMISSION_DENIED());
     }
 
-    // =================================================================================================================
     @Operation(summary = "List user roles", description = "Gets the list of all available user roles")
     @GET
     @Path("/roles")

@@ -32,7 +32,7 @@
 
     <Parameter name="aapt.command" value="${aapt.command}"/>
 
-    <Parameter name="log4j.config" value="${log4j.config}"/>
+    <Parameter name="logback.config" value="${logback.config}"/>
 
     <Parameter name="plugin.photo.enable.places" value="${plugin.photo.enable.places}"/>
 
@@ -63,9 +63,15 @@
     <!-- MQTT admin password for broker authentication -->
     <Parameter name="mqtt.admin.password" value="${mqtt.admin.password}"/>
 
-    <!-- SSL keystore configuration for MQTT broker -->
-    <Parameter name="ssl.keystore.password" value="${ssl.keystore.password}"/>
-    <Parameter name="ssl.keystore.path" value="${ssl.keystore.path}"/>
+    <!-- PEM certificate configuration for the MQTT broker.
+         These paths are published by the certbot deploy hook (install/hmdm-tls-deploy-hook.sh),
+         which stages each renewal into a new generation directory and swaps the "current"
+         symlink atomically. The pemcfg lives in a Tomcat-WRITABLE directory, deliberately not
+         beside the keys: the broker rewrites it at startup and needs write permission on the
+         containing directory, while /etc/hmdm/tls is root-owned and group-readable only. -->
+    <Parameter name="ssl.pem.key.path" value="${ssl.pem.key.path}"/>
+    <Parameter name="ssl.pem.cert.path" value="${ssl.pem.cert.path}"/>
+    <Parameter name="ssl.pem.config.path" value="${ssl.pem.config.path}"/>
 
     <!-- Display X-Forwarded-For instead of source IP -->
     <Parameter name="plugin.audit.display.forwarded.ip" value="${plugin.audit.display.forwarded.ip}"/>
@@ -93,4 +99,10 @@
     <!-- <Parameter name="jwt.secretkey" value="${jwt.secretkey}"/> -->
     <!-- <Parameter name="jwt.validity" value="${jwt.validity}"/> -->
     <!-- <Parameter name="jwt.validityrememberme" value="${jwt.validityrememberme}"/> -->
+
+    <!-- Restrict device API access to specific IP addresses or CIDR ranges (comma-separated) -->
+    <!-- <Parameter name="device.allowed.address" value="${device.allowed.address}"/> -->
+
+    <!-- Restrict web UI access to specific IP addresses or CIDR ranges (comma-separated) -->
+    <!-- <Parameter name="ui.allowed.address" value="${ui.allowed.address}"/> -->
 </Context>

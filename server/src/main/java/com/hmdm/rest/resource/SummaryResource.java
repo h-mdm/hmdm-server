@@ -49,7 +49,6 @@ public class SummaryResource {
         this.deviceDAO = deviceDAO;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get device statistics", description = "Get statistics of device enrollment")
     @GET
     @Path("/devices")

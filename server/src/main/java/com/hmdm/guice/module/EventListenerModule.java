@@ -18,6 +18,7 @@ import com.hmdm.persistence.ConfigurationUpdatedEventListener;
 import com.hmdm.persistence.DeviceInfoUpdatedEventListener;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.service.DeviceStatusService;
+import com.hmdm.util.BackgroundTaskRunnerService;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +65,9 @@ public class EventListenerModule {
             });
         });
 
-        Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
+    }
+
+    public void shutdown() {
+        BackgroundTaskRunnerService.shutdownExecutor(executorService);
     }
 }

@@ -29,6 +29,8 @@
   "plugin.audit.action.password.reset": "Mot de passe de l'appareil est réinitialisé",
   "plugin.audit.action.device.reset": "Retour aux paramètres d'usine",
   "plugin.audit.action.device.lock": "Appareil verrouillé",
+  "plugin.audit.action.update.check": "Rechercher les mises à jour",
+  "plugin.audit.action.update.update": "Appliquer les mises à jour",
   "plugin.audit.error": " - Erreur",
   "plugin.audit.tab.title": "Audit",
   "plugin.audit.all.items": "Toutes les actions",

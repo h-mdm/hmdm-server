@@ -55,7 +55,6 @@ public class GroupResource {
         this.userDAO = userDAO;
     }
 
-    // =================================================================================================================
     @Operation(summary = "Get all device groups", description = "Gets the list of all available device groups")
     @GET
     @Path("/search")
@@ -64,7 +63,6 @@ public class GroupResource {
         return Response.OK(this.groupDAO.getAllGroups());
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Search device groups",
             description = "Search device groups meeting the specified filter value")
@@ -75,7 +73,6 @@ public class GroupResource {
         return Response.OK(this.groupDAO.getAllGroupsByValue(value));
     }
 
-    // =================================================================================================================
     /**
      * <p>Gets the list of group id/names matching the specified filter for autocompletion.</p>
      *
@@ -99,7 +96,6 @@ public class GroupResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(
             summary = "Create or update device group",
             description = "Create a new device group (if id is not provided) or update existing one otherwise.")
@@ -132,7 +128,6 @@ public class GroupResource {
         }
     }
 
-    // =================================================================================================================
     @Operation(summary = "Delete device group", description = "Delete an existing device group")
     @DELETE
     @Path("/{id}")

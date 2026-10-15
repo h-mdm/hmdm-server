@@ -92,7 +92,6 @@ public class PushApiResource {
      *
      * @return a response to client.
      */
-    // =================================================================================================================
     @Operation(summary = "Send a Push message", description = "Sends a Push message to specified devices.")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
