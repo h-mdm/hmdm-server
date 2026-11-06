@@ -33,6 +33,7 @@ public class ConfigureModule extends AbstractModule {
     private final String baseDirectoryParameter = "base.directory";
     private final String filesDirectoryParameter = "files.directory";
     private final String baseUrlParameter = "base.url";
+    private final String baseUrlFrontendParameter = "base.url.frontend";
     private final String pluginFilesDirectoryParameter = "plugins.files.directory";
     private final String usageScenarioParameter = "usage.scenario";
     private final String secureEnrollmentParameter = "secure.enrollment";
@@ -106,7 +107,10 @@ public class ConfigureModule extends AbstractModule {
 
     protected void configure() {
         this.bindConstant().annotatedWith(Names.named(filesDirectoryParameter)).to(this.context.getInitParameter(filesDirectoryParameter));
-        this.bindConstant().annotatedWith(Names.named(baseUrlParameter)).to(this.context.getInitParameter(baseUrlParameter));
+        String baseUrl = this.context.getInitParameter(baseUrlParameter);
+        this.bindConstant().annotatedWith(Names.named(baseUrlParameter)).to(baseUrl);
+        String baseUrlFrontend = this.context.getInitParameter(baseUrlFrontendParameter);
+        this.bindConstant().annotatedWith(Names.named(baseUrlFrontendParameter)).to(baseUrlFrontend != null ? baseUrlFrontend : baseUrl);
         this.bindConstant().annotatedWith(Names.named(pluginFilesDirectoryParameter)).to(this.context.getInitParameter(pluginFilesDirectoryParameter));
         this.bindConstant().annotatedWith(Names.named(usageScenarioParameter)).to(this.context.getInitParameter(usageScenarioParameter));
         String secureEnrollment = this.context.getInitParameter(secureEnrollmentParameter);

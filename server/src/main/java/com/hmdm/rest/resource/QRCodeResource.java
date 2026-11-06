@@ -273,8 +273,12 @@ public class QRCodeResource {
                                 imageSize = size;
                             }
                             try {
-                                QRCode.from(s).withCharset("UTF-8").to(ImageType.PNG).withSize(imageSize, imageSize).writeTo(output);
-                                output.flush();
+                                QRCode qr = QRCode.from(s);
+                                if (s.chars().anyMatch(c -> c > 127)) {
+                                    // Add UTF-8 support for non-ASCII entries only
+                                    qr.withCharset("UTF-8");
+                                }
+                                qr.to(ImageType.PNG).withSize(imageSize, imageSize).writeTo(output);                                output.flush();
                             } catch ( Exception e ) { e.printStackTrace(); }
                         } )
                                 .header("Cache-Control", "no-cache")

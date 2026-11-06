@@ -58,7 +58,7 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
 
     private final ApplicationSettingDAO applicationSettingDAO;
     private final ConfigurationFileDAO configurationFileDAO;
-    private String baseUrl;
+    private String baseUrlFrontend;
     private final EventService eventService;
 
 
@@ -67,15 +67,15 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
                             ApplicationMapper applicationMapper,
                             ApplicationSettingDAO applicationSettingDAO,
                             ConfigurationFileDAO configurationFileDAO,
-                            @Named("base.url") String baseUrl,
+                            @Named("base.url.frontend") String baseUrlFrontend,
                             EventService eventService) {
         this.mapper = mapper;
         this.applicationMapper = applicationMapper;
         this.applicationSettingDAO = applicationSettingDAO;
         this.configurationFileDAO = configurationFileDAO;
-        this.baseUrl = baseUrl;
+        this.baseUrlFrontend = baseUrlFrontend;
         this.eventService = eventService;
-        log.info("Base URL: " + baseUrl);
+        log.info("Frontend Base URL: " + baseUrlFrontend);
     }
 
     public List<Configuration> getAllConfigurations() {
@@ -280,6 +280,6 @@ public class ConfigurationDAO extends AbstractLinkedDAO<Configuration, Applicati
     // This is apparently due to call the constructor from a background thread
     // Nevermind, looks like injection of baseUrl in this DAO object works well!
     public String getBaseUrl() {
-        return baseUrl;
+        return baseUrlFrontend;
     }
 }
